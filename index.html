@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI健康管理小程序-首页</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="home-page" aria-label="AI健康管理首页">
+      <header class="status-bar" aria-hidden="true">
+        <span>9:41</span>
+        <span class="system-icons">●● ▬</span>
+      </header>
+
+      <section class="user-header">
+        <div class="user-avatar"></div>
+        <div class="user-info">
+          <strong>张女士</strong>
+          <span>35岁</span>
+        </div>
+        <button class="notice-button" type="button" aria-label="消息通知"></button>
+      </section>
+
+      <section class="state-switcher" aria-label="首页状态切换">
+        <button class="active" type="button" data-state="empty">无数据</button>
+        <button type="button" data-state="initial">初始数据</button>
+        <button type="button" data-state="improving">管理中</button>
+        <button type="button" data-state="risk">风险</button>
+        <button type="button" data-state="complete">完成</button>
+      </section>
+
+      <section class="main-card" id="mainCard" aria-live="polite"></section>
+
+      <section class="feature-section">
+        <h2>功能入口（固定）</h2>
+        <div class="feature-grid">
+          <button class="feature-item" type="button">
+            <i class="feature-icon icon-file"></i>
+            <span>健康档案</span>
+          </button>
+          <button class="feature-item" type="button">
+            <i class="feature-icon icon-report"></i>
+            <span>报告解读</span>
+          </button>
+          <button class="feature-item" type="button">
+            <i class="feature-icon icon-heart"></i>
+            <span>健康评估</span>
+          </button>
+          <button class="feature-item" type="button">
+            <i class="feature-icon icon-grid"></i>
+            <span>全部功能</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="service-section">
+        <div class="section-heading">
+          <h2>健康服务</h2>
+          <a href="#">查看全部 〉</a>
+        </div>
+        <div class="service-list">
+          <article class="service-card">
+            <div class="service-cover cover-blue">90.</div>
+            <div class="service-copy">
+              <h3>90天控糖管理服务包</h3>
+              <p>月销量 7,560+</p>
+            </div>
+            <button type="button">查看详情</button>
+          </article>
+          <article class="service-card">
+            <div class="service-cover cover-green">90.</div>
+            <div class="service-copy">
+              <h3>90天减重管理服务包</h3>
+              <p>月销量 9,860+</p>
+            </div>
+            <button type="button">查看详情</button>
+          </article>
+          <article class="service-card">
+            <div class="service-cover cover-purple">90.</div>
+            <div class="service-copy">
+              <h3>90天综合健康服务包</h3>
+              <p>月销量 6,230+</p>
+            </div>
+            <button type="button">查看详情</button>
+          </article>
+        </div>
+      </section>
+
+      <aside class="task-panel" id="taskPanel" aria-label="快捷打卡">
+        <button type="button"><i></i>饮食打卡</button>
+        <button type="button"><i></i>用药打卡</button>
+        <button type="button"><i></i>运动打卡</button>
+        <button type="button"><i></i>饮水打卡</button>
+      </aside>
+
+      <button class="add-button" id="addButton" type="button" aria-expanded="false" aria-controls="taskPanel">+</button>
+
+      <nav class="tabbar" aria-label="底部导航">
+        <a class="active" href="#"><i></i><span>推荐</span></a>
+        <a href="#"><i></i><span>任务</span></a>
+        <a href="#"><i></i><span>商城</span></a>
+        <a href="#"><i></i><span>我的</span></a>
+      </nav>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
