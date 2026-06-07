@@ -1,2 +1,8 @@
 *.png
+!assets/
+!assets/health-service-triptych.png
+!assets/service-products.png
+!assets/service-banner-real.png
+!assets/service-weight-real.png
+!assets/service-other-real.png
 

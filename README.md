@@ -11,5 +11,7 @@ Static deliverable for the AI health management mini-app homepage.
 
 ## Preview
 
-Open `index.html` directly in a browser.
+Double-click `open-preview.bat` on Windows to start a local preview server and open the page.
+
+You can also open `index.html` directly in a browser.
 
