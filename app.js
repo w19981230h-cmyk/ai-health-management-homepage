@@ -95,6 +95,7 @@ const parseTaskEntry = document.querySelector("#parseTaskEntry");
 const parseTaskList = document.querySelector("#parseTaskList");
 const selectedFiles = document.querySelector("#selectedFiles");
 const uploadTypeSelect = document.querySelector("#uploadTypeSelect");
+const uploadTypePills = document.querySelector("#uploadTypePills");
 const submitUpload = document.querySelector("#submitUpload");
 const submitAndParse = document.querySelector("#submitAndParse");
 const detailReportName = document.querySelector("#detailReportName");
@@ -132,6 +133,7 @@ const cycleSheetDesc = document.querySelector("#cycleSheetDesc");
 const cycleDate = document.querySelector("#cycleDate");
 const profileTabs = document.querySelectorAll("[data-profile-tab]");
 const profilePanels = document.querySelectorAll("[data-profile-panel]");
+const medicalFab = document.querySelector("#medicalFab");
 const uploadFab = document.querySelector("#uploadFab");
 const periodCard = document.querySelector("#periodCard");
 const periodStatusLine = document.querySelector("#periodStatusLine");
@@ -466,6 +468,14 @@ function normalizeReportType(type) {
   return type;
 }
 
+function thumbForType(type, fallback = "doc") {
+  if (type === "检查报告") return "ct";
+  if (type === "门诊病历" || type === "门诊处方" || type === "住院记录") return "medical";
+  if (type === "体检报告") return "exam";
+  if (type === "检验报告" || type === "报告单") return "doc";
+  return fallback;
+}
+
 function reportDateValue(report) {
   return report.reportTime || "";
 }
@@ -552,7 +562,7 @@ function renderMedicalReports() {
     <article class="report-row" data-report-row="${report.id}">
       <button class="report-delete-action" type="button" data-delete-report="${report.id}">删除</button>
       <button type="button" data-report-id="${report.id}">
-        <i class="report-thumb ${report.thumb || "doc"}"></i>
+        <i class="report-thumb ${thumbForType(report.type, report.thumb || "doc")}"></i>
         <span>
           <strong>${report.name}${isNewReport(report) ? '<em class="new-badge">新增</em>' : ""}</strong>
           <em>${report.org}</em>
@@ -586,8 +596,7 @@ function renderParseTasks() {
   const groups = [
     ["parsing", "解析中"],
     ["pending", "待补充"],
-    ["failed", "解析失败"],
-    ["completed", "已完成"]
+    ["failed", "解析失败"]
   ];
   parseTaskList.innerHTML = groups.map(([status, label]) => {
     const tasks = parseTasks.filter((task) => task.status === status);
@@ -623,7 +632,7 @@ function renderParseTaskCard(task) {
   }
   return `
     <article class="parse-task-card">
-      <i class="report-thumb ${task.thumb || "doc"}"></i>
+      <i class="report-thumb ${thumbForType(task.type, task.thumb || "doc")}"></i>
       <div class="task-body">
         <strong>${title}</strong>
         <span class="task-tag ${tagClass}">${statusText(task.status)}</span>
@@ -649,7 +658,7 @@ function openReportDetail(reportId) {
   const report = medicalReports.find((item) => item.id === reportId);
   if (!report) return;
   selectedReportId = reportId;
-  document.querySelector("#reportPreview").innerHTML = `<i class="report-thumb ${report.thumb || "doc"} big"></i>`;
+  document.querySelector("#reportPreview").innerHTML = `<i class="report-thumb ${thumbForType(report.type, report.thumb || "doc")} big"></i>`;
   detailReportName.value = report.name;
   detailReportType.value = report.type;
   detailReportOrg.value = report.org;
@@ -678,7 +687,13 @@ function addMockFile(source) {
 function renderSelectedFiles() {
   if (!selectedFiles) return;
   selectedFiles.innerHTML = selectedUploadFiles.length
-    ? selectedUploadFiles.map((file) => `<span>${file.name}　${file.sizeMb}MB</span>`).join("<br>")
+    ? selectedUploadFiles.map((file, index) => `
+      <div class="selected-file">
+        <i class="file-thumb report-thumb ${thumbForType(uploadTypeSelect.value)}"></i>
+        <span><strong>${file.name}</strong><em>${file.sizeMb}MB</em></span>
+        <button type="button" data-remove-file="${index}">删</button>
+      </div>
+    `).join("")
     : "暂未选择文件";
 }
 
@@ -1279,8 +1294,8 @@ function setProfileTab(tabName) {
   profilePanels.forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.profilePanel === tabName);
   });
-  if (uploadFab) {
-    uploadFab.classList.toggle("active", tabName === "medical");
+  if (medicalFab) {
+    medicalFab.classList.toggle("active", tabName === "medical");
   }
 }
 
@@ -1304,6 +1319,20 @@ parseTaskEntry?.addEventListener("click", () => {
 });
 document.querySelectorAll("[data-mock-file]").forEach((button) => {
   button.addEventListener("click", () => addMockFile(button.dataset.mockFile));
+});
+uploadTypePills?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-upload-type]");
+  if (!button) return;
+  uploadTypePills.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+  button.classList.add("active");
+  uploadTypeSelect.value = button.dataset.uploadType;
+  renderSelectedFiles();
+});
+selectedFiles?.addEventListener("click", (event) => {
+  const remove = event.target.closest("[data-remove-file]");
+  if (!remove) return;
+  selectedUploadFiles.splice(Number(remove.dataset.removeFile), 1);
+  renderSelectedFiles();
 });
 submitUpload?.addEventListener("click", () => {
   if (!selectedUploadFiles.length) {
