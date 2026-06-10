@@ -14,11 +14,17 @@
         <span class="system-icons">●●● ▰</span>
       </header>
 
-      <section class="user-header home-only">
-        <div class="user-avatar"></div>
-        <div class="user-info">
-          <strong id="currentPatientName">张女士</strong>
-          <span id="currentPatientMeta">35岁 · 本人</span>
+      <section class="user-header home-only" aria-label="小程序导航栏">
+        <a class="brand-mark" href="#" aria-label="春晓健康首页">
+          <span class="brand-logo" aria-hidden="true"></span>
+          <strong>春晓健康</strong>
+        </a>
+        <div class="current-patient" aria-label="当前就诊人">
+          <span class="user-avatar" aria-hidden="true"></span>
+          <div class="patient-context">
+            <strong id="currentPatientName">张女士</strong>
+            <span id="currentPatientMeta">35岁 · 本人</span>
+          </div>
         </div>
         <section class="member-switcher" aria-label="就诊人切换">
           <button class="member-chip active" type="button" data-patient-id="self" data-sex="female" data-state="improving" data-name="张女士" data-meta="35岁 · 本人" aria-label="张女士 管理中">
@@ -34,7 +40,10 @@
             <span>+</span>
           </button>
         </section>
-        <button class="notice-button" type="button" aria-label="消息通知"></button>
+        <button class="mini-program-capsule" type="button" aria-label="小程序菜单">
+          <span class="capsule-more" aria-hidden="true"></span>
+          <span class="capsule-close" aria-hidden="true"></span>
+        </button>
       </section>
 
       <section class="status-section home-only" aria-label="健康状态">
@@ -45,7 +54,7 @@
         <div class="feature-grid">
           <button class="feature-item" type="button">
             <i class="feature-icon icon-file"></i>
-            <span>健康档案</span>
+            <span>健康咨询</span>
           </button>
           <button class="feature-item" type="button">
             <i class="feature-icon icon-report"></i>
@@ -53,7 +62,7 @@
           </button>
           <button class="feature-item" type="button">
             <i class="feature-icon icon-heart"></i>
-            <span>健康评估</span>
+            <span>春晓商城</span>
           </button>
           <button class="feature-item" type="button">
             <i class="feature-icon icon-grid"></i>
@@ -93,9 +102,43 @@
             <button type="button">查看详情</button>
           </article>
         </div>
+        <div class="service-empty" role="status">
+          <i aria-hidden="true"></i>
+          <strong>暂无健康服务</strong>
+          <p>当前暂无可用健康服务，后续有服务会及时展示。</p>
+        </div>
       </section>
 
-      <section class="plan-page" id="planPage" aria-label="健康计划">
+      <section class="plan-page" id="planPage" aria-label="健康日程">
+        <header class="schedule-hero">
+          <div class="schedule-status">
+            <span>9:41</span>
+            <span class="plan-icons"></span>
+          </div>
+          <div class="schedule-patient-row">
+            <button class="schedule-patient" id="schedulePatientButton" type="button" aria-label="切换就诊人">
+              <span class="schedule-avatar" id="scheduleAvatar" aria-hidden="true"></span>
+              <strong id="schedulePatientName">张患者 男 24</strong>
+              <i aria-hidden="true"></i>
+            </button>
+            <button class="schedule-notice" id="scheduleNotice" type="button" aria-label="消息提醒"><em>1</em></button>
+          </div>
+          <div class="schedule-month-row">
+            <strong id="scheduleMonthLabel">2025年03月</strong>
+            <button id="scheduleExpand" type="button" aria-expanded="false">展开</button>
+            <button id="scheduleToday" type="button">今日</button>
+          </div>
+          <div class="schedule-week" id="scheduleWeek" aria-label="周日历"></div>
+          <div class="schedule-month-panel" id="scheduleMonthPanel" aria-label="月历"></div>
+        </header>
+
+        <section class="schedule-body">
+          <div class="plan-notch"></div>
+          <div class="schedule-content" id="scheduleContent" aria-live="polite"></div>
+        </section>
+
+        <aside class="schedule-sheet patient-sheet" id="schedulePatientSheet" aria-label="切换就诊人"></aside>
+        <aside class="schedule-sheet quick-checkin-sheet" id="scheduleCheckinSheet" aria-label="新增打卡"></aside>
         <header class="plan-hero">
           <div class="plan-status">
             <span>9:41</span>
@@ -190,14 +233,6 @@
         </section>
         <div class="banner-dots" aria-hidden="true"><i class="active"></i><i></i><i></i><i></i><i></i></div>
 
-        <section class="service-filter" aria-label="服务分类">
-          <button class="active" type="button" data-filter="all">全部服务包</button>
-          <button type="button" data-filter="weight">减重管理</button>
-          <button type="button" data-filter="sugar">控糖管理</button>
-          <button type="button" data-filter="pressure">控压管理</button>
-          <button type="button" data-filter="nutrition">营养管理</button>
-        </section>
-
         <section class="package-list" id="packageList" aria-label="服务包列表"></section>
 
         <button class="service-fab" id="serviceFab" type="button" aria-label="服务操作">+</button>
@@ -211,17 +246,26 @@
         </header>
 
         <main class="detail-scroll">
+          <section class="detail-patient-card" aria-label="服务使用人">
+            <span class="detail-patient-avatar" id="detailPatientAvatar" aria-hidden="true"></span>
+            <div>
+              <em>服务使用人</em>
+              <strong id="detailPatientName">张女士</strong>
+              <p id="detailPatientMeta">女｜32岁</p>
+            </div>
+          </section>
+
           <section class="detail-hero">
-            <div class="detail-product service-img img-weight" aria-hidden="true"></div>
+            <div class="detail-product service-img img-weight" id="detailProductCover" aria-hidden="true"></div>
           </section>
 
           <section class="detail-title">
-            <h2>90天减重管理服务包</h2>
-            <p>科学减重｜饮食管理｜运动指导｜<span>专业营养师团队</span></p>
+            <h2 id="detailServiceTitle">90天减重管理服务包</h2>
+            <p id="detailServiceTags">科学减重｜饮食管理｜运动指导｜<span>专业营养师团队</span></p>
             <div class="price-row">
-              <strong>¥299</strong>
+              <strong id="detailServicePrice">¥299</strong>
               <del>¥599</del>
-              <em>月销量 9,860+</em>
+              <em id="detailServiceSales">月销量 9,860+</em>
             </div>
           </section>
 
@@ -232,7 +276,7 @@
 
           <section class="detail-section intro-section">
             <h3>服务简介</h3>
-            <p>通过个性化饮食和运动方案，结合科学管理方法，帮助您健康减重，改善体脂率，塑造理想体型，养成健康生活习惯。</p>
+            <p id="detailServiceDesc">通过个性化饮食和运动方案，结合科学管理方法，帮助您健康减重，改善体脂率，塑造理想体型，养成健康生活习惯。</p>
             <div class="ability-grid">
               <div><i class="line-icon icon-plan"></i><strong>个性化方案</strong><span>定制减重计划</span></div>
               <div><i class="line-icon icon-service"></i><strong>专业指导</strong><span>营养师全程指导</span></div>
@@ -269,54 +313,59 @@
         </main>
 
         <footer class="buy-bar">
-          <button id="serviceSupport" type="button"><i class="line-icon icon-headset"></i>客服</button>
-          <button id="favoriteBtn" type="button"><i class="line-icon icon-star"></i>收藏</button>
           <button class="buy-button" id="buyButton" type="button">立即购买 ¥299</button>
         </footer>
       </section>
 
       <section class="mine-page app-view" id="minePage" aria-label="我的">
-        <header class="mini-status"><span>9:41</span><span></span></header>
-        <header class="mine-nav">
-          <h1>我的</h1>
-          <button class="settings-btn" type="button" data-open-page="settingsPage" aria-label="设置"></button>
-        </header>
-        <section class="profile-head">
-          <div class="profile-avatar"></div>
-          <div class="profile-main">
-            <button class="profile-name" id="profileNameButton" type="button" data-open-page="familySwitchPage">张女士 <i></i></button>
-            <span id="profileGenderAge">女｜32岁</span>
-            <em>138 **** 5678</em>
-          </div>
-          <button class="family-add-btn" type="button" data-open-page="addFamilyPage">+ 添加家庭成员</button>
-        </section>
-        <section class="cycle-reminder" id="cycleReminder" data-rule="soon" aria-label="经期记录提醒">
-          <div class="assistant-bot" aria-hidden="true"></div>
-          <div class="cycle-bubble">
-            <button class="cycle-close" id="cycleClose" type="button" aria-label="关闭提醒">×</button>
-            <p id="cycleReminderText">月经快来啦，记得记录哦</p>
-            <button class="cycle-action" id="cycleAction" type="button">去记录</button>
-          </div>
-        </section>
-        <section class="overview-card">
-          <div>
-            <span>健康评分</span>
-            <strong>86<em>分</em></strong>
-            <p>良好状态</p>
-          </div>
-          <i></i>
-          <div>
-            <span>档案完整度</span>
-            <strong class="green">80%</strong>
-            <p>已完善 16 / 20 项</p>
-          </div>
+        <section class="archive-hero">
+          <header class="mini-status"><span>9:41</span><span></span></header>
+          <header class="archive-nav">
+            <button class="back-page" type="button" aria-label="返回"></button>
+            <h1>健康档案</h1>
+            <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单">
+              <span class="capsule-more" aria-hidden="true"></span>
+              <span class="capsule-close" aria-hidden="true"></span>
+            </button>
+          </header>
+          <section class="archive-member-row" aria-label="当前就诊人">
+            <div class="profile-avatar archive-avatar"></div>
+            <div class="archive-member-main">
+              <button class="profile-name archive-name" id="profileNameButton" type="button" data-open-page="familySwitchPage">张女士</button>
+              <button class="archive-edit" type="button" data-open-page="settingsPage">编辑资料 〉</button>
+              <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
+            </div>
+            <button class="member-chip archive-switch" type="button" data-open-page="familySwitchPage" aria-label="切换就诊人">
+              <span class="member-avatar avatar-self">张</span>
+            </button>
+            <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span>+</span></button>
+            <button class="archive-settings-btn" type="button" data-open-page="settingsPage" aria-label="设置"></button>
+          </section>
+          <section class="archive-progress-card" aria-label="资料评估提示">
+            <div class="archive-progress-side">
+              <div class="archive-gauge" aria-hidden="true"><span>--</span></div>
+              <button class="archive-detail-btn" type="button">查看详情</button>
+            </div>
+            <div class="archive-progress-copy">
+              <p>完善资料评估更准确</p>
+            </div>
+            <div class="archive-doctor" aria-hidden="true"></div>
+          </section>
+          <section class="archive-assistant-card" aria-label="医护助理">
+            <div class="assistant-bot" aria-hidden="true"></div>
+            <div>
+              <strong>医护助理</strong>
+              <p>最近血压偏高哦 最近血压偏高哦 最近血压你好</p>
+            </div>
+            <i aria-hidden="true"></i>
+          </section>
         </section>
         <section class="mine-shortcuts" role="tablist" aria-label="档案内容切换">
           <button class="active" type="button" role="tab" aria-selected="true" data-profile-tab="medical">
             <i class="shortcut-icon shortcut-file">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l3 3V20a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 6 20V5a1.5 1.5 0 0 1 1.5-1.5Z"/><path d="M14 3.5V7h3M9 11h6M9 15h6M9 18h4"/></svg>
             </i>
-            就医资料
+            健康档案
           </button>
           <button type="button" role="tab" aria-selected="false" data-profile-tab="metrics">
             <i class="shortcut-icon shortcut-metric">
@@ -324,39 +373,51 @@
             </i>
             健康指标
           </button>
-          <button type="button" role="tab" aria-selected="false" data-profile-tab="history">
-            <i class="shortcut-icon shortcut-history">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-3.3 7-9V5.8L12 3 5 5.8V12c0 5.7 7 9 7 9Z"/><path d="M9 12h6M12 9v6"/></svg>
-            </i>
-            健康史
-          </button>
           <button type="button" role="tab" aria-selected="false" data-profile-tab="assessment">
             <i class="shortcut-icon shortcut-eval">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="3"/><path d="M9 9h6M9 13h6M9 17h4"/><path d="M8.5 6.5h7"/></svg>
             </i>
             健康评估
           </button>
+          <button type="button" role="tab" aria-selected="false" data-profile-tab="orders">
+            <i class="shortcut-icon shortcut-service service-count-badge" data-count="3">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h10l1 11H6l1-11Z"/><path d="M9.5 8.5a2.5 2.5 0 0 1 5 0"/><path d="M12 12v4M10 14h4"/></svg>
+            </i>
+            我的订单
+          </button>
         </section>
         <section class="profile-content" aria-live="polite">
           <section class="medical-card profile-panel active" data-profile-panel="medical">
+            <div class="medical-section-header">
+              <h2>病历夹</h2>
+              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
+            </div>
             <div class="medical-toolbar">
               <div class="pill-tabs" id="medicalCategoryTabs">
-                <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="门诊病历">门诊病历</button><button type="button" data-category="检查报告">检查报告</button><button type="button" data-category="检验报告">检验报告</button><button type="button" data-category="体检报告">体检报告</button>
+                <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="门诊病历">门诊病历</button><button type="button" data-category="检查报告">检查报告</button><button type="button" data-category="检验报告">检验报告</button><button type="button" data-category="出院记录">出院记录</button>
               </div>
             </div>
             <div class="report-list" id="medicalReportList"></div>
           </section>
           <section class="metrics-panel profile-panel" data-profile-panel="metrics">
-            <article class="metric-card sugar">
-              <i></i>
-              <div><strong>血糖</strong><p>最新血糖：6.1 mmol/L</p><p>时段：空腹</p><p>记录时间：2025-06-01 08:20</p></div>
-              <em>正常</em>
-            </article>
-            <article class="metric-card pressure">
-              <i></i>
-              <div><strong>血压</strong><p>最新血压：128 / 82 mmHg</p><p>脉搏：76 次/分</p><p>记录时间：2025-06-01 09:10</p></div>
-              <em>正常</em>
-            </article>
+            <div class="metrics-head">
+              <h2>健康指标</h2>
+              <button type="button">我的设备 <i></i></button>
+            </div>
+            <div class="metric-summary-grid">
+              <article class="metric-summary-card pressure">
+                <h3><i></i>血压</h3>
+                <strong>130/85 <span>mmHg</span></strong>
+                <div class="metric-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <p>2026/06/10 14:51</p>
+              </article>
+              <article class="metric-summary-card sugar">
+                <h3><i></i>血糖</h3>
+                <strong>5.0 <span>mmol/L</span></strong>
+                <div class="metric-wave" aria-hidden="true"></div>
+                <p>2026/06/10 14:51</p>
+              </article>
+            </div>
             <article class="metric-card cycle" id="periodCard">
               <i></i>
               <div><strong>经期管理</strong><p id="periodStatusLine">暂未记录经期</p><p id="periodForecastLine">记录后可帮你预测下次经期时间</p><p id="periodAverageLine"></p></div>
@@ -372,51 +433,56 @@
             <article><span>用药史</span><strong>长期服用降压药</strong></article>
           </section>
           <section class="assessment-panel profile-panel" data-profile-panel="assessment">
-            <div class="assessment-group">
-              <span>待完成评估</span>
-              <article><div><strong>糖尿病风险评估</strong><p>约 3 分钟</p><em>待填写</em></div><button type="button">开始评估</button></article>
-              <article><div><strong>心血管风险评估</strong><p>约 5 分钟</p><em>待填写</em></div><button type="button">开始评估</button></article>
-              <article><div><strong>骨质疏松风险评估</strong><p>约 3 分钟</p><em>待填写</em></div><button type="button">开始评估</button></article>
-            </div>
             <div class="assessment-group done">
               <span>已完成评估</span>
               <article><div><strong>生活方式评估</strong><p>评估时间：2025-05-20</p><em>结果：中风险</em></div><button type="button">查看结果</button></article>
             </div>
+            <div class="assessment-unlock-divider">您还可以解锁以下健康评估</div>
+            <div class="assessment-group">
+              <article><div><strong>糖尿病风险评估</strong><p>约 3 分钟</p></div><button type="button">开始评估</button></article>
+              <article><div><strong>心血管风险评估</strong><p>约 5 分钟</p></div><button type="button">开始评估</button></article>
+              <article><div><strong>骨质疏松风险评估</strong><p>约 3 分钟</p></div><button type="button">开始评估</button></article>
+            </div>
+          </section>
+          <section class="orders-panel profile-panel" data-profile-panel="orders">
+            <div class="order-status-tabs" role="tablist" aria-label="订单状态">
+              <button class="active" type="button" data-order-tab="active">进行中 <em>3</em></button>
+              <button type="button" data-order-tab="ended">已结束</button>
+            </div>
+            <section class="order-service-section active" data-order-panel="active">
+              <button class="archive-service-card" type="button" data-service-id="weight">
+                <i class="owned-img img-weight"></i>
+                <span><strong>90天减重服务</strong><em>服务周期至 2027/02/02</em></span>
+                <div class="archive-service-actions"><b>生效中</b></div>
+              </button>
+              <button class="archive-service-card" type="button" data-service-id="sugar">
+                <i class="owned-img img-sugar"></i>
+                <span><strong>90天控糖服务</strong><em>服务周期至 2027/02/02</em></span>
+                <div class="archive-service-actions"><b>生效中</b></div>
+              </button>
+              <button class="archive-service-card" type="button" data-service-id="comprehensive">
+                <i class="owned-img img-comprehensive"></i>
+                <span><strong>术后质量管理服务</strong><em>服务周期至 2027/02/02</em></span>
+                <div class="archive-service-actions"><b>生效中</b></div>
+              </button>
+            </section>
+            <section class="order-service-section ended" data-order-panel="ended">
+              <button class="archive-service-card" type="button" data-service-id="pressure">
+                <i class="owned-img img-pressure"></i>
+                <span><strong>高血压管理服务</strong><em>服务周期至 2027/02/02</em></span>
+                <div class="archive-service-actions"><b>已失效</b></div>
+              </button>
+              <button class="archive-service-card" type="button" data-service-id="nutrition">
+                <i class="owned-img img-nutrition"></i>
+                <span><strong>营养检测服务</strong><em>服务周期至 2027/02/02</em></span>
+                <div class="archive-service-actions"><b>已失效</b></div>
+              </button>
+            </section>
           </section>
         </section>
         <section class="medical-fab active" id="medicalFab" aria-label="就医资料操作">
           <button class="parse-task-entry" id="parseTaskEntry" type="button">解析任务</button>
           <button class="upload-fab" id="uploadFab" type="button">上传资料</button>
-        </section>
-        <section class="common-card">
-          <h2>通用</h2>
-          <div>
-            <button type="button" data-open-page="myServicesPage">
-              <i class="common-icon common-service">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5.8C8 4.8 8.8 4 9.8 4h4.4c1 0 1.8.8 1.8 1.8V7"/><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M9 13h6M12 10v6"/></svg>
-                <em>2</em>
-              </i>
-              我的服务
-            </button>
-            <button type="button" data-open-page="ordersPage">
-              <i class="common-icon common-order">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v14l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2L5 20V6a2 2 0 0 1 2-2Z"/><path d="M8.5 9h7M8.5 13h7M8.5 16h4"/></svg>
-              </i>
-              历史订单
-            </button>
-            <button type="button" data-open-page="plansPage">
-              <i class="common-icon common-plan">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M8 4v4M16 4v4M4 10h16M8.5 14h3M8.5 17h6"/></svg>
-              </i>
-              历史计划
-            </button>
-            <button type="button" data-open-page="favoritesPage">
-              <i class="common-icon common-fav">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.3-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.7-7 10-7 10Z"/></svg>
-              </i>
-              我的收藏
-            </button>
-          </div>
         </section>
       </section>
 
@@ -496,28 +562,73 @@
       </section>
 
       <section class="sub-page report-detail" id="reportDetailPage" aria-label="报告详情">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>报告详情</h1></header>
-        <div class="report-preview" id="reportPreview"><i class="report-thumb doc big"></i></div>
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>报告单详情</h1><button class="report-delete-icon" type="button" aria-label="删除"></button></header>
         <section class="report-info-section">
-          <h2>报告基本信息</h2>
-          <label>资料名称<input id="detailReportName" type="text"></label>
-          <label>资料类型<select id="detailReportType"><option>门诊病历</option><option>门诊处方</option><option>体检报告</option><option>报告单</option><option>住院记录</option><option>检查报告</option><option>检验报告</option></select></label>
-          <label>检测机构<input id="detailReportOrg" type="text"></label>
-          <label>报告时间<input id="detailReportDate" type="datetime-local"></label>
-          <p id="detailUploadTime">上传时间：2025-06-01 10:05</p>
-          <button class="save-report-info" id="saveReportInfo" type="button">保存修改</button>
+          <button class="report-edit-entry" type="button" data-open-page="reportEditPage">编辑</button>
+          <div class="report-preview" id="reportPreview"><i class="report-thumb doc big"></i><span>图片预览</span></div>
+          <div class="report-info-display">
+            <h2 id="detailReportTitle">门(急)诊病历</h2>
+            <p><span>就诊医院</span><strong id="detailOrgText">上海交通大学医学院附属第九人民医院浦分院</strong></p>
+            <p><span>资料类型</span><strong id="detailTypeText">检验报告</strong></p>
+            <p><span>报告时间</span><strong id="detailDateText">2026.05.22</strong></p>
+            <p><span>上传时间</span><strong id="detailUploadText">2026.05.31</strong></p>
+            <p><span>数据来源</span><strong>上传保存</strong></p>
+          </div>
+          <input id="detailReportName" type="hidden">
+          <select id="detailReportType" hidden><option>门诊病历</option><option>门诊处方</option><option>体检报告</option><option>报告单</option><option>住院记录</option><option>检查报告</option><option>检验报告</option></select>
+          <input id="detailReportOrg" type="hidden">
+          <input id="detailReportDate" type="hidden">
+          <p id="detailUploadTime" hidden>上传时间：2025-06-01 10:05</p>
+          <button class="save-report-info" id="saveReportInfo" type="button" hidden>保存修改</button>
         </section>
         <section class="ai-interpretation" id="aiInterpretation">
           <h3>AI解读</h3>
-          <article><strong>结果摘要</strong><p id="aiSummary"></p></article>
-          <article><strong>整体结论</strong><p id="aiConclusion"></p></article>
-          <article><strong>重点关注</strong><p id="aiFocus"></p></article>
-          <article><strong>注意事项</strong><p id="aiNotice"></p></article>
-          <article><strong>就医建议</strong><p id="aiAdvice"></p></article>
-          <article><strong>下一步建议</strong><p id="aiNext"></p></article>
-          <p class="ai-risk-tip">AI解读仅供健康参考，不能替代医生诊断。如有不适，请及时就医。</p>
+          <div class="ai-result-card">
+            <h4>解读结果</h4>
+            <p class="ai-risk-tip">AI 解读仅供参考，不能替代医生诊断。</p>
+            <article><strong>整体结论</strong><p id="aiConclusion"></p></article>
+            <article><strong>需要关注的指标</strong><div id="aiSummary" class="ai-metric-table"></div></article>
+            <article><strong>关于“子宫内膜 5.8mm”的解读</strong><p id="aiFocus"></p></article>
+            <article><strong>建议下一步</strong><p id="aiAdvice"></p></article>
+          </div>
+          <p id="aiNotice" hidden></p><p id="aiNext" hidden></p>
         </section>
-        <footer class="report-actions"><button id="downloadReport" type="button">下载</button><button id="shareReport" type="button">分享</button><button class="primary" type="button">查看原图</button></footer>
+        <footer class="report-actions"><button class="primary" id="shareReport" type="button">重新解读</button></footer>
+      </section>
+
+      <section class="sub-page report-edit-page" id="reportEditPage" aria-label="编辑报告单">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>报告单</h1></header>
+        <section class="report-edit-hero">
+          <i class="report-thumb upload-image-thumb"></i>
+          <div>
+            <strong>识别完成，请确认识别结果</strong>
+            <p><span></span>我们将严格保护您的隐私安全</p>
+          </div>
+        </section>
+        <section class="report-edit-card">
+          <h2>基础信息</h2>
+          <label>资料名称 <em>*</em><input id="editReportName" type="text"></label>
+          <label>资料类型 <em>*</em><select id="editReportType"><option>门诊病历</option><option>门诊处方</option><option>体检报告</option><option>报告单</option><option>住院记录</option><option>检查报告</option><option>检验报告</option></select></label>
+          <label>检测机构 <em>*</em><input id="editReportOrg" type="text"></label>
+          <label>报告日期 <em>*</em><input id="editReportDate" type="date"></label>
+        </section>
+        <footer class="report-edit-actions"><button id="saveReportEdit" type="button">保存</button></footer>
+      </section>
+
+      <section class="sub-page ai-reparse-page" id="aiReparsePage" aria-label="健康解析助手">
+        <header class="ai-reparse-nav"><button class="back-page" type="button"></button><span></span><button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单"><span class="capsule-more" aria-hidden="true"></span><span class="capsule-close" aria-hidden="true"></span></button></header>
+        <h1>健康解析助手</h1>
+        <section class="ai-reparse-visual" aria-hidden="true">
+          <i class="tag-one">文件识别</i>
+          <i class="tag-two">信息脱敏</i>
+          <i class="tag-three">智能解析</i>
+          <div></div>
+        </section>
+        <section class="ai-reparse-progress">
+          <strong>智能解析报告</strong>
+          <span><em></em></span>
+          <p>智能内容识别中...</p>
+        </section>
       </section>
 
       <section class="sub-page parse-task-page" id="parseTaskPage" aria-label="解析任务">
@@ -525,11 +636,49 @@
         <div class="parse-task-list" id="parseTaskList"></div>
       </section>
 
-      <section class="sub-page settings-page" id="settingsPage" aria-label="设置">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>设置</h1></header>
-        <div class="settings-list">
-          <button type="button">个人信息<b></b></button><button type="button">手机号管理<span>138 **** 5673</span><b></b></button><button type="button">账号与安全<b></b></button><button type="button">通知设置<b></b></button><button type="button">隐私设置<b></b></button><button type="button">关于我们<b></b></button><button type="button">用户协议<b></b></button><button type="button">隐私协议<b></b></button>
-        </div><button class="logout-btn" id="logoutBtn" type="button">退出登录</button>
+      <section class="sub-page settings-page account-settings-page" id="settingsPage" aria-label="设置">
+        <header class="settings-top">
+          <button class="back-page settings-back" type="button" aria-label="返回"></button>
+          <div class="mini-program-capsule settings-capsule" aria-hidden="true">
+            <span class="capsule-more"></span>
+            <span class="capsule-close"></span>
+          </div>
+          <div class="settings-avatar" aria-hidden="true"></div>
+          <strong id="settingsUserName">用户6162</strong>
+        </header>
+        <div class="settings-list settings-card single">
+          <button type="button"><span>档案管理</span><em>共1名</em><b></b></button>
+        </div>
+        <div class="settings-list settings-card">
+          <button type="button"><span>用户协议</span><b></b></button>
+          <button type="button"><span>隐私政策</span><b></b></button>
+          <button type="button" data-open-page="personalSettingsPage"><span>个人设置</span><em class="danger">未绑定手机号</em><b></b></button>
+        </div>
+        <button class="logout-btn" id="logoutBtn" type="button">退出登录</button>
+      </section>
+
+      <section class="sub-page personal-settings-page" id="personalSettingsPage" aria-label="个人设置">
+        <header class="personal-settings-nav">
+          <button class="back-page" type="button" aria-label="返回"></button>
+          <div class="mini-program-capsule settings-capsule" aria-hidden="true">
+            <span class="capsule-more"></span>
+            <span class="capsule-close"></span>
+          </div>
+        </header>
+        <section class="personal-settings-title">
+          <h1>个人设置</h1>
+          <p>完善个人信息 · 保障权益，享受专属服务</p>
+        </section>
+        <section class="personal-avatar-card">
+          <div class="settings-avatar large" aria-hidden="true"><span>重新上传</span></div>
+        </section>
+        <section class="personal-form-card" aria-label="基本信息设置">
+          <h2>基本信息设置</h2>
+          <label><span>昵称 <em>*</em></span><input id="personalNickname" maxlength="10" value="用户6162"></label>
+          <p>请输入10字以内文字，支持中、英文和数字</p>
+          <button type="button" data-personal-phone><span>绑定手机</span><b></b></button>
+        </section>
+        <button class="save-family personal-save" id="savePersonalSettings" type="button">保存</button>
       </section>
 
       <section class="purchase-dialog" id="logoutDialog" aria-label="确认退出登录">
@@ -576,37 +725,19 @@
         <button class="sheet-cancel" type="button">取消</button>
       </section>
       <section class="bottom-sheet" id="uploadSheet" aria-label="上传资料面板">
-        <h3>上传就医资料</h3>
-        <h4>上传方式</h4>
-        <div class="upload-methods">
-          <button type="button" data-mock-file="拍照上传"><i></i><span>拍照上传</span></button>
-          <button type="button" data-mock-file="相册选择"><i></i><span>相册选择</span></button>
-          <button type="button" data-mock-file="上传文件"><i></i><span>上传文件</span></button>
-        </div>
-        <h4>资料类型</h4>
-        <div class="upload-type-pills" id="uploadTypePills">
-          <button type="button" data-upload-type="门诊病历">门诊病历</button>
-          <button type="button" data-upload-type="门诊处方">门诊处方</button>
-          <button type="button" data-upload-type="检查报告">检查报告</button>
-          <button class="active" type="button" data-upload-type="检验报告">检验报告</button>
-          <button type="button" data-upload-type="体检报告">体检报告</button>
-          <button type="button" data-upload-type="住院记录">住院记录</button>
-        </div>
-        <select id="uploadTypeSelect" hidden><option>门诊病历</option><option>门诊处方</option><option>检查报告</option><option selected>检验报告</option><option>体检报告</option><option>住院记录</option></select>
-        <h4>已选择文件</h4>
-        <div class="selected-files" id="selectedFiles">暂未选择文件</div>
-        <p class="upload-note">单个文件大小上限 50MB，支持上传 2 年前及更早的历史档案。</p>
-        <div class="upload-actions">
-          <button class="sheet-cancel" type="button">取消</button>
-          <button class="ghost" id="submitUpload" type="button">仅上传，不解析</button>
-          <button class="primary" id="submitAndParse" type="button">提交并解析</button>
-        </div>
+        <div class="upload-sheet-title"><i aria-hidden="true"></i><h3>上传资料</h3></div>
+        <p class="upload-desc">请上传当前就诊人的资料，避免包含他人隐私信息。</p>
+        <p class="upload-desc">支持图片与PDF，每次上传请确保是一份独立且完整的病历 / 报告。</p>
+        <select id="uploadTypeSelect" hidden><option selected>检验报告</option></select>
+        <div class="selected-files" id="selectedFiles"></div>
+        <button class="upload-submit" id="submitUpload" type="button" disabled>上传</button>
+        <p class="upload-note">平台将严格保障隐私安全，请放心上传</p>
       </section>
       <section class="purchase-dialog supplement-dialog" id="supplementDialog" aria-label="补充资料信息">
         <h3>补充资料信息</h3>
         <label>资料名称<input id="supplementName" type="text"></label>
         <label>资料类型<select id="supplementType"><option>门诊病历</option><option>门诊处方</option><option>体检报告</option><option>报告单</option><option>住院记录</option><option>检查报告</option><option>检验报告</option></select></label>
-        <label>检测机构<input id="supplementOrg" type="text"></label>
+        <label>就诊医院<input id="supplementOrg" type="text"></label>
         <label>报告时间<input id="supplementDate" type="datetime-local"></label>
         <p id="supplementError"></p>
         <div>
@@ -618,7 +749,7 @@
         <h3>确定删除该资料吗？</h3><div><button class="dialog-cancel" type="button">取消</button><button class="report-delete-confirm" type="button">删除</button></div>
       </section>
       <section class="purchase-dialog task-delete-dialog" id="taskDeleteDialog" aria-label="删除解析任务">
-        <h3>确定删除该解析任务吗？</h3><div><button class="dialog-cancel" type="button">取消</button><button class="task-delete-confirm" type="button">删除</button></div>
+        <h3>确认删除该解析任务？</h3><p>删除后将无法恢复。</p><div><button class="dialog-cancel" type="button">取消</button><button class="task-delete-confirm" type="button">删除</button></div>
       </section>
       <section class="purchase-dialog" id="purchaseDialog" aria-label="确认购买服务">
         <h3>确认购买服务</h3>
@@ -637,6 +768,7 @@
         <button type="button"><i></i>用药打卡</button>
         <button type="button"><i></i>运动打卡</button>
         <button type="button"><i></i>饮水打卡</button>
+        <button type="button"><i></i>经期打卡</button>
       </aside>
 
       <button class="add-button home-only" id="addButton" type="button" aria-expanded="false" aria-controls="taskPanel">+</button>
