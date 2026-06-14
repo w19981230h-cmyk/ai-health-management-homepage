@@ -371,7 +371,7 @@
             <i class="shortcut-icon shortcut-metric">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19V9M12 19V5M18 19v-7"/><path d="M4 19h16"/></svg>
             </i>
-            健康指标
+            健康数据
           </button>
           <button type="button" role="tab" aria-selected="false" data-profile-tab="assessment">
             <i class="shortcut-icon shortcut-eval">
@@ -384,6 +384,12 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h10l1 11H6l1-11Z"/><path d="M9.5 8.5a2.5 2.5 0 0 1 5 0"/><path d="M12 12v4M10 14h4"/></svg>
             </i>
             我的订单
+          </button>
+          <button type="button" role="tab" aria-selected="false" data-profile-tab="devices">
+            <i class="shortcut-icon shortcut-device">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/><circle cx="16" cy="16" r="1"/></svg>
+            </i>
+            我的设备
           </button>
         </section>
         <section class="profile-content" aria-live="polite">
@@ -401,8 +407,7 @@
           </section>
           <section class="metrics-panel profile-panel" data-profile-panel="metrics">
             <div class="metrics-head">
-              <h2>健康指标</h2>
-              <button type="button">我的设备 <i></i></button>
+              <h2>生命体征</h2>
             </div>
             <div class="metric-summary-grid">
               <article class="metric-summary-card pressure">
@@ -424,6 +429,13 @@
               <button class="period-action" id="periodActionButton" type="button">经期来了</button>
               <b></b>
             </article>
+            <section class="focus-metrics-section" aria-label="关注指标">
+              <div class="focus-metrics-head">
+                <div><h2>关注指标</h2><p>根据患者绑定方案展示</p></div>
+                <label><span>当前方案</span><select id="focusPlanSelect" aria-label="切换关注指标方案"></select></label>
+              </div>
+              <div class="focus-metric-grid" id="focusMetricGrid"></div>
+            </section>
           </section>
           <section class="history-panel profile-panel" data-profile-panel="history">
             <article><span>既往史</span><strong>高血压病史 3 年</strong></article>
@@ -478,6 +490,22 @@
                 <div class="archive-service-actions"><b>已失效</b></div>
               </button>
             </section>
+          </section>
+          <section class="devices-panel profile-panel" data-profile-panel="devices">
+            <div class="devices-head">
+              <h2>我的设备</h2>
+              <button type="button">添加设备</button>
+            </div>
+            <article class="device-card">
+              <i class="device-icon pressure-device" aria-hidden="true"></i>
+              <div><strong>智能血压计</strong><p>已连接 · 最近同步 2026/06/10 14:51</p></div>
+              <em>电量 82%</em><b aria-hidden="true"></b>
+            </article>
+            <article class="device-card">
+              <i class="device-icon sugar-device" aria-hidden="true"></i>
+              <div><strong>智能血糖仪</strong><p>已连接 · 最近同步 2026/06/10 14:51</p></div>
+              <em>电量 76%</em><b aria-hidden="true"></b>
+            </article>
           </section>
         </section>
         <section class="medical-fab active" id="medicalFab" aria-label="就医资料操作">
@@ -558,6 +586,37 @@
         <section class="period-history-card">
           <h2>历史记录</h2>
           <div id="periodHistoryList"></div>
+        </section>
+      </section>
+
+      <section class="sub-page metric-detail-page" id="metricDetailPage" aria-label="指标详情">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1 id="metricDetailTitle">指标详情</h1></header>
+        <section class="metric-detail-summary">
+          <span id="metricDetailPlan">90天减肥计划</span>
+          <div><strong id="metricDetailValue">68.5</strong><em id="metricDetailUnit">kg</em><b id="metricDetailStatus">正常</b></div>
+          <p id="metricDetailTime">最近记录 2026/06/14 08:20</p>
+        </section>
+        <div class="metric-range-tabs" id="metricRangeTabs" role="tablist" aria-label="统计周期">
+          <button class="active" type="button" data-metric-range="day">日</button>
+          <button type="button" data-metric-range="week">周</button>
+          <button type="button" data-metric-range="month">月</button>
+        </div>
+        <div class="metric-date-nav" id="metricDateNav" aria-label="选择统计日期">
+          <button type="button" data-metric-date-step="-1" aria-label="上一日期"></button>
+          <button class="metric-date-current" id="metricDateCurrent" type="button" aria-label="选择日期"><i></i><span>2026年6月14日</span></button>
+          <button type="button" data-metric-date-step="1" aria-label="下一日期"></button>
+          <input id="metricDatePicker" type="date" value="2026-06-14" aria-label="选择指标日期">
+        </div>
+        <section class="metric-trend-card">
+          <div class="metric-chart-head"><h2>变化趋势</h2><span id="metricTrendCaption">近24小时</span></div>
+          <div class="metric-line-chart" id="metricLineChart" aria-label="指标趋势图"></div>
+        </section>
+        <section class="metric-average-card">
+          <span>平均值</span><strong id="metricStatAverage">--</strong>
+        </section>
+        <section class="metric-record-card">
+          <h2>记录明细</h2>
+          <div id="metricRecordList"></div>
         </section>
       </section>
 

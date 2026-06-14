@@ -188,6 +188,22 @@ const periodDeleteDialog = document.querySelector("#periodDeleteDialog");
 const periodEditStart = document.querySelector("#periodEditStart");
 const periodEditEnd = document.querySelector("#periodEditEnd");
 const periodEditError = document.querySelector("#periodEditError");
+const focusPlanSelect = document.querySelector("#focusPlanSelect");
+const focusMetricGrid = document.querySelector("#focusMetricGrid");
+const metricDetailTitle = document.querySelector("#metricDetailTitle");
+const metricDetailPlan = document.querySelector("#metricDetailPlan");
+const metricDetailValue = document.querySelector("#metricDetailValue");
+const metricDetailUnit = document.querySelector("#metricDetailUnit");
+const metricDetailStatus = document.querySelector("#metricDetailStatus");
+const metricDetailTime = document.querySelector("#metricDetailTime");
+const metricRangeTabs = document.querySelector("#metricRangeTabs");
+const metricDateNav = document.querySelector("#metricDateNav");
+const metricDateCurrent = document.querySelector("#metricDateCurrent span");
+const metricDatePicker = document.querySelector("#metricDatePicker");
+const metricTrendCaption = document.querySelector("#metricTrendCaption");
+const metricLineChart = document.querySelector("#metricLineChart");
+const metricStatAverage = document.querySelector("#metricStatAverage");
+const metricRecordList = document.querySelector("#metricRecordList");
 let pageStack = [];
 let addedMemberCount = 0;
 let currentPatient = { id: "self", name: "张女士", sex: "female", age: "32" };
@@ -201,6 +217,50 @@ let selectedUploadFiles = [];
 let deletingReportId = "";
 let deletingTaskId = "";
 let serviceDetailSource = "service";
+let selectedFocusPlan = "weight90";
+let selectedFocusMetric = "weight";
+let selectedMetricRange = "day";
+let selectedMetricDate = new Date(2026, 5, 14);
+
+const focusPlanDashboards = {
+  weight90: {
+    name: "90天减肥计划",
+    metrics: [
+      { id: "weight", name: "体重", value: 68.5, display: "68.5", unit: "kg", status: "下降 1.6kg", values: [70.1, 69.8, 69.6, 69.3, 69.0, 68.8, 68.5] },
+      { id: "height", name: "身高", value: 165, display: "165", unit: "cm", status: "稳定", values: [165, 165, 165, 165, 165, 165, 165] },
+      { id: "bmi", name: "BMI", value: 25.2, display: "25.2", unit: "", status: "较上次下降 0.6", values: [25.8, 25.7, 25.6, 25.5, 25.4, 25.3, 25.2] },
+      { id: "heart", name: "心率", value: 76, display: "76", unit: "次/分", status: "正常", values: [78, 75, 77, 74, 76, 73, 76] },
+      { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] }
+    ]
+  },
+  kidney: {
+    name: "慢性肾病管理",
+    metrics: [
+      { id: "bp-kidney", name: "血压", value: 132, display: "132/86", unit: "mmHg", status: "需关注", attention: true, values: [136, 134, 138, 132, 130, 135, 132] },
+      { id: "sugar-kidney", name: "血糖", value: 6.2, display: "6.2", unit: "mmol/L", status: "正常", values: [6.5, 6.3, 6.4, 6.1, 6.0, 6.3, 6.2] },
+      { id: "egfr", name: "肾小球过滤率", value: 58, display: "58", unit: "mL/min", status: "偏低", attention: true, values: [62, 61, 60, 59, 60, 58, 58] },
+      { id: "kidney-size", name: "肾脏大小", value: 10.4, display: "10.4", unit: "cm", status: "左肾纵径", values: [10.5, 10.5, 10.4, 10.4, 10.4, 10.4, 10.4] },
+      { id: "creatinine", name: "肌酐", value: 92, display: "92", unit: "μmol/L", status: "正常", values: [88, 90, 91, 89, 93, 94, 92] },
+      { id: "serum-creatinine", name: "血肌酐", value: 98.7, display: "98.7", unit: "μmol/L", status: "需关注", attention: true, values: [94, 95, 96, 97, 99, 100, 98.7] },
+      { id: "uric", name: "尿酸", value: 368, display: "368", unit: "μmol/L", status: "正常高值", values: [354, 360, 365, 358, 370, 372, 368] }
+    ]
+  },
+  cardiovascular: {
+    name: "心血管风险看板",
+    metrics: [
+      { id: "bp-cardio", name: "血压", value: 138, display: "138/88", unit: "mmHg", status: "偏高", attention: true, values: [142, 139, 141, 136, 140, 137, 138] },
+      { id: "sugar-cardio", name: "血糖", value: 6.0, display: "6.0", unit: "mmol/L", status: "正常", values: [6.3, 6.1, 6.2, 5.9, 6.0, 5.8, 6.0] },
+      { id: "heart-cardio", name: "心率", value: 82, display: "82", unit: "次/分", status: "正常", values: [80, 84, 81, 79, 83, 85, 82] }
+    ]
+  },
+  diabetes: {
+    name: "糖尿病管理",
+    metrics: [
+      { id: "bp-diabetes", name: "血压", value: 128, display: "128/82", unit: "mmHg", status: "正常", values: [130, 128, 132, 127, 129, 126, 128] },
+      { id: "sugar-diabetes", name: "血糖", value: 7.1, display: "7.1", unit: "mmol/L", status: "偏高", attention: true, values: [7.6, 7.4, 7.2, 7.5, 7.0, 6.9, 7.1] }
+    ]
+  }
+};
 
 const packages = [
   {
@@ -1446,6 +1506,130 @@ scheduleContent?.addEventListener("click", (event) => {
   showScheduleToast(text);
 });
 
+function renderFocusPlans() {
+  if (!focusPlanSelect || !focusMetricGrid) return;
+  focusPlanSelect.innerHTML = Object.entries(focusPlanDashboards)
+    .map(([id, plan]) => `<option value="${id}"${id === selectedFocusPlan ? " selected" : ""}>${plan.name}</option>`)
+    .join("");
+  const plan = focusPlanDashboards[selectedFocusPlan];
+  focusMetricGrid.innerHTML = plan.metrics.map((metric) => `
+    <button class="focus-metric-card${metric.attention ? " attention" : ""}" type="button" data-focus-metric="${metric.id}">
+      <span>${metric.name}</span>
+      <strong>${metric.display}<em>${metric.unit}</em></strong>
+      <small>${metric.status}</small>
+    </button>
+  `).join("");
+}
+
+function getSelectedMetric() {
+  const plan = focusPlanDashboards[selectedFocusPlan];
+  return plan.metrics.find((metric) => metric.id === selectedFocusMetric) || plan.metrics[0];
+}
+
+function rangeMetricValues(metric, range) {
+  const base = metric.values;
+  if (range === "day") return base;
+  const offsets = range === "week" ? [-0.8, 0.4, -0.2, 0.7, -0.4, 0.3, 0] : [1.1, 0.7, 0.3, -0.1, -0.4, 0];
+  return offsets.map((offset, index) => {
+    const source = base[Math.min(index, base.length - 1)];
+    const value = source + offset * Math.max(Math.abs(source) * 0.012, 0.2);
+    return Number(value.toFixed(source >= 100 ? 0 : 1));
+  });
+}
+
+function metricRangeLabels(range, length) {
+  const labels = {
+    day: ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"],
+    week: ["周一", "周二", "周三", "周四", "周五", "周六", "今天"],
+    month: ["1日", "6日", "12日", "18日", "24日", "30日"]
+  };
+  return labels[range].slice(0, length);
+}
+
+function formatMetricNumber(value) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function padDateNumber(value) {
+  return String(value).padStart(2, "0");
+}
+
+function dateInputValue(date) {
+  return `${date.getFullYear()}-${padDateNumber(date.getMonth() + 1)}-${padDateNumber(date.getDate())}`;
+}
+
+function metricDateLabel() {
+  const year = selectedMetricDate.getFullYear();
+  const month = selectedMetricDate.getMonth() + 1;
+  const day = selectedMetricDate.getDate();
+  if (selectedMetricRange === "day") return `${year}年${month}月${day}日`;
+  if (selectedMetricRange === "month") return `${year}年${month}月`;
+  const end = new Date(selectedMetricDate);
+  const start = new Date(end);
+  start.setDate(end.getDate() - 6);
+  const startText = start.getFullYear() === year
+    ? `${start.getMonth() + 1}月${start.getDate()}日`
+    : `${start.getFullYear()}年${start.getMonth() + 1}月${start.getDate()}日`;
+  return `${startText} - ${month}月${day}日`;
+}
+
+function shiftMetricDate(step) {
+  const next = new Date(selectedMetricDate);
+  if (selectedMetricRange === "day") next.setDate(next.getDate() + step);
+  if (selectedMetricRange === "week") next.setDate(next.getDate() + step * 7);
+  if (selectedMetricRange === "month") next.setMonth(next.getMonth() + step);
+  selectedMetricDate = next;
+  renderMetricDetail();
+}
+
+function renderMetricDetail() {
+  const plan = focusPlanDashboards[selectedFocusPlan];
+  const metric = getSelectedMetric();
+  selectedFocusMetric = metric.id;
+  const values = rangeMetricValues(metric, selectedMetricRange);
+  const labels = metricRangeLabels(selectedMetricRange, values.length);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+  const spread = max - min || 1;
+  const points = values.map((value, index) => {
+    const x = 24 + index * (272 / Math.max(values.length - 1, 1));
+    const y = 132 - ((value - min) / spread) * 82;
+    return { x, y, value, label: labels[index] };
+  });
+  metricDetailTitle.textContent = `${metric.name}详情`;
+  metricDetailPlan.textContent = plan.name;
+  metricDetailValue.textContent = metric.display;
+  metricDetailUnit.textContent = metric.unit;
+  metricDetailStatus.textContent = metric.status;
+  metricDetailStatus.classList.toggle("attention", Boolean(metric.attention));
+  metricDetailTime.textContent = `最近记录 ${dateInputValue(selectedMetricDate).replaceAll("-", "/")} 08:20`;
+  metricDateCurrent.textContent = metricDateLabel();
+  metricDatePicker.value = dateInputValue(selectedMetricDate);
+  metricTrendCaption.textContent = selectedMetricRange === "day" ? "近24小时" : selectedMetricRange === "week" ? "近7天" : "近30天";
+  metricStatAverage.textContent = `${formatMetricNumber(average)} ${metric.unit}`.trim();
+  metricLineChart.innerHTML = `
+    <svg viewBox="0 0 320 170" role="img" aria-label="${metric.name}变化趋势">
+      <defs><linearGradient id="metricArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3671ff" stop-opacity=".22"/><stop offset="1" stop-color="#3671ff" stop-opacity="0"/></linearGradient></defs>
+      <path d="M24 50H296M24 91H296M24 132H296" stroke="#e7edf7" stroke-width="1" stroke-dasharray="4 4"/>
+      <path d="M${points.map((point) => `${point.x} ${point.y}`).join(" L")} L296 140 L24 140 Z" fill="url(#metricArea)"/>
+      <polyline points="${points.map((point) => `${point.x},${point.y}`).join(" ")}" fill="none" stroke="#3671ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#fff" stroke="#3671ff" stroke-width="2"/><text x="${point.x}" y="158" text-anchor="middle">${point.label}</text>`).join("")}
+    </svg>`;
+  metricRecordList.innerHTML = [...points].reverse().slice(0, 5).map((point, index) => `
+    <div class="metric-record-row"><span>${point.label}${selectedMetricRange === "day" ? "" : " · 08:20"}</span><strong>${formatMetricNumber(point.value)} ${metric.unit}</strong></div>
+  `).join("");
+}
+
+function openMetricDetail(metricId) {
+  selectedFocusMetric = metricId;
+  selectedMetricRange = "day";
+  selectedMetricDate = new Date(2026, 5, 14);
+  metricRangeTabs?.querySelectorAll("button").forEach((button) => button.classList.toggle("active", button.dataset.metricRange === "day"));
+  renderMetricDetail();
+  openSubPage("metricDetailPage");
+}
+
 function currentPageId() {
   const activeSub = [...subPages].find((page) => page.classList.contains("active"));
   if (activeSub) return activeSub.id;
@@ -2058,6 +2242,44 @@ profileTabs.forEach((tab) => {
   });
 });
 
+focusPlanSelect?.addEventListener("change", () => {
+  selectedFocusPlan = focusPlanSelect.value;
+  selectedFocusMetric = focusPlanDashboards[selectedFocusPlan].metrics[0].id;
+  renderFocusPlans();
+});
+
+focusMetricGrid?.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-focus-metric]");
+  if (card) openMetricDetail(card.dataset.focusMetric);
+});
+
+metricRangeTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-metric-range]");
+  if (!button) return;
+  selectedMetricRange = button.dataset.metricRange;
+  metricRangeTabs.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
+  renderMetricDetail();
+});
+
+metricDateNav?.addEventListener("click", (event) => {
+  const stepButton = event.target.closest("[data-metric-date-step]");
+  if (stepButton) {
+    shiftMetricDate(Number(stepButton.dataset.metricDateStep));
+    return;
+  }
+  if (event.target.closest("#metricDateCurrent")) {
+    if (typeof metricDatePicker.showPicker === "function") metricDatePicker.showPicker();
+    else metricDatePicker.click();
+  }
+});
+
+metricDatePicker?.addEventListener("change", () => {
+  if (!metricDatePicker.value) return;
+  const [year, month, day] = metricDatePicker.value.split("-").map(Number);
+  selectedMetricDate = new Date(year, month - 1, day);
+  renderMetricDetail();
+});
+
 orderStatusTabs?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-order-tab]");
   if (!button) return;
@@ -2200,6 +2422,7 @@ renderSelectedFiles();
 renderPackages();
 renderSchedule();
 initCycleReminder();
+renderFocusPlans();
 
 const initialView = window.location.hash.replace("#", "");
 if (["home", "plan", "service", "mine"].includes(initialView)) {
