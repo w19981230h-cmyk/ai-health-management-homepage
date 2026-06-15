@@ -112,11 +112,18 @@ const serviceActionSheet = document.querySelector("#serviceActionSheet");
 const supportSheet = document.querySelector("#supportSheet");
 const shareSheet = document.querySelector("#shareSheet");
 const uploadSheet = document.querySelector("#uploadSheet");
+const cameraPage = document.querySelector("#cameraPage");
+const cameraBack = document.querySelector("#cameraBack");
+const cameraShutter = document.querySelector("#cameraShutter");
+const albumPicker = document.querySelector("#albumPicker");
+const documentPicker = document.querySelector("#documentPicker");
 const medicalReportList = document.querySelector("#medicalReportList");
 const medicalCategoryTabs = document.querySelector("#medicalCategoryTabs");
 const parseTaskEntry = document.querySelector("#parseTaskEntry");
 const parseTaskList = document.querySelector("#parseTaskList");
 const selectedFiles = document.querySelector("#selectedFiles");
+const uploadMergeOption = document.querySelector("#uploadMergeOption");
+const mergeReportImages = document.querySelector("#mergeReportImages");
 const uploadTypeSelect = document.querySelector("#uploadTypeSelect");
 const uploadTypePills = document.querySelector("#uploadTypePills");
 const orderStatusTabs = document.querySelector(".order-status-tabs");
@@ -188,10 +195,8 @@ const periodDeleteDialog = document.querySelector("#periodDeleteDialog");
 const periodEditStart = document.querySelector("#periodEditStart");
 const periodEditEnd = document.querySelector("#periodEditEnd");
 const periodEditError = document.querySelector("#periodEditError");
-const focusPlanSelect = document.querySelector("#focusPlanSelect");
 const focusMetricGrid = document.querySelector("#focusMetricGrid");
 const metricDetailTitle = document.querySelector("#metricDetailTitle");
-const metricDetailPlan = document.querySelector("#metricDetailPlan");
 const metricDetailValue = document.querySelector("#metricDetailValue");
 const metricDetailUnit = document.querySelector("#metricDetailUnit");
 const metricDetailStatus = document.querySelector("#metricDetailStatus");
@@ -203,7 +208,16 @@ const metricDatePicker = document.querySelector("#metricDatePicker");
 const metricTrendCaption = document.querySelector("#metricTrendCaption");
 const metricLineChart = document.querySelector("#metricLineChart");
 const metricStatAverage = document.querySelector("#metricStatAverage");
-const metricRecordList = document.querySelector("#metricRecordList");
+const metricAllRecords = document.querySelector("#metricAllRecords");
+const metricRecordsGroups = document.querySelector("#metricRecordsGroups");
+const metricDeleteDialog = document.querySelector("#metricDeleteDialog");
+const metricRecordEntry = document.querySelector("#metricRecordEntry");
+const metricRecordSheet = document.querySelector("#metricRecordSheet");
+const metricRecordSheetTitle = document.querySelector("#metricRecordSheetTitle");
+const metricRecordFields = document.querySelector("#metricRecordFields");
+const metricRecordTime = document.querySelector("#metricRecordTime");
+const metricRecordError = document.querySelector("#metricRecordError");
+const metricRecordConfirm = document.querySelector("#metricRecordConfirm");
 let pageStack = [];
 let addedMemberCount = 0;
 let currentPatient = { id: "self", name: "张女士", sex: "female", age: "32" };
@@ -221,16 +235,21 @@ let selectedFocusPlan = "weight90";
 let selectedFocusMetric = "weight";
 let selectedMetricRange = "day";
 let selectedMetricDate = new Date(2026, 5, 14);
+let metricRecordsByPatient = {};
+let deletedMetricRecordIdsByPatient = {};
+let deletingMetricRecordId = "";
 
 const focusPlanDashboards = {
   weight90: {
     name: "90天减肥计划",
     metrics: [
+      { id: "sugar", name: "血糖", value: 5.0, display: "5.0", unit: "mmol/L", status: "正常", values: [5.4, 5.2, 5.1, 5.3, 5.0, 4.9, 5.0] },
+      { id: "bp", name: "血压", value: 130, display: "130/85", unit: "mmHg", status: "正常", values: [134, 132, 131, 129, 133, 128, 130] },
       { id: "weight", name: "体重", value: 68.5, display: "68.5", unit: "kg", status: "下降 1.6kg", values: [70.1, 69.8, 69.6, 69.3, 69.0, 68.8, 68.5] },
       { id: "height", name: "身高", value: 165, display: "165", unit: "cm", status: "稳定", values: [165, 165, 165, 165, 165, 165, 165] },
-      { id: "bmi", name: "BMI", value: 25.2, display: "25.2", unit: "", status: "较上次下降 0.6", values: [25.8, 25.7, 25.6, 25.5, 25.4, 25.3, 25.2] },
       { id: "heart", name: "心率", value: 76, display: "76", unit: "次/分", status: "正常", values: [78, 75, 77, 74, 76, 73, 76] },
-      { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] }
+      { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] },
+      { id: "bmi", name: "BMI", value: 25.2, display: "25.2", unit: "", status: "较上次下降 0.6", values: [25.8, 25.7, 25.6, 25.5, 25.4, 25.3, 25.2] }
     ]
   },
   kidney: {
@@ -669,6 +688,13 @@ function loadJsonStore(key, fallback) {
 
 let medicalReports = loadJsonStore("medicalReports", defaultMedicalReports);
 let parseTasks = loadJsonStore("parseTasks", defaultParseTasks);
+metricRecordsByPatient = loadJsonStore("metricRecordsByPatient", {});
+deletedMetricRecordIdsByPatient = loadJsonStore("deletedMetricRecordIdsByPatient", {});
+
+function saveMetricRecords() {
+  window.localStorage?.setItem("metricRecordsByPatient", JSON.stringify(metricRecordsByPatient));
+  window.localStorage?.setItem("deletedMetricRecordIdsByPatient", JSON.stringify(deletedMetricRecordIdsByPatient));
+}
 
 function saveMedicalStores() {
   window.localStorage?.setItem("medicalReports", JSON.stringify(medicalReports));
@@ -1188,26 +1214,104 @@ function addMockFile(source) {
   renderSelectedFiles();
 }
 
+function openCameraPage() {
+  closeOverlays();
+  cameraPage?.classList.add("active");
+}
+
+function returnToUploadSheet() {
+  cameraPage?.classList.remove("active");
+  openSheet(uploadSheet);
+  renderSelectedFiles();
+}
+
+function addSelectedImages(files) {
+  const available = Math.max(0, 5 - selectedUploadFiles.length);
+  const images = Array.from(files || []).slice(0, available);
+  images.forEach((file, index) => {
+    let preview = "assets/camera-report-preview.jpg";
+    try {
+      preview = URL.createObjectURL(file);
+    } catch (error) {
+      preview = "assets/camera-report-preview.jpg";
+    }
+    selectedUploadFiles.push({
+      name: file.name || `image${selectedUploadFiles.length + index + 1}.jpg`,
+      sizeMb: file.size ? file.size / 1024 / 1024 : 2.4,
+      source: "图片上传",
+      kind: "image",
+      preview
+    });
+  });
+  if (Array.from(files || []).length > available) {
+    toast.textContent = "最多选择 5 张图片";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1500);
+  }
+  returnToUploadSheet();
+}
+
+function addSelectedDocuments(files) {
+  const available = Math.max(0, 5 - selectedUploadFiles.length);
+  const documents = Array.from(files || []).slice(0, available);
+  documents.forEach((file, index) => {
+    selectedUploadFiles.push({
+      name: file.name || `report${selectedUploadFiles.length + index + 1}.pdf`,
+      sizeMb: file.size ? file.size / 1024 / 1024 : 2.4,
+      source: "文件上传",
+      kind: "file"
+    });
+  });
+  if (Array.from(files || []).length > available) {
+    toast.textContent = "最多选择 5 个文件";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1500);
+  }
+  renderSelectedFiles();
+}
+
+function captureReportImage() {
+  if (selectedUploadFiles.length >= 5) {
+    toast.textContent = "最多选择 5 张图片";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1500);
+    returnToUploadSheet();
+    return;
+  }
+  selectedUploadFiles.push({
+    name: `camera-${Date.now()}.jpg`,
+    sizeMb: 2.4,
+    source: "图片上传",
+    kind: "image",
+    preview: "assets/camera-report-preview.jpg"
+  });
+  returnToUploadSheet();
+}
+
 function renderSelectedFiles() {
   if (!selectedFiles) return;
   if (!selectedUploadFiles.length) {
     selectedFiles.className = "selected-files upload-entry-state";
     selectedFiles.innerHTML = `
-      <button class="upload-entry-card image-entry" type="button" data-mock-file="图片上传"><i></i><span>图片上传</span></button>
-      <button class="upload-entry-card file-entry" type="button" data-mock-file="文件上传"><i></i><span>文件上传</span></button>
+      <button class="upload-entry-card image-entry" type="button" data-open-camera><i></i><span>图片上传</span></button>
+      <button class="upload-entry-card file-entry" type="button" data-open-document><i></i><span>文件上传</span></button>
     `;
   } else {
     selectedFiles.className = "selected-files upload-grid-state";
     selectedFiles.innerHTML = `
       ${selectedUploadFiles.map((file, index) => `
-        <div class="selected-file ${file.kind === "file" ? "file" : "image"}">
+        <div class="selected-file ${file.kind === "file" ? "file" : "image"}${file.preview ? " has-preview" : ""}"${file.preview ? ` style="background-image:url(${file.preview})"` : ""}>
           <i aria-hidden="true"></i>
           <button type="button" data-remove-file="${index}" aria-label="删除${file.name}">×</button>
         </div>
       `).join("")}
-      ${selectedUploadFiles.length < 5 ? '<button class="upload-add-tile" type="button" data-mock-file="图片上传">+</button>' : ""}
+      ${selectedUploadFiles.length < 5 ? `<button class="upload-add-tile" type="button" ${selectedUploadFiles.every((file) => file.kind === "file") ? "data-open-document" : "data-open-camera"}>+</button>` : ""}
     `;
   }
+  const hasSelectedImages = selectedUploadFiles.length > 0 && selectedUploadFiles.every((file) => file.kind === "image");
+  uploadMergeOption?.classList.toggle("hidden", !hasSelectedImages);
+  if (!hasSelectedImages && mergeReportImages) mergeReportImages.checked = false;
+  submitUpload?.classList.toggle("hidden", !selectedUploadFiles.length);
   submitUpload?.toggleAttribute("disabled", !selectedUploadFiles.length);
 }
 
@@ -1217,7 +1321,19 @@ function hasOversizeFile() {
 
 function createParseTasks(status = "parsing") {
   const now = new Date().toISOString().slice(0, 16);
-  const createdTasks = selectedUploadFiles.map((file, index) => {
+  const shouldMerge = Boolean(
+    mergeReportImages?.checked &&
+    selectedUploadFiles.length > 1 &&
+    selectedUploadFiles.every((file) => file.kind === "image")
+  );
+  const filesToParse = shouldMerge
+    ? [{
+        name: `合并报告-${selectedUploadFiles.length}张图片.jpg`,
+        kind: "image",
+        sourceCount: selectedUploadFiles.length
+      }]
+    : selectedUploadFiles;
+  const createdTasks = filesToParse.map((file, index) => {
     const task = {
       id: `task-${Date.now()}-${index}`,
       fileName: file.name.replace(/\.[^.]+$/, ""),
@@ -1225,6 +1341,7 @@ function createParseTasks(status = "parsing") {
       status,
       thumb: file.kind === "image" ? "upload-image" : "doc",
       kind: file.kind,
+      sourceCount: file.sourceCount || 1,
       createdAt: now
     };
     parseTasks.unshift(task);
@@ -1232,6 +1349,7 @@ function createParseTasks(status = "parsing") {
   });
   saveMedicalStores();
   selectedUploadFiles = [];
+  if (mergeReportImages) mergeReportImages.checked = false;
   renderSelectedFiles();
   renderParseTasks();
   window.setTimeout(() => {
@@ -1507,18 +1625,238 @@ scheduleContent?.addEventListener("click", (event) => {
 });
 
 function renderFocusPlans() {
-  if (!focusPlanSelect || !focusMetricGrid) return;
-  focusPlanSelect.innerHTML = Object.entries(focusPlanDashboards)
-    .map(([id, plan]) => `<option value="${id}"${id === selectedFocusPlan ? " selected" : ""}>${plan.name}</option>`)
-    .join("");
-  const plan = focusPlanDashboards[selectedFocusPlan];
+  if (!focusMetricGrid) return;
+  selectedFocusPlan = "weight90";
+  const plan = focusPlanDashboards.weight90;
+  applyLatestMetricRecords(plan);
   focusMetricGrid.innerHTML = plan.metrics.map((metric) => `
     <button class="focus-metric-card${metric.attention ? " attention" : ""}" type="button" data-focus-metric="${metric.id}">
       <span>${metric.name}</span>
       <strong>${metric.display}<em>${metric.unit}</em></strong>
-      <small>${metric.status}</small>
     </button>
   `).join("");
+}
+
+const metricRecordConfigs = {
+  sugar: [{ key: "value", label: "血糖值", unit: "mmol/L", step: "0.1", min: "0.1", max: "40" }],
+  bp: [
+    { key: "systolic", label: "收缩压", unit: "mmHg", step: "1", min: "40", max: "260" },
+    { key: "diastolic", label: "舒张压", unit: "mmHg", step: "1", min: "30", max: "180" }
+  ],
+  weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
+  height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
+  heart: [{ key: "value", label: "心率", unit: "次/分", step: "1", min: "20", max: "250" }],
+  fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
+  bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80" }]
+};
+
+function metricRecordsFor(metricId) {
+  const patientRecords = metricRecordsByPatient[currentPatient.id] || {};
+  return patientRecords[metricId] || [];
+}
+
+function deletedMetricRecordIdsFor(metricId) {
+  const patientRecords = deletedMetricRecordIdsByPatient[currentPatient.id] || {};
+  return patientRecords[metricId] || [];
+}
+
+function applyLatestMetricRecords(plan) {
+  plan.metrics.forEach((metric) => {
+    if (!metric.initialState) {
+      metric.initialState = {
+        value: metric.value,
+        display: metric.display,
+        status: metric.status,
+        attention: Boolean(metric.attention),
+        values: [...metric.values]
+      };
+    }
+    metric.value = metric.initialState.value;
+    metric.display = metric.initialState.display;
+    metric.status = metric.initialState.status;
+    metric.attention = metric.initialState.attention;
+    metric.values = [...metric.initialState.values];
+    const latest = allMetricRecords(metric)[0];
+    if (!latest) return;
+    metric.value = latest.chartValue;
+    metric.display = latest.display;
+    metric.status = latest.status;
+    metric.attention = latest.attention;
+    if (metric.values.at(-1) !== latest.chartValue) {
+      metric.values = [...metric.values, latest.chartValue].slice(-7);
+    }
+  });
+}
+
+function localDateTimeInputValue(date = new Date()) {
+  return `${dateInputValue(date)}T${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function displayMetricRecordTime(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.replace("T", " ").replaceAll("-", "/");
+  return `${dateInputValue(date).replaceAll("-", "/")} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function baselineMetricRecords(metric) {
+  const baseDate = new Date();
+  baseDate.setHours(8, 20, 0, 0);
+  return [...metric.initialState.values].reverse().map((value, index) => {
+    const time = new Date(baseDate);
+    time.setDate(baseDate.getDate() - index);
+    const display = metric.id === "bp"
+      ? `${formatMetricNumber(value)}/${Math.round(value * 0.65)}`
+      : formatMetricNumber(value);
+    return {
+      id: `baseline-${metric.id}-${index}`,
+      time: localDateTimeInputValue(time),
+      display,
+      chartValue: value,
+      unit: metric.unit,
+      status: "正常",
+      attention: false,
+      baseline: true
+    };
+  });
+}
+
+function allMetricRecords(metric) {
+  const deletedIds = new Set(deletedMetricRecordIdsFor(metric.id));
+  return [...metricRecordsFor(metric.id), ...baselineMetricRecords(metric)]
+    .filter((record) => !deletedIds.has(record.id))
+    .sort((a, b) => new Date(b.time) - new Date(a.time));
+}
+
+function metricRecordDateParts(value) {
+  const date = new Date(value);
+  return {
+    key: dateInputValue(date),
+    label: `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`,
+    time: `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`
+  };
+}
+
+function renderAllMetricRecords() {
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
+  const metric = getSelectedMetric();
+  metricRecordsGroups.innerHTML = allMetricRecords(metric).map((record) => {
+    const date = metricRecordDateParts(record.time);
+    return `
+      <article class="metric-record-item">
+        <div class="metric-record-date"><strong>${date.label}</strong><span>${date.time}</span></div>
+        <div class="metric-record-value"><strong>${record.display}</strong><em>${record.unit}</em></div>
+        <button class="metric-record-delete" type="button" data-delete-metric-record="${record.id}" aria-label="删除${date.label}${date.time}的${metric.name}记录"></button>
+      </article>
+    `;
+  }).join("");
+}
+
+function openMetricDeleteDialog(recordId) {
+  deletingMetricRecordId = recordId;
+  closeOverlays();
+  sheetMask.classList.add("active");
+  metricDeleteDialog.classList.add("active");
+}
+
+function confirmMetricRecordDelete() {
+  if (!deletingMetricRecordId) return;
+  const metric = getSelectedMetric();
+  if (deletingMetricRecordId.startsWith("baseline-")) {
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id]) deletedMetricRecordIdsByPatient[currentPatient.id] = {};
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id][metric.id]) deletedMetricRecordIdsByPatient[currentPatient.id][metric.id] = [];
+    deletedMetricRecordIdsByPatient[currentPatient.id][metric.id].push(deletingMetricRecordId);
+  } else if (metricRecordsByPatient[currentPatient.id]?.[metric.id]) {
+    metricRecordsByPatient[currentPatient.id][metric.id] = metricRecordsByPatient[currentPatient.id][metric.id]
+      .filter((record) => record.id !== deletingMetricRecordId);
+  }
+  deletingMetricRecordId = "";
+  saveMetricRecords();
+  closeOverlays();
+  renderFocusPlans();
+  renderMetricDetail();
+  renderAllMetricRecords();
+  toast.textContent = "指标记录已删除";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1600);
+}
+
+function metricStatus(metricId, values) {
+  const primary = values.value ?? values.systolic;
+  const attention = (
+    (metricId === "sugar" && primary > 6.1) ||
+    (metricId === "bp" && (values.systolic >= 140 || values.diastolic >= 90)) ||
+    (metricId === "heart" && (primary < 60 || primary > 100)) ||
+    (metricId === "fat" && primary > 30) ||
+    (metricId === "bmi" && primary >= 24)
+  );
+  return { text: attention ? "需关注" : "正常", attention };
+}
+
+function openMetricRecordSheet() {
+  const metric = getSelectedMetric();
+  const fields = metricRecordConfigs[metric.id] || metricRecordConfigs.weight;
+  metricRecordSheetTitle.textContent = `记录${metric.name}`;
+  metricRecordFields.innerHTML = fields.map((field) => `
+    <label>
+      <span>${field.label}</span>
+      <div><input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" placeholder="请输入"><em>${field.unit}</em></div>
+    </label>
+  `).join("");
+  metricRecordTime.value = localDateTimeInputValue();
+  metricRecordError.textContent = "";
+  closeOverlays();
+  sheetMask.classList.add("active");
+  metricRecordSheet.classList.add("active");
+  metricRecordFields.querySelector("input")?.focus();
+}
+
+function saveMetricRecord() {
+  const metric = getSelectedMetric();
+  const config = metricRecordConfigs[metric.id];
+  const values = {};
+  for (const field of config) {
+    const input = metricRecordFields.querySelector(`[data-metric-input="${field.key}"]`);
+    const value = Number(input?.value);
+    if (!input?.value || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) {
+      metricRecordError.textContent = `请正确填写${field.label}`;
+      input?.focus();
+      return;
+    }
+    values[field.key] = value;
+  }
+  if (!metricRecordTime.value) {
+    metricRecordError.textContent = "请选择记录时间";
+    return;
+  }
+  const display = metric.id === "bp" ? `${values.systolic}/${values.diastolic}` : formatMetricNumber(values.value);
+  const chartValue = metric.id === "bp" ? values.systolic : values.value;
+  const status = metricStatus(metric.id, values);
+  const record = {
+    id: `metric-${Date.now()}`,
+    time: metricRecordTime.value,
+    display,
+    chartValue,
+    unit: metric.unit,
+    status: status.text,
+    attention: status.attention,
+    values
+  };
+  if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
+  if (!metricRecordsByPatient[currentPatient.id][metric.id]) metricRecordsByPatient[currentPatient.id][metric.id] = [];
+  metricRecordsByPatient[currentPatient.id][metric.id].unshift(record);
+  saveMetricRecords();
+  metric.value = chartValue;
+  metric.display = display;
+  metric.status = status.text;
+  metric.attention = status.attention;
+  metric.values = [...metric.values, chartValue].slice(-7);
+  selectedMetricDate = new Date(metricRecordTime.value);
+  closeOverlays();
+  renderFocusPlans();
+  renderMetricDetail();
+  toast.textContent = `${metric.name}记录已保存`;
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1600);
 }
 
 function getSelectedMetric() {
@@ -1583,7 +1921,7 @@ function shiftMetricDate(step) {
 }
 
 function renderMetricDetail() {
-  const plan = focusPlanDashboards[selectedFocusPlan];
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   const metric = getSelectedMetric();
   selectedFocusMetric = metric.id;
   const values = rangeMetricValues(metric, selectedMetricRange);
@@ -1598,12 +1936,14 @@ function renderMetricDetail() {
     return { x, y, value, label: labels[index] };
   });
   metricDetailTitle.textContent = `${metric.name}详情`;
-  metricDetailPlan.textContent = plan.name;
   metricDetailValue.textContent = metric.display;
   metricDetailUnit.textContent = metric.unit;
   metricDetailStatus.textContent = metric.status;
   metricDetailStatus.classList.toggle("attention", Boolean(metric.attention));
-  metricDetailTime.textContent = `最近记录 ${dateInputValue(selectedMetricDate).replaceAll("-", "/")} 08:20`;
+  const savedRecords = metricRecordsFor(metric.id);
+  metricDetailTime.textContent = savedRecords.length
+    ? `最近记录 ${displayMetricRecordTime(savedRecords[0].time)}`
+    : `最近记录 ${dateInputValue(selectedMetricDate).replaceAll("-", "/")} 08:20`;
   metricDateCurrent.textContent = metricDateLabel();
   metricDatePicker.value = dateInputValue(selectedMetricDate);
   metricTrendCaption.textContent = selectedMetricRange === "day" ? "近24小时" : selectedMetricRange === "week" ? "近7天" : "近30天";
@@ -1616,15 +1956,13 @@ function renderMetricDetail() {
       <polyline points="${points.map((point) => `${point.x},${point.y}`).join(" ")}" fill="none" stroke="#3671ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
       ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#fff" stroke="#3671ff" stroke-width="2"/><text x="${point.x}" y="158" text-anchor="middle">${point.label}</text>`).join("")}
     </svg>`;
-  metricRecordList.innerHTML = [...points].reverse().slice(0, 5).map((point, index) => `
-    <div class="metric-record-row"><span>${point.label}${selectedMetricRange === "day" ? "" : " · 08:20"}</span><strong>${formatMetricNumber(point.value)} ${metric.unit}</strong></div>
-  `).join("");
 }
 
 function openMetricDetail(metricId) {
   selectedFocusMetric = metricId;
   selectedMetricRange = "day";
-  selectedMetricDate = new Date(2026, 5, 14);
+  const latest = metricRecordsFor(metricId)[0];
+  selectedMetricDate = latest ? new Date(latest.time) : new Date();
   metricRangeTabs?.querySelectorAll("button").forEach((button) => button.classList.toggle("active", button.dataset.metricRange === "day"));
   renderMetricDetail();
   openSubPage("metricDetailPage");
@@ -1643,7 +1981,10 @@ function openSubPage(pageId) {
   const page = document.querySelector(`#${pageId}`);
   if (!page) return;
   pageStack.push(currentPageId());
-  document.body.classList.toggle("detail-page-open", pageId === "reportDetailPage" || pageId === "aiReparsePage");
+  document.body.classList.toggle(
+    "detail-page-open",
+    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage"
+  );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
   servicePage.classList.remove("active");
@@ -1660,7 +2001,14 @@ function goBackPage() {
   const previous = pageStack.pop() || "minePage";
   document.body.classList.remove("detail-page-open");
   subPages.forEach((item) => item.classList.remove("active"));
-  if (previous === "minePage") {
+  const previousSubPage = document.querySelector(`#${previous}.sub-page`);
+  if (previousSubPage) {
+    previousSubPage.classList.add("active");
+    document.body.classList.toggle(
+      "detail-page-open",
+      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage"
+    );
+  } else if (previous === "minePage") {
     minePage.classList.add("active");
     setProfileTab([...profileTabs].find((tab) => tab.classList.contains("active"))?.dataset.profileTab || "medical");
   } else if (previous === "servicePage") {
@@ -2094,6 +2442,8 @@ function openSheet(sheet) {
 
 function closeOverlays() {
   sheetMask.classList.remove("active");
+  cameraPage?.classList.remove("active");
+  metricRecordSheet?.classList.remove("active");
   serviceActionSheet.classList.remove("active");
   supportSheet.classList.remove("active");
   shareSheet.classList.remove("active");
@@ -2104,6 +2454,7 @@ function closeOverlays() {
   periodConfirmDialog.classList.remove("active");
   periodEditDialog.classList.remove("active");
   periodDeleteDialog.classList.remove("active");
+  metricDeleteDialog?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");
   taskDeleteDialog.classList.remove("active");
@@ -2163,13 +2514,32 @@ uploadTypePills?.addEventListener("click", (event) => {
 selectedFiles?.addEventListener("click", (event) => {
   const remove = event.target.closest("[data-remove-file]");
   const picker = event.target.closest("[data-mock-file]");
+  const camera = event.target.closest("[data-open-camera]");
+  const document = event.target.closest("[data-open-document]");
   if (remove) {
-    selectedUploadFiles.splice(Number(remove.dataset.removeFile), 1);
+    const [removed] = selectedUploadFiles.splice(Number(remove.dataset.removeFile), 1);
+    if (removed?.preview?.startsWith("blob:")) URL.revokeObjectURL(removed.preview);
     renderSelectedFiles();
   }
   if (picker) {
     addMockFile(picker.dataset.mockFile);
   }
+  if (camera) {
+    openCameraPage();
+  }
+  if (document) {
+    documentPicker?.click();
+  }
+});
+cameraBack?.addEventListener("click", returnToUploadSheet);
+cameraShutter?.addEventListener("click", captureReportImage);
+albumPicker?.addEventListener("change", () => {
+  if (albumPicker.files?.length) addSelectedImages(albumPicker.files);
+  albumPicker.value = "";
+});
+documentPicker?.addEventListener("change", () => {
+  if (documentPicker.files?.length) addSelectedDocuments(documentPicker.files);
+  documentPicker.value = "";
 });
 submitUpload?.addEventListener("click", () => {
   if (!selectedUploadFiles.length) return;
@@ -2242,12 +2612,6 @@ profileTabs.forEach((tab) => {
   });
 });
 
-focusPlanSelect?.addEventListener("change", () => {
-  selectedFocusPlan = focusPlanSelect.value;
-  selectedFocusMetric = focusPlanDashboards[selectedFocusPlan].metrics[0].id;
-  renderFocusPlans();
-});
-
 focusMetricGrid?.addEventListener("click", (event) => {
   const card = event.target.closest("[data-focus-metric]");
   if (card) openMetricDetail(card.dataset.focusMetric);
@@ -2279,6 +2643,19 @@ metricDatePicker?.addEventListener("change", () => {
   selectedMetricDate = new Date(year, month - 1, day);
   renderMetricDetail();
 });
+
+metricRecordEntry?.addEventListener("click", openMetricRecordSheet);
+metricAllRecords?.addEventListener("click", () => {
+  renderAllMetricRecords();
+  openSubPage("metricRecordsPage");
+});
+metricRecordsGroups?.addEventListener("click", (event) => {
+  const deleteButton = event.target.closest("[data-delete-metric-record]");
+  if (deleteButton) openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
+});
+document.querySelector(".metric-record-close")?.addEventListener("click", closeOverlays);
+metricRecordConfirm?.addEventListener("click", saveMetricRecord);
+document.querySelector(".metric-delete-confirm")?.addEventListener("click", confirmMetricRecordDelete);
 
 orderStatusTabs?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-order-tab]");

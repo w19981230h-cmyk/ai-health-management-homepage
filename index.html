@@ -407,34 +407,17 @@
           </section>
           <section class="metrics-panel profile-panel" data-profile-panel="metrics">
             <div class="metrics-head">
-              <h2>生命体征</h2>
+              <h2>健康指标</h2>
             </div>
-            <div class="metric-summary-grid">
-              <article class="metric-summary-card pressure">
-                <h3><i></i>血压</h3>
-                <strong>130/85 <span>mmHg</span></strong>
-                <div class="metric-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                <p>2026/06/10 14:51</p>
-              </article>
-              <article class="metric-summary-card sugar">
-                <h3><i></i>血糖</h3>
-                <strong>5.0 <span>mmol/L</span></strong>
-                <div class="metric-wave" aria-hidden="true"></div>
-                <p>2026/06/10 14:51</p>
-              </article>
-            </div>
-            <article class="metric-card cycle" id="periodCard">
-              <i></i>
-              <div><strong>经期管理</strong><p id="periodStatusLine">暂未记录经期</p><p id="periodForecastLine">记录后可帮你预测下次经期时间</p><p id="periodAverageLine"></p></div>
-              <button class="period-action" id="periodActionButton" type="button">经期来了</button>
-              <b></b>
-            </article>
-            <section class="focus-metrics-section" aria-label="关注指标">
-              <div class="focus-metrics-head">
-                <div><h2>关注指标</h2><p>根据患者绑定方案展示</p></div>
-                <label><span>当前方案</span><select id="focusPlanSelect" aria-label="切换关注指标方案"></select></label>
+            <section class="unified-metrics-section" aria-label="健康指标列表">
+              <div class="unified-metric-grid">
+                <div class="focus-metric-grid" id="focusMetricGrid"></div>
+                <article class="metric-card cycle flat-cycle-metric" id="periodCard">
+                  <i></i>
+                  <div><strong>经期管理</strong><p id="periodStatusLine">暂未记录经期</p><p id="periodForecastLine">记录后可预测下次经期</p><p id="periodAverageLine"></p></div>
+                  <button class="period-action" id="periodActionButton" type="button">经期来了</button>
+                </article>
               </div>
-              <div class="focus-metric-grid" id="focusMetricGrid"></div>
             </section>
           </section>
           <section class="history-panel profile-panel" data-profile-panel="history">
@@ -592,7 +575,6 @@
       <section class="sub-page metric-detail-page" id="metricDetailPage" aria-label="指标详情">
         <header class="sub-nav"><button class="back-page" type="button"></button><h1 id="metricDetailTitle">指标详情</h1></header>
         <section class="metric-detail-summary">
-          <span id="metricDetailPlan">90天减肥计划</span>
           <div><strong id="metricDetailValue">68.5</strong><em id="metricDetailUnit">kg</em><b id="metricDetailStatus">正常</b></div>
           <p id="metricDetailTime">最近记录 2026/06/14 08:20</p>
         </section>
@@ -612,12 +594,17 @@
           <div class="metric-line-chart" id="metricLineChart" aria-label="指标趋势图"></div>
         </section>
         <section class="metric-average-card">
-          <span>平均值</span><strong id="metricStatAverage">--</strong>
+          <div><span>平均值</span><strong id="metricStatAverage">--</strong></div>
+          <button id="metricAllRecords" type="button">全部记录</button>
         </section>
-        <section class="metric-record-card">
-          <h2>记录明细</h2>
-          <div id="metricRecordList"></div>
-        </section>
+        <footer class="metric-detail-actions">
+          <button class="metric-record-entry" id="metricRecordEntry" type="button">记录指标</button>
+        </footer>
+      </section>
+
+      <section class="sub-page metric-records-page" id="metricRecordsPage" aria-label="全部指标记录">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>全部记录</h1></header>
+        <div class="metric-records-groups" id="metricRecordsGroups"></div>
       </section>
 
       <section class="sub-page report-detail" id="reportDetailPage" aria-label="报告详情">
@@ -752,6 +739,16 @@
           <button class="cycle-confirm" type="button">确认记录</button>
         </div>
       </section>
+      <section class="metric-record-sheet" id="metricRecordSheet" aria-label="记录健康指标">
+        <div class="metric-record-sheet-head">
+          <h3 id="metricRecordSheetTitle">记录指标</h3>
+          <button class="metric-record-close" type="button" aria-label="关闭"></button>
+        </div>
+        <div class="metric-record-fields" id="metricRecordFields"></div>
+        <label class="metric-record-time"><span>记录时间</span><input id="metricRecordTime" type="datetime-local"></label>
+        <p class="metric-record-error" id="metricRecordError"></p>
+        <button class="metric-record-confirm" id="metricRecordConfirm" type="button">确定记录</button>
+      </section>
       <section class="purchase-dialog period-confirm-dialog" id="periodConfirmDialog" aria-label="确认结束经期">
         <h3>您今天是月经第 1 天，确定结束吗？</h3><div><button class="dialog-cancel" type="button">取消</button><button class="period-end-confirm" type="button">确定结束</button></div>
       </section>
@@ -764,6 +761,9 @@
       </section>
       <section class="purchase-dialog period-delete-dialog" id="periodDeleteDialog" aria-label="删除经期记录">
         <h3>确认删除这条经期记录？</h3><div><button class="dialog-cancel" type="button">取消</button><button class="period-delete-confirm" type="button">删除</button></div>
+      </section>
+      <section class="purchase-dialog metric-delete-dialog" id="metricDeleteDialog" aria-label="删除指标记录">
+        <h3>确认删除这条指标记录？</h3><p>删除后将无法恢复。</p><div><button class="dialog-cancel" type="button">取消</button><button class="metric-delete-confirm" type="button">删除</button></div>
       </section>
 
       <div class="sheet-mask" id="sheetMask"></div>
@@ -785,12 +785,33 @@
       </section>
       <section class="bottom-sheet" id="uploadSheet" aria-label="上传资料面板">
         <div class="upload-sheet-title"><i aria-hidden="true"></i><h3>上传资料</h3></div>
-        <p class="upload-desc">请上传当前就诊人的资料，避免包含他人隐私信息。</p>
-        <p class="upload-desc">支持图片与PDF，每次上传请确保是一份独立且完整的病历 / 报告。</p>
+        <p class="upload-desc">确保上传的报告，属于同一个人</p>
         <select id="uploadTypeSelect" hidden><option selected>检验报告</option></select>
+        <input id="documentPicker" type="file" accept=".pdf,application/pdf" multiple hidden>
         <div class="selected-files" id="selectedFiles"></div>
-        <button class="upload-submit" id="submitUpload" type="button" disabled>上传</button>
-        <p class="upload-note">平台将严格保障隐私安全，请放心上传</p>
+        <label class="upload-merge-option hidden" id="uploadMergeOption">
+          <input id="mergeReportImages" type="checkbox">
+          <span aria-hidden="true"></span>
+          <b>以上图片属于同一份报告</b>
+          <em>勾选后将为你合并解析</em>
+        </label>
+        <button class="upload-submit hidden" id="submitUpload" type="button" disabled>上传</button>
+      </section>
+      <section class="camera-page" id="cameraPage" aria-label="拍摄报告">
+        <div class="camera-preview">
+          <div class="camera-topbar">
+            <button class="camera-back" id="cameraBack" type="button" aria-label="返回上传资料"></button>
+            <div class="camera-capsule" aria-hidden="true"><i></i><span></span></div>
+          </div>
+          <div class="camera-scan-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <p>请从正上方俯拍报告，以便提升识别效果</p>
+        </div>
+        <div class="camera-controls">
+          <label class="camera-album" for="albumPicker"><i aria-hidden="true"></i><span>相册</span></label>
+          <button class="camera-shutter" id="cameraShutter" type="button" aria-label="拍摄报告"><i></i></button>
+          <span class="camera-control-spacer" aria-hidden="true"></span>
+          <input id="albumPicker" type="file" accept="image/*" multiple hidden>
+        </div>
       </section>
       <section class="purchase-dialog supplement-dialog" id="supplementDialog" aria-label="补充资料信息">
         <h3>补充资料信息</h3>
