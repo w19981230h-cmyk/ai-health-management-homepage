@@ -74,6 +74,7 @@ const currentPatientName = document.querySelector("#currentPatientName");
 const currentPatientMeta = document.querySelector("#currentPatientMeta");
 const homeServiceSection = document.querySelector(".service-section.home-only");
 const taskPanel = document.querySelector("#taskPanel");
+const taskPanelMask = document.querySelector("#taskPanelMask");
 const addButton = document.querySelector("#addButton");
 const tabbarLinks = document.querySelectorAll(".tabbar a");
 const homeOnlySections = document.querySelectorAll(".home-only");
@@ -115,6 +116,7 @@ const uploadSheet = document.querySelector("#uploadSheet");
 const cameraPage = document.querySelector("#cameraPage");
 const cameraBack = document.querySelector("#cameraBack");
 const cameraShutter = document.querySelector("#cameraShutter");
+const cameraHint = document.querySelector("#cameraPage .camera-preview > p");
 const albumPicker = document.querySelector("#albumPicker");
 const documentPicker = document.querySelector("#documentPicker");
 const medicalReportList = document.querySelector("#medicalReportList");
@@ -218,6 +220,126 @@ const metricRecordFields = document.querySelector("#metricRecordFields");
 const metricRecordTime = document.querySelector("#metricRecordTime");
 const metricRecordError = document.querySelector("#metricRecordError");
 const metricRecordConfirm = document.querySelector("#metricRecordConfirm");
+const dietUploadSheet = document.querySelector("#dietUploadSheet");
+const dietUploadActionSheet = document.querySelector("#dietUploadActionSheet");
+const dietUploadArea = document.querySelector("#dietUploadArea");
+const dietImageGrid = document.querySelector("#dietImageGrid");
+const dietImagePicker = document.querySelector("#dietImagePicker");
+const dietMealOptions = document.querySelector("#dietMealOptions");
+const dietMealTime = document.querySelector("#dietMealTime");
+const dietNoteInput = document.querySelector("#dietNoteInput");
+const dietCancelUpload = document.querySelector("#dietCancelUpload");
+const dietStartRecognize = document.querySelector("#dietStartRecognize");
+const dietRecognizeStep = document.querySelector("#dietRecognizeStep");
+const dietRecognizeProgress = document.querySelector("#dietRecognizeProgress");
+const dietRecognizeThumbs = document.querySelector("#dietRecognizeThumbs");
+const dietAiStatus = document.querySelector("#dietAiStatus");
+const dietFailCard = document.querySelector("#dietFailCard");
+const dietRetryRecognize = document.querySelector("#dietRetryRecognize");
+const dietManualFill = document.querySelector("#dietManualFill");
+const dietResultTabs = document.querySelector("#dietResultTabs");
+const dietFoodList = document.querySelector("#dietFoodList");
+const dietMealTitle = document.querySelector("#dietMealTitle");
+const dietRecordTimeText = document.querySelector("#dietRecordTimeText");
+const dietResultTime = document.querySelector("#dietResultTime");
+const dietResultNoteInput = document.querySelector("#dietResultNoteInput");
+const dietGramSheet = document.querySelector("#dietGramSheet");
+const dietGramFoodName = document.querySelector("#dietGramFoodName");
+const dietGramInput = document.querySelector("#dietGramInput");
+const dietGramConfirm = document.querySelector("#dietGramConfirm");
+const dietTotalCalories = document.querySelector("#dietTotalCalories");
+const dietProteinTotal = document.querySelector("#dietProteinTotal");
+const dietFatTotal = document.querySelector("#dietFatTotal");
+const dietCarbTotal = document.querySelector("#dietCarbTotal");
+const dietConfirmCheckin = document.querySelector("#dietConfirmCheckin");
+const dietEditResult = document.querySelector("#dietEditResult");
+const dietDetailRangeTabs = document.querySelector("#dietDetailRangeTabs");
+const dietDetailRangeTrigger = document.querySelector("#dietDetailRangeTrigger");
+const dietDetailRangeText = document.querySelector("#dietDetailRangeText");
+const dietDetailDayInput = document.querySelector("#dietDetailDayInput");
+const dietDetailMonthInput = document.querySelector("#dietDetailMonthInput");
+const dietDetailSummary = document.querySelector("#dietDetailSummary");
+const dietDetailRecords = document.querySelector("#dietDetailRecords");
+const dietDetailCheckin = document.querySelector("#dietDetailCheckin");
+const medicineCheckinSheet = document.querySelector("#medicineCheckinSheet");
+const medicineClose = document.querySelector("#medicineClose");
+const medicineTime = document.querySelector("#medicineTime");
+const medicineTimeTrigger = document.querySelector("#medicineTimeTrigger");
+const medicineTimeText = document.querySelector("#medicineTimeText");
+const medicineTimePicker = document.querySelector("#medicineTimePicker");
+const medicinePickerDate = document.querySelector("#medicinePickerDate");
+const medicinePickerHour = document.querySelector("#medicinePickerHour");
+const medicinePickerMinute = document.querySelector("#medicinePickerMinute");
+const medicineNote = document.querySelector("#medicineNote");
+const medicineNoteCount = document.querySelector("#medicineNoteCount");
+const medicineListTitle = document.querySelector("#medicineListTitle");
+const medicineListDesc = document.querySelector("#medicineListDesc");
+const medicineList = document.querySelector("#medicineList");
+const medicineAdd = document.querySelector("#medicineAdd");
+const medicineConfirm = document.querySelector("#medicineConfirm");
+const medicineImagePicker = document.querySelector("#medicineImagePicker");
+const medicineRecordsList = document.querySelector("#medicineRecordsList");
+const medicineDetailSummary = document.querySelector("#medicineDetailSummary");
+const medicineDetailList = document.querySelector("#medicineDetailList");
+const medicineDetailEdit = document.querySelector("#medicineDetailEdit");
+const medicineDetailDelete = document.querySelector("#medicineDetailDelete");
+const medicineImageCount = document.querySelector("#medicineImageCount");
+const medicineImageClose = document.querySelector("#medicineImageClose");
+const medicineImageLarge = document.querySelector("#medicineImageLarge");
+const medicineImageThumbs = document.querySelector("#medicineImageThumbs");
+const medicineImagePrev = document.querySelector("#medicineImagePrev");
+const medicineImageNext = document.querySelector("#medicineImageNext");
+const sportCheckinSheet = document.querySelector("#sportCheckinSheet");
+const sportClose = document.querySelector("#sportClose");
+const sportTypeGrid = document.querySelector("#sportTypeGrid");
+const sportOtherField = document.querySelector("#sportOtherField");
+const sportOtherInput = document.querySelector("#sportOtherInput");
+const sportOtherCount = document.querySelector("#sportOtherCount");
+const sportOtherLabel = document.querySelector("#sportOtherLabel");
+const sportDurationText = document.querySelector("#sportDuration");
+const sportMinus = document.querySelector("#sportMinus");
+const sportPlus = document.querySelector("#sportPlus");
+const sportTimeTrigger = document.querySelector("#sportTimeTrigger");
+const sportTimeText = document.querySelector("#sportTimeText");
+const sportNoteInput = document.querySelector("#sportNoteInput");
+const sportNoteCount = document.querySelector("#sportNoteCount");
+const sportTimePicker = document.querySelector("#sportTimePicker");
+const sportPickerDate = document.querySelector("#sportPickerDate");
+const sportPickerHour = document.querySelector("#sportPickerHour");
+const sportPickerMinute = document.querySelector("#sportPickerMinute");
+const sportSubmit = document.querySelector("#sportSubmit");
+const sportSuccessDialog = document.querySelector("#sportSuccessDialog");
+const sportSuccessSummary = document.querySelector("#sportSuccessSummary");
+const sportCalories = document.querySelector("#sportCalories");
+const sportSuccessDone = document.querySelector("#sportSuccessDone");
+const weightCheckinPage = document.querySelector("#weightCheckinPage");
+const weightValueInput = document.querySelector("#weightValueInput");
+const weightFatInput = document.querySelector("#weightFatInput");
+const weightValueHint = document.querySelector("#weightValueHint");
+const weightFatHint = document.querySelector("#weightFatHint");
+const weightTimeTrigger = document.querySelector("#weightTimeTrigger");
+const weightTimeText = document.querySelector("#weightTimeText");
+const weightTimePicker = document.querySelector("#weightTimePicker");
+const weightPickerDate = document.querySelector("#weightPickerDate");
+const weightPickerHour = document.querySelector("#weightPickerHour");
+const weightPickerMinute = document.querySelector("#weightPickerMinute");
+const weightNoteInput = document.querySelector("#weightNoteInput");
+const weightNoteCount = document.querySelector("#weightNoteCount");
+const weightSubmit = document.querySelector("#weightSubmit");
+const waistCheckinSheet = document.querySelector("#waistCheckinSheet");
+const waistValueInput = document.querySelector("#waistValueInput");
+const waistTimeTrigger = document.querySelector("#waistTimeTrigger");
+const waistTimeText = document.querySelector("#waistTimeText");
+const waistTimePicker = document.querySelector("#waistTimePicker");
+const waistPickerDate = document.querySelector("#waistPickerDate");
+const waistPickerHour = document.querySelector("#waistPickerHour");
+const waistPickerMinute = document.querySelector("#waistPickerMinute");
+const waistNoteInput = document.querySelector("#waistNoteInput");
+const waistError = document.querySelector("#waistError");
+const waistSubmit = document.querySelector("#waistSubmit");
+const checkinSuccessDialog = document.querySelector("#checkinSuccessDialog");
+const checkinSuccessSummary = document.querySelector("#checkinSuccessSummary");
+const checkinSuccessDone = document.querySelector("#checkinSuccessDone");
 let pageStack = [];
 let addedMemberCount = 0;
 let currentPatient = { id: "self", name: "张女士", sex: "female", age: "32" };
@@ -238,6 +360,42 @@ let selectedMetricDate = new Date(2026, 5, 14);
 let metricRecordsByPatient = {};
 let deletedMetricRecordIdsByPatient = {};
 let deletingMetricRecordId = "";
+let dietUploadImages = [];
+let dietSelectedMeal = "";
+let dietRecognitionIndex = 0;
+let dietRecognitionTimer = null;
+let dietResultIndex = 0;
+let dietResults = [];
+let dietCheckinSummary = null;
+let dietReturnView = "plan";
+let editingDietFoodId = "";
+let dietDetailRangeMode = "day";
+let dietDetailRangeDate = new Date();
+let cameraMode = "report";
+let medicineItems = [];
+let medicineIdSeed = 1;
+let medicineImageTargetId = "";
+let medicineRecordsByPatient = {};
+let selectedMedicineRecordId = "";
+let editingMedicineRecordId = "";
+let medicinePreviewImages = [];
+let medicinePreviewIndex = 0;
+let sportSelectedType = "walk";
+let sportOtherName = "";
+let sportDuration = 30;
+let sportTimeValue = "";
+let weightCheckinTimeValue = "";
+let waistCheckinTimeValue = "";
+
+const sportTypes = {
+  walk: { label: "步行", kcal: 4 },
+  run: { label: "跑步", kcal: 8 },
+  cycle: { label: "骑行", kcal: 6 },
+  rope: { label: "跳绳", kcal: 10 },
+  swim: { label: "游泳", kcal: 9 },
+  fitness: { label: "健身", kcal: 7 },
+  other: { label: "其他", kcal: 4 }
+};
 
 const focusPlanDashboards = {
   weight90: {
@@ -246,6 +404,7 @@ const focusPlanDashboards = {
       { id: "sugar", name: "血糖", value: 5.0, display: "5.0", unit: "mmol/L", status: "正常", values: [5.4, 5.2, 5.1, 5.3, 5.0, 4.9, 5.0] },
       { id: "bp", name: "血压", value: 130, display: "130/85", unit: "mmHg", status: "正常", values: [134, 132, 131, 129, 133, 128, 130] },
       { id: "weight", name: "体重", value: 68.5, display: "68.5", unit: "kg", status: "下降 1.6kg", values: [70.1, 69.8, 69.6, 69.3, 69.0, 68.8, 68.5] },
+      { id: "waist", name: "腰围", value: 82.5, display: "82.5", unit: "cm", status: "正常", values: [84.2, 83.9, 83.6, 83.2, 82.9, 82.7, 82.5] },
       { id: "height", name: "身高", value: 165, display: "165", unit: "cm", status: "稳定", values: [165, 165, 165, 165, 165, 165, 165] },
       { id: "heart", name: "心率", value: 76, display: "76", unit: "次/分", status: "正常", values: [78, 75, 77, 74, 76, 73, 76] },
       { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] },
@@ -459,6 +618,66 @@ const scheduleTasks = {
       ]
     }
   }
+};
+
+const dietMockImages = [
+  "linear-gradient(135deg, #f8b26a 0 35%, #f4d5a1 35% 58%, #67c99a 58% 100%)",
+  "linear-gradient(135deg, #cf6f52 0 32%, #f7d275 32% 54%, #83d2ff 54% 100%)",
+  "linear-gradient(135deg, #7ccf8e 0 30%, #fff1a6 30% 60%, #f08a94 60% 100%)",
+  "linear-gradient(135deg, #b36d43 0 38%, #f5e4c0 38% 62%, #a4d879 62% 100%)"
+];
+
+const dietFoodTemplates = [
+  [
+    { name: "香煎三文鱼配轻食沙拉", calories: 155, protein: 18, fat: 3.2, carb: 9, image: "fish" },
+    { name: "水煮西兰花", calories: 64, protein: 4, fat: 0.6, carb: 10, image: "green" }
+  ],
+  [
+    { name: "鸡胸肉全麦三明治", calories: 360, protein: 28, fat: 8, carb: 42, image: "sandwich" },
+    { name: "无糖酸奶", calories: 120, protein: 9, fat: 3, carb: 12, image: "yogurt" }
+  ],
+  [
+    { name: "番茄牛肉意面", calories: 520, protein: 32, fat: 12, carb: 68, image: "pasta" },
+    { name: "时令水果杯", calories: 95, protein: 1, fat: 0.3, carb: 23, image: "fruit" }
+  ]
+];
+
+const medicineMockImages = [
+  "linear-gradient(135deg, #f3f7ff 0 28%, #8cc8ff 28% 36%, #ffffff 36% 58%, #2f7bdc 58% 68%, #f6fbff 68% 100%)",
+  "linear-gradient(135deg, #e7f8ec 0 36%, #54bd72 36% 52%, #ffffff 52% 66%, #7bd48f 66% 100%)",
+  "radial-gradient(circle at 35% 35%, #222 0 12%, transparent 13%), radial-gradient(circle at 65% 35%, #222 0 12%, transparent 13%), radial-gradient(circle at 35% 65%, #222 0 12%, transparent 13%), radial-gradient(circle at 65% 65%, #222 0 12%, transparent 13%), #eef2f7"
+];
+
+const defaultMedicineRecords = {
+  zhang: [
+    {
+      id: "med-20260617-1705",
+      time: "2026-06-17T17:05",
+      note: "饭后服用，温水送服",
+      items: [
+        { id: "med-i-1", type: "medicine", name: "二甲双胍片", images: [medicineMockImages[0], medicineMockImages[1]] },
+        { id: "med-i-2", type: "medicine", name: "阿托伐他汀钙片", images: [medicineMockImages[2]] },
+        { id: "med-i-3", type: "nutrition", name: "维生素D3软胶囊", images: [] }
+      ]
+    },
+    {
+      id: "med-20260616-2030",
+      time: "2026-06-16T20:30",
+      note: "",
+      items: [
+        { id: "med-i-4", type: "medicine", name: "缬沙坦胶囊", images: [medicineMockImages[1]] },
+        { id: "med-i-5", type: "nutrition", name: "钙片", images: [] }
+      ]
+    },
+    {
+      id: "med-20260615-0800",
+      time: "2026-06-15T08:00",
+      note: "早餐后",
+      items: [
+        { id: "med-i-6", type: "nutrition", name: "多种维生素片", images: [medicineMockImages[2]] }
+      ]
+    }
+  ]
 };
 
 function startOfWeek(date) {
@@ -690,10 +909,15 @@ let medicalReports = loadJsonStore("medicalReports", defaultMedicalReports);
 let parseTasks = loadJsonStore("parseTasks", defaultParseTasks);
 metricRecordsByPatient = loadJsonStore("metricRecordsByPatient", {});
 deletedMetricRecordIdsByPatient = loadJsonStore("deletedMetricRecordIdsByPatient", {});
+medicineRecordsByPatient = loadJsonStore("medicineRecordsByPatient", defaultMedicineRecords);
 
 function saveMetricRecords() {
   window.localStorage?.setItem("metricRecordsByPatient", JSON.stringify(metricRecordsByPatient));
   window.localStorage?.setItem("deletedMetricRecordIdsByPatient", JSON.stringify(deletedMetricRecordIdsByPatient));
+}
+
+function saveMedicineRecords() {
+  window.localStorage?.setItem("medicineRecordsByPatient", JSON.stringify(medicineRecordsByPatient));
 }
 
 function saveMedicalStores() {
@@ -920,25 +1144,143 @@ function renderAssessmentSection(assessments) {
 }
 
 function renderCheckinSection(checkins) {
-  const visibleCheckins = checkins.filter((item) => item.type !== "pressure" && item.type !== "sugar");
-  if (!visibleCheckins.length) return "";
-  const body = `<div class="checkin-list">${visibleCheckins.map(renderCheckinCard).join("")}</div>`;
-  return renderSection("健康打卡", body);
+  if (!checkins.length) return "";
+  const checkinMap = new Map();
+  checkins.forEach((item) => checkinMap.set(item.type, item));
+  const wallItems = ["diet", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "fat", "period"]
+    .map((type) => checkinMap.get(type) || defaultCheckinItem(type));
+  const body = `<div class="checkin-wall">${wallItems.map(renderCheckinCard).join("")}</div>`;
+  return renderSection("健康打卡", body, `<button type="button" data-schedule-records>全部打卡 〉</button>`);
+}
+
+function defaultCheckinItem(type) {
+  const defaults = {
+    diet: { type: "diet", title: "饮食打卡", count: "暂无记录", desc: "" },
+    sport: { type: "sport", title: "运动打卡", count: "暂无记录", desc: "" },
+    medicine: { type: "medicine", title: "用药/补充记录", count: "暂无记录", desc: "" },
+    weight: { type: "weight", title: "体重打卡", count: "暂无记录", desc: "" },
+    pressure: { type: "pressure", title: "血压打卡", count: "暂无记录", desc: "" },
+    sugar: { type: "sugar", title: "血糖打卡", count: "暂无记录", desc: "" },
+    lipid: { type: "lipid", title: "血脂打卡", count: "暂无记录", desc: "" },
+    uric: { type: "uric", title: "尿酸打卡", count: "暂无记录", desc: "" },
+    waist: { type: "waist", title: "腰围打卡", count: "暂无记录", desc: "" },
+    heart: { type: "heart", title: "心率打卡", count: "暂无记录", desc: "" },
+    fat: { type: "fat", title: "体脂打卡", count: "暂无记录", desc: "" },
+    period: { type: "period", title: "经期打卡", count: "暂无记录", desc: "" }
+  };
+  return defaults[type] || defaults.diet;
 }
 
 function renderCheckinCard(item) {
-  const iconText = { diet: "食", sport: "动", medicine: "药", water: "水", period: "经", pressure: "压", sugar: "糖", weight: "重" }[item.type] || "记";
-  const valueHtml = item.value ? `<strong>${item.value}</strong>` : "";
+  const valueText = String(item.value ?? "").trim();
+  const mainText = valueText || "暂无记录";
+  const mainClass = valueText ? "checkin-main" : "checkin-main empty";
+  const config = {
+    diet: {
+      title: "饮食记录",
+      main: mainText,
+      meta: "",
+      art: "trend",
+      icon: "食"
+    },
+    sport: {
+      title: "运动",
+      main: mainText,
+      meta: "",
+      art: "bars",
+      icon: "动"
+    },
+    medicine: {
+      title: "用药/补充",
+      main: mainText,
+      meta: "",
+      art: "pill",
+      icon: "药"
+    },
+    weight: {
+      title: "体重",
+      main: mainText,
+      meta: "",
+      art: "scale",
+      icon: "重"
+    },
+    pressure: {
+      title: "血压",
+      main: mainText,
+      meta: "",
+      art: "heartline",
+      icon: "压"
+    },
+    sugar: {
+      title: "血糖",
+      main: mainText,
+      meta: "",
+      art: "drop",
+      icon: "糖"
+    },
+    lipid: {
+      title: "血脂",
+      main: mainText,
+      meta: "",
+      art: "drop",
+      icon: "脂"
+    },
+    uric: {
+      title: "尿酸",
+      main: mainText,
+      meta: "",
+      art: "drop",
+      icon: "尿"
+    },
+    waist: {
+      title: "腰围",
+      main: mainText,
+      meta: "",
+      art: "tape",
+      icon: "围"
+    },
+    heart: {
+      title: "心率",
+      main: mainText,
+      meta: "",
+      art: "heartline",
+      icon: "心"
+    },
+    fat: {
+      title: "体脂",
+      main: mainText,
+      meta: "",
+      art: "tube",
+      icon: "脂"
+    },
+    period: {
+      title: "经期管理",
+      main: mainText,
+      meta: "",
+      art: "flower",
+      icon: "经"
+    }
+  }[item.type] || {
+    title: item.title,
+    main: mainText,
+    meta: "",
+    art: "trend",
+    icon: "记"
+  };
+  const largeClass = item.type === "diet" || item.type === "period" ? " large" : "";
+  const plusLabel = `新增${config.title}`;
   return `
-    <article class="checkin-card" data-type="${item.type}" data-schedule-action="checkin">
-      <i class="checkin-icon">${iconText}</i>
-      <div class="checkin-copy">
-        <strong>${item.title}</strong>
-        <p>${item.desc}</p>
+    <article class="checkin-card${largeClass}" data-type="${item.type}" data-schedule-action="records">
+      <div class="checkin-card-head">
+        <i class="checkin-symbol" aria-hidden="true">${config.icon}</i>
+        <span>
+          <strong>${config.title}</strong>
+        </span>
+        <button class="checkin-plus" type="button" data-type="${item.type}" data-schedule-action="checkin" aria-label="${plusLabel}">+</button>
       </div>
-      <div class="checkin-meta">
-        ${valueHtml}
-        <span>${item.count || "待完成"}</span>
+      <div class="checkin-card-body">
+        <span class="${mainClass}">${config.main}</span>
+        ${config.meta ? `<span class="checkin-sub">${config.meta}</span>` : ""}
       </div>
     </article>
   `;
@@ -996,6 +1338,1340 @@ function showScheduleToast(text) {
   toast.textContent = text;
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1500);
+}
+
+function showToast(text) {
+  toast.textContent = text;
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1500);
+}
+
+function localDateTimeValue(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function formatDietTime(value) {
+  if (!value) return "现在";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function mealByTime(date = new Date()) {
+  const hour = date.getHours();
+  if (hour >= 5 && hour < 10) return "早餐";
+  if (hour >= 10 && hour < 14) return "午餐";
+  if (hour >= 17 && hour < 21) return "晚餐";
+  return "加餐";
+}
+
+function escapeAttr(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function resetDietUploadState() {
+  dietReturnView = planPage?.classList.contains("active") ? "plan" : "home";
+  dietUploadImages.forEach((image) => {
+    if (image.preview?.startsWith("blob:")) URL.revokeObjectURL(image.preview);
+  });
+  dietUploadImages = [];
+  const now = new Date();
+  dietSelectedMeal = mealByTime(now);
+  dietResults = [];
+  dietResultIndex = 0;
+  if (dietMealTime) dietMealTime.value = localDateTimeValue(now);
+  if (dietNoteInput) dietNoteInput.value = "";
+  renderDietUploadImages();
+  renderDietMealOptions();
+}
+
+function showDietUploadSheet() {
+  sheetMask.classList.add("active");
+  dietUploadSheet?.classList.add("active");
+}
+
+function openDietUploadSheet() {
+  closeOverlays();
+  resetDietUploadState();
+  showDietUploadSheet();
+}
+
+function renderDietMealOptions() {
+  dietMealOptions?.querySelectorAll("[data-diet-meal]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.dietMeal === dietSelectedMeal);
+  });
+}
+
+function renderDietUploadImages() {
+  if (!dietImageGrid || !dietUploadArea) return;
+  dietUploadArea.classList.toggle("hidden", dietUploadImages.length > 0);
+  dietImageGrid.classList.toggle("active", dietUploadImages.length > 0);
+  dietImageGrid.innerHTML = dietUploadImages.map((image, index) => `
+    <div class="diet-image-thumb" style="${image.preview?.startsWith("blob:") ? `background-image:url('${image.preview}')` : `background:${image.preview || dietMockImages[index % dietMockImages.length]}`}">
+      <button type="button" data-remove-diet-image="${index}" aria-label="删除图片">×</button>
+    </div>
+  `).join("") + (dietUploadImages.length < 9 ? `<button class="diet-image-add" type="button" data-add-diet-image>+</button>` : "");
+}
+
+function addDietMockImage() {
+  if (dietUploadImages.length >= 9) {
+    showToast("最多上传 9 张图片");
+    return;
+  }
+  const index = dietUploadImages.length;
+  dietUploadImages.push({
+    id: `mock-${Date.now()}-${index}`,
+    name: `meal-${index + 1}.jpg`,
+    preview: dietMockImages[index % dietMockImages.length]
+  });
+  renderDietUploadImages();
+}
+
+function addDietFiles(files) {
+  [...files].slice(0, 9 - dietUploadImages.length).forEach((file, index) => {
+    dietUploadImages.push({
+      id: `file-${Date.now()}-${index}`,
+      name: file.name || `meal-${dietUploadImages.length + 1}.jpg`,
+      preview: URL.createObjectURL(file)
+    });
+  });
+  if (files.length > 9 || dietUploadImages.length >= 9) showToast("最多上传 9 张图片");
+  renderDietUploadImages();
+}
+
+function openDietCameraPage(reset = false) {
+  if (reset) resetDietUploadState();
+  openCameraPage("diet");
+}
+
+function buildDietResults() {
+  const meal = dietSelectedMeal || "早餐";
+  const time = formatDietTime(dietMealTime?.value);
+  return dietUploadImages.map((image, imageIndex) => ({
+    image,
+    meal,
+    time,
+    foods: dietFoodTemplates[imageIndex % dietFoodTemplates.length].map((food, foodIndex) => ({
+      ...food,
+      id: `${image.id}-${foodIndex}`,
+      grams: food.grams || 100,
+      baseCalories: food.calories,
+      baseProtein: food.protein,
+      baseFat: food.fat,
+      baseCarb: food.carb,
+      recordTime: time
+    }))
+  }));
+}
+
+function formatFoodNumber(value) {
+  const numeric = Number(value || 0);
+  return Number.isInteger(numeric) ? String(numeric) : numeric.toFixed(1).replace(/\.0$/, "");
+}
+
+function updateFoodByGrams(food, grams) {
+  const nextGrams = Math.max(1, Math.min(2000, Number(grams) || 1));
+  const ratio = nextGrams / 100;
+  food.grams = nextGrams;
+  food.calories = Math.round((food.baseCalories ?? food.calories ?? 0) * ratio);
+  food.protein = Number(((food.baseProtein ?? food.protein ?? 0) * ratio).toFixed(1));
+  food.fat = Number(((food.baseFat ?? food.fat ?? 0) * ratio).toFixed(1));
+  food.carb = Number(((food.baseCarb ?? food.carb ?? 0) * ratio).toFixed(1));
+}
+
+function dietTotals() {
+  const foods = dietResults.flatMap((result) => result.foods);
+  return foods.reduce((total, food) => ({
+    calories: total.calories + Number(food.calories || 0),
+    protein: total.protein + Number(food.protein || 0),
+    fat: total.fat + Number(food.fat || 0),
+    carb: total.carb + Number(food.carb || 0)
+  }), { calories: 0, protein: 0, fat: 0, carb: 0 });
+}
+
+function startDietRecognition() {
+  if (!dietUploadImages.length) {
+    showToast("请先上传食物图片");
+    return;
+  }
+  if (!dietSelectedMeal) {
+    showToast("请选择餐次");
+    return;
+  }
+  dietRecognitionIndex = 0;
+  dietResults = buildDietResults();
+  clearTimeout(dietRecognitionTimer);
+  closeOverlays();
+  openSubPage("dietRecognizePage");
+  renderDietRecognition(false);
+  runDietRecognitionStep();
+}
+
+function renderDietRecognition(failed) {
+  if (!dietRecognizeStep || !dietRecognizeProgress || !dietRecognizeThumbs) return;
+  dietAiStatus.hidden = Boolean(failed);
+  dietFailCard.hidden = !failed;
+  const total = Math.max(dietUploadImages.length, 1);
+  const current = Math.min(dietRecognitionIndex + 1, total);
+  dietRecognizeStep.textContent = `正在识别第 ${current} / ${total} 张`;
+  dietRecognizeProgress.style.width = `${Math.min(100, Math.round((current / total) * 100))}%`;
+  dietRecognizeThumbs.innerHTML = dietUploadImages.map((image, index) => `
+    <span class="${index === dietRecognitionIndex ? "active" : ""}" style="${image.preview?.startsWith("blob:") ? `background-image:url('${image.preview}')` : `background:${image.preview}`}"></span>
+  `).join("");
+}
+
+function runDietRecognitionStep() {
+  renderDietRecognition(false);
+  dietRecognitionTimer = window.setTimeout(() => {
+    if (dietRecognitionIndex < dietUploadImages.length - 1) {
+      dietRecognitionIndex += 1;
+      runDietRecognitionStep();
+      return;
+    }
+    openDietResultPage();
+  }, 760);
+}
+
+function showDietRecognitionFailure() {
+  clearTimeout(dietRecognitionTimer);
+  renderDietRecognition(true);
+}
+
+function openDietResultPage() {
+  clearTimeout(dietRecognitionTimer);
+  dietResultIndex = 0;
+  if (dietResultTime && dietMealTime?.value) dietResultTime.value = dietMealTime.value;
+  if (dietResultNoteInput) dietResultNoteInput.value = dietNoteInput?.value?.trim() || "今天的分量比平时稍少。";
+  renderDietResult();
+  openSubPage("dietResultPage");
+}
+
+function renderDietResult() {
+  if (!dietFoodList) return;
+  const totals = dietTotals();
+  dietTotalCalories.innerHTML = `${Math.round(totals.calories)} <em>kcal · 食物总热量</em>`;
+  dietProteinTotal.textContent = `${Math.round(totals.protein)}g`;
+  dietFatTotal.textContent = `${Number(totals.fat.toFixed(1))}g`;
+  dietCarbTotal.textContent = `${Math.round(totals.carb)}g`;
+  const current = dietResults[dietResultIndex] || dietResults[0];
+  dietMealTitle.textContent = current?.meal || "早餐";
+  const resultTime = formatDietTime(dietResultTime?.value || dietMealTime?.value);
+  dietRecordTimeText.textContent = `${resultTime || current?.time || "12:00"} 记录`;
+  dietFoodList.innerHTML = (current?.foods || []).map((food) => `
+    <article class="diet-food-card" data-food-id="${food.id}">
+      <i class="food-thumb ${food.image}" aria-hidden="true"></i>
+      <div>
+        <strong>${food.name}</strong>
+        <p>${food.calories} kcal · ${formatFoodNumber(food.grams || 100)}g</p>
+      </div>
+      <menu class="diet-food-actions">
+        <button class="diet-food-delete" type="button" data-delete-food="${food.id}">删除</button>
+      </menu>
+    </article>
+  `).join("") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
+}
+
+function findDietFood(foodId) {
+  return dietResults.flatMap((result) => result.foods).find((item) => item.id === foodId);
+}
+
+function openDietGramSheet(foodId) {
+  const food = findDietFood(foodId);
+  if (!food) return;
+  editingDietFoodId = foodId;
+  if (dietGramFoodName) dietGramFoodName.textContent = food.name;
+  if (dietGramInput) dietGramInput.value = food.grams || 100;
+  sheetMask.classList.add("active");
+  dietGramSheet?.classList.add("active");
+  window.setTimeout(() => dietGramInput?.focus(), 80);
+}
+
+function closeDietGramSheet() {
+  editingDietFoodId = "";
+  dietGramSheet?.classList.remove("active");
+  if (!document.querySelector(".diet-upload-sheet.active, .medicine-checkin-sheet.active, .sport-checkin-sheet.active, .weight-checkin-page.active, .waist-checkin-sheet.active, .checkin-success-dialog.active, .sport-success-dialog.active")) {
+    sheetMask.classList.remove("active");
+  }
+}
+
+function confirmDietGramEdit() {
+  const food = findDietFood(editingDietFoodId);
+  if (!food) return;
+  updateFoodByGrams(food, dietGramInput?.value);
+  closeDietGramSheet();
+  renderDietResult();
+}
+
+function deleteDietFood(foodId) {
+  dietResults.forEach((result) => {
+    result.foods = result.foods.filter((food) => food.id !== foodId);
+  });
+  renderDietResult();
+  showToast("已删除该食物");
+}
+
+function confirmDietCheckin() {
+  const totals = dietTotals();
+  const totalFoods = dietResults.flatMap((result) => result.foods).length;
+  const totalGrams = dietResults
+    .flatMap((result) => result.foods)
+    .reduce((sum, food) => sum + Number(food.grams || 0), 0);
+  const time = formatDietTime(dietResultTime?.value || dietMealTime?.value);
+  if (dietNoteInput && dietResultNoteInput) dietNoteInput.value = dietResultNoteInput.value.trim();
+  if (dietMealTime && dietResultTime?.value) dietMealTime.value = dietResultTime.value;
+  const data = scheduleDataFor();
+  const dietItem = data.checkins.find((item) => item.type === "diet");
+  const nextDietItem = {
+    type: "diet",
+    title: "饮食打卡",
+    desc: `当日摄入 ${Math.round(totals.calories)} kcal，食物克重 ${formatFoodNumber(totalGrams)}g`,
+    count: `已记录 ${Math.max(totalFoods, 1)} 次`,
+    value: `${Math.round(totals.calories)} kcal ${time}`
+  };
+  if (dietItem) Object.assign(dietItem, nextDietItem);
+  else data.checkins.unshift(nextDietItem);
+  if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
+  dietCheckinSummary = nextDietItem;
+  const nextView = dietReturnView === "home" ? "home" : "plan";
+  tabbarLinks.forEach((item) => item.classList.toggle("active", item.dataset.view === nextView));
+  switchView(nextView);
+  showToast("饮食打卡已完成");
+}
+
+function currentDietCheckinItem() {
+  return scheduleDataFor().checkins.find((item) => item.type === "diet");
+}
+
+function hasDietRecord(item) {
+  if (!item) return false;
+  return Boolean(item.value) || /^已记录/.test(item.count || "");
+}
+
+function renderDietDetailPage() {
+  const item = currentDietCheckinItem();
+  const hasRecord = hasDietRecord(item);
+  if (dietDetailSummary) {
+    dietDetailSummary.innerHTML = hasRecord ? `
+      <div>
+        <span>今日饮食</span>
+        <strong>${escapeAttr(item.value || "已记录")}</strong>
+        <p>${escapeAttr(item.desc || "已完成本次饮食打卡，可继续补充餐食记录。")}</p>
+      </div>
+      <i aria-hidden="true">食</i>
+    ` : `
+      <div>
+        <span>今日饮食</span>
+        <strong>暂无记录</strong>
+        <p>拍摄餐食图片后，AI 会识别热量与营养成分。</p>
+      </div>
+      <i aria-hidden="true">食</i>
+    `;
+  }
+  if (dietDetailRecords) {
+    dietDetailRecords.innerHTML = hasRecord ? `
+      <article class="diet-detail-record">
+        <i aria-hidden="true"></i>
+        <div>
+          <strong>${escapeAttr(item.title || "饮食打卡")}</strong>
+          <p>${escapeAttr(item.count || "已记录 1 次")}</p>
+          <span>${escapeAttr(item.desc || "营养识别结果已保存")}</span>
+        </div>
+        <em>${escapeAttr(item.value || "")}</em>
+      </article>
+    ` : `
+      <div class="diet-detail-empty">
+        <strong>暂无饮食记录</strong>
+        <span>点击去打卡，进入饮食拍摄页。</span>
+      </div>
+    `;
+  }
+}
+
+function openDietDetailPage() {
+  renderDietDetailRange();
+  renderDietDetailPage();
+  openSubPage("dietDetailPage");
+}
+
+function dateOnlyValue(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function monthOnlyValue(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+}
+
+function shortDateText(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getMonth() + 1}/${pad(date.getDate())}`;
+}
+
+function detailWeekRangeText(date) {
+  const start = new Date(date);
+  const day = start.getDay() || 7;
+  start.setDate(start.getDate() - day + 1);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  return `${start.getFullYear()}年${shortDateText(start)} - ${shortDateText(end)}`;
+}
+
+function isSameDate(a, b) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate();
+}
+
+function dietDetailRangeLabel() {
+  const current = dietDetailRangeDate || new Date();
+  const pad = (value) => String(value).padStart(2, "0");
+  if (dietDetailRangeMode === "day") {
+    return isSameDate(current, new Date())
+      ? "今日"
+      : `${current.getFullYear()}年${pad(current.getMonth() + 1)}月${pad(current.getDate())}日`;
+  }
+  if (dietDetailRangeMode === "week") return detailWeekRangeText(current);
+  if (dietDetailRangeMode === "month") return `${current.getFullYear()}年${pad(current.getMonth() + 1)}月`;
+  return `${current.getFullYear()}年`;
+}
+
+function renderDietDetailRange() {
+  dietDetailRangeTabs?.querySelectorAll("[data-diet-range]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.dietRange === dietDetailRangeMode);
+  });
+  if (dietDetailRangeText) dietDetailRangeText.textContent = dietDetailRangeLabel();
+  if (dietDetailDayInput) dietDetailDayInput.value = dateOnlyValue(dietDetailRangeDate);
+  if (dietDetailMonthInput) dietDetailMonthInput.value = monthOnlyValue(dietDetailRangeDate);
+}
+
+function dietDetailFoodsForRender() {
+  const latestFoods = dietResults.flatMap((result) => result.foods || []);
+  if (latestFoods.length) {
+    return latestFoods.map((food) => ({
+      name: food.name,
+      amount: `${formatFoodNumber(food.grams || 100)}g`,
+      calories: food.calories,
+      image: food.image
+    }));
+  }
+  return [
+    { name: "鸡蛋", amount: "1个（50g）", calories: 70, image: "egg" },
+    { name: "牛奶", amount: "250 ml", calories: 150, image: "milk" },
+    { name: "全麦面包", amount: "1片（60g）", calories: 160, image: "bread" },
+    { name: "香蕉", amount: "1根（100g）", calories: 90, image: "banana" },
+    { name: "蔬菜沙拉", amount: "1份（120g）", calories: 80, image: "salad" },
+    { name: "煎鸡胸肉", amount: "100g", calories: 180, image: "chicken" }
+  ];
+}
+
+function renderDietDetailPage() {
+  const foods = dietDetailFoodsForRender();
+  const calories = foods.length && dietResults.length
+    ? Math.round(dietTotals().calories)
+    : 1280;
+  const protein = foods.length && dietResults.length ? Math.round(dietTotals().protein) : 135;
+  const fat = foods.length && dietResults.length ? Math.round(dietTotals().fat) : 140;
+  const carb = foods.length && dietResults.length ? Math.round(dietTotals().carb) : 160;
+  const meal = dietResults[0]?.meal || "早餐";
+  const time = formatDietTime(dietResultTime?.value || dietMealTime?.value) || "08:30";
+  if (dietDetailSummary) {
+    dietDetailSummary.innerHTML = `
+      <div class="diet-detail-ai-label"><span>AI分析</span><em>食物已为您识别并计算</em></div>
+      <strong class="diet-detail-calories">${calories}<em>kcal · 本次总热量</em></strong>
+      <div class="diet-detail-nutrients">
+        <div><i class="nutrient-protein" aria-hidden="true"></i><b>蛋白质</b><strong>${protein}<small>g</small></strong><span>21%</span></div>
+        <div><i class="nutrient-fat" aria-hidden="true"></i><b>脂肪</b><strong>${fat}<small>g</small></strong><span>30%</span></div>
+        <div><i class="nutrient-carb" aria-hidden="true"></i><b>碳水</b><strong>${carb}<small>g</small></strong><span>49%</span></div>
+      </div>
+    `;
+  }
+  if (dietDetailRecords) {
+    dietDetailRecords.innerHTML = `
+      <div class="diet-detail-meal-row">
+        <strong>${escapeAttr(meal)}</strong>
+      </div>
+      <section class="diet-detail-food-card">
+        <div class="diet-detail-food-list">
+          ${foods.map((food) => `
+            <article class="diet-detail-food-row">
+              <i class="food-thumb ${food.image}" aria-hidden="true"></i>
+              <div>
+                <strong>${escapeAttr(food.name)}</strong>
+                <span>${escapeAttr(food.amount)}</span>
+              </div>
+              <em>${Math.round(food.calories)} kcal</em>
+              <b aria-hidden="true"></b>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }
+}
+
+function medicinePatientKey() {
+  return schedulePatientId || currentPatient.id || "zhang";
+}
+
+function currentMedicineRecords() {
+  const key = medicinePatientKey();
+  if (!medicineRecordsByPatient[key]) medicineRecordsByPatient[key] = [];
+  return medicineRecordsByPatient[key];
+}
+
+function sortedMedicineRecords() {
+  return [...currentMedicineRecords()].sort((a, b) => new Date(b.time) - new Date(a.time));
+}
+
+function medicineRecordById(recordId) {
+  return currentMedicineRecords().find((record) => record.id === recordId);
+}
+
+function medicineDateParts(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return { group: "未知时间", time: "--:--", full: "--" };
+  const today = new Date(2026, 5, 17);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const dateText = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const group = sameDay(date, today) ? "今天" : sameDay(date, yesterday) ? "昨天" : dateText;
+  const time = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  return {
+    group,
+    time,
+    full: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${time}`
+  };
+}
+
+function medicineItemTypeLabel(type) {
+  return type === "nutrition" ? "营养素" : "药品";
+}
+
+function medicineThumbStyle(image) {
+  if (!image) return "";
+  return image.startsWith("blob:") || /^https?:/.test(image) || image.startsWith("data:")
+    ? `background-image:url('${image}')`
+    : `background:${image}`;
+}
+
+function medicineRecordSummary(record) {
+  const items = record?.items || [];
+  const medicineNames = items.filter((item) => item.type !== "nutrition").map((item) => item.name);
+  const nutritionNames = items.filter((item) => item.type === "nutrition").map((item) => item.name);
+  const first = medicineNames[0] || nutritionNames[0] || "用药/补充";
+  return {
+    count: `${items.length} 项`,
+    primary: first,
+    medicineText: medicineNames.length ? medicineNames.join("、") : "无",
+    nutritionText: nutritionNames.length ? nutritionNames.join("、") : "无"
+  };
+}
+
+function updateMedicineScheduleCard() {
+  const data = scheduleDataFor();
+  const records = sortedMedicineRecords();
+  const latest = records[0];
+  let medicineItem = data.checkins.find((item) => item.type === "medicine");
+  if (!medicineItem) {
+    medicineItem = { type: "medicine", title: "用药打卡", desc: "记录每日用药，帮助按时服药", count: "暂无记录" };
+    data.checkins.unshift(medicineItem);
+  }
+  if (latest) {
+    const parts = medicineDateParts(latest.time);
+    const summary = medicineRecordSummary(latest);
+    Object.assign(medicineItem, {
+      title: "用药打卡",
+      desc: latest.note || `记录 ${summary.count} 用药/补充明细`,
+      count: `已记录 ${records.length} 次`,
+      value: `${summary.primary} ${parts.time}`
+    });
+  } else {
+    Object.assign(medicineItem, {
+      title: "用药打卡",
+      desc: "记录每日用药，帮助按时服药",
+      count: "暂无记录",
+      value: ""
+    });
+  }
+  if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
+  renderSchedule();
+}
+
+function renderMedicineRecordsPage() {
+  if (!medicineRecordsList) return;
+  const records = sortedMedicineRecords();
+  if (!records.length) {
+    medicineRecordsList.innerHTML = `
+      <div class="medicine-record-empty">
+        <strong>暂无用药/补充记录</strong>
+        <span>从健康打卡卡片右上角添加本次记录。</span>
+      </div>
+    `;
+    return;
+  }
+  let currentGroup = "";
+  medicineRecordsList.innerHTML = records.map((record) => {
+    const parts = medicineDateParts(record.time);
+    const summary = medicineRecordSummary(record);
+    const groupTitle = parts.group !== currentGroup ? `<h2>${parts.group}</h2>` : "";
+    currentGroup = parts.group;
+    const firstItems = record.items.slice(0, 3).map((item) => item.name).join("、");
+    return `
+      ${groupTitle}
+      <button class="medicine-record-row" type="button" data-medicine-record="${record.id}">
+        <span>
+          <em>${parts.time}</em>
+          <strong>${summary.count}</strong>
+          <b>${medicineItemTypeLabel(record.items[0]?.type)}：${escapeAttr(firstItems || "用药/补充记录")}</b>
+          <small>${record.note ? `备注：${escapeAttr(record.note)}` : "无备注"}</small>
+        </span>
+        <i aria-hidden="true"></i>
+      </button>
+    `;
+  }).join("");
+}
+
+function openMedicineRecordsPage() {
+  renderMedicineRecordsPage();
+  openSubPage("medicineRecordsPage");
+}
+
+function renderMedicineDetailPage() {
+  const record = medicineRecordById(selectedMedicineRecordId) || sortedMedicineRecords()[0];
+  if (!record) {
+    openMedicineRecordsPage();
+    return;
+  }
+  selectedMedicineRecordId = record.id;
+  const parts = medicineDateParts(record.time);
+  const summary = medicineRecordSummary(record);
+  if (medicineDetailSummary) {
+    medicineDetailSummary.innerHTML = `
+      <p><span>用药时间</span><strong>${parts.full}</strong></p>
+      <p><span>记录数量</span><strong>${summary.count}</strong></p>
+      <p><span>备注</span><strong>${escapeAttr(record.note || "无")}</strong></p>
+    `;
+  }
+  if (medicineDetailList) {
+    let imageCursor = 0;
+    medicineDetailList.innerHTML = (record.items || []).map((item) => {
+      const images = item.images || [];
+      return `
+        <article class="medicine-detail-item">
+          <span>${medicineItemTypeLabel(item.type)}</span>
+          <strong>${escapeAttr(item.name)}</strong>
+          ${images.length ? `
+            <div class="medicine-detail-images">
+              ${images.map((image) => `<button type="button" data-medicine-image="${record.id}" data-image-index="${imageCursor++}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`).join("")}
+            </div>
+          ` : ""}
+        </article>
+      `;
+    }).join("");
+  }
+}
+
+function openMedicineDetailPage(recordId) {
+  selectedMedicineRecordId = recordId;
+  renderMedicineDetailPage();
+  openSubPage("medicineDetailPage");
+}
+
+function deleteSelectedMedicineRecord() {
+  if (!selectedMedicineRecordId) return;
+  const key = medicinePatientKey();
+  medicineRecordsByPatient[key] = currentMedicineRecords().filter((record) => record.id !== selectedMedicineRecordId);
+  selectedMedicineRecordId = "";
+  saveMedicineRecords();
+  updateMedicineScheduleCard();
+  renderMedicineRecordsPage();
+  document.body.classList.add("detail-page-open");
+  planPage.classList.remove("active");
+  servicePage.classList.remove("active");
+  serviceDetailPage.classList.remove("active");
+  minePage.classList.remove("active");
+  subPages.forEach((item) => item.classList.toggle("active", item.id === "medicineRecordsPage"));
+  pageStack = pageStack.filter((pageId) => pageId !== "medicineDetailPage");
+  if (pageStack[pageStack.length - 1] === "medicineRecordsPage") pageStack.pop();
+  showToast("用药记录已删除");
+}
+
+function openMedicineImagePage(recordId, imageIndex = 0) {
+  const record = medicineRecordById(recordId);
+  if (!record) return;
+  medicinePreviewImages = record.items.flatMap((item) => (item.images || []).map((image) => ({ image, name: item.name })));
+  medicinePreviewIndex = Math.max(0, Math.min(Number(imageIndex) || 0, medicinePreviewImages.length - 1));
+  renderMedicineImagePage();
+  openSubPage("medicineImagePage");
+}
+
+function renderMedicineImagePage() {
+  const current = medicinePreviewImages[medicinePreviewIndex];
+  if (!current) return;
+  if (medicineImageCount) medicineImageCount.textContent = `${medicinePreviewIndex + 1} / ${medicinePreviewImages.length}`;
+  if (medicineImageLarge) medicineImageLarge.setAttribute("style", medicineThumbStyle(current.image));
+  if (medicineImageThumbs) {
+    medicineImageThumbs.innerHTML = medicinePreviewImages.map((item, index) => `
+      <button class="${index === medicinePreviewIndex ? "active" : ""}" type="button" data-preview-index="${index}" style="${medicineThumbStyle(item.image)}" aria-label="查看第${index + 1}张图片"></button>
+    `).join("");
+  }
+}
+
+function stepMedicineImage(delta) {
+  if (!medicinePreviewImages.length) return;
+  medicinePreviewIndex = (medicinePreviewIndex + delta + medicinePreviewImages.length) % medicinePreviewImages.length;
+  renderMedicineImagePage();
+}
+
+function createMedicineItem(name = "", images = [], type = "medicine") {
+  return {
+    id: `medicine-${medicineIdSeed++}`,
+    type,
+    name,
+    images
+  };
+}
+
+function openMedicineCheckinSheet(recordId = "") {
+  closeOverlays();
+  const record = recordId ? medicineRecordById(recordId) : null;
+  editingMedicineRecordId = record?.id || "";
+  medicineItems = record
+    ? record.items.map((item) => createMedicineItem(item.name, [...(item.images || [])], item.type))
+    : [createMedicineItem()];
+  medicineImageTargetId = "";
+  if (medicineTime) medicineTime.value = record?.time || localDateTimeValue();
+  updateMedicineTimeText();
+  if (medicineNote) medicineNote.value = record?.note || "";
+  updateMedicineNoteCount();
+  renderMedicineItems();
+  const title = medicineCheckinSheet?.querySelector(".medicine-sheet-head h3");
+  if (title) title.textContent = editingMedicineRecordId ? "编辑用药/补充记录" : "用药/补充记录";
+  if (medicineConfirm) medicineConfirm.textContent = editingMedicineRecordId ? "保存记录" : "确认打卡";
+  sheetMask.classList.add("active");
+  medicineCheckinSheet?.classList.add("active");
+}
+
+function medicineRecordCopy(type = "medicine") {
+  return type === "nutrition"
+    ? {
+      itemTitle: "营养素",
+      fieldTitle: "营养素名称",
+      placeholder: "请输入营养素名称",
+      imageHelp: "营养素图片（选填，支持多选，最多9张）",
+      nameToast: "请填写营养素名称"
+    }
+    : {
+      itemTitle: "药品",
+      fieldTitle: "药品名称",
+      placeholder: "请输入药品名称",
+      imageHelp: "药品图片（选填，支持多选，最多9张）",
+      nameToast: "请填写药品名称"
+    };
+}
+
+function formatMedicineTimeText(value) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择用药时间";
+  const today = new Date();
+  const dateKey = (item) => `${item.getFullYear()}-${item.getMonth()}-${item.getDate()}`;
+  const timeText = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  if (dateKey(date) === dateKey(today)) return timeText;
+  return `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${timeText}`;
+}
+
+function updateMedicineTimeText() {
+  if (!medicineTimeText || !medicineTime) return;
+  medicineTimeText.textContent = formatMedicineTimeText(medicineTime.value);
+}
+
+function populateMedicineTimePicker() {
+  if (!medicinePickerDate || !medicinePickerHour || !medicinePickerMinute || !medicineTime) return;
+  const selected = medicineTime.value ? new Date(medicineTime.value) : new Date();
+  const pad = (value) => String(value).padStart(2, "0");
+  medicinePickerDate.innerHTML = [-1, 0, 1, 2, 3].map((offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+    return `<option value="${value}">${label}</option>`;
+  }).join("");
+  medicinePickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}</option>`).join("");
+  medicinePickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const minute = pad(index * 5);
+    return `<option value="${minute}">${minute}</option>`;
+  }).join("");
+  medicinePickerDate.value = `${selected.getFullYear()}-${pad(selected.getMonth() + 1)}-${pad(selected.getDate())}`;
+  medicinePickerHour.value = pad(selected.getHours());
+  medicinePickerMinute.value = pad(Math.round(selected.getMinutes() / 5) * 5).replace("60", "55");
+}
+
+function openMedicineTimePicker() {
+  populateMedicineTimePicker();
+  medicineTimePicker?.classList.add("active");
+}
+
+function closeMedicineTimePicker() {
+  medicineTimePicker?.classList.remove("active");
+}
+
+function confirmMedicineTimePicker() {
+  if (!medicinePickerDate?.value || !medicinePickerHour?.value || !medicinePickerMinute?.value || !medicineTime) return;
+  medicineTime.value = `${medicinePickerDate.value}T${medicinePickerHour.value}:${medicinePickerMinute.value}`;
+  updateMedicineTimeText();
+  closeMedicineTimePicker();
+}
+
+function updateMedicineNoteCount() {
+  if (!medicineNoteCount || !medicineNote) return;
+  medicineNoteCount.textContent = `${medicineNote.value.length}/200`;
+}
+
+function renderMedicineItems() {
+  if (!medicineList) return;
+  if (medicineListTitle) medicineListTitle.textContent = "用药/补充记录";
+  if (medicineListDesc) medicineListDesc.textContent = "可添加多个记录，时间和备注对所有条目生效";
+  if (medicineAdd) medicineAdd.textContent = "+ 添加记录";
+  medicineList.innerHTML = medicineItems.map((item, index) => {
+    const itemType = item.type === "nutrition" ? "nutrition" : "medicine";
+    const copy = medicineRecordCopy(itemType);
+    return `
+    <article class="medicine-card" data-medicine-id="${item.id}">
+      <div class="medicine-card-head">
+        <i class="medicine-drag" aria-hidden="true"></i>
+        <strong>${copy.itemTitle} ${index + 1}</strong>
+        <button class="medicine-delete" type="button" data-delete-medicine="${item.id}" aria-label="删除${copy.itemTitle}"></button>
+      </div>
+      <div class="medicine-item-type" aria-label="${copy.itemTitle}记录类型">
+        <span>记录类型</span>
+        <div role="tablist">
+          <button class="${itemType === "medicine" ? "active" : ""}" type="button" data-medicine-item-type="${item.id}" data-item-type="medicine">药品</button>
+          <button class="${itemType === "nutrition" ? "active" : ""}" type="button" data-medicine-item-type="${item.id}" data-item-type="nutrition">营养素</button>
+        </div>
+      </div>
+      <label>
+        <span class="medicine-field-title">${copy.fieldTitle} <b>*</b></span>
+        <input class="medicine-name-input" value="${escapeAttr(item.name)}" data-medicine-name="${item.id}" placeholder="${copy.placeholder}">
+      </label>
+      <div>
+        <p class="medicine-image-help">${copy.imageHelp}</p>
+        <div class="medicine-images">
+          ${item.images.map((image, imageIndex) => `
+            <div class="medicine-thumb" style="${image.startsWith("blob:") ? `background-image:url('${image}')` : `background:${image}`}">
+              <button type="button" data-remove-medicine-image="${item.id}" data-image-index="${imageIndex}" aria-label="删除图片">×</button>
+            </div>
+          `).join("")}
+          ${item.images.length < 9 ? `<button class="medicine-add-image" type="button" data-add-medicine-image="${item.id}">添加图片</button>` : ""}
+        </div>
+      </div>
+    </article>
+  `;
+  }).join("");
+}
+
+function addMedicineItem() {
+  medicineItems.push(createMedicineItem());
+  renderMedicineItems();
+}
+
+function deleteMedicineItem(id) {
+  const removed = medicineItems.find((item) => item.id === id);
+  removed?.images.forEach((image) => {
+    if (image.startsWith("blob:")) URL.revokeObjectURL(image);
+  });
+  medicineItems = medicineItems.filter((item) => item.id !== id);
+  renderMedicineItems();
+}
+
+function addMedicineImages(files) {
+  const item = medicineItems.find((medicine) => medicine.id === medicineImageTargetId);
+  if (!item) return;
+  const available = 9 - item.images.length;
+  const incoming = Array.from(files || []).slice(0, available);
+  incoming.forEach((file, index) => {
+    let preview = medicineMockImages[(item.images.length + index) % medicineMockImages.length];
+    try {
+      preview = URL.createObjectURL(file);
+    } catch (error) {
+      preview = medicineMockImages[(item.images.length + index) % medicineMockImages.length];
+    }
+    item.images.push(preview);
+  });
+  if (Array.from(files || []).length > available) showToast("每个药品最多上传 9 张图片");
+  renderMedicineItems();
+}
+
+function saveMedicineNamesFromDom() {
+  medicineList?.querySelectorAll("[data-medicine-name]").forEach((input) => {
+    const item = medicineItems.find((medicine) => medicine.id === input.dataset.medicineName);
+    if (item) item.name = input.value.trim();
+  });
+}
+
+function confirmMedicineCheckin() {
+  saveMedicineNamesFromDom();
+  if (!medicineTime?.value) {
+    showToast("请选择用药时间");
+    return;
+  }
+  if (!medicineItems.length) {
+    showToast("请至少添加 1 条记录");
+    return;
+  }
+  const empty = medicineItems.find((item) => !item.name);
+  if (empty) {
+    const copy = medicineRecordCopy(empty.type);
+    showToast(copy.nameToast);
+    medicineList?.querySelector(`[data-medicine-name="${empty.id}"]`)?.focus();
+    return;
+  }
+  const key = medicinePatientKey();
+  const nextRecord = {
+    id: editingMedicineRecordId || `med-${Date.now()}`,
+    time: medicineTime.value,
+    note: medicineNote?.value?.trim() || "",
+    items: medicineItems.map((item, index) => ({
+      id: item.id || `med-item-${Date.now()}-${index}`,
+      type: item.type === "nutrition" ? "nutrition" : "medicine",
+      name: item.name,
+      images: [...(item.images || [])]
+    }))
+  };
+  if (!medicineRecordsByPatient[key]) medicineRecordsByPatient[key] = [];
+  if (editingMedicineRecordId) {
+    medicineRecordsByPatient[key] = medicineRecordsByPatient[key].map((record) => record.id === editingMedicineRecordId ? nextRecord : record);
+  } else {
+    medicineRecordsByPatient[key].unshift(nextRecord);
+  }
+  selectedMedicineRecordId = nextRecord.id;
+  editingMedicineRecordId = "";
+  saveMedicineRecords();
+  updateMedicineScheduleCard();
+  closeOverlays();
+  const hasMedicine = medicineItems.some((item) => item.type !== "nutrition");
+  const hasNutrition = medicineItems.some((item) => item.type === "nutrition");
+  renderMedicineDetailPage();
+  renderMedicineRecordsPage();
+  showToast(hasMedicine && hasNutrition ? "用药/补充记录已完成" : hasNutrition ? "营养素记录已完成" : "用药记录已完成");
+}
+
+function formatSportTimeText(value) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择记录时间";
+  const today = new Date();
+  const sameDay = dateInputValue(date) === dateInputValue(today);
+  const dateText = `${date.getFullYear()}-${padDateNumber(date.getMonth() + 1)}-${padDateNumber(date.getDate())}`;
+  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return sameDay ? timeText : `${dateText} ${timeText}`;
+}
+
+function updateSportNoteCount() {
+  if (!sportNoteInput || !sportNoteCount) return;
+  sportNoteCount.textContent = `${sportNoteInput.value.length}/100`;
+}
+
+function currentSportName() {
+  if (sportSelectedType !== "other") return sportTypes[sportSelectedType]?.label || "步行";
+  return sportOtherName || "其他";
+}
+
+function renderSportCheckin() {
+  if (!sportTypeGrid) return;
+  sportTypeGrid.querySelectorAll("[data-sport-type]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.sportType === sportSelectedType);
+  });
+  if (sportOtherField) sportOtherField.classList.toggle("active", sportSelectedType === "other");
+  if (sportOtherLabel) sportOtherLabel.textContent = sportSelectedType === "other" && sportOtherName ? sportOtherName : "其他";
+  if (sportOtherCount && sportOtherInput) sportOtherCount.textContent = `${sportOtherInput.value.length}/10`;
+  if (sportDurationText) sportDurationText.textContent = String(sportDuration);
+  if (sportTimeText) sportTimeText.textContent = formatSportTimeText(sportTimeValue);
+}
+
+function openSportCheckinSheet() {
+  closeOverlays();
+  sportSelectedType = "walk";
+  sportOtherName = "";
+  sportDuration = 30;
+  sportTimeValue = localDateTimeValue();
+  if (sportOtherInput) sportOtherInput.value = "";
+  if (sportNoteInput) sportNoteInput.value = "";
+  updateSportNoteCount();
+  renderSportCheckin();
+  sheetMask.classList.add("active");
+  sportCheckinSheet?.classList.add("active");
+}
+
+function populateSportTimePicker() {
+  if (!sportPickerDate || !sportPickerHour || !sportPickerMinute) return;
+  const selected = sportTimeValue ? new Date(sportTimeValue) : new Date();
+  const pad = (value) => String(value).padStart(2, "0");
+  sportPickerDate.innerHTML = [-1, 0, 1, 2, 3].map((offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+    return `<option value="${value}">${label}</option>`;
+  }).join("");
+  sportPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}</option>`).join("");
+  sportPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const minute = pad(index * 5);
+    return `<option value="${minute}">${minute}</option>`;
+  }).join("");
+  sportPickerDate.value = `${selected.getFullYear()}-${pad(selected.getMonth() + 1)}-${pad(selected.getDate())}`;
+  sportPickerHour.value = pad(selected.getHours());
+  sportPickerMinute.value = pad(Math.min(55, Math.round(selected.getMinutes() / 5) * 5));
+}
+
+function openSportTimePicker() {
+  populateSportTimePicker();
+  sportTimePicker?.classList.add("active");
+}
+
+function closeSportTimePicker() {
+  sportTimePicker?.classList.remove("active");
+}
+
+function confirmSportTimePicker() {
+  if (!sportPickerDate?.value || !sportPickerHour?.value || !sportPickerMinute?.value) return;
+  sportTimeValue = `${sportPickerDate.value}T${sportPickerHour.value}:${sportPickerMinute.value}`;
+  renderSportCheckin();
+  closeSportTimePicker();
+}
+
+function submitSportCheckin() {
+  if (sportSelectedType === "other" && !sportOtherName) {
+    showToast("请输入运动名称");
+    sportOtherInput?.focus();
+    return;
+  }
+  const rule = sportTypes[sportSelectedType] || sportTypes.walk;
+  const calories = sportDuration * rule.kcal;
+  const record = {
+    id: `sport-${Date.now()}`,
+    name: currentSportName(),
+    duration: sportDuration,
+    calories,
+    time: sportTimeValue || localDateTimeValue()
+  };
+  const data = scheduleDataFor();
+  const sportItem = data.checkins.find((item) => item.type === "sport");
+  const records = Array.isArray(sportItem?.records) ? [...sportItem.records] : [];
+  records.unshift(record);
+  const totalDuration = records.reduce((sum, item) => sum + Number(item.duration || 0), 0);
+  const totalCalories = records.reduce((sum, item) => sum + Number(item.calories || 0), 0);
+  const nextSportItem = {
+    type: "sport",
+    title: "运动打卡",
+    desc: `总时长 ${totalDuration}分钟`,
+    count: `已记录 ${records.length} 次`,
+    value: `消耗 ${totalCalories} kcal`,
+    records
+  };
+  if (sportItem) Object.assign(sportItem, nextSportItem);
+  else data.checkins.unshift(nextSportItem);
+  if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
+  renderSchedule();
+  if (sportSuccessSummary) sportSuccessSummary.textContent = `本次运动：${currentSportName()} ${sportDuration}分钟`;
+  if (sportCalories) sportCalories.textContent = `${calories} kcal`;
+  sportCheckinSheet?.classList.remove("active");
+  sportTimePicker?.classList.remove("active");
+  sheetMask.classList.add("active");
+  sportSuccessDialog?.classList.add("active");
+}
+
+function closeSportSuccessDialog() {
+  closeOverlays();
+  showToast("运动打卡已完成");
+}
+
+function formatWeightTimeText(value) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择记录时间";
+  const today = new Date();
+  const sameDay = dateInputValue(date) === dateInputValue(today);
+  const dateText = `${date.getFullYear()}-${padDateNumber(date.getMonth() + 1)}-${padDateNumber(date.getDate())}`;
+  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return sameDay ? timeText : `${dateText} ${timeText}`;
+}
+
+function updateWeightTimeText() {
+  if (weightTimeText) weightTimeText.textContent = formatWeightTimeText(weightCheckinTimeValue);
+}
+
+function updateWeightNoteCount() {
+  if (!weightNoteInput || !weightNoteCount) return;
+  weightNoteCount.textContent = `${weightNoteInput.value.length}/100`;
+}
+
+function normalizeDecimal(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function setWeightField(field, value) {
+  const input = field === "fat" ? weightFatInput : weightValueInput;
+  if (!input) return;
+  input.value = Number(value).toFixed(1);
+  validateWeightInputs(false);
+}
+
+function stepWeightField(field, delta) {
+  const input = field === "fat" ? weightFatInput : weightValueInput;
+  const min = field === "fat" ? 3 : 20;
+  const max = field === "fat" ? 70 : 300;
+  const fallback = field === "fat" ? 24.5 : 68.5;
+  const current = normalizeDecimal(input?.value, fallback);
+  const next = Math.min(max, Math.max(min, current + delta));
+  setWeightField(field, next);
+}
+
+function validateWeightInputs(showError = true) {
+  const weight = Number(weightValueInput?.value);
+  const fatRaw = weightFatInput?.value?.trim() || "";
+  const fat = Number(fatRaw);
+  let valid = true;
+  if (!weightValueInput?.value) {
+    if (showError) showToast("请输入体重");
+    valid = false;
+  } else if (!Number.isFinite(weight) || weight < 20 || weight > 300) {
+    weightValueHint.textContent = "请输入 20.0 ~ 300.0 kg 范围内的体重";
+    weightValueHint.classList.add("error");
+    valid = false;
+  } else {
+    weightValueHint.textContent = "建议范围：20.0 ~ 300.0 kg";
+    weightValueHint.classList.remove("error");
+  }
+  if (fatRaw && (!Number.isFinite(fat) || fat < 3 || fat > 70)) {
+    weightFatHint.textContent = "请输入 3.0 ~ 70.0 % 范围内的体脂率";
+    weightFatHint.classList.add("error");
+    valid = false;
+  } else {
+    weightFatHint.textContent = "建议范围：3.0 ~ 70.0 %";
+    weightFatHint.classList.remove("error");
+  }
+  return valid;
+}
+
+function openWeightCheckinPage() {
+  closeOverlays();
+  weightCheckinTimeValue = localDateTimeInputValue();
+  if (weightValueInput) weightValueInput.value = "68.5";
+  if (weightFatInput) weightFatInput.value = "24.5";
+  if (weightNoteInput) weightNoteInput.value = "";
+  updateWeightTimeText();
+  updateWeightNoteCount();
+  validateWeightInputs(false);
+  sheetMask?.classList.add("active");
+  weightCheckinPage?.classList.add("active");
+}
+
+function populateWeightTimePicker() {
+  if (!weightPickerDate || !weightPickerHour || !weightPickerMinute) return;
+  const selected = weightCheckinTimeValue ? new Date(weightCheckinTimeValue) : new Date();
+  weightPickerDate.innerHTML = [-6, -5, -4, -3, -2, -1, 0].map((offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const value = dateInputValue(date);
+    const label = offset === 0 ? "今天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    return `<option value="${value}">${label}</option>`;
+  }).join("");
+  weightPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${padDateNumber(hour)}">${padDateNumber(hour)}</option>`).join("");
+  weightPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const minute = padDateNumber(index * 5);
+    return `<option value="${minute}">${minute}</option>`;
+  }).join("");
+  weightPickerDate.value = dateInputValue(selected);
+  weightPickerHour.value = padDateNumber(selected.getHours());
+  weightPickerMinute.value = padDateNumber(Math.min(55, Math.round(selected.getMinutes() / 5) * 5));
+}
+
+function openWeightTimePicker() {
+  populateWeightTimePicker();
+  sheetMask?.classList.add("active");
+  weightTimePicker?.classList.add("active");
+}
+
+function closeWeightTimePicker() {
+  weightTimePicker?.classList.remove("active");
+  if (!weightCheckinPage?.classList.contains("active")) sheetMask?.classList.remove("active");
+}
+
+function confirmWeightTimePicker() {
+  if (!weightPickerDate?.value || !weightPickerHour?.value || !weightPickerMinute?.value) return;
+  weightCheckinTimeValue = `${weightPickerDate.value}T${weightPickerHour.value}:${weightPickerMinute.value}`;
+  updateWeightTimeText();
+  closeWeightTimePicker();
+}
+
+function submitWeightCheckin() {
+  if (!validateWeightInputs(true)) return;
+  if (!weightCheckinTimeValue) {
+    showToast("请选择记录时间");
+    return;
+  }
+  const weightValue = Number(weightValueInput.value);
+  const fatValue = weightFatInput.value ? Number(weightFatInput.value) : null;
+  const records = [
+    {
+      metricId: "weight",
+      value: weightValue,
+      display: formatMetricNumber(weightValue),
+      unit: "kg",
+      values: { value: weightValue }
+    }
+  ];
+  if (Number.isFinite(fatValue)) {
+    records.push({
+      metricId: "fat",
+      value: fatValue,
+      display: formatMetricNumber(fatValue),
+      unit: "%",
+      values: { value: fatValue }
+    });
+  }
+  if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
+  records.forEach((record) => {
+    const status = metricStatus(record.metricId, record.values);
+    if (!metricRecordsByPatient[currentPatient.id][record.metricId]) metricRecordsByPatient[currentPatient.id][record.metricId] = [];
+    metricRecordsByPatient[currentPatient.id][record.metricId].unshift({
+      id: `metric-${record.metricId}-${Date.now()}`,
+      time: weightCheckinTimeValue,
+      display: record.display,
+      chartValue: record.value,
+      unit: record.unit,
+      status: status.text,
+      attention: status.attention,
+      values: record.values,
+      note: weightNoteInput?.value.trim() || ""
+    });
+  });
+  saveMetricRecords();
+  renderFocusPlans();
+  closeOverlays();
+  showToast("打卡成功");
+}
+
+function waistMetric() {
+  return focusPlanDashboards.weight90.metrics.find((metric) => metric.id === "waist");
+}
+
+function formatWaistTimeText(value) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择记录时间";
+  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function updateWaistTimeText() {
+  if (waistTimeText) waistTimeText.textContent = formatWaistTimeText(waistCheckinTimeValue);
+}
+
+function openWaistCheckinSheet() {
+  closeOverlays();
+  const latest = metricRecordsFor("waist")[0];
+  const metric = waistMetric();
+  if (waistValueInput) waistValueInput.value = latest?.display || metric?.display || "82.5";
+  waistCheckinTimeValue = localDateTimeInputValue();
+  if (waistNoteInput) waistNoteInput.value = "";
+  if (waistError) waistError.textContent = "";
+  updateWaistTimeText();
+  sheetMask.classList.add("active");
+  waistCheckinSheet?.classList.add("active");
+  window.setTimeout(() => waistValueInput?.select(), 80);
+}
+
+function populateWaistTimePicker() {
+  if (!waistPickerDate || !waistPickerHour || !waistPickerMinute) return;
+  const selected = waistCheckinTimeValue ? new Date(waistCheckinTimeValue) : new Date();
+  waistPickerDate.innerHTML = [-1, 0, 1, 2, 3].map((offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const value = dateInputValue(date);
+    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    return `<option value="${value}">${label}</option>`;
+  }).join("");
+  waistPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
+    const value = padDateNumber(hour);
+    return `<option value="${value}">${value}</option>`;
+  }).join("");
+  waistPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const value = padDateNumber(index * 5);
+    return `<option value="${value}">${value}</option>`;
+  }).join("");
+  waistPickerDate.value = dateInputValue(selected);
+  waistPickerHour.value = padDateNumber(selected.getHours());
+  waistPickerMinute.value = padDateNumber(Math.min(55, Math.round(selected.getMinutes() / 5) * 5));
+}
+
+function openWaistTimePicker() {
+  populateWaistTimePicker();
+  waistTimePicker?.classList.add("active");
+}
+
+function closeWaistTimePicker() {
+  waistTimePicker?.classList.remove("active");
+}
+
+function confirmWaistTimePicker() {
+  if (!waistPickerDate?.value || !waistPickerHour?.value || !waistPickerMinute?.value) return;
+  waistCheckinTimeValue = `${waistPickerDate.value}T${waistPickerHour.value}:${waistPickerMinute.value}`;
+  updateWaistTimeText();
+  closeWaistTimePicker();
+}
+
+function saveWaistCheckin() {
+  const value = Number(waistValueInput?.value);
+  if (!waistValueInput?.value || !Number.isFinite(value) || value < 40 || value > 200) {
+    if (waistError) waistError.textContent = "请填写 40.0 ~ 200.0 cm 范围内的腰围";
+    waistValueInput?.focus();
+    return;
+  }
+  if (!waistCheckinTimeValue) {
+    if (waistError) waistError.textContent = "请选择记录时间";
+    return;
+  }
+  const metric = waistMetric();
+  const display = formatMetricNumber(value);
+  const status = metricStatus("waist", { value });
+  const record = {
+    id: `metric-waist-${Date.now()}`,
+    time: waistCheckinTimeValue,
+    display,
+    chartValue: value,
+    unit: "cm",
+    status: status.text,
+    attention: status.attention,
+    values: { value },
+    note: waistNoteInput?.value.trim() || ""
+  };
+  if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
+  if (!metricRecordsByPatient[currentPatient.id].waist) metricRecordsByPatient[currentPatient.id].waist = [];
+  metricRecordsByPatient[currentPatient.id].waist.unshift(record);
+  saveMetricRecords();
+  if (metric) {
+    metric.value = value;
+    metric.display = display;
+    metric.status = status.text;
+    metric.attention = status.attention;
+    metric.values = [...metric.values, value].slice(-7);
+  }
+  selectedFocusMetric = "waist";
+  selectedMetricDate = new Date(waistCheckinTimeValue);
+  closeOverlays();
+  renderFocusPlans();
+  if (metricDetailPage?.classList.contains("active")) renderMetricDetail();
+  if (checkinSuccessSummary) checkinSuccessSummary.textContent = `当日腰围：${display} cm`;
+  sheetMask.classList.add("active");
+  checkinSuccessDialog?.classList.add("active");
 }
 
 function sortedMedicalReports() {
@@ -1214,15 +2890,29 @@ function addMockFile(source) {
   renderSelectedFiles();
 }
 
-function openCameraPage() {
+function openCameraPage(mode = "report") {
+  cameraMode = mode;
   closeOverlays();
+  cameraPage?.classList.toggle("diet-camera", mode === "diet");
+  if (cameraHint) {
+    cameraHint.textContent = mode === "diet" ? "请从正上方俯拍食物，以便提升识别效果" : "请从正上方俯拍报告，以便提升识别效果";
+  }
+  cameraBack?.setAttribute("aria-label", mode === "diet" ? "返回饮食打卡" : "返回上传资料");
+  cameraShutter?.setAttribute("aria-label", mode === "diet" ? "拍摄食物" : "拍摄报告");
   cameraPage?.classList.add("active");
 }
 
 function returnToUploadSheet() {
   cameraPage?.classList.remove("active");
-  openSheet(uploadSheet);
-  renderSelectedFiles();
+  cameraPage?.classList.remove("diet-camera");
+  if (cameraMode === "diet") {
+    sheetMask.classList.add("active");
+    dietUploadSheet?.classList.add("active");
+    renderDietUploadImages();
+  } else {
+    openSheet(uploadSheet);
+    renderSelectedFiles();
+  }
 }
 
 function addSelectedImages(files) {
@@ -1271,6 +2961,11 @@ function addSelectedDocuments(files) {
 }
 
 function captureReportImage() {
+  if (cameraMode === "diet") {
+    addDietMockImage();
+    returnToUploadSheet();
+    return;
+  }
   if (selectedUploadFiles.length >= 5) {
     toast.textContent = "最多选择 5 张图片";
     toast.classList.add("show");
@@ -1503,9 +3198,51 @@ memberSwitcher.addEventListener("click", (event) => {
   }
 });
 
-addButton.addEventListener("click", () => {
-  const isOpen = taskPanel.classList.toggle("open");
+function setTaskPanelOpen(isOpen) {
+  taskPanel.classList.toggle("open", isOpen);
+  taskPanelMask?.classList.toggle("active", isOpen);
+  addButton.classList.toggle("active", isOpen);
   addButton.setAttribute("aria-expanded", String(isOpen));
+}
+
+addButton.addEventListener("click", () => {
+  setTaskPanelOpen(!taskPanel.classList.contains("open"));
+});
+
+taskPanelMask?.addEventListener("click", () => setTaskPanelOpen(false));
+
+taskPanel?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-quick-checkin]");
+  if (!button) return;
+  if (button.classList.contains("checkin-diet") || button.dataset.quickCheckin.includes("饮食")) {
+    setTaskPanelOpen(false);
+    openDietCameraPage(true);
+    return;
+  }
+  if (button.classList.contains("checkin-medicine") || button.dataset.quickCheckin.includes("用药")) {
+    setTaskPanelOpen(false);
+    openMedicineCheckinSheet();
+    return;
+  }
+  if (button.classList.contains("checkin-sport") || button.dataset.quickCheckin.includes("运动")) {
+    setTaskPanelOpen(false);
+    openSportCheckinSheet();
+    return;
+  }
+  if (button.classList.contains("checkin-weight") || button.dataset.quickCheckin.includes("体重")) {
+    setTaskPanelOpen(false);
+    openWeightCheckinPage();
+    return;
+  }
+  if (button.classList.contains("checkin-waist") || button.dataset.quickCheckin.includes("腰围")) {
+    setTaskPanelOpen(false);
+    openWaistCheckinSheet();
+    return;
+  }
+  toast.textContent = `${button.dataset.quickCheckin}已选择`;
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1400);
+  setTaskPanelOpen(false);
 });
 
 function switchView(view) {
@@ -1520,8 +3257,7 @@ function switchView(view) {
   minePage.classList.toggle("active", isMine);
   subPages.forEach((page) => page.classList.remove("active"));
   pageStack = [];
-  taskPanel.classList.remove("open");
-  addButton.setAttribute("aria-expanded", "false");
+  setTaskPanelOpen(false);
   closeOverlays();
   if (isPlan) renderSchedule();
 }
@@ -1610,6 +3346,35 @@ allPlansButton?.addEventListener("click", () => showScheduleToast("已进入全�
 scheduleContent?.addEventListener("click", (event) => {
   const target = event.target.closest("[data-schedule-action], [data-schedule-records], [data-schedule-plans]");
   if (!target) return;
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "diet") {
+    openDietCameraPage(true);
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "sport") {
+    openSportCheckinSheet();
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "medicine") {
+    openMedicineCheckinSheet();
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "weight") {
+    openWeightCheckinPage();
+    return;
+  }
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "diet") {
+    openDietDetailPage();
+    return;
+  }
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "medicine") {
+    openMedicineRecordsPage();
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin") {
+    const label = defaultCheckinItem(target.dataset.type).title;
+    showScheduleToast(`${label}已选择`);
+    return;
+  }
   const action = target.dataset.scheduleAction || (target.dataset.schedulePlans !== undefined ? "plans" : "records");
   const text = {
     follow: "进入随访任务",
@@ -1644,6 +3409,7 @@ const metricRecordConfigs = {
     { key: "diastolic", label: "舒张压", unit: "mmHg", step: "1", min: "30", max: "180" }
   ],
   weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
+  waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
   height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
   heart: [{ key: "value", label: "心率", unit: "次/分", step: "1", min: "20", max: "250" }],
   fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
@@ -1983,7 +3749,7 @@ function openSubPage(pageId) {
   pageStack.push(currentPageId());
   document.body.classList.toggle(
     "detail-page-open",
-    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage"
+    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage"
   );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
@@ -2006,7 +3772,7 @@ function goBackPage() {
     previousSubPage.classList.add("active");
     document.body.classList.toggle(
       "detail-page-open",
-      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage"
+      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage"
     );
   } else if (previous === "minePage") {
     minePage.classList.add("active");
@@ -2443,6 +4209,7 @@ function openSheet(sheet) {
 function closeOverlays() {
   sheetMask.classList.remove("active");
   cameraPage?.classList.remove("active");
+  cameraPage?.classList.remove("diet-camera");
   metricRecordSheet?.classList.remove("active");
   serviceActionSheet.classList.remove("active");
   supportSheet.classList.remove("active");
@@ -2460,6 +4227,19 @@ function closeOverlays() {
   taskDeleteDialog.classList.remove("active");
   schedulePatientSheet?.classList.remove("active");
   scheduleCheckinSheet?.classList.remove("active");
+  dietUploadSheet?.classList.remove("active");
+  dietUploadActionSheet?.classList.remove("active");
+  dietGramSheet?.classList.remove("active");
+  medicineCheckinSheet?.classList.remove("active");
+  medicineTimePicker?.classList.remove("active");
+  sportCheckinSheet?.classList.remove("active");
+  sportTimePicker?.classList.remove("active");
+  sportSuccessDialog?.classList.remove("active");
+  weightCheckinPage?.classList.remove("active");
+  weightTimePicker?.classList.remove("active");
+  waistCheckinSheet?.classList.remove("active");
+  waistTimePicker?.classList.remove("active");
+  checkinSuccessDialog?.classList.remove("active");
 }
 
 function setProfileTab(tabName) {
@@ -2534,7 +4314,14 @@ selectedFiles?.addEventListener("click", (event) => {
 cameraBack?.addEventListener("click", returnToUploadSheet);
 cameraShutter?.addEventListener("click", captureReportImage);
 albumPicker?.addEventListener("change", () => {
-  if (albumPicker.files?.length) addSelectedImages(albumPicker.files);
+  if (albumPicker.files?.length) {
+    if (cameraMode === "diet") {
+      addDietFiles(albumPicker.files);
+      returnToUploadSheet();
+    } else {
+      addSelectedImages(albumPicker.files);
+    }
+  }
   albumPicker.value = "";
 });
 documentPicker?.addEventListener("change", () => {
@@ -2656,6 +4443,240 @@ metricRecordsGroups?.addEventListener("click", (event) => {
 document.querySelector(".metric-record-close")?.addEventListener("click", closeOverlays);
 metricRecordConfirm?.addEventListener("click", saveMetricRecord);
 document.querySelector(".metric-delete-confirm")?.addEventListener("click", confirmMetricRecordDelete);
+
+dietUploadArea?.addEventListener("click", () => openDietCameraPage());
+dietImageGrid?.addEventListener("click", (event) => {
+  const remove = event.target.closest("[data-remove-diet-image]");
+  const add = event.target.closest("[data-add-diet-image]");
+  if (remove) {
+    const [removed] = dietUploadImages.splice(Number(remove.dataset.removeDietImage), 1);
+    if (removed?.preview?.startsWith("blob:")) URL.revokeObjectURL(removed.preview);
+    renderDietUploadImages();
+  }
+  if (add) openDietCameraPage();
+});
+dietUploadActionSheet?.addEventListener("click", (event) => {
+  if (event.target.closest(".diet-action-cancel")) {
+    dietUploadActionSheet.classList.remove("active");
+    return;
+  }
+  const action = event.target.closest("[data-diet-upload-action]");
+  if (!action) return;
+  dietUploadActionSheet.classList.remove("active");
+  if (action.dataset.dietUploadAction === "camera") {
+    addDietMockImage();
+  } else {
+    dietImagePicker?.click();
+  }
+});
+dietImagePicker?.addEventListener("change", () => {
+  if (dietImagePicker.files?.length) addDietFiles(dietImagePicker.files);
+  dietImagePicker.value = "";
+});
+dietMealOptions?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-diet-meal]");
+  if (!button) return;
+  dietSelectedMeal = button.dataset.dietMeal;
+  renderDietMealOptions();
+});
+dietMealTime?.addEventListener("change", () => {
+  const selectedTime = dietMealTime.value ? new Date(dietMealTime.value) : new Date();
+  if (Number.isNaN(selectedTime.getTime())) return;
+  dietSelectedMeal = mealByTime(selectedTime);
+  renderDietMealOptions();
+});
+dietCancelUpload?.addEventListener("click", closeOverlays);
+dietStartRecognize?.addEventListener("click", startDietRecognition);
+dietRetryRecognize?.addEventListener("click", () => {
+  dietRecognitionIndex = 0;
+  runDietRecognitionStep();
+});
+dietManualFill?.addEventListener("click", () => {
+  if (!dietResults.length) dietResults = buildDietResults();
+  openDietResultPage();
+});
+dietResultTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-diet-result-index]");
+  if (!button) return;
+  dietResultIndex = Number(button.dataset.dietResultIndex);
+  renderDietResult();
+});
+dietFoodList?.addEventListener("click", (event) => {
+  const editGrams = event.target.closest("[data-edit-food-grams]");
+  const remove = event.target.closest("[data-delete-food]");
+  if (editGrams) openDietGramSheet(editGrams.dataset.editFoodGrams);
+  if (remove) deleteDietFood(remove.dataset.deleteFood);
+});
+document.querySelector(".diet-gram-close")?.addEventListener("click", closeDietGramSheet);
+document.querySelector(".diet-gram-cancel")?.addEventListener("click", closeDietGramSheet);
+dietGramConfirm?.addEventListener("click", confirmDietGramEdit);
+dietResultTime?.addEventListener("change", renderDietResult);
+dietEditResult?.addEventListener("click", () => showToast("已进入营养结果修改"));
+dietConfirmCheckin?.addEventListener("click", confirmDietCheckin);
+dietDetailCheckin?.addEventListener("click", () => openDietCameraPage(true));
+dietDetailRangeTabs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-diet-range]");
+  if (!button) return;
+  dietDetailRangeMode = button.dataset.dietRange;
+  dietDetailRangeDate = new Date();
+  renderDietDetailRange();
+});
+dietDetailRangeTrigger?.addEventListener("click", () => {
+  if (dietDetailRangeMode === "month") {
+    if (typeof dietDetailMonthInput?.showPicker === "function") dietDetailMonthInput.showPicker();
+    else dietDetailMonthInput?.click();
+    return;
+  }
+  if (dietDetailRangeMode === "year") {
+    const nextYear = window.prompt("请选择年份", String(dietDetailRangeDate.getFullYear()));
+    if (!nextYear) return;
+    const year = Number(nextYear);
+    if (!Number.isInteger(year) || year < 1900 || year > 2100) {
+      showToast("请输入正确年份");
+      return;
+    }
+    dietDetailRangeDate = new Date(year, 0, 1);
+    renderDietDetailRange();
+    return;
+  }
+  if (typeof dietDetailDayInput?.showPicker === "function") dietDetailDayInput.showPicker();
+  else dietDetailDayInput?.click();
+});
+dietDetailDayInput?.addEventListener("change", () => {
+  if (!dietDetailDayInput.value) return;
+  const [year, month, day] = dietDetailDayInput.value.split("-").map(Number);
+  dietDetailRangeDate = new Date(year, month - 1, day);
+  renderDietDetailRange();
+});
+dietDetailMonthInput?.addEventListener("change", () => {
+  if (!dietDetailMonthInput.value) return;
+  const [year, month] = dietDetailMonthInput.value.split("-").map(Number);
+  dietDetailRangeDate = new Date(year, month - 1, 1);
+  renderDietDetailRange();
+});
+medicineClose?.addEventListener("click", closeOverlays);
+medicineTimeTrigger?.addEventListener("click", openMedicineTimePicker);
+document.querySelector(".medicine-picker-cancel")?.addEventListener("click", closeMedicineTimePicker);
+document.querySelector(".medicine-picker-confirm")?.addEventListener("click", confirmMedicineTimePicker);
+medicineNote?.addEventListener("input", updateMedicineNoteCount);
+medicineAdd?.addEventListener("click", () => {
+  saveMedicineNamesFromDom();
+  addMedicineItem();
+});
+medicineList?.addEventListener("input", (event) => {
+  const input = event.target.closest("[data-medicine-name]");
+  if (!input) return;
+  const item = medicineItems.find((medicine) => medicine.id === input.dataset.medicineName);
+  if (item) item.name = input.value;
+});
+medicineList?.addEventListener("click", (event) => {
+  const typeButton = event.target.closest("[data-medicine-item-type]");
+  const deleteButton = event.target.closest("[data-delete-medicine]");
+  const addImage = event.target.closest("[data-add-medicine-image]");
+  const removeImage = event.target.closest("[data-remove-medicine-image]");
+  if (typeButton) {
+    saveMedicineNamesFromDom();
+    const item = medicineItems.find((medicine) => medicine.id === typeButton.dataset.medicineItemType);
+    if (!item) return;
+    item.type = typeButton.dataset.itemType === "nutrition" ? "nutrition" : "medicine";
+    renderMedicineItems();
+    return;
+  }
+  if (deleteButton) {
+    saveMedicineNamesFromDom();
+    deleteMedicineItem(deleteButton.dataset.deleteMedicine);
+    return;
+  }
+  if (addImage) {
+    saveMedicineNamesFromDom();
+    medicineImageTargetId = addImage.dataset.addMedicineImage;
+    medicineImagePicker?.click();
+    return;
+  }
+  if (removeImage) {
+    const item = medicineItems.find((medicine) => medicine.id === removeImage.dataset.removeMedicineImage);
+    const index = Number(removeImage.dataset.imageIndex);
+    if (!item || Number.isNaN(index)) return;
+    const [removed] = item.images.splice(index, 1);
+    if (removed?.startsWith("blob:")) URL.revokeObjectURL(removed);
+    renderMedicineItems();
+  }
+});
+medicineImagePicker?.addEventListener("change", () => {
+  if (medicineImagePicker.files?.length) addMedicineImages(medicineImagePicker.files);
+  medicineImagePicker.value = "";
+});
+medicineConfirm?.addEventListener("click", confirmMedicineCheckin);
+medicineRecordsList?.addEventListener("click", (event) => {
+  const row = event.target.closest("[data-medicine-record]");
+  if (!row) return;
+  openMedicineDetailPage(row.dataset.medicineRecord);
+});
+medicineDetailList?.addEventListener("click", (event) => {
+  const image = event.target.closest("[data-medicine-image]");
+  if (!image) return;
+  openMedicineImagePage(image.dataset.medicineImage, Number(image.dataset.imageIndex || 0));
+});
+medicineDetailEdit?.addEventListener("click", () => openMedicineCheckinSheet(selectedMedicineRecordId));
+medicineDetailDelete?.addEventListener("click", deleteSelectedMedicineRecord);
+medicineImageClose?.addEventListener("click", goBackPage);
+medicineImagePrev?.addEventListener("click", () => stepMedicineImage(-1));
+medicineImageNext?.addEventListener("click", () => stepMedicineImage(1));
+medicineImageThumbs?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-preview-index]");
+  if (!button) return;
+  medicinePreviewIndex = Number(button.dataset.previewIndex || 0);
+  renderMedicineImagePage();
+});
+sportClose?.addEventListener("click", closeOverlays);
+sportTypeGrid?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-sport-type]");
+  if (!button) return;
+  sportSelectedType = button.dataset.sportType;
+  renderSportCheckin();
+  if (sportSelectedType === "other") {
+    window.setTimeout(() => sportOtherInput?.focus(), 80);
+  }
+});
+sportOtherInput?.addEventListener("input", () => {
+  sportOtherName = sportOtherInput.value.trim();
+  renderSportCheckin();
+});
+sportNoteInput?.addEventListener("input", updateSportNoteCount);
+sportMinus?.addEventListener("click", () => {
+  sportDuration = Math.max(5, sportDuration - 5);
+  renderSportCheckin();
+});
+sportPlus?.addEventListener("click", () => {
+  sportDuration = Math.min(180, sportDuration + 5);
+  renderSportCheckin();
+});
+sportTimeTrigger?.addEventListener("click", openSportTimePicker);
+document.querySelector(".sport-picker-cancel")?.addEventListener("click", closeSportTimePicker);
+document.querySelector(".sport-picker-confirm")?.addEventListener("click", confirmSportTimePicker);
+sportSubmit?.addEventListener("click", submitSportCheckin);
+sportSuccessDone?.addEventListener("click", closeSportSuccessDialog);
+weightCheckinPage?.addEventListener("click", (event) => {
+  const stepButton = event.target.closest("[data-weight-step]");
+  if (!stepButton) return;
+  stepWeightField(stepButton.dataset.weightStep, Number(stepButton.dataset.delta));
+});
+weightValueInput?.addEventListener("input", () => validateWeightInputs(false));
+weightFatInput?.addEventListener("input", () => validateWeightInputs(false));
+weightTimeTrigger?.addEventListener("click", openWeightTimePicker);
+document.querySelector(".weight-picker-cancel")?.addEventListener("click", closeWeightTimePicker);
+document.querySelector(".weight-picker-confirm")?.addEventListener("click", confirmWeightTimePicker);
+document.querySelector(".weight-sheet-close")?.addEventListener("click", closeOverlays);
+weightNoteInput?.addEventListener("input", updateWeightNoteCount);
+weightSubmit?.addEventListener("click", submitWeightCheckin);
+waistValueInput?.addEventListener("input", () => {
+  if (waistError) waistError.textContent = "";
+});
+waistTimeTrigger?.addEventListener("click", openWaistTimePicker);
+document.querySelector(".waist-picker-cancel")?.addEventListener("click", closeWaistTimePicker);
+document.querySelector(".waist-picker-confirm")?.addEventListener("click", confirmWaistTimePicker);
+waistSubmit?.addEventListener("click", saveWaistCheckin);
+checkinSuccessDone?.addEventListener("click", closeOverlays);
 
 orderStatusTabs?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-order-tab]");
@@ -2797,7 +4818,7 @@ renderMedicalReports();
 renderParseTasks();
 renderSelectedFiles();
 renderPackages();
-renderSchedule();
+updateMedicineScheduleCard();
 initCycleReminder();
 renderFocusPlans();
 
