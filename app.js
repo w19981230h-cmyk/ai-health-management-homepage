@@ -218,6 +218,14 @@ const metricRecordSheet = document.querySelector("#metricRecordSheet");
 const metricRecordSheetTitle = document.querySelector("#metricRecordSheetTitle");
 const metricRecordFields = document.querySelector("#metricRecordFields");
 const metricRecordTime = document.querySelector("#metricRecordTime");
+const metricRecordTimeText = document.querySelector("#metricRecordTimeText");
+const metricRecordTimeTrigger = document.querySelector("#metricRecordTimeTrigger");
+const metricRecordTimePicker = document.querySelector("#metricRecordTimePicker");
+const metricRecordPickerDate = document.querySelector("#metricRecordPickerDate");
+const metricRecordPickerHour = document.querySelector("#metricRecordPickerHour");
+const metricRecordPickerMinute = document.querySelector("#metricRecordPickerMinute");
+const metricRecordNoteField = document.querySelector("#metricRecordNoteField");
+const metricRecordNote = document.querySelector("#metricRecordNote");
 const metricRecordError = document.querySelector("#metricRecordError");
 const metricRecordConfirm = document.querySelector("#metricRecordConfirm");
 const dietUploadSheet = document.querySelector("#dietUploadSheet");
@@ -329,6 +337,7 @@ const weightNoteInput = document.querySelector("#weightNoteInput");
 const weightNoteCount = document.querySelector("#weightNoteCount");
 const weightSubmit = document.querySelector("#weightSubmit");
 const waistCheckinSheet = document.querySelector("#waistCheckinSheet");
+const waistClose = document.querySelector("#waistClose");
 const waistValueInput = document.querySelector("#waistValueInput");
 const waistTimeTrigger = document.querySelector("#waistTimeTrigger");
 const waistTimeText = document.querySelector("#waistTimeText");
@@ -363,7 +372,7 @@ const pressureSuccessPulse = document.querySelector("#pressureSuccessPulse");
 const pressureSuccessDone = document.querySelector("#pressureSuccessDone");
 const sugarCheckinSheet = document.querySelector("#sugarCheckinSheet");
 const sugarClose = document.querySelector("#sugarClose");
-const sugarPeriodGrid = document.querySelector("#sugarPeriodGrid");
+const sugarPeriodSelect = document.querySelector("#sugarPeriodSelect");
 const sugarValueInput = document.querySelector("#sugarValueInput");
 const sugarValueHint = document.querySelector("#sugarValueHint");
 const sugarTimeTrigger = document.querySelector("#sugarTimeTrigger");
@@ -681,8 +690,7 @@ const scheduleTasks = {
       checkins: [
         { type: "diet", title: "饮食打卡", desc: "记录周末饮食，避免热量超标", count: "待完成" },
         { type: "sport", title: "运动打卡", desc: "记录每日运动，帮助保持习惯", count: "待完成" },
-        { type: "medicine", title: "用药打卡", desc: "记录每日用药，帮助按时服药", count: "待完成" },
-        { type: "fat", title: "体脂打卡", desc: "记录体脂变化", count: "待完成" }
+        { type: "medicine", title: "用药打卡", desc: "记录每日用药，帮助按时服药", count: "待完成" }
       ]
     }
   },
@@ -1244,7 +1252,7 @@ function renderAssessmentSection(assessments) {
 function renderCheckinSection(checkins) {
   const checkinMap = new Map();
   (checkins || []).forEach((item) => checkinMap.set(item.type, item));
-  const wallItems = ["diet", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "fat", "period"]
+  const wallItems = ["diet", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "period"]
     .map((type) => checkinMap.get(type) || defaultCheckinItem(type));
   const body = `<div class="checkin-wall">${wallItems.map(renderCheckinCard).join("")}</div>`;
   return renderSection("健康打卡", body, `<button type="button" data-schedule-records>全部打卡 〉</button>`);
@@ -1262,7 +1270,6 @@ function defaultCheckinItem(type) {
     uric: { type: "uric", title: "尿酸打卡", count: "暂无记录", desc: "" },
     waist: { type: "waist", title: "腰围打卡", count: "暂无记录", desc: "" },
     heart: { type: "heart", title: "心率打卡", count: "暂无记录", desc: "" },
-    fat: { type: "fat", title: "体脂打卡", count: "暂无记录", desc: "" },
     period: { type: "period", title: "经期打卡", count: "暂无记录", desc: "" }
   };
   return defaults[type] || defaults.diet;
@@ -1394,8 +1401,7 @@ const scheduleMetricCheckins = {
   heart: { type: "heart", title: "心率打卡", desc: "记录静息心率" },
   sugar: { type: "sugar", title: "血糖打卡", desc: "记录血糖值和测量时段" },
   lipid: { type: "lipid", title: "血脂打卡", desc: "记录甘油三酯和低密度脂蛋白" },
-  uric: { type: "uric", title: "尿酸打卡", desc: "记录尿酸变化" },
-  fat: { type: "fat", title: "体脂打卡", desc: "记录体脂变化" }
+  uric: { type: "uric", title: "尿酸打卡", desc: "记录尿酸变化" }
 };
 
 function scheduleMetricKey(metricId) {
@@ -1511,13 +1517,6 @@ function renderCheckinCard(item) {
       meta: display.meta,
       art: "heartline",
       icon: "心"
-    },
-    fat: {
-      title: "体脂",
-      main: display.main,
-      meta: display.meta,
-      art: "tube",
-      icon: "脂"
     },
     period: {
       title: "经期管理",
@@ -3329,13 +3328,19 @@ function recommendedSugarPeriod(date = new Date()) {
 function formatSugarTimeText(value) {
   const date = value ? new Date(value) : new Date();
   if (Number.isNaN(date.getTime())) return "请选择测量时间";
-  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return dateInputValue(date) === dateInputValue(new Date()) ? timeText : `${dateInputValue(date)} ${timeText}`;
 }
 
-function renderSugarPeriodGrid() {
-  sugarPeriodGrid?.querySelectorAll("[data-sugar-period]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.sugarPeriod === sugarSelectedPeriod);
-  });
+function updateSugarPeriodSelect() {
+  if (sugarPeriodSelect) sugarPeriodSelect.value = sugarSelectedPeriod;
+}
+
+function stepSugarValue(delta) {
+  const current = normalizeDecimal(sugarValueInput?.value, 5);
+  const next = Math.min(33.3, Math.max(1, current + delta));
+  if (sugarValueInput) sugarValueInput.value = next.toFixed(1);
+  validateSugarInput(false);
 }
 
 function updateSugarTimeText() {
@@ -3349,7 +3354,7 @@ function updateSugarNoteCount() {
 function validateSugarInput(showError = false) {
   const value = Number(sugarValueInput?.value);
   const valid = Boolean(sugarValueInput?.value) && Number.isFinite(value) && value >= 1 && value <= 33.3;
-  sugarValueInput?.closest(".sugar-value-field")?.classList.toggle("error", !valid && showError);
+  sugarValueInput?.closest(".sugar-stepper")?.classList.toggle("error", !valid && showError);
   if (sugarValueHint) {
     sugarValueHint.classList.toggle("error", !valid && showError);
     sugarValueHint.textContent = !valid && showError ? "请填写 1.0 ~ 33.3 mmol/L 范围内的血糖值" : "建议范围：1.0 ~ 33.3 mmol/L";
@@ -3363,14 +3368,14 @@ function openSugarCheckinSheet() {
   const now = new Date();
   sugarSelectedPeriod = recommendedSugarPeriod(now);
   sugarCheckinTimeValue = localDateTimeInputValue(now);
-  if (sugarValueInput) sugarValueInput.value = "";
+  if (sugarValueInput) sugarValueInput.value = "5.0";
   if (sugarNoteInput) sugarNoteInput.value = "";
   if (sugarError) sugarError.textContent = "";
-  sugarValueInput?.closest(".sugar-value-field")?.classList.remove("error");
+  sugarValueInput?.closest(".sugar-stepper")?.classList.remove("error");
   updateSugarTimeText();
   updateSugarNoteCount();
   validateSugarInput(false);
-  renderSugarPeriodGrid();
+  updateSugarPeriodSelect();
   sheetMask.classList.add("active");
   sugarCheckinSheet?.classList.add("active");
   window.setTimeout(() => sugarValueInput?.focus(), 80);
@@ -4296,7 +4301,7 @@ const metricRecordConfigs = {
   weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
   waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
   height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
-  heart: [{ key: "value", label: "心率", unit: "次/分", step: "1", min: "20", max: "250" }],
+  heart: [{ key: "value", label: "心率值", unit: "次/分", step: "1", min: "20", max: "250" }],
   lipid: [
     { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.1", min: "0.1", max: "20" },
     { key: "ldl", label: "低密度脂蛋白 LDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20" }
@@ -4352,6 +4357,56 @@ function displayMetricRecordTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value.replace("T", " ").replaceAll("-", "/");
   return `${dateInputValue(date).replaceAll("-", "/")} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function formatMetricRecordInputTime(value) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择记录时间";
+  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  if (dateInputValue(date) === dateInputValue(new Date())) return timeText;
+  return `${dateInputValue(date).replaceAll("-", "/")} ${timeText}`;
+}
+
+function updateMetricRecordTimeText() {
+  if (metricRecordTimeText) metricRecordTimeText.textContent = formatMetricRecordInputTime(metricRecordTime?.value);
+}
+
+function populateMetricRecordTimePicker() {
+  if (!metricRecordPickerDate || !metricRecordPickerHour || !metricRecordPickerMinute) return;
+  const selected = metricRecordTime?.value ? new Date(metricRecordTime.value) : new Date();
+  metricRecordPickerDate.innerHTML = [-1, 0, 1, 2, 3].map((offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    return `<option value="${dateInputValue(date)}">${label}</option>`;
+  }).join("");
+  metricRecordPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
+    const value = padDateNumber(hour);
+    return `<option value="${value}">${value}</option>`;
+  }).join("");
+  metricRecordPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const value = padDateNumber(index * 5);
+    return `<option value="${value}">${value}</option>`;
+  }).join("");
+  metricRecordPickerDate.value = dateInputValue(selected);
+  metricRecordPickerHour.value = padDateNumber(selected.getHours());
+  metricRecordPickerMinute.value = padDateNumber(Math.min(55, Math.round(selected.getMinutes() / 5) * 5));
+}
+
+function openMetricRecordTimePicker() {
+  populateMetricRecordTimePicker();
+  metricRecordTimePicker?.classList.add("active");
+}
+
+function closeMetricRecordTimePicker() {
+  metricRecordTimePicker?.classList.remove("active");
+}
+
+function confirmMetricRecordTimePicker() {
+  if (!metricRecordPickerDate?.value || !metricRecordPickerHour?.value || !metricRecordPickerMinute?.value) return;
+  metricRecordTime.value = `${metricRecordPickerDate.value}T${metricRecordPickerHour.value}:${metricRecordPickerMinute.value}`;
+  updateMetricRecordTimeText();
+  closeMetricRecordTimePicker();
 }
 
 function baselineMetricRecords(metric) {
@@ -4452,18 +4507,44 @@ function openMetricRecordSheet() {
   const metric = getSelectedMetric();
   const fields = metricRecordConfigs[metric.id] || metricRecordConfigs.weight;
   metricRecordSheetTitle.textContent = `记录${metric.name}`;
-  metricRecordFields.innerHTML = fields.map((field) => `
-    <label>
-      <span>${field.label}</span>
-      <div><input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" placeholder="请输入"><em>${field.unit}</em></div>
-    </label>
-  `).join("");
+  metricRecordFields.innerHTML = metric.id === "heart" ? `
+    <section class="metric-heart-field">
+      <span>心率值</span>
+      <div class="weight-stepper">
+        <button class="weight-step-btn" type="button" data-metric-step="value" data-delta="-1" aria-label="减少心率值">−</button>
+        <div class="weight-number-field">
+          <input type="number" inputmode="numeric" data-metric-input="value" min="20" max="250" step="1" value="72" aria-label="心率值">
+          <span>次/分</span>
+        </div>
+        <button class="weight-step-btn" type="button" data-metric-step="value" data-delta="1" aria-label="增加心率值">+</button>
+      </div>
+    </section>
+  ` : fields.map((field) => `
+      <label>
+        <span>${field.label}</span>
+        <div><input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" placeholder="请输入"><em>${field.unit}</em></div>
+      </label>
+    `).join("");
   metricRecordTime.value = localDateTimeInputValue();
+  updateMetricRecordTimeText();
+  metricRecordNoteField.hidden = !["heart", "uric"].includes(metric.id);
+  metricRecordNote.value = "";
   metricRecordError.textContent = "";
   closeOverlays();
   sheetMask.classList.add("active");
   metricRecordSheet.classList.add("active");
   metricRecordFields.querySelector("input")?.focus();
+}
+
+function stepMetricRecordValue(key, delta) {
+  const metric = getSelectedMetric();
+  const field = metricRecordConfigs[metric.id]?.find((item) => item.key === key);
+  const input = metricRecordFields?.querySelector(`[data-metric-input="${key}"]`);
+  if (!field || !input) return;
+  const fallback = metric.id === "heart" ? 72 : Number(field.min);
+  const current = normalizeDecimal(input.value, fallback);
+  const next = Math.min(Number(field.max), Math.max(Number(field.min), current + delta));
+  input.value = Number(field.step) < 1 ? next.toFixed(1) : String(Math.round(next));
 }
 
 function saveMetricRecord() {
@@ -4500,7 +4581,8 @@ function saveMetricRecord() {
     unit: metric.unit,
     status: status.text,
     attention: status.attention,
-    values
+    values,
+    note: ["heart", "uric"].includes(metric.id) ? metricRecordNote.value.trim() : ""
   };
   if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
   if (!metricRecordsByPatient[currentPatient.id][metric.id]) metricRecordsByPatient[currentPatient.id][metric.id] = [];
@@ -5108,6 +5190,7 @@ function closeOverlays() {
   cameraPage?.classList.remove("active");
   cameraPage?.classList.remove("diet-camera");
   metricRecordSheet?.classList.remove("active");
+  metricRecordTimePicker?.classList.remove("active");
   serviceActionSheet.classList.remove("active");
   supportSheet.classList.remove("active");
   shareSheet.classList.remove("active");
@@ -5335,6 +5418,9 @@ metricDatePicker?.addEventListener("change", () => {
 });
 
 metricRecordEntry?.addEventListener("click", openMetricRecordSheet);
+metricRecordTimeTrigger?.addEventListener("click", openMetricRecordTimePicker);
+document.querySelector(".metric-record-picker-cancel")?.addEventListener("click", closeMetricRecordTimePicker);
+document.querySelector(".metric-record-picker-confirm")?.addEventListener("click", confirmMetricRecordTimePicker);
 metricAllRecords?.addEventListener("click", () => {
   renderAllMetricRecords();
   openSubPage("metricRecordsPage");
@@ -5344,6 +5430,11 @@ metricRecordsGroups?.addEventListener("click", (event) => {
   if (deleteButton) openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
 });
 document.querySelector(".metric-record-close")?.addEventListener("click", closeOverlays);
+metricRecordFields?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-metric-step]");
+  if (!button) return;
+  stepMetricRecordValue(button.dataset.metricStep, Number(button.dataset.delta));
+});
 metricRecordConfirm?.addEventListener("click", saveMetricRecord);
 document.querySelector(".metric-delete-confirm")?.addEventListener("click", confirmMetricRecordDelete);
 
@@ -5597,6 +5688,7 @@ waistValueInput?.addEventListener("input", () => {
   if (waistError) waistError.textContent = "";
 });
 waistTimeTrigger?.addEventListener("click", openWaistTimePicker);
+waistClose?.addEventListener("click", closeOverlays);
 document.querySelector(".waist-picker-cancel")?.addEventListener("click", closeWaistTimePicker);
 document.querySelector(".waist-picker-confirm")?.addEventListener("click", confirmWaistTimePicker);
 waistSubmit?.addEventListener("click", saveWaistCheckin);
@@ -5615,11 +5707,12 @@ pressureClose?.addEventListener("click", closeOverlays);
 pressureNoteInput?.addEventListener("input", updatePressureNoteCount);
 pressureSubmit?.addEventListener("click", submitPressureCheckin);
 pressureSuccessDone?.addEventListener("click", closeOverlays);
-sugarPeriodGrid?.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-sugar-period]");
-  if (!button) return;
-  sugarSelectedPeriod = button.dataset.sugarPeriod;
-  renderSugarPeriodGrid();
+sugarCheckinSheet?.addEventListener("click", (event) => {
+  const stepButton = event.target.closest("[data-sugar-step]");
+  if (stepButton) stepSugarValue(Number(stepButton.dataset.sugarStep));
+});
+sugarPeriodSelect?.addEventListener("change", () => {
+  sugarSelectedPeriod = sugarPeriodSelect.value;
 });
 sugarValueInput?.addEventListener("input", () => validateSugarInput(false));
 sugarTimeTrigger?.addEventListener("click", openSugarTimePicker);
