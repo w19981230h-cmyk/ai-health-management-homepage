@@ -612,22 +612,28 @@
       </section>
 
       <section class="sub-page medicine-records-page" id="medicineRecordsPage" aria-label="用药补充记录列表">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>用药详情</h1></header>
+        <header class="sub-nav medicine-records-nav">
+          <button class="back-page" type="button"></button>
+          <h1>今日用药详情</h1>
+          <button class="medicine-calendar-button" type="button" aria-label="选择日期"></button>
+        </header>
         <div class="medicine-records-list" id="medicineRecordsList"></div>
       </section>
 
       <section class="sub-page medicine-detail-page" id="medicineDetailPage" aria-label="用药补充详情">
         <header class="sub-nav medicine-detail-nav">
           <button class="back-page" type="button"></button>
-          <h1>用药/补充详情</h1>
-          <button class="medicine-detail-edit" id="medicineDetailEdit" type="button">编辑</button>
+          <h1>打卡详情</h1>
+          <button class="medicine-detail-more" type="button" aria-label="更多">...</button>
         </header>
         <section class="medicine-detail-summary" id="medicineDetailSummary"></section>
         <section class="medicine-detail-card">
-          <h2>用药/补充明细</h2>
           <div class="medicine-detail-list" id="medicineDetailList"></div>
         </section>
-        <button class="medicine-detail-delete" id="medicineDetailDelete" type="button">删除记录</button>
+        <footer class="medicine-detail-actions">
+          <button class="medicine-detail-edit" id="medicineDetailEdit" type="button">编辑记录</button>
+          <button class="medicine-detail-delete" id="medicineDetailDelete" type="button">删除记录</button>
+        </footer>
       </section>
 
       <section class="sub-page medicine-image-page" id="medicineImagePage" aria-label="查看用药图片">

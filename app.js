@@ -2729,13 +2729,39 @@ function medicineRecordTypeStats(records) {
     (record.items || []).forEach((item) => {
       if (item.type === "nutrition") result.nutrition += 1;
       else result.medicine += 1;
+      result.total += 1;
     });
     return result;
-  }, { medicine: 0, nutrition: 0 });
+  }, { medicine: 0, nutrition: 0, total: 0 });
 }
 
 function medicineItemTypeLabel(type) {
   return type === "nutrition" ? "营养素" : "药品";
+}
+
+function medicineItemDose(item) {
+  if (item?.dose) return item.dose;
+  const name = item?.name || "";
+  if (name.includes("二甲双胍")) return "0.5g";
+  if (name.includes("阿托伐他汀")) return "20mg";
+  if (name.includes("维生素C")) return "500mg";
+  if (name.includes("D3")) return "500mg";
+  if (name.includes("缬沙坦")) return "80mg";
+  if (name.includes("钙")) return "600mg";
+  return item?.type === "nutrition" ? "500mg" : "0.5g";
+}
+
+function medicineItemUsage(item) {
+  if (item?.usage) return item.usage;
+  return item?.type === "nutrition" ? "1片 | 1次" : "1粒 | 1次";
+}
+
+function medicineRecordGroups(record) {
+  const items = record?.items || [];
+  return [
+    { type: "medicine", label: "药品", items: items.filter((item) => item.type !== "nutrition") },
+    { type: "nutrition", label: "营养素", items: items.filter((item) => item.type === "nutrition") }
+  ].filter((group) => group.items.length);
 }
 
 function medicineThumbStyle(image) {
@@ -2756,6 +2782,67 @@ function medicineRecordSummary(record) {
     medicineText: medicineNames.length ? medicineNames.join("、") : "无",
     nutritionText: nutritionNames.length ? nutritionNames.join("、") : "无"
   };
+}
+
+function medicineTodayDetailRecords() {
+  const records = todayMedicineRecords();
+  return records.length ? records : sortedMedicineRecords();
+}
+
+function renderMedicineRecordGroup(group, recordId, compact = false) {
+  return `
+    <section class="${compact ? "medicine-record-group compact" : "medicine-record-group"}">
+      <div class="medicine-record-group-title ${group.type}">
+        <i aria-hidden="true"></i>
+        <span>${group.label}</span>
+        <strong>${group.items.length}次</strong>
+      </div>
+      <div class="medicine-record-meds">
+        ${group.items.map((item) => {
+          const image = item.images?.[0] || "";
+          return `
+            <button class="medicine-record-med" type="button" data-medicine-record="${recordId}">
+              <b class="medicine-record-thumb" style="${medicineThumbStyle(image)}" aria-hidden="true"></b>
+              <span>
+                <strong>${escapeAttr(item.name)} <em>${escapeAttr(medicineItemDose(item))}</em></strong>
+                <small>${escapeAttr(medicineItemUsage(item))}</small>
+              </span>
+              <i aria-hidden="true"></i>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderMedicineOverviewCard(records) {
+  const stats = medicineRecordTypeStats(records);
+  return `
+    <section class="medicine-overview-card">
+      <h2>今日整体概览</h2>
+      <div class="medicine-overview-grid">
+        <article>
+          <i class="medicine-overview-icon medicine" aria-hidden="true"></i>
+          <span>今日用药总览</span>
+          <strong>${stats.medicine}<em>次</em></strong>
+          <small>较昨日 <b>▲1</b></small>
+        </article>
+        <article>
+          <i class="medicine-overview-icon nutrition" aria-hidden="true"></i>
+          <span>营养素总览</span>
+          <strong>${stats.nutrition}<em>次</em></strong>
+          <small>较昨日 持平</small>
+        </article>
+        <article>
+          <i class="medicine-overview-icon total" aria-hidden="true"></i>
+          <span>打卡总次数</span>
+          <strong>${stats.total}<em>次</em></strong>
+          <small>较昨日 <b>▲1</b></small>
+        </article>
+      </div>
+    </section>
+  `;
 }
 
 function updateMedicineScheduleCard() {
@@ -2791,19 +2878,13 @@ function updateMedicineScheduleCard() {
 
 function renderMedicineRecordsPage() {
   if (!medicineRecordsList) return;
-  const records = todayMedicineRecords();
-  const stats = medicineRecordTypeStats(records);
-  const titleHtml = `<h2 class="medicine-record-title">用药记录</h2>`;
-  const summaryHtml = `
-    <section class="medicine-record-summary">
-      <div><span>药品</span><p><strong>${stats.medicine}</strong><em>次</em></p></div>
-      <div><span>营养药</span><p><strong>${stats.nutrition}</strong><em>次</em></p></div>
-    </section>
-  `;
+  const records = medicineTodayDetailRecords();
+  const overviewHtml = renderMedicineOverviewCard(records);
+  const titleHtml = `<h2 class="medicine-record-title">今日打卡记录 <span>（按时间）</span></h2>`;
   if (!records.length) {
     medicineRecordsList.innerHTML = `
+      ${overviewHtml}
       ${titleHtml}
-      ${summaryHtml}
       <div class="medicine-record-empty">
         <strong>今日暂无用药记录</strong>
         <span>从健康打卡卡片右上角添加今日记录。</span>
@@ -2812,22 +2893,32 @@ function renderMedicineRecordsPage() {
     `;
     return;
   }
-  medicineRecordsList.innerHTML = titleHtml + summaryHtml + records.map((record) => {
+  medicineRecordsList.innerHTML = overviewHtml + titleHtml + `
+    <section class="medicine-timeline">
+      ${records.map((record) => {
     const parts = medicineDateParts(record.time);
-    const summary = medicineRecordSummary(record);
-    const firstItems = record.items.slice(0, 3).map((item) => item.name).join("、");
+    const groups = medicineRecordGroups(record);
+    const itemCount = (record.items || []).length;
     return `
-      <button class="medicine-record-row" type="button" data-medicine-record="${record.id}">
-        <span>
-          <em>${parts.time}</em>
-          <strong>${summary.count}</strong>
-          <b>${medicineItemTypeLabel(record.items[0]?.type)}：${escapeAttr(firstItems || "用药/补充记录")}</b>
-          <small>${record.note ? `备注：${escapeAttr(record.note)}` : "无备注"}</small>
-        </span>
-        <i aria-hidden="true"></i>
-      </button>
+      <article class="medicine-timeline-item">
+        <div class="medicine-timeline-time">${parts.time}</div>
+        <div class="medicine-timeline-line"><i aria-hidden="true"></i></div>
+        <section class="medicine-record-block">
+          <button class="medicine-record-block-head" type="button" data-medicine-record="${record.id}">
+            <span>${parts.time} 用药打卡</span>
+            <em>共${itemCount}项</em>
+          </button>
+          ${groups.map((group) => renderMedicineRecordGroup(group, record.id, true)).join("")}
+        </section>
+      </article>
     `;
-  }).join("");
+      }).join("")}
+      <div class="medicine-timeline-end">没有更多数据了</div>
+    </section>
+    <footer class="medicine-record-action-bar">
+      <button class="medicine-empty-action" type="button">＋ 进行用药打卡</button>
+    </footer>
+  `;
 }
 
 function openMedicineRecordsPage() {
@@ -2843,32 +2934,63 @@ function renderMedicineDetailPage() {
   }
   selectedMedicineRecordId = record.id;
   const parts = medicineDateParts(record.time);
-  const summary = medicineRecordSummary(record);
-  if (medicineDetailEdit) medicineDetailEdit.hidden = true;
-  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除该药品";
+  const groups = medicineRecordGroups(record);
+  const itemCount = (record.items || []).length;
+  if (medicineDetailEdit) medicineDetailEdit.hidden = false;
+  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除记录";
   if (medicineDetailSummary) {
     medicineDetailSummary.innerHTML = `
-      <p><span>记录时间</span><strong>${parts.full}</strong></p>
-      <p><span>记录数量</span><strong>${summary.count}</strong></p>
-      <p><span>备注</span><strong>${escapeAttr(record.note || "无")}</strong></p>
+      <div class="medicine-detail-hero">
+        <i aria-hidden="true"></i>
+        <span>
+          <strong>${parts.time} 用药打卡</strong>
+          <small>${parts.time}</small>
+        </span>
+        <em>共${itemCount}项</em>
+      </div>
     `;
   }
   if (medicineDetailList) {
     let imageCursor = 0;
-    medicineDetailList.innerHTML = (record.items || []).map((item) => {
-      const images = item.images || [];
-      return `
-        <article class="medicine-detail-item">
-          <span>${medicineItemTypeLabel(item.type)}</span>
-          <strong>${escapeAttr(item.name)}</strong>
-          ${images.length ? `
-            <div class="medicine-detail-images">
-              ${images.map((image) => `<button type="button" data-medicine-image="${record.id}" data-image-index="${imageCursor++}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`).join("")}
-            </div>
-          ` : ""}
-        </article>
-      `;
-    }).join("");
+    medicineDetailList.innerHTML = groups.map((group) => `
+      <section class="medicine-detail-group">
+        <div class="medicine-record-group-title ${group.type}">
+          <i aria-hidden="true"></i>
+          <span>${group.label}</span>
+          <strong>${group.items.length}次</strong>
+        </div>
+        ${group.items.map((item) => {
+          const images = item.images || [];
+          const preview = images[0] || "";
+          return `
+            <article class="medicine-detail-item">
+              <div class="medicine-detail-item-main">
+                <b class="medicine-record-thumb" style="${medicineThumbStyle(preview)}" aria-hidden="true"></b>
+                <span>
+                  <strong>${escapeAttr(item.name)} <em>${escapeAttr(medicineItemDose(item))}</em></strong>
+                  <small>${escapeAttr(medicineItemUsage(item))}</small>
+                </span>
+              </div>
+              <div class="medicine-detail-proof">
+                <p>上传凭证 <span>（共${images.length}张）</span></p>
+                <div class="medicine-detail-images">
+                  ${images.map((image) => {
+                    const index = imageCursor++;
+                    return `<button type="button" data-medicine-image="${record.id}" data-image-index="${index}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`;
+                  }).join("")}
+                  <button class="medicine-detail-upload" type="button"><i aria-hidden="true"></i><span>继续上传</span></button>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("")}
+      </section>
+    `).join("") + `
+      <section class="medicine-detail-note">
+        <strong>备注</strong>
+        <p>${escapeAttr(record.note || "无")}</p>
+      </section>
+    `;
   }
 }
 
