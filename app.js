@@ -2801,14 +2801,13 @@ function renderMedicineRecordGroup(group, recordId, compact = false) {
         ${group.items.map((item) => {
           const image = item.images?.[0] || "";
           return `
-            <button class="medicine-record-med" type="button" data-medicine-record="${recordId}">
+            <div class="medicine-record-med">
               <b class="medicine-record-thumb" style="${medicineThumbStyle(image)}" aria-hidden="true"></b>
               <span>
                 <strong>${escapeAttr(item.name)} <em>${escapeAttr(medicineItemDose(item))}</em></strong>
                 <small>${escapeAttr(medicineItemUsage(item))}</small>
               </span>
-              <i aria-hidden="true"></i>
-            </button>
+            </div>
           `;
         }).join("")}
       </div>
@@ -2833,12 +2832,6 @@ function renderMedicineOverviewCard(records) {
           <span>营养素总览</span>
           <strong>${stats.nutrition}<em>次</em></strong>
           <small>较昨日 持平</small>
-        </article>
-        <article>
-          <i class="medicine-overview-icon total" aria-hidden="true"></i>
-          <span>打卡总次数</span>
-          <strong>${stats.total}<em>次</em></strong>
-          <small>较昨日 <b>▲1</b></small>
         </article>
       </div>
     </section>
@@ -2888,7 +2881,7 @@ function renderMedicineRecordsPage() {
       <div class="medicine-record-empty">
         <strong>今日暂无用药记录</strong>
         <span>从健康打卡卡片右上角添加今日记录。</span>
-        <button class="medicine-empty-action" type="button">记录用药</button>
+        <button class="medicine-empty-action" type="button">记用药/补充</button>
       </div>
     `;
     return;
@@ -2903,10 +2896,11 @@ function renderMedicineRecordsPage() {
       <article class="medicine-timeline-item">
         <div class="medicine-timeline-time">${parts.time}</div>
         <div class="medicine-timeline-line"><i aria-hidden="true"></i></div>
-        <section class="medicine-record-block">
+        <section class="medicine-record-block" data-medicine-record="${record.id}">
           <button class="medicine-record-block-head" type="button" data-medicine-record="${record.id}">
-            <span>${parts.time} 用药打卡</span>
+            <span>用药打卡</span>
             <em>共${itemCount}项</em>
+            <i aria-hidden="true"></i>
           </button>
           ${groups.map((group) => renderMedicineRecordGroup(group, record.id, true)).join("")}
         </section>
@@ -2916,7 +2910,7 @@ function renderMedicineRecordsPage() {
       <div class="medicine-timeline-end">没有更多数据了</div>
     </section>
     <footer class="medicine-record-action-bar">
-      <button class="medicine-empty-action" type="button">＋ 进行用药打卡</button>
+      <button class="medicine-empty-action" type="button">＋ 记用药/补充</button>
     </footer>
   `;
 }
