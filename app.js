@@ -2936,8 +2936,7 @@ function renderMedicineDetailPage() {
   const parts = medicineDateParts(record.time);
   const groups = medicineRecordGroups(record);
   const itemCount = (record.items || []).length;
-  if (medicineDetailEdit) medicineDetailEdit.hidden = false;
-  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除记录";
+  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除这一次的用药记录";
   if (medicineDetailSummary) {
     medicineDetailSummary.innerHTML = `
       <div class="medicine-detail-hero">
@@ -2978,7 +2977,6 @@ function renderMedicineDetailPage() {
                     const index = imageCursor++;
                     return `<button type="button" data-medicine-image="${record.id}" data-image-index="${index}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`;
                   }).join("")}
-                  <button class="medicine-detail-upload" type="button"><i aria-hidden="true"></i><span>继续上传</span></button>
                 </div>
               </div>
             </article>
