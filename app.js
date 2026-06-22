@@ -328,6 +328,10 @@ const medicineDetailSummary = document.querySelector("#medicineDetailSummary");
 const medicineDetailList = document.querySelector("#medicineDetailList");
 const medicineDetailEdit = document.querySelector("#medicineDetailEdit");
 const medicineDetailDelete = document.querySelector("#medicineDetailDelete");
+const medicineItemDetailSheet = document.querySelector("#medicineItemDetailSheet");
+const medicineItemDetailClose = document.querySelector("#medicineItemDetailClose");
+const medicineItemDetailBody = document.querySelector("#medicineItemDetailBody");
+const medicineItemDelete = document.querySelector("#medicineItemDelete");
 const medicineImageCount = document.querySelector("#medicineImageCount");
 const medicineImageClose = document.querySelector("#medicineImageClose");
 const medicineImageLarge = document.querySelector("#medicineImageLarge");
@@ -472,6 +476,8 @@ let medicineIdSeed = 1;
 let medicineImageTargetId = "";
 let medicineRecordsByPatient = {};
 let selectedMedicineRecordId = "";
+let selectedMedicineItemRecordId = "";
+let selectedMedicineItemId = "";
 let editingMedicineRecordId = "";
 let medicinePreviewImages = [];
 let medicinePreviewIndex = 0;
@@ -2801,13 +2807,13 @@ function renderMedicineRecordGroup(group, recordId, compact = false) {
         ${group.items.map((item) => {
           const image = item.images?.[0] || "";
           return `
-            <div class="medicine-record-med">
+            <button class="medicine-record-med" type="button" data-medicine-item="${recordId}" data-medicine-item-id="${item.id}">
               <b class="medicine-record-thumb" style="${medicineThumbStyle(image)}" aria-hidden="true"></b>
               <span>
                 <strong>${escapeAttr(item.name)} <em>${escapeAttr(medicineItemDose(item))}</em></strong>
                 <small>${escapeAttr(medicineItemUsage(item))}</small>
               </span>
-            </div>
+            </button>
           `;
         }).join("")}
       </div>
@@ -2957,7 +2963,7 @@ function renderMedicineDetailPage() {
           const images = item.images || [];
           const preview = images[0] || "";
           return `
-            <article class="medicine-detail-item">
+            <article class="medicine-detail-item" data-medicine-item="${record.id}" data-medicine-item-id="${item.id}">
               <div class="medicine-detail-item-main">
                 <b class="medicine-record-thumb" style="${medicineThumbStyle(preview)}" aria-hidden="true"></b>
                 <span>
@@ -2992,6 +2998,86 @@ function openMedicineDetailPage(recordId) {
   selectedMedicineRecordId = recordId;
   renderMedicineDetailPage();
   openSubPage("medicineDetailPage");
+}
+
+function medicineItemById(recordId, itemId) {
+  const record = medicineRecordById(recordId);
+  const item = record?.items?.find((entry) => entry.id === itemId);
+  return { record, item };
+}
+
+function medicineItemImageStartIndex(record, itemId) {
+  let cursor = 0;
+  for (const entry of record?.items || []) {
+    if (entry.id === itemId) return cursor;
+    cursor += entry.images?.length || 0;
+  }
+  return 0;
+}
+
+function openMedicineItemDetailSheet(recordId, itemId) {
+  const { record, item } = medicineItemById(recordId, itemId);
+  if (!record || !item || !medicineItemDetailSheet || !medicineItemDetailBody) return;
+  selectedMedicineItemRecordId = recordId;
+  selectedMedicineItemId = itemId;
+  const parts = medicineDateParts(record.time);
+  const images = item.images || [];
+  const startIndex = medicineItemImageStartIndex(record, itemId);
+  medicineItemDetailBody.innerHTML = `
+    <section class="medicine-item-detail-main">
+      <b class="medicine-record-thumb" style="${medicineThumbStyle(images[0] || "")}" aria-hidden="true"></b>
+      <div>
+        <span>${medicineItemTypeLabel(item.type)}</span>
+        <strong>${escapeAttr(item.name)} <em>${escapeAttr(medicineItemDose(item))}</em></strong>
+        <small>${escapeAttr(medicineItemUsage(item))}</small>
+      </div>
+    </section>
+    <section class="medicine-item-detail-info">
+      <p><span>记录时间</span><strong>${parts.time}</strong></p>
+      <p><span>所属打卡</span><strong>${parts.time} 用药打卡</strong></p>
+      <p><span>备注</span><strong>${escapeAttr(record.note || "无")}</strong></p>
+    </section>
+    <section class="medicine-item-detail-proof">
+      <h4>上传凭证 <span>（共${images.length}张）</span></h4>
+      <div>
+        ${images.length ? images.map((image, index) => `
+          <button type="button" data-medicine-image="${record.id}" data-image-index="${startIndex + index}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>
+        `).join("") : `<em>暂无凭证</em>`}
+      </div>
+    </section>
+  `;
+  sheetMask.classList.add("active");
+  medicineItemDetailSheet.classList.add("active");
+}
+
+function deleteSelectedMedicineItem() {
+  if (!selectedMedicineItemRecordId || !selectedMedicineItemId) return;
+  const key = medicinePatientKey();
+  const records = currentMedicineRecords();
+  medicineRecordsByPatient[key] = records.reduce((next, record) => {
+    if (record.id !== selectedMedicineItemRecordId) {
+      next.push(record);
+      return next;
+    }
+    const items = (record.items || []).filter((item) => item.id !== selectedMedicineItemId);
+    if (items.length) next.push({ ...record, items });
+    return next;
+  }, []);
+  const deletedRecordId = selectedMedicineItemRecordId;
+  selectedMedicineItemRecordId = "";
+  selectedMedicineItemId = "";
+  saveMedicineRecords();
+  updateMedicineScheduleCard();
+  renderMedicineRecordsPage();
+  if (selectedMedicineRecordId === deletedRecordId && medicineRecordById(deletedRecordId)) {
+    renderMedicineDetailPage();
+  } else if (selectedMedicineRecordId === deletedRecordId) {
+    selectedMedicineRecordId = "";
+    renderMedicineRecordsPage();
+    openSubPage("medicineRecordsPage");
+  }
+  closeOverlays();
+  showToast("该药品记录已删除");
 }
 
 function deleteSelectedMedicineRecord() {
@@ -6496,6 +6582,7 @@ function closeOverlays() {
   dietUploadActionSheet?.classList.remove("active");
   dietGramSheet?.classList.remove("active");
   medicineCheckinSheet?.classList.remove("active");
+  medicineItemDetailSheet?.classList.remove("active");
   medicineTimePicker?.classList.remove("active");
   sportCheckinSheet?.classList.remove("active");
   sportTimePicker?.classList.remove("active");
@@ -6980,17 +7067,36 @@ medicineRecordsList?.addEventListener("click", (event) => {
     openMedicineCheckinSheet();
     return;
   }
+  const item = event.target.closest("[data-medicine-item]");
+  if (item) {
+    event.stopPropagation();
+    openMedicineItemDetailSheet(item.dataset.medicineItem, item.dataset.medicineItemId);
+    return;
+  }
   const row = event.target.closest("[data-medicine-record]");
   if (!row) return;
   openMedicineDetailPage(row.dataset.medicineRecord);
 });
 medicineDetailList?.addEventListener("click", (event) => {
   const image = event.target.closest("[data-medicine-image]");
-  if (!image) return;
-  openMedicineImagePage(image.dataset.medicineImage, Number(image.dataset.imageIndex || 0));
+  if (image) {
+    openMedicineImagePage(image.dataset.medicineImage, Number(image.dataset.imageIndex || 0));
+    return;
+  }
+  const item = event.target.closest("[data-medicine-item]");
+  if (!item) return;
+  openMedicineItemDetailSheet(item.dataset.medicineItem, item.dataset.medicineItemId);
 });
 medicineDetailEdit?.addEventListener("click", () => openMedicineCheckinSheet(selectedMedicineRecordId));
 medicineDetailDelete?.addEventListener("click", deleteSelectedMedicineRecord);
+medicineItemDetailClose?.addEventListener("click", closeOverlays);
+medicineItemDelete?.addEventListener("click", deleteSelectedMedicineItem);
+medicineItemDetailBody?.addEventListener("click", (event) => {
+  const image = event.target.closest("[data-medicine-image]");
+  if (!image) return;
+  closeOverlays();
+  openMedicineImagePage(image.dataset.medicineImage, Number(image.dataset.imageIndex || 0));
+});
 medicineImageClose?.addEventListener("click", goBackPage);
 medicineImagePrev?.addEventListener("click", () => stepMedicineImage(-1));
 medicineImageNext?.addEventListener("click", () => stepMedicineImage(1));

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260622-medicine-detail-refine">
+  <link rel="stylesheet" href="styles.css?v=20260622-medicine-item-sheet">
 </head>
 <body>
   <main class="app-shell">
@@ -1240,6 +1240,16 @@
         </footer>
       </section>
       <input id="medicineImagePicker" type="file" accept="image/*" multiple hidden>
+      <section class="medicine-item-detail-sheet" id="medicineItemDetailSheet" aria-label="本次药品记录详情">
+        <header>
+          <h3>药品记录详情</h3>
+          <button id="medicineItemDetailClose" type="button" aria-label="关闭"></button>
+        </header>
+        <div class="medicine-item-detail-body" id="medicineItemDetailBody"></div>
+        <footer>
+          <button id="medicineItemDelete" type="button">删除此记录</button>
+        </footer>
+      </section>
       <section class="medicine-time-picker" id="medicineTimePicker" aria-label="选择记录时间">
         <div class="medicine-picker-head">
           <button class="medicine-picker-cancel" type="button">取消</button>
@@ -1524,6 +1534,6 @@
     </section>
   </main>
 
-  <script src="app.js?v=20260622-medicine-detail-refine"></script>
+  <script src="app.js?v=20260622-medicine-item-sheet"></script>
 </body>
 </html>
