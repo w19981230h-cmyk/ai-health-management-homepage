@@ -198,7 +198,9 @@ const periodEditStart = document.querySelector("#periodEditStart");
 const periodEditEnd = document.querySelector("#periodEditEnd");
 const periodEditError = document.querySelector("#periodEditError");
 const focusMetricGrid = document.querySelector("#focusMetricGrid");
+const metricDetailPage = document.querySelector("#metricDetailPage");
 const metricDetailTitle = document.querySelector("#metricDetailTitle");
+const metricDetailSummary = document.querySelector(".metric-detail-summary");
 const metricDetailValue = document.querySelector("#metricDetailValue");
 const metricDetailUnit = document.querySelector("#metricDetailUnit");
 const metricDetailStatus = document.querySelector("#metricDetailStatus");
@@ -208,16 +210,26 @@ const metricDateNav = document.querySelector("#metricDateNav");
 const metricDateCurrent = document.querySelector("#metricDateCurrent span");
 const metricDatePicker = document.querySelector("#metricDatePicker");
 const metricTrendCaption = document.querySelector("#metricTrendCaption");
+const metricTrendCard = document.querySelector(".metric-trend-card");
 const metricLineChart = document.querySelector("#metricLineChart");
 const metricStatAverage = document.querySelector("#metricStatAverage");
+const metricAverageCard = document.querySelector(".metric-average-card");
+const metricDetailActions = document.querySelector(".metric-detail-actions");
 const metricAllRecords = document.querySelector("#metricAllRecords");
 const metricRecordsGroups = document.querySelector("#metricRecordsGroups");
 const metricDeleteDialog = document.querySelector("#metricDeleteDialog");
+const weightDetailRecordsSection = document.querySelector("#weightDetailRecordsSection");
+const weightDetailRecords = document.querySelector("#weightDetailRecords");
+const weightRecordDetailDialog = document.querySelector("#weightRecordDetailDialog");
+const weightRecordDetailBody = document.querySelector("#weightRecordDetailBody");
+const weightRecordDeleteAction = document.querySelector("#weightRecordDeleteAction");
+const weightRecordSaveAction = document.querySelector("#weightRecordSaveAction");
 const metricRecordEntry = document.querySelector("#metricRecordEntry");
 const metricRecordSheet = document.querySelector("#metricRecordSheet");
 const metricRecordSheetTitle = document.querySelector("#metricRecordSheetTitle");
 const metricRecordFields = document.querySelector("#metricRecordFields");
 const metricRecordTime = document.querySelector("#metricRecordTime");
+const metricRecordTimeLabel = document.querySelector("#metricRecordTimeLabel");
 const metricRecordTimeText = document.querySelector("#metricRecordTimeText");
 const metricRecordTimeTrigger = document.querySelector("#metricRecordTimeTrigger");
 const metricRecordTimePicker = document.querySelector("#metricRecordTimePicker");
@@ -226,8 +238,10 @@ const metricRecordPickerHour = document.querySelector("#metricRecordPickerHour")
 const metricRecordPickerMinute = document.querySelector("#metricRecordPickerMinute");
 const metricRecordNoteField = document.querySelector("#metricRecordNoteField");
 const metricRecordNote = document.querySelector("#metricRecordNote");
+const metricRecordNoteCount = document.querySelector("#metricRecordNoteCount");
 const metricRecordError = document.querySelector("#metricRecordError");
 const metricRecordConfirm = document.querySelector("#metricRecordConfirm");
+const metricRecordTimeField = document.querySelector(".metric-record-time");
 const dietUploadSheet = document.querySelector("#dietUploadSheet");
 const dietUploadActionSheet = document.querySelector("#dietUploadActionSheet");
 const dietUploadArea = document.querySelector("#dietUploadArea");
@@ -235,6 +249,8 @@ const dietImageGrid = document.querySelector("#dietImageGrid");
 const dietImagePicker = document.querySelector("#dietImagePicker");
 const dietMealOptions = document.querySelector("#dietMealOptions");
 const dietMealTime = document.querySelector("#dietMealTime");
+const dietMealTimeText = document.querySelector("#dietMealTimeText");
+const dietMealTimeTrigger = document.querySelector("#dietMealTimeTrigger");
 const dietNoteInput = document.querySelector("#dietNoteInput");
 const dietCancelUpload = document.querySelector("#dietCancelUpload");
 const dietStartRecognize = document.querySelector("#dietStartRecognize");
@@ -252,7 +268,9 @@ const dietRecordTimeText = document.querySelector("#dietRecordTimeText");
 const dietResultTime = document.querySelector("#dietResultTime");
 const dietResultNoteInput = document.querySelector("#dietResultNoteInput");
 const dietGramSheet = document.querySelector("#dietGramSheet");
-const dietGramFoodName = document.querySelector("#dietGramFoodName");
+const dietEditTitle = document.querySelector("#dietEditTitle");
+const dietEditFoodThumb = document.querySelector("#dietEditFoodThumb");
+const dietEditFoodMeta = document.querySelector("#dietEditFoodMeta");
 const dietFoodNameInput = document.querySelector("#dietFoodNameInput");
 const dietGramInput = document.querySelector("#dietGramInput");
 const dietGramConfirm = document.querySelector("#dietGramConfirm");
@@ -271,6 +289,23 @@ const dietDetailSummary = document.querySelector("#dietDetailSummary");
 const dietDetailRecords = document.querySelector("#dietDetailRecords");
 const dietDetailCheckin = document.querySelector("#dietDetailCheckin");
 const dietDetailRecordFood = document.querySelector("#dietDetailRecordFood");
+const dietGramCancel = document.querySelector("#dietGramCancel");
+const sportDetailSummary = document.querySelector("#sportDetailSummary");
+const sportDetailRecords = document.querySelector("#sportDetailRecords");
+const sportDetailCheckin = document.querySelector("#sportDetailCheckin");
+const sportRecordEditor = document.querySelector("#sportRecordEditor");
+const sportRecordDelete = document.querySelector("#sportRecordDelete");
+const sportRecordClose = document.querySelector("#sportRecordClose");
+const sportRecordEditorTitle = document.querySelector("#sportRecordEditorTitle");
+const sportRecordIcon = document.querySelector("#sportRecordIcon");
+const sportRecordName = document.querySelector("#sportRecordName");
+const sportRecordMeta = document.querySelector("#sportRecordMeta");
+const sportRecordCalories = document.querySelector("#sportRecordCalories");
+const sportRecordDurationInput = document.querySelector("#sportRecordDurationInput");
+const sportRecordTimeInput = document.querySelector("#sportRecordTimeInput");
+const sportRecordTimeTrigger = document.querySelector("#sportRecordTimeTrigger");
+const sportRecordTimeText = document.querySelector("#sportRecordTimeText");
+const sportRecordSave = document.querySelector("#sportRecordSave");
 const medicineCheckinSheet = document.querySelector("#medicineCheckinSheet");
 const medicineClose = document.querySelector("#medicineClose");
 const medicineTime = document.querySelector("#medicineTime");
@@ -346,6 +381,7 @@ const waistPickerDate = document.querySelector("#waistPickerDate");
 const waistPickerHour = document.querySelector("#waistPickerHour");
 const waistPickerMinute = document.querySelector("#waistPickerMinute");
 const waistNoteInput = document.querySelector("#waistNoteInput");
+const waistNoteCount = document.querySelector("#waistNoteCount");
 const waistError = document.querySelector("#waistError");
 const waistSubmit = document.querySelector("#waistSubmit");
 const pressureCheckinSheet = document.querySelector("#pressureCheckinSheet");
@@ -388,6 +424,9 @@ const sugarSubmit = document.querySelector("#sugarSubmit");
 const sugarSuccessDialog = document.querySelector("#sugarSuccessDialog");
 const sugarSuccessPeriod = document.querySelector("#sugarSuccessPeriod");
 const sugarSuccessValue = document.querySelector("#sugarSuccessValue");
+const unifiedCheckinSuccessDialog = document.querySelector("#unifiedCheckinSuccessDialog");
+const unifiedCheckinSuccessBody = document.querySelector("#unifiedCheckinSuccessBody");
+const unifiedCheckinSuccessDone = document.querySelector("#unifiedCheckinSuccessDone");
 const checkinSuccessDialog = document.querySelector("#checkinSuccessDialog");
 const checkinSuccessSummary = document.querySelector("#checkinSuccessSummary");
 const checkinSuccessDone = document.querySelector("#checkinSuccessDone");
@@ -411,6 +450,7 @@ let selectedMetricDate = new Date(2026, 5, 14);
 let metricRecordsByPatient = {};
 let deletedMetricRecordIdsByPatient = {};
 let deletingMetricRecordId = "";
+let selectedWeightRecordKey = "";
 let dietUploadImages = [];
 let dietSelectedMeal = "";
 let dietRecognitionIndex = 0;
@@ -439,6 +479,7 @@ let sportSelectedType = "walk";
 let sportOtherName = "";
 let sportDuration = 30;
 let sportTimeValue = "";
+let editingSportRecordId = "";
 let weightCheckinTimeValue = "";
 let waistCheckinTimeValue = "";
 let pressureCheckinTimeValue = "";
@@ -1334,13 +1375,9 @@ function metricCheckinValue(item) {
     return `${display || values.value} mmol/L${period ? ` · ${period}` : ""}`;
   }
   if (item.type === "lipid") {
-    if (values.tg || values.ldl) {
-      const parts = [];
-      if (values.tg) parts.push(`TG ${values.tg} mmol/L`);
-      if (values.ldl) parts.push(`LDL-C ${values.ldl} mmol/L`);
-      return parts.join(" · ");
-    }
-    return display ? `${display} mmol/L` : "";
+    const ldlFromText = String(display || item.value || "").match(/LDL-C\s*[:：]?\s*(\d+(?:\.\d+)?)/i)?.[1];
+    const ldl = values.ldl ?? ldlFromText;
+    return ldl ? `低密度脂蛋白LDL-C：${formatMetricNumber(ldl)} mmol/L` : "";
   }
   if (item.type === "uric") return `${display || values.value} μmol/L`;
   return display;
@@ -1389,7 +1426,7 @@ function checkinDisplay(item) {
 
   return {
     main,
-    meta: `最新记录 ${recordTime || "--:--"}`,
+    meta: `${recordTime || "--:--"} 更新`,
     empty: false
   };
 }
@@ -1400,7 +1437,7 @@ const scheduleMetricCheckins = {
   waist: { type: "waist", title: "腰围打卡", desc: "记录腰围变化" },
   heart: { type: "heart", title: "心率打卡", desc: "记录静息心率" },
   sugar: { type: "sugar", title: "血糖打卡", desc: "记录血糖值和测量时段" },
-  lipid: { type: "lipid", title: "血脂打卡", desc: "记录甘油三酯和低密度脂蛋白" },
+  lipid: { type: "lipid", title: "血脂打卡", desc: "记录 TC、TG、HDL-C、LDL-C 等血脂指标" },
   uric: { type: "uric", title: "尿酸打卡", desc: "记录尿酸变化" }
 };
 
@@ -1541,12 +1578,12 @@ function renderCheckinCard(item) {
         <i class="checkin-symbol" aria-hidden="true">${config.icon}</i>
         <span>
           <strong>${config.title}</strong>
+          ${config.meta ? `<em>${config.meta}</em>` : ""}
         </span>
         <button class="checkin-plus" type="button" data-type="${item.type}" data-schedule-action="checkin" aria-label="${plusLabel}">+</button>
       </div>
       <div class="checkin-card-body">
         <span class="${checkinMainClass}">${config.main}</span>
-        ${config.meta ? `<span class="checkin-sub">${config.meta}</span>` : ""}
       </div>
     </article>
   `;
@@ -1617,11 +1654,27 @@ function localDateTimeValue(date = new Date()) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+function isTodayDate(date) {
+  return dateInputValue(date) === dateInputValue(new Date());
+}
+
+function formatCheckinTimeDisplay(value, emptyText = "请选择记录时间", dateSeparator = "/") {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return emptyText;
+  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  if (isTodayDate(date)) return timeText;
+  return `${dateInputValue(date).replaceAll("-", dateSeparator)} ${timeText}`;
+}
+
 function formatDietTime(value) {
   if (!value) return "现在";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function updateDietMealTimeText() {
+  if (dietMealTimeText) dietMealTimeText.textContent = formatCheckinTimeDisplay(dietMealTime?.value, "请选择记录时间");
 }
 
 function mealByTime(date = new Date()) {
@@ -1640,6 +1693,23 @@ function escapeAttr(value) {
     .replace(/>/g, "&gt;");
 }
 
+function checkinLineHtml(line) {
+  const label = escapeAttr(line.label || "");
+  const value = escapeAttr(line.value || "");
+  const unit = escapeAttr(line.unit || "");
+  return `<p>${label ? `${label} ` : ""}<strong>${value}</strong>${unit ? `<em> ${unit}</em>` : ""}</p>`;
+}
+
+function showUnifiedCheckinSuccess(lines = []) {
+  if (unifiedCheckinSuccessBody) {
+    unifiedCheckinSuccessBody.innerHTML = lines.length
+      ? lines.map(checkinLineHtml).join("")
+      : `<p><strong>记录已保存</strong></p>`;
+  }
+  sheetMask.classList.add("active");
+  unifiedCheckinSuccessDialog?.classList.add("active");
+}
+
 function resetDietUploadState() {
   dietReturnView = document.querySelector("#dietDetailPage")?.classList.contains("active")
     ? "dietDetail"
@@ -1653,6 +1723,7 @@ function resetDietUploadState() {
   dietResults = [];
   dietResultIndex = 0;
   if (dietMealTime) dietMealTime.value = localDateTimeValue(now);
+  updateDietMealTimeText();
   if (dietNoteInput) dietNoteInput.value = "";
   renderDietUploadImages();
   renderDietMealOptions();
@@ -1833,23 +1904,23 @@ function renderDietResult() {
   const resultTime = formatDietTime(dietResultTime?.value || dietMealTime?.value);
   dietRecordTimeText.textContent = `${resultTime || current?.time || "12:00"} 记录`;
   dietFoodList.innerHTML = (current?.foods || []).map((food) => `
-    <article class="diet-food-card" data-food-id="${food.id}">
+    <article class="diet-food-card" data-food-id="${food.id}" role="button" tabindex="0">
       <i class="food-thumb ${food.image}" aria-hidden="true"></i>
       <div>
         <strong>${food.name}</strong>
         <p>${food.calories} kcal · ${formatFoodNumber(food.grams || 100)}g</p>
       </div>
       <menu class="diet-food-actions">
-        ${readonlyResult ? "" : `<button class="diet-food-edit" type="button" data-edit-food="${food.id}" aria-label="编辑${escapeAttr(food.name)}"></button>`}
+        <button class="diet-food-edit" type="button" data-edit-food="${food.id}" aria-label="编辑${escapeAttr(food.name)}"></button>
       </menu>
     </article>
-  `).join("") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
+  `).join("") + (current ? renderDietResultMeta(current) : "") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
   if (dietResultNoteInput) {
     dietResultNoteInput.readOnly = readonlyResult;
     dietResultNoteInput.setAttribute("aria-readonly", String(readonlyResult));
   }
   if (dietConfirmCheckin) {
-    dietConfirmCheckin.textContent = readonlyResult ? "删除" : "确认打卡";
+    dietConfirmCheckin.textContent = readonlyResult ? "删除" : "打卡";
     dietConfirmCheckin.classList.toggle("danger", readonlyResult);
   }
 }
@@ -1885,19 +1956,24 @@ function openDietDetailFoodSheet(foodId) {
 }
 
 function openDietFoodEditSheet(food) {
-  if (dietGramFoodName) dietGramFoodName.textContent = food.name;
   if (dietFoodNameInput) dietFoodNameInput.value = food.name;
   if (dietGramInput) dietGramInput.value = food.grams || detailFoodGrams(food) || 100;
+  const grams = food.grams || detailFoodGrams(food) || 100;
+  const mealGroup = (dietDetailMealGroups || []).find((group) => group.foods?.some((item) => item.id === editingDietFoodId));
+  const mealName = mealGroup?.meal || dietResults[dietResultIndex]?.meal || dietSelectedMeal || mealByTime();
+  const dateText = dateOnlyValue(dietDetailRangeDate || new Date());
+  if (dietEditTitle) dietEditTitle.innerHTML = `${dateText}${escapeAttr(mealName)} <b>▼</b>`;
+  if (dietEditFoodThumb) dietEditFoodThumb.className = `food-thumb ${food.image || ""}`;
+  if (dietEditFoodMeta) dietEditFoodMeta.textContent = `${Math.round(Number(food.calories || 0))}千卡/${formatFoodNumber(grams)}克`;
   sheetMask.classList.add("active");
   dietGramSheet?.classList.add("active");
-  window.setTimeout(() => dietFoodNameInput?.focus(), 80);
 }
 
 function closeDietGramSheet() {
   editingDietFoodId = "";
   editingDietFoodContext = "result";
   dietGramSheet?.classList.remove("active");
-  if (!document.querySelector(".diet-upload-sheet.active, .medicine-checkin-sheet.active, .sport-checkin-sheet.active, .weight-checkin-page.active, .waist-checkin-sheet.active, .pressure-checkin-sheet.active, .sugar-checkin-sheet.active, .checkin-success-dialog.active, .sport-success-dialog.active, .pressure-success-dialog.active, .sugar-success-dialog.active")) {
+  if (!document.querySelector(".diet-upload-sheet.active, .medicine-checkin-sheet.active, .sport-checkin-sheet.active, .weight-checkin-page.active, .waist-checkin-sheet.active, .pressure-checkin-sheet.active, .sugar-checkin-sheet.active, .checkin-success-dialog.active, .sport-success-dialog.active, .pressure-success-dialog.active, .sugar-success-dialog.active, .unified-checkin-success-dialog.active")) {
     sheetMask.classList.remove("active");
   }
 }
@@ -1984,17 +2060,50 @@ function confirmDietCheckin() {
   if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
   dietCheckinSummary = nextDietItem;
+  const existingGroups = dietDetailFoodsForRender().map((group) => ({
+    ...group,
+    images: Array.isArray(group.images) ? [...group.images] : [],
+    foods: [...group.foods]
+  }));
+  dietResults.forEach((result, resultIndex) => {
+    const mealName = result.meal || dietSelectedMeal || "加餐";
+    const group = existingGroups.find((item) => item.meal === mealName);
+    const nextFoods = result.foods.map((food, foodIndex) => prepareDietDetailFood({
+      ...food,
+      id: food.id || `diet-upload-${Date.now()}-${resultIndex}-${foodIndex}`
+    }, existingGroups.length + resultIndex, foodIndex));
+    const nextImage = result.image ? [result.image] : [];
+    if (group) {
+      group.time = `${String(result.time || time).replace(/\s*记录$/, "")} 记录`;
+      group.images = [...(group.images || []), ...nextImage];
+      group.foods = [...group.foods, ...nextFoods];
+    } else {
+      existingGroups.push({
+        meal: mealName,
+        time: `${String(result.time || time).replace(/\s*记录$/, "")} 记录`,
+        images: nextImage,
+        foods: nextFoods
+      });
+    }
+  });
+  dietDetailMealGroups = existingGroups;
   dietDetailHasRecords = true;
   if (dietReturnView === "dietDetail") {
     renderDietDetailPage();
     openSubPage("dietDetailPage");
-    showToast("饮食打卡已完成");
+    showUnifiedCheckinSuccess([
+      { label: "本次摄入", value: `${Math.round(totals.calories)}`, unit: "kcal" },
+      { label: "食物数量", value: `${Math.max(totalFoods, 1)}`, unit: "项" }
+    ]);
     return;
   }
   const nextView = dietReturnView === "home" ? "home" : "plan";
   tabbarLinks.forEach((item) => item.classList.toggle("active", item.dataset.view === nextView));
   switchView(nextView);
-  showToast("饮食打卡已完成");
+  showUnifiedCheckinSuccess([
+    { label: "本次摄入", value: `${Math.round(totals.calories)}`, unit: "kcal" },
+    { label: "食物数量", value: `${Math.max(totalFoods, 1)}`, unit: "项" }
+  ]);
 }
 
 function currentDietCheckinItem() {
@@ -2050,6 +2159,255 @@ function openDietDetailPage() {
   renderDietDetailRange();
   renderDietDetailPage();
   openSubPage("dietDetailPage");
+}
+
+function currentSportCheckinItem() {
+  return scheduleDataFor().checkins.find((item) => item.type === "sport");
+}
+
+function mutableScheduleDataForSelected() {
+  if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
+  if (!scheduleTasks[schedulePatientId][scheduleSelectedDate]) {
+    scheduleTasks[schedulePatientId][scheduleSelectedDate] = { reminders: [], followups: [], assessments: [], checkins: [] };
+  }
+  return scheduleTasks[schedulePatientId][scheduleSelectedDate];
+}
+
+function sportTypeKeyByName(name) {
+  return Object.keys(sportTypes).find((key) => sportTypes[key]?.label === name) || "walk";
+}
+
+function sportRateForRecord(record) {
+  const recordRate = Number(record?.kcalRate);
+  if (Number.isFinite(recordRate) && recordRate > 0) return recordRate;
+  const typeKey = record?.type || sportTypeKeyByName(record?.name);
+  const typeRate = sportTypes[typeKey]?.kcal;
+  if (Number.isFinite(typeRate)) return typeRate;
+  const duration = Number(record?.duration || 0);
+  const calories = Number(record?.calories || 0);
+  return duration > 0 && calories > 0 ? calories / duration : sportTypes.walk.kcal;
+}
+
+function sportRecordDateTime(record) {
+  if (record?.time) return record.time;
+  const timeText = record?.timeText || "08:30";
+  return `${scheduleSelectedDate}T${timeText}`;
+}
+
+function normalizeSportRecord(record, index = 0) {
+  const next = record || {};
+  next.id = next.id || `sport-record-${scheduleSelectedDate}-${index}`;
+  next.time = sportRecordDateTime(next);
+  next.name = next.name || "运动";
+  next.type = next.type || sportTypeKeyByName(next.name);
+  next.duration = Number(next.duration || 0);
+  next.kcalRate = Number(next.kcalRate || 0) || sportRateForRecord(next);
+  next.calories = Number(next.calories || Math.round(next.duration * sportRateForRecord(next)));
+  return next;
+}
+
+function sortSportRecordsNewest(records) {
+  records.sort((a, b) => sportRecordSortValue(b) - sportRecordSortValue(a));
+  return records;
+}
+
+function ensureSportRecordStore() {
+  const data = mutableScheduleDataForSelected();
+  let item = data.checkins.find((checkin) => checkin.type === "sport");
+  if (!item) {
+    item = { type: "sport", title: "运动打卡", count: "暂无记录", desc: "", records: [] };
+    data.checkins.unshift(item);
+  }
+  if (!Array.isArray(item.records) || !item.records.length) {
+    item.records = defaultSportDetailData().records.map((record) => ({
+      id: record.id,
+      type: record.type,
+      name: record.name,
+      duration: record.duration,
+      calories: record.calories,
+      kcalRate: record.kcalRate,
+      time: `${scheduleSelectedDate}T${record.timeText}`
+    }));
+  }
+  item.records = item.records.map((record, index) => normalizeSportRecord(record, index));
+  return { data, item, records: item.records };
+}
+
+function syncSportCheckinItem(item) {
+  if (!item) return;
+  const records = Array.isArray(item.records) ? sortSportRecordsNewest(item.records) : [];
+  const totalDuration = records.reduce((sum, record) => sum + Number(record.duration || 0), 0);
+  const totalCalories = records.reduce((sum, record) => sum + Number(record.calories || 0), 0);
+  const latest = records[0];
+  Object.assign(item, {
+    type: "sport",
+    title: "运动打卡",
+    desc: records.length ? `总时长 ${Math.round(totalDuration)}分钟` : "",
+    count: records.length ? `已记录 ${records.length} 次` : "暂无记录",
+    value: records.length ? `消耗 ${Math.round(totalCalories)} kcal` : "",
+    duration: totalDuration,
+    totalDuration,
+    calories: totalCalories,
+    totalCalories,
+    latestRecordTime: latest ? formatSportTimeText(latest.time) : "",
+    records
+  });
+}
+
+function defaultSportDetailData() {
+  return {
+    totalDuration: 45,
+    totalCalories: 180,
+    records: [
+      { id: "sport-default-0", type: "walk", timeText: "08:30", name: "快走", duration: 30, calories: 90, kcalRate: 3 },
+      { id: "sport-default-1", type: "fitness", timeText: "19:20", name: "瑜伽", duration: 15, calories: 45, kcalRate: 3 }
+    ]
+  };
+}
+
+function sportDetailDataForRender() {
+  const item = currentSportCheckinItem();
+  if (item && Array.isArray(item.records) && !item.records.length) {
+    return { totalDuration: 0, totalCalories: 0, records: [] };
+  }
+  const records = Array.isArray(item?.records) && item.records.length
+    ? item.records.map((record, index) => {
+        const normalized = normalizeSportRecord({ ...record }, index);
+        return {
+          ...normalized,
+          timeText: checkinTimeText(normalized.time) || "--:--",
+          sortTime: new Date(normalized.time).getTime()
+        };
+      })
+    : [];
+  if (!records.length) {
+    const data = defaultSportDetailData();
+    return {
+      ...data,
+      records: [...data.records].sort((a, b) => sportRecordSortValue(b) - sportRecordSortValue(a))
+    };
+  }
+  records.sort((a, b) => sportRecordSortValue(b) - sportRecordSortValue(a));
+  const totalDuration = records.reduce((sum, record) => sum + Number(record.duration || 0), 0);
+  const calculatedCalories = records.reduce((sum, record) => sum + Number(record.calories || 0), 0);
+  const totalCalories = Number(item?.totalCalories ?? item?.calories ?? calculatedCalories);
+  return {
+    totalDuration,
+    totalCalories: Number.isFinite(totalCalories) ? totalCalories : calculatedCalories,
+    records
+  };
+}
+
+function sportRecordSortValue(record) {
+  if (Number.isFinite(record.sortTime)) return record.sortTime;
+  const timeValue = new Date(record.time).getTime();
+  if (Number.isFinite(timeValue)) return timeValue;
+  const matched = String(record.timeText || "").match(/^(\d{1,2}):(\d{2})/);
+  return matched ? Number(matched[1]) * 60 + Number(matched[2]) : 0;
+}
+
+function renderSportDetailPage() {
+  const data = sportDetailDataForRender();
+  if (sportDetailSummary) {
+    sportDetailSummary.innerHTML = `
+      <div class="sport-detail-stats">
+        <div class="sport-detail-calorie"><span>累计消耗</span><strong>${Math.round(data.totalCalories)}<em>kcal</em></strong></div>
+        <div><span>累计时长</span><strong>${Math.round(data.totalDuration)}<em>分钟</em></strong></div>
+      </div>
+    `;
+  }
+  if (sportDetailRecords) {
+    sportDetailRecords.innerHTML = data.records.length
+      ? data.records.map((record) => `
+        <article class="sport-detail-record" data-sport-record-id="${escapeAttr(record.id)}" tabindex="0">
+          <i class="sport-icon ${escapeAttr(record.type || sportTypeKeyByName(record.name) || "walk")}" aria-hidden="true"></i>
+          <div>
+            <strong>${escapeAttr(record.name)}</strong>
+            <span>${Math.round(record.duration)}分钟 · ${escapeAttr(record.timeText)}</span>
+          </div>
+          <p><b>${Math.round(record.calories)}</b> 千卡 <em aria-hidden="true"></em></p>
+        </article>
+      `).join("")
+      : `<div class="sport-detail-empty">今日暂无运动记录</div>`;
+  }
+}
+
+function openSportDetailPage() {
+  renderSportDetailPage();
+  openSubPage("sportDetailPage");
+}
+
+function closeSportRecordEditor() {
+  sportRecordEditor?.classList.remove("active");
+  if (!document.querySelector(".sport-checkin-sheet.active, .sport-time-picker.active, .sport-success-dialog.active")) {
+    sheetMask.classList.remove("active");
+  }
+  editingSportRecordId = "";
+}
+
+function currentEditingSportRecord() {
+  const { records } = ensureSportRecordStore();
+  return records.find((record) => record.id === editingSportRecordId);
+}
+
+function sportEditorDurationValue() {
+  const value = Number(sportRecordDurationInput?.value || 0);
+  return Math.min(300, Math.max(1, Number.isFinite(value) ? value : 1));
+}
+
+function sportEditorCalories(record) {
+  return Math.round(sportEditorDurationValue() * sportRateForRecord(record));
+}
+
+function renderSportRecordEditor() {
+  const record = currentEditingSportRecord();
+  if (!record) return;
+  const duration = sportEditorDurationValue();
+  const calories = sportEditorCalories(record);
+  if (sportRecordIcon) sportRecordIcon.className = `sport-icon ${record.type || sportTypeKeyByName(record.name) || "walk"}`;
+  if (sportRecordName) sportRecordName.textContent = record.name || "运动";
+  if (sportRecordMeta) sportRecordMeta.textContent = `${Math.round(calories)} kcal / ${Math.round(duration)} 分钟`;
+  if (sportRecordCalories) sportRecordCalories.textContent = String(Math.round(calories));
+  if (sportRecordTimeText) sportRecordTimeText.textContent = formatSportTimeText(sportRecordTimeInput?.value || record.time);
+}
+
+function openSportRecordEditor(recordId) {
+  const { records } = ensureSportRecordStore();
+  const record = records.find((item) => item.id === recordId);
+  if (!record) return;
+  editingSportRecordId = record.id;
+  if (sportRecordDurationInput) sportRecordDurationInput.value = String(Math.round(record.duration || 1));
+  if (sportRecordTimeInput) {
+    const date = new Date(record.time);
+    sportRecordTimeInput.value = Number.isNaN(date.getTime()) ? localDateTimeValue() : localDateTimeValue(date);
+  }
+  renderSportRecordEditor();
+  sheetMask.classList.add("active");
+  sportRecordEditor?.classList.add("active");
+}
+
+function saveSportRecordEdit() {
+  const { item, records } = ensureSportRecordStore();
+  const record = records.find((entry) => entry.id === editingSportRecordId);
+  if (!record) return;
+  record.duration = sportEditorDurationValue();
+  record.calories = sportEditorCalories(record);
+  record.time = sportRecordTimeInput?.value || record.time || localDateTimeValue();
+  syncSportCheckinItem(item);
+  renderSchedule();
+  renderSportDetailPage();
+  closeSportRecordEditor();
+  showToast("运动记录已更新");
+}
+
+function deleteSportRecordEdit() {
+  const { item } = ensureSportRecordStore();
+  item.records = item.records.filter((record) => record.id !== editingSportRecordId);
+  syncSportCheckinItem(item);
+  renderSchedule();
+  renderSportDetailPage();
+  closeSportRecordEditor();
+  showToast("运动记录已删除");
 }
 
 function dateOnlyValue(date = new Date()) {
@@ -2123,6 +2481,63 @@ function prepareDietDetailFood(food, groupIndex, foodIndex) {
     baseFat: food.baseFat ?? 0,
     baseCarb: food.baseCarb ?? 0
   };
+}
+
+function dietDetailTimeOnly(value) {
+  const text = String(value || "").trim();
+  const matched = text.match(/(\d{1,2}):(\d{2})/);
+  if (!matched) return "--:--";
+  return `${matched[1].padStart(2, "0")}:${matched[2]}`;
+}
+
+function dietDetailImageStyle(image, fallbackClass = "") {
+  const preview = typeof image === "string" ? image : image?.preview;
+  if (preview?.startsWith("blob:") || preview?.startsWith("data:") || preview?.startsWith("http")) {
+    return `style="background-image:url('${escapeAttr(preview)}')"`;
+  }
+  if (preview?.startsWith("linear-gradient") || preview?.startsWith("radial-gradient") || preview?.startsWith("#")) {
+    return `style="background:${escapeAttr(preview)}"`;
+  }
+  return fallbackClass ? `class="diet-detail-upload-thumb food-thumb ${escapeAttr(fallbackClass)}"` : `class="diet-detail-upload-thumb"`;
+}
+
+function renderDietDetailMealMeta(group) {
+  const images = Array.isArray(group.images) && group.images.length
+    ? group.images
+    : [{ preview: "", fallback: group.foods?.[0]?.image || "egg" }];
+  const time = dietDetailTimeOnly(group.time || group.foods?.[0]?.recordTime);
+  return `
+    <div class="diet-detail-meal-meta">
+      <div class="diet-detail-upload-thumbs">
+        ${images.slice(0, 4).map((image) => {
+          const fallback = image?.fallback || group.foods?.[0]?.image || "egg";
+          const attr = dietDetailImageStyle(image, fallback);
+          return `<span ${attr.includes("class=") ? attr : `class="diet-detail-upload-thumb" ${attr}`}></span>`;
+        }).join("")}
+      </div>
+      <time>${escapeAttr(time)}</time>
+    </div>
+  `;
+}
+
+function renderDietResultMeta(result) {
+  const images = result?.image ? [result.image] : Array.isArray(result?.images) ? result.images : [];
+  if (!images.length && !result?.time) return "";
+  const time = dietDetailTimeOnly(result?.time || dietResultTime?.value || dietMealTime?.value);
+  return `
+    <div class="diet-detail-meal-meta diet-result-meal-meta">
+      ${images.length ? `
+        <div class="diet-detail-upload-thumbs">
+          ${images.slice(0, 4).map((image) => {
+            const fallback = result?.foods?.[0]?.image || "egg";
+            const attr = dietDetailImageStyle(image, fallback);
+            return `<span ${attr.includes("class=") ? attr : `class="diet-detail-upload-thumb" ${attr}`}></span>`;
+          }).join("")}
+        </div>
+      ` : ""}
+      <time>${escapeAttr(time)}</time>
+    </div>
+  `;
 }
 
 function defaultDietDetailMealGroups() {
@@ -2257,6 +2672,7 @@ function renderDietDetailPage() {
               </article>
             `).join("")}
           </div>
+          ${renderDietDetailMealMeta(group)}
         </section>
       </section>
     `).join("");
@@ -2284,7 +2700,7 @@ function medicineRecordById(recordId) {
 function medicineDateParts(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return { group: "未知时间", time: "--:--", full: "--" };
-  const today = new Date(2026, 5, 17);
+  const today = parseDate(todayString());
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
   const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
@@ -2296,6 +2712,26 @@ function medicineDateParts(value) {
     time,
     full: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${time}`
   };
+}
+
+function medicineRecordDateKey(record) {
+  const date = new Date(record?.time || "");
+  return Number.isNaN(date.getTime()) ? "" : formatDate(date);
+}
+
+function todayMedicineRecords() {
+  const today = todayString();
+  return sortedMedicineRecords().filter((record) => medicineRecordDateKey(record) === today);
+}
+
+function medicineRecordTypeStats(records) {
+  return records.reduce((result, record) => {
+    (record.items || []).forEach((item) => {
+      if (item.type === "nutrition") result.nutrition += 1;
+      else result.medicine += 1;
+    });
+    return result;
+  }, { medicine: 0, nutrition: 0 });
 }
 
 function medicineItemTypeLabel(type) {
@@ -2355,25 +2791,32 @@ function updateMedicineScheduleCard() {
 
 function renderMedicineRecordsPage() {
   if (!medicineRecordsList) return;
-  const records = sortedMedicineRecords();
+  const records = todayMedicineRecords();
+  const stats = medicineRecordTypeStats(records);
+  const titleHtml = `<h2 class="medicine-record-title">用药记录</h2>`;
+  const summaryHtml = `
+    <section class="medicine-record-summary">
+      <div><span>药品</span><p><strong>${stats.medicine}</strong><em>次</em></p></div>
+      <div><span>营养药</span><p><strong>${stats.nutrition}</strong><em>次</em></p></div>
+    </section>
+  `;
   if (!records.length) {
     medicineRecordsList.innerHTML = `
+      ${titleHtml}
+      ${summaryHtml}
       <div class="medicine-record-empty">
-        <strong>暂无用药/补充记录</strong>
-        <span>从健康打卡卡片右上角添加本次记录。</span>
+        <strong>今日暂无用药记录</strong>
+        <span>从健康打卡卡片右上角添加今日记录。</span>
+        <button class="medicine-empty-action" type="button">记录用药</button>
       </div>
     `;
     return;
   }
-  let currentGroup = "";
-  medicineRecordsList.innerHTML = records.map((record) => {
+  medicineRecordsList.innerHTML = titleHtml + summaryHtml + records.map((record) => {
     const parts = medicineDateParts(record.time);
     const summary = medicineRecordSummary(record);
-    const groupTitle = parts.group !== currentGroup ? `<h2>${parts.group}</h2>` : "";
-    currentGroup = parts.group;
     const firstItems = record.items.slice(0, 3).map((item) => item.name).join("、");
     return `
-      ${groupTitle}
       <button class="medicine-record-row" type="button" data-medicine-record="${record.id}">
         <span>
           <em>${parts.time}</em>
@@ -2401,9 +2844,11 @@ function renderMedicineDetailPage() {
   selectedMedicineRecordId = record.id;
   const parts = medicineDateParts(record.time);
   const summary = medicineRecordSummary(record);
+  if (medicineDetailEdit) medicineDetailEdit.hidden = true;
+  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除该药品";
   if (medicineDetailSummary) {
     medicineDetailSummary.innerHTML = `
-      <p><span>用药时间</span><strong>${parts.full}</strong></p>
+      <p><span>记录时间</span><strong>${parts.full}</strong></p>
       <p><span>记录数量</span><strong>${summary.count}</strong></p>
       <p><span>备注</span><strong>${escapeAttr(record.note || "无")}</strong></p>
     `;
@@ -2503,7 +2948,7 @@ function openMedicineCheckinSheet(recordId = "") {
   renderMedicineItems();
   const title = medicineCheckinSheet?.querySelector(".medicine-sheet-head h3");
   if (title) title.textContent = editingMedicineRecordId ? "编辑用药/补充记录" : "用药/补充记录";
-  if (medicineConfirm) medicineConfirm.textContent = editingMedicineRecordId ? "保存记录" : "确认打卡";
+  if (medicineConfirm) medicineConfirm.textContent = editingMedicineRecordId ? "保存记录" : "打卡";
   sheetMask.classList.add("active");
   medicineCheckinSheet?.classList.add("active");
 }
@@ -2527,13 +2972,7 @@ function medicineRecordCopy(type = "medicine") {
 }
 
 function formatMedicineTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择用药时间";
-  const today = new Date();
-  const dateKey = (item) => `${item.getFullYear()}-${item.getMonth()}-${item.getDate()}`;
-  const timeText = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
-  if (dateKey(date) === dateKey(today)) return timeText;
-  return `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${timeText}`;
+  return formatCheckinTimeDisplay(value, "请选择记录时间");
 }
 
 function updateMedicineTimeText() {
@@ -2667,7 +3106,7 @@ function saveMedicineNamesFromDom() {
 function confirmMedicineCheckin() {
   saveMedicineNamesFromDom();
   if (!medicineTime?.value) {
-    showToast("请选择用药时间");
+    showToast("请选择记录时间");
     return;
   }
   if (!medicineItems.length) {
@@ -2708,17 +3147,18 @@ function confirmMedicineCheckin() {
   const hasNutrition = medicineItems.some((item) => item.type === "nutrition");
   renderMedicineDetailPage();
   renderMedicineRecordsPage();
-  showToast(hasMedicine && hasNutrition ? "用药/补充记录已完成" : hasNutrition ? "营养素记录已完成" : "用药记录已完成");
+  showUnifiedCheckinSuccess([
+    {
+      label: hasMedicine && hasNutrition ? "用药/补充" : hasNutrition ? "营养素记录" : "用药记录",
+      value: `${nextRecord.items.length}`,
+      unit: "条"
+    },
+    { label: "记录时间", value: formatMedicineTimeText(nextRecord.time) }
+  ]);
 }
 
 function formatSportTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  const today = new Date();
-  const sameDay = dateInputValue(date) === dateInputValue(today);
-  const dateText = `${date.getFullYear()}-${padDateNumber(date.getMonth() + 1)}-${padDateNumber(date.getDate())}`;
-  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
-  return sameDay ? timeText : `${dateText} ${timeText}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function updateSportNoteCount() {
@@ -2804,9 +3244,11 @@ function submitSportCheckin() {
   const calories = sportDuration * rule.kcal;
   const record = {
     id: `sport-${Date.now()}`,
+    type: sportSelectedType,
     name: currentSportName(),
     duration: sportDuration,
     calories,
+    kcalRate: rule.kcal,
     time: sportTimeValue || localDateTimeValue()
   };
   const data = scheduleDataFor();
@@ -2821,6 +3263,10 @@ function submitSportCheckin() {
     desc: `总时长 ${totalDuration}分钟`,
     count: `已记录 ${records.length} 次`,
     value: `消耗 ${totalCalories} kcal`,
+    duration: totalDuration,
+    totalDuration,
+    calories: totalCalories,
+    totalCalories,
     latestRecordTime: formatSportTimeText(record.time),
     records
   };
@@ -2843,13 +3289,7 @@ function closeSportSuccessDialog() {
 }
 
 function formatWeightTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  const today = new Date();
-  const sameDay = dateInputValue(date) === dateInputValue(today);
-  const dateText = `${date.getFullYear()}-${padDateNumber(date.getMonth() + 1)}-${padDateNumber(date.getDate())}`;
-  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
-  return sameDay ? timeText : `${dateText} ${timeText}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function updateWeightTimeText() {
@@ -3008,8 +3448,11 @@ function submitWeightCheckin() {
   saveMetricRecords();
   renderFocusPlans();
   renderSchedule();
+  if (metricDetailPage?.classList.contains("active")) renderMetricDetail();
   closeOverlays();
-  showToast("打卡成功");
+  const successLines = [{ label: "当前体重", value: formatMetricNumber(weightValue), unit: "kg" }];
+  if (Number.isFinite(fatValue)) successLines.push({ label: "体脂率", value: formatMetricNumber(fatValue), unit: "%" });
+  showUnifiedCheckinSuccess(successLines);
 }
 
 function waistMetric() {
@@ -3017,13 +3460,22 @@ function waistMetric() {
 }
 
 function formatWaistTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function updateWaistTimeText() {
   if (waistTimeText) waistTimeText.textContent = formatWaistTimeText(waistCheckinTimeValue);
+}
+
+function updateWaistNoteCount() {
+  if (waistNoteCount) waistNoteCount.textContent = `${waistNoteInput?.value.length || 0}/100`;
+}
+
+function stepWaistValue(delta) {
+  const current = normalizeDecimal(waistValueInput?.value, 82.5);
+  const next = Math.min(200, Math.max(40, current + delta));
+  if (waistValueInput) waistValueInput.value = next.toFixed(1);
+  if (waistError) waistError.textContent = "";
 }
 
 function openWaistCheckinSheet() {
@@ -3035,6 +3487,7 @@ function openWaistCheckinSheet() {
   if (waistNoteInput) waistNoteInput.value = "";
   if (waistError) waistError.textContent = "";
   updateWaistTimeText();
+  updateWaistNoteCount();
   sheetMask.classList.add("active");
   waistCheckinSheet?.classList.add("active");
   window.setTimeout(() => waistValueInput?.select(), 80);
@@ -3122,17 +3575,13 @@ function saveWaistCheckin() {
   renderFocusPlans();
   renderSchedule();
   if (metricDetailPage?.classList.contains("active")) renderMetricDetail();
-  if (checkinSuccessSummary) checkinSuccessSummary.textContent = `当日腰围：${display} cm`;
-  sheetMask.classList.add("active");
-  checkinSuccessDialog?.classList.add("active");
+  showUnifiedCheckinSuccess([
+    { label: "当前腰围", value: display, unit: "cm" }
+  ]);
 }
 
 function formatPressureTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  const today = new Date();
-  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
-  return dateInputValue(date) === dateInputValue(today) ? timeText : `${dateInputValue(date)} ${timeText}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function updatePressureTimeText() {
@@ -3305,10 +3754,9 @@ function submitPressureCheckin() {
   renderFocusPlans();
   renderSchedule();
   if (metricDetailPage?.classList.contains("active")) renderMetricDetail();
-  if (pressureSuccessBp) pressureSuccessBp.textContent = display;
-  if (pressureSuccessPulse) pressureSuccessPulse.textContent = Number.isFinite(pulse) ? String(pulse) : "--";
-  sheetMask.classList.add("active");
-  pressureSuccessDialog?.classList.add("active");
+  const successLines = [{ label: "当前血压", value: display, unit: "mmHg" }];
+  if (Number.isFinite(pulse)) successLines.push({ label: "脉搏", value: `${pulse}`, unit: "次/分" });
+  showUnifiedCheckinSuccess(successLines);
 }
 
 function sugarMetric() {
@@ -3326,10 +3774,7 @@ function recommendedSugarPeriod(date = new Date()) {
 }
 
 function formatSugarTimeText(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择测量时间";
-  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
-  return dateInputValue(date) === dateInputValue(new Date()) ? timeText : `${dateInputValue(date)} ${timeText}`;
+  return formatCheckinTimeDisplay(value, "请选择记录时间");
 }
 
 function updateSugarPeriodSelect() {
@@ -3440,22 +3885,13 @@ function updateScheduleSugarCheckin(record) {
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
 }
 
-function hideSugarSuccessLater() {
-  window.setTimeout(() => {
-    sugarSuccessDialog?.classList.remove("active");
-    if (!document.querySelector(".diet-upload-sheet.active, .medicine-checkin-sheet.active, .sport-checkin-sheet.active, .weight-checkin-page.active, .waist-checkin-sheet.active, .pressure-checkin-sheet.active, .sugar-checkin-sheet.active, .checkin-success-dialog.active, .sport-success-dialog.active, .pressure-success-dialog.active")) {
-      sheetMask.classList.remove("active");
-    }
-  }, 1600);
-}
-
 function submitSugarCheckin() {
   if (!validateSugarInput(true)) {
     sugarValueInput?.focus();
     return;
   }
   if (!sugarCheckinTimeValue) {
-    if (sugarError) sugarError.textContent = "请选择测量时间";
+    if (sugarError) sugarError.textContent = "请选择记录时间";
     return;
   }
   const value = Number(sugarValueInput.value);
@@ -3493,11 +3929,9 @@ function submitSugarCheckin() {
   renderFocusPlans();
   renderSchedule();
   if (metricDetailPage?.classList.contains("active")) renderMetricDetail();
-  if (sugarSuccessPeriod) sugarSuccessPeriod.textContent = sugarSelectedPeriod;
-  if (sugarSuccessValue) sugarSuccessValue.textContent = display;
-  sheetMask.classList.add("active");
-  sugarSuccessDialog?.classList.add("active");
-  hideSugarSuccessLater();
+  showUnifiedCheckinSuccess([
+    { label: `${sugarSelectedPeriod}血糖为`, value: display, unit: "mmol/L" }
+  ]);
 }
 
 function sortedMedicalReports() {
@@ -4228,6 +4662,10 @@ scheduleContent?.addEventListener("click", (event) => {
     openSportCheckinSheet();
     return;
   }
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "sport") {
+    openSportDetailPage();
+    return;
+  }
   if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "medicine") {
     openMedicineCheckinSheet();
     return;
@@ -4236,11 +4674,19 @@ scheduleContent?.addEventListener("click", (event) => {
     openWeightCheckinPage();
     return;
   }
-  if ((target.dataset.scheduleAction === "checkin" || target.dataset.scheduleAction === "records") && target.dataset.type === "pressure") {
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "pressure") {
+    openMetricDetail("bp");
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "pressure") {
     openPressureCheckinSheet();
     return;
   }
-  if ((target.dataset.scheduleAction === "checkin" || target.dataset.scheduleAction === "records") && target.dataset.type === "sugar") {
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "sugar") {
+    openMetricDetail("sugar");
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "sugar") {
     openSugarCheckinSheet();
     return;
   }
@@ -4301,10 +4747,14 @@ const metricRecordConfigs = {
   weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
   waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
   height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
-  heart: [{ key: "value", label: "心率值", unit: "次/分", step: "1", min: "20", max: "250" }],
+  heart: [{ key: "value", label: "心率值", unit: "bpm/次/分", step: "1", min: "20", max: "250", required: true }],
   lipid: [
-    { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.1", min: "0.1", max: "20" },
-    { key: "ldl", label: "低密度脂蛋白 LDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20" }
+    { key: "tc", label: "总胆固醇 TC", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, group: "basic" },
+    { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, group: "basic" },
+    { key: "hdl", label: "高密度脂蛋白胆固醇 HDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, group: "basic" },
+    { key: "ldl", label: "低密度脂蛋白胆固醇 LDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, group: "basic" },
+    { key: "sdldl", label: "小而密低密度脂蛋白胆固醇 sdLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "sdldl" },
+    { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "oxldl" }
   ],
   uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "1", min: "1", max: "1500" }],
   fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
@@ -4356,19 +4806,19 @@ function localDateTimeInputValue(date = new Date()) {
 function displayMetricRecordTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value.replace("T", " ").replaceAll("-", "/");
-  return `${dateInputValue(date).replaceAll("-", "/")} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function formatMetricRecordInputTime(value) {
-  const date = value ? new Date(value) : new Date();
-  if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  const timeText = `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
-  if (dateInputValue(date) === dateInputValue(new Date())) return timeText;
-  return `${dateInputValue(date).replaceAll("-", "/")} ${timeText}`;
+  return formatCheckinTimeDisplay(value);
 }
 
 function updateMetricRecordTimeText() {
   if (metricRecordTimeText) metricRecordTimeText.textContent = formatMetricRecordInputTime(metricRecordTime?.value);
+}
+
+function updateMetricRecordNoteCount() {
+  if (metricRecordNoteCount) metricRecordNoteCount.textContent = `${metricRecordNote?.value.length || 0}/100`;
 }
 
 function populateMetricRecordTimePicker() {
@@ -4394,6 +4844,8 @@ function populateMetricRecordTimePicker() {
 }
 
 function openMetricRecordTimePicker() {
+  const title = metricRecordTimePicker?.querySelector(".weight-picker-head strong");
+  if (title) title.textContent = getSelectedMetric().id === "lipid" ? "选择检查时间" : "选择记录时间";
   populateMetricRecordTimePicker();
   metricRecordTimePicker?.classList.add("active");
 }
@@ -4506,6 +4958,9 @@ function metricStatus(metricId, values) {
 function openMetricRecordSheet() {
   const metric = getSelectedMetric();
   const fields = metricRecordConfigs[metric.id] || metricRecordConfigs.weight;
+  const isUric = metric.id === "uric";
+  metricRecordSheet.classList.toggle("metric-record-sheet-lipid", metric.id === "lipid");
+  metricRecordSheet.classList.toggle("metric-record-sheet-combined-note", ["heart", "uric"].includes(metric.id));
   metricRecordSheetTitle.textContent = `记录${metric.name}`;
   metricRecordFields.innerHTML = metric.id === "heart" ? `
     <section class="metric-heart-field">
@@ -4525,15 +4980,137 @@ function openMetricRecordSheet() {
         <div><input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" placeholder="请输入"><em>${field.unit}</em></div>
       </label>
     `).join("");
+  metricRecordFields.innerHTML = fields.map((field) => `
+    <section class="metric-value-field">
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <div class="metric-value-stepper">
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        <label class="metric-value-number-field">
+          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordDefaultValue(metric, field)}" aria-label="${field.label}">
+          ${field.unit ? `<span>${field.unit}</span>` : ""}
+        </label>
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+      </div>
+    </section>
+  `).join("");
+  metricRecordFields.innerHTML = fields.map((field) => `
+    <section class="metric-value-field">
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <div class="metric-value-stepper">
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        <label class="metric-value-number-field">
+          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordDefaultValue(metric, field)}" aria-label="${field.label}">
+          ${field.unit ? `<span>${field.unit}</span>` : ""}
+        </label>
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+      </div>
+      ${field.ownTime ? `
+        <label class="metric-extra-time">
+          <span>检查时间</span>
+          <input type="datetime-local" data-metric-time="${field.key}" value="${localDateTimeValue()}">
+        </label>
+      ` : ""}
+    </section>
+  `).join("");
+  metricRecordFields.innerHTML = fields.map((field) => `
+    <section class="metric-value-field">
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <div class="metric-value-stepper">
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        <label class="metric-value-number-field">
+          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordDefaultValue(metric, field)}" aria-label="${field.label}">
+          ${field.unit ? `<span>${field.unit}</span>` : ""}
+        </label>
+        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+      </div>
+      ${field.ownTime ? `
+        <label class="metric-extra-time">
+          <span>检查时间</span>
+          <input type="datetime-local" data-metric-time="${field.key}" value="${localDateTimeValue()}">
+        </label>
+      ` : ""}
+    </section>
+  `).join("");
+  if (metric.id === "lipid") {
+    const renderMetricValueField = (field) => `
+      <section class="metric-value-field">
+        <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+        <div class="metric-value-stepper">
+          <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+          <label class="metric-value-number-field">
+            <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordDefaultValue(metric, field)}" placeholder="请输入数值" aria-label="${field.label}">
+            ${field.unit ? `<span>${field.unit}</span>` : ""}
+          </label>
+          <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+        </div>
+      </section>
+    `;
+    const renderMetricExtraTime = (key) => {
+      const value = localDateTimeValue();
+      return `
+        <label class="metric-extra-time">
+          <span>检查时间</span>
+          <div class="metric-extra-time-control">
+            <strong data-metric-time-text="${key}">${formatMetricRecordInputTime(value)}</strong>
+            <i aria-hidden="true"></i>
+            <input type="datetime-local" data-metric-time="${key}" value="${value}" aria-label="检查时间">
+          </div>
+        </label>
+      `;
+    };
+    const basicFields = fields.filter((field) => field.group === "basic");
+    const sdldlField = fields.find((field) => field.key === "sdldl");
+    const oxldlField = fields.find((field) => field.key === "oxldl");
+    metricRecordFields.innerHTML = `
+      <section class="lipid-level lipid-level-basic">
+        ${basicFields.map(renderMetricValueField).join("")}
+      </section>
+      <section class="lipid-level lipid-level-extra">
+        ${renderMetricValueField(sdldlField)}
+        ${renderMetricExtraTime("sdldl")}
+      </section>
+      <section class="lipid-level lipid-level-extra">
+        ${renderMetricValueField(oxldlField)}
+        ${renderMetricExtraTime("oxldl")}
+      </section>
+      <section class="lipid-level lipid-level-global"></section>
+    `;
+    metricRecordFields.querySelector(".lipid-level-basic")?.append(metricRecordTimeField);
+  } else {
+    metricRecordFields.after(metricRecordTimeField);
+  }
   metricRecordTime.value = localDateTimeInputValue();
+  if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = metric.id === "heart" ? "测量时间" : metric.id === "lipid" || isUric ? "检查时间" : "记录时间";
   updateMetricRecordTimeText();
-  metricRecordNoteField.hidden = !["heart", "uric"].includes(metric.id);
+  metricRecordNoteField.hidden = !["heart", "uric", "lipid"].includes(metric.id);
+  metricRecordNoteField.querySelector("span").textContent = metric.id === "lipid" ? "备注（全局）" : "备注";
+  metricRecordNote.placeholder = metric.id === "heart" ? "记录运动后、静息、心慌、服药后等情况" : isUric ? "可记录饮酒、饮食、痛风发作、用药变化等" : "请输入备注";
+  if (metric.id === "lipid") {
+    const globalLevel = metricRecordFields.querySelector(".lipid-level-global");
+    if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = "检查时间";
+    metricRecordNoteField.querySelector("span").textContent = "备注（全局）";
+    metricRecordNote.placeholder = "请输入备注";
+    globalLevel?.append(metricRecordNoteField);
+  }
   metricRecordNote.value = "";
+  updateMetricRecordNoteCount();
   metricRecordError.textContent = "";
   closeOverlays();
   sheetMask.classList.add("active");
   metricRecordSheet.classList.add("active");
   metricRecordFields.querySelector("input")?.focus();
+}
+
+function metricRecordDefaultValue(metric, field) {
+  const latest = metricRecordsFor(metric.id)[0];
+  if (!field.required && latest?.values?.[field.key] == null) return "";
+  const raw = latest?.values?.[field.key]
+    ?? (field.key === "value" ? latest?.chartValue : undefined)
+    ?? (field.key === "value" ? metric.value : undefined)
+    ?? Number(field.min);
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return field.min;
+  return Number(field.step) < 1 ? value.toFixed(1) : String(Math.round(value));
 }
 
 function stepMetricRecordValue(key, delta) {
@@ -4547,29 +5124,75 @@ function stepMetricRecordValue(key, delta) {
   input.value = Number(field.step) < 1 ? next.toFixed(1) : String(Math.round(next));
 }
 
+function metricRecordSuccessLines(metric, record) {
+  if (metric.id === "lipid") {
+    const lipidLines = [
+      { label: "总胆固醇 TC", value: formatMetricNumber(record.values.tc), unit: "mmol/L" },
+      { label: "甘油三酯 TG", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
+      { label: "HDL-C", value: formatMetricNumber(record.values.hdl), unit: "mmol/L" },
+      { label: "LDL-C", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" }
+    ];
+    if (record.values.sdldl != null) lipidLines.push({ label: "sdLDL-C", value: formatMetricNumber(record.values.sdldl), unit: "mmol/L" });
+    if (record.values.oxldl != null) lipidLines.push({ label: "oxLDL-C", value: formatMetricNumber(record.values.oxldl), unit: "mmol/L" });
+    return lipidLines;
+    return [
+      { label: "总胆固醇 TC", value: formatMetricNumber(record.values.tc), unit: "mmol/L" },
+      { label: "甘油三酯 TG", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
+      { label: "HDL-C", value: formatMetricNumber(record.values.hdl), unit: "mmol/L" },
+      { label: "LDL-C", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" },
+      { label: "sdLDL-C", value: formatMetricNumber(record.values.sdldl), unit: "mmol/L" },
+      { label: "oxLDL-C", value: formatMetricNumber(record.values.oxldl), unit: "mmol/L" }
+    ];
+  }
+  if (metric.id === "heart") return [{ label: "当前心率", value: record.display, unit: record.unit }];
+  if (metric.id === "uric") return [{ label: "当前尿酸", value: record.display, unit: record.unit }];
+  if (metric.id === "fat") return [{ label: "当前体脂率", value: record.display, unit: record.unit }];
+  if (metric.id === "lipid") {
+    return [
+      { label: "甘油三酯", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
+      { label: "低密度脂蛋白", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" }
+    ];
+  }
+  return [{ label: `当前${metric.name}`, value: record.display, unit: record.unit }];
+}
+
 function saveMetricRecord() {
   const metric = getSelectedMetric();
   const config = metricRecordConfigs[metric.id];
   const values = {};
   for (const field of config) {
     const input = metricRecordFields.querySelector(`[data-metric-input="${field.key}"]`);
+    const rawValue = input?.value.trim() || "";
+    if (!rawValue && !field.required) {
+      values[field.key] = null;
+      continue;
+    }
     const value = Number(input?.value);
-    if (!input?.value || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) {
+    if (!rawValue || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) {
       metricRecordError.textContent = `请正确填写${field.label}`;
       input?.focus();
       return;
     }
     values[field.key] = value;
+    if (field.ownTime) {
+      const timeInput = metricRecordFields.querySelector(`[data-metric-time="${field.key}"]`);
+      if (!timeInput?.value) {
+        metricRecordError.textContent = `请选择${field.label}检查时间`;
+        timeInput?.focus();
+        return;
+      }
+      values[`${field.key}Time`] = timeInput.value;
+    }
   }
   if (!metricRecordTime.value) {
-    metricRecordError.textContent = "请选择记录时间";
+    metricRecordError.textContent = metric.id === "lipid" ? "请选择检查时间" : "请选择记录时间";
     return;
   }
   if (metric.id === "sugar" && !values.period) values.period = "空腹";
   const display = metric.id === "bp"
     ? `${values.systolic}/${values.diastolic}`
     : metric.id === "lipid"
-      ? `TG ${formatMetricNumber(values.tg)} / LDL-C ${formatMetricNumber(values.ldl)}`
+      ? `TC ${formatMetricNumber(values.tc)} / TG ${formatMetricNumber(values.tg)} / LDL-C ${formatMetricNumber(values.ldl)}`
       : formatMetricNumber(values.value);
   const chartValue = metric.id === "bp" ? values.systolic : metric.id === "lipid" ? values.tg : values.value;
   const status = metricStatus(metric.id, values);
@@ -4582,7 +5205,7 @@ function saveMetricRecord() {
     status: status.text,
     attention: status.attention,
     values,
-    note: ["heart", "uric"].includes(metric.id) ? metricRecordNote.value.trim() : ""
+    note: ["heart", "uric", "lipid"].includes(metric.id) ? metricRecordNote.value.trim() : ""
   };
   if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
   if (!metricRecordsByPatient[currentPatient.id][metric.id]) metricRecordsByPatient[currentPatient.id][metric.id] = [];
@@ -4599,9 +5222,7 @@ function saveMetricRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  toast.textContent = `${metric.name}记录已保存`;
-  toast.classList.add("show");
-  window.setTimeout(() => toast.classList.remove("show"), 1600);
+  showUnifiedCheckinSuccess(metricRecordSuccessLines(metric, record));
 }
 
 function getSelectedMetric() {
@@ -4656,6 +5277,246 @@ function metricDateLabel() {
   return `${startText} - ${month}月${day}日`;
 }
 
+function metricById(metricId) {
+  return focusPlanDashboards[selectedFocusPlan]?.metrics.find((metric) => metric.id === metricId);
+}
+
+function weightRecordKey(time) {
+  return String(time || "").replace(/[^0-9A-Za-z]/g, "");
+}
+
+function combinedWeightRecords() {
+  const weightMetric = metricById("weight");
+  const fatMetric = metricById("fat");
+  if (!weightMetric) return [];
+  const combined = new Map();
+  allMetricRecords(weightMetric).forEach((record) => {
+    const key = weightRecordKey(record.time);
+    combined.set(key, {
+      key,
+      time: record.time,
+      weight: record,
+      fat: null,
+      note: record.note || ""
+    });
+  });
+  if (fatMetric) {
+    allMetricRecords(fatMetric).forEach((record) => {
+      const key = weightRecordKey(record.time);
+      const current = combined.get(key);
+      if (current) {
+        current.fat = record;
+        if (!current.note && record.note) current.note = record.note;
+      }
+    });
+  }
+  return [...combined.values()].sort((a, b) => new Date(b.time) - new Date(a.time));
+}
+
+function currentDayWeightRecords() {
+  const selectedKey = dateInputValue(selectedMetricDate);
+  return combinedWeightRecords().filter((record) => dateInputValue(new Date(record.time)) === selectedKey);
+}
+
+function weightRecordChangeText(record) {
+  const records = combinedWeightRecords();
+  const index = records.findIndex((item) => item.key === record.key);
+  const previous = records[index + 1];
+  const currentValue = Number(record.weight?.chartValue ?? record.weight?.display);
+  const previousValue = Number(previous?.weight?.chartValue ?? previous?.weight?.display);
+  if (!previous || !Number.isFinite(currentValue) || !Number.isFinite(previousValue)) return "暂无上次体重对比";
+  const diff = currentValue - previousValue;
+  if (Math.abs(diff) < 0.05) return "较上次体重持平";
+  return `较上次体重${diff < 0 ? "下降" : "上升"} ${Math.abs(diff).toFixed(1)} kg`;
+}
+
+function weightDetailRecordByKey(recordKey) {
+  return combinedWeightRecords().find((record) => record.key === recordKey);
+}
+
+function weightRecordInputTime(value) {
+  const date = new Date(value);
+  if (!Number.isNaN(date.getTime())) return localDateTimeInputValue(date);
+  return String(value || "").slice(0, 16);
+}
+
+function renderWeightMetricDetail(metric) {
+  const records = combinedWeightRecords();
+  const latest = records[0];
+  metricDetailPage?.classList.add("weight-detail-mode");
+  metricDetailTitle.textContent = "体重详情";
+  metricDetailValue.textContent = latest?.weight?.display || metric.display;
+  metricDetailUnit.textContent = "kg";
+  metricDetailStatus.textContent = latest?.weight?.status || metric.status || "正常";
+  metricDetailStatus.classList.toggle("attention", Boolean(latest?.weight?.attention || metric.attention));
+  const fatText = latest?.fat ? `体脂 ${latest.fat.display}%` : "体脂 --";
+  const timeText = latest ? `最近记录 ${displayMetricRecordTime(latest.time)}` : "暂无记录";
+  metricDetailTime.textContent = `${fatText} · ${timeText}`;
+  if (weightDetailRecords) {
+    const dayRecords = currentDayWeightRecords();
+    weightDetailRecords.innerHTML = dayRecords.length ? dayRecords.map((record) => {
+      const time = metricRecordDateParts(record.time).time;
+      const fat = record.fat?.display ? `${record.fat.display}%` : "--";
+      const changeText = weightRecordChangeText(record);
+      return `
+        <article class="weight-detail-record-card" data-weight-record-key="${escapeAttr(record.key)}" role="button" tabindex="0" aria-label="查看${time}体重记录详情">
+          <time>${escapeAttr(time)}</time>
+          <p><strong>${escapeAttr(record.weight.display)}<em>kg</em></strong></p>
+          <p><span>体脂率</span><b>${escapeAttr(fat)}</b></p>
+          <small>${escapeAttr(changeText)}</small>
+        </article>
+      `;
+    }).join("") : `
+      <div class="weight-detail-empty">
+        <strong>暂无当日记录</strong>
+        <span>点击底部按钮记录体重和体脂。</span>
+      </div>
+    `;
+  }
+}
+
+function openWeightRecordDetail(recordKey) {
+  const record = weightDetailRecordByKey(recordKey);
+  if (!record || !weightRecordDetailBody) return;
+  selectedWeightRecordKey = record.key;
+  const fat = record.fat?.display || "";
+  weightRecordDetailBody.innerHTML = `
+    <label>
+      <span>体重</span>
+      <div><input id="weightRecordEditWeight" type="number" inputmode="decimal" min="1" max="500" step="0.1" value="${escapeAttr(record.weight.display)}"><em>kg</em></div>
+    </label>
+    <label>
+      <span>体脂</span>
+      <div><input id="weightRecordEditFat" type="number" inputmode="decimal" min="1" max="70" step="0.1" value="${escapeAttr(fat)}" placeholder="选填"><em>%</em></div>
+    </label>
+    <label>
+      <span>记录时间</span>
+      <input id="weightRecordEditTime" type="datetime-local" value="${escapeAttr(weightRecordInputTime(record.time))}">
+    </label>
+    <label class="weight-record-note-field">
+      <span>备注</span>
+      <textarea id="weightRecordEditNote" maxlength="100" placeholder="例如：晨起空腹、饭后、运动后等">${escapeAttr(record.note || "")}</textarea>
+    </label>
+    <p class="weight-record-edit-error" id="weightRecordEditError"></p>
+  `;
+  sheetMask.classList.add("active");
+  weightRecordDetailDialog?.classList.add("active");
+}
+
+function upsertMetricRecord(metricId, oldRecord, nextRecord) {
+  if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
+  if (!metricRecordsByPatient[currentPatient.id][metricId]) metricRecordsByPatient[currentPatient.id][metricId] = [];
+  if (oldRecord?.id?.startsWith("baseline-")) {
+    removeMetricRecordById(metricId, oldRecord.id);
+    metricRecordsByPatient[currentPatient.id][metricId].unshift(nextRecord);
+    return;
+  }
+  const records = metricRecordsByPatient[currentPatient.id][metricId];
+  const index = records.findIndex((item) => item.id === oldRecord?.id);
+  if (index >= 0) records[index] = nextRecord;
+  else records.unshift(nextRecord);
+}
+
+function saveSelectedWeightRecord() {
+  const record = weightDetailRecordByKey(selectedWeightRecordKey);
+  if (!record) return;
+  const weightInput = document.querySelector("#weightRecordEditWeight");
+  const fatInput = document.querySelector("#weightRecordEditFat");
+  const timeInput = document.querySelector("#weightRecordEditTime");
+  const noteInput = document.querySelector("#weightRecordEditNote");
+  const error = document.querySelector("#weightRecordEditError");
+  const weightValue = Number(weightInput?.value);
+  const fatRaw = String(fatInput?.value || "").trim();
+  const fatValue = fatRaw ? Number(fatRaw) : NaN;
+  const time = timeInput?.value || "";
+  if (!Number.isFinite(weightValue) || weightValue < 1 || weightValue > 500) {
+    if (error) error.textContent = "请输入 1.0 ~ 500.0 kg 范围内的体重";
+    weightInput?.focus();
+    return;
+  }
+  if (fatRaw && (!Number.isFinite(fatValue) || fatValue < 1 || fatValue > 70)) {
+    if (error) error.textContent = "请输入 1.0 ~ 70.0 % 范围内的体脂率";
+    fatInput?.focus();
+    return;
+  }
+  if (!time) {
+    if (error) error.textContent = "请选择记录时间";
+    timeInput?.focus();
+    return;
+  }
+  const note = noteInput?.value.trim() || "";
+  const weightStatus = metricStatus("weight", { value: weightValue });
+  const nextWeightRecord = {
+    ...(record.weight || {}),
+    id: record.weight?.id?.startsWith("baseline-") ? `metric-weight-${Date.now()}` : record.weight?.id || `metric-weight-${Date.now()}`,
+    time,
+    display: formatMetricNumber(weightValue),
+    chartValue: weightValue,
+    unit: "kg",
+    status: weightStatus.text,
+    attention: weightStatus.attention,
+    values: { value: weightValue },
+    note
+  };
+  upsertMetricRecord("weight", record.weight, nextWeightRecord);
+  if (fatRaw) {
+    const fatStatus = metricStatus("fat", { value: fatValue });
+    const nextFatRecord = {
+      ...(record.fat || {}),
+      id: record.fat?.id?.startsWith("baseline-") ? `metric-fat-${Date.now()}` : record.fat?.id || `metric-fat-${Date.now()}`,
+      time,
+      display: formatMetricNumber(fatValue),
+      chartValue: fatValue,
+      unit: "%",
+      status: fatStatus.text,
+      attention: fatStatus.attention,
+      values: { value: fatValue },
+      note
+    };
+    upsertMetricRecord("fat", record.fat, nextFatRecord);
+  } else if (record.fat) {
+    removeMetricRecordById("fat", record.fat.id);
+  }
+  saveMetricRecords();
+  selectedMetricDate = new Date(time);
+  selectedWeightRecordKey = weightRecordKey(time);
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
+  renderFocusPlans();
+  renderSchedule();
+  renderMetricDetail();
+  closeOverlays();
+  showToast("体重记录已更新");
+}
+
+function removeMetricRecordById(metricId, recordId) {
+  if (!recordId) return;
+  if (recordId.startsWith("baseline-")) {
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id]) deletedMetricRecordIdsByPatient[currentPatient.id] = {};
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id][metricId]) deletedMetricRecordIdsByPatient[currentPatient.id][metricId] = [];
+    deletedMetricRecordIdsByPatient[currentPatient.id][metricId].push(recordId);
+    return;
+  }
+  if (metricRecordsByPatient[currentPatient.id]?.[metricId]) {
+    metricRecordsByPatient[currentPatient.id][metricId] = metricRecordsByPatient[currentPatient.id][metricId]
+      .filter((record) => record.id !== recordId);
+  }
+}
+
+function deleteSelectedWeightRecord() {
+  const record = weightDetailRecordByKey(selectedWeightRecordKey);
+  if (!record) return;
+  removeMetricRecordById("weight", record.weight?.id);
+  removeMetricRecordById("fat", record.fat?.id);
+  saveMetricRecords();
+  selectedWeightRecordKey = "";
+  closeOverlays();
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
+  renderFocusPlans();
+  renderSchedule();
+  renderMetricDetail();
+  showToast("已删除该体重记录");
+}
+
 function shiftMetricDate(step) {
   const next = new Date(selectedMetricDate);
   if (selectedMetricRange === "day") next.setDate(next.getDate() + step);
@@ -4665,10 +5526,311 @@ function shiftMetricDate(step) {
   renderMetricDetail();
 }
 
+function ensurePressureDetailExtras() {
+  let pulseAverage = document.querySelector("#metricPulseAverageBlock");
+  if (!pulseAverage && metricAverageCard && metricAllRecords) {
+    pulseAverage = document.createElement("div");
+    pulseAverage.id = "metricPulseAverageBlock";
+    pulseAverage.className = "metric-pulse-average";
+    pulseAverage.innerHTML = `<span>平均脉搏 bpm</span><strong id="metricStatPulseAverage">--</strong>`;
+    metricAverageCard.insertBefore(pulseAverage, metricAllRecords);
+  }
+
+  let averageHead = document.querySelector("#pressureAverageHead");
+  if (!averageHead && metricAverageCard) {
+    averageHead = document.createElement("div");
+    averageHead.id = "pressureAverageHead";
+    averageHead.className = "pressure-average-head";
+    averageHead.innerHTML = `<span id="pressureAverageDate"></span>`;
+    metricAverageCard.prepend(averageHead);
+  }
+
+  let addDevice = document.querySelector("#pressureAddDevice");
+  if (!addDevice && metricDetailActions && metricRecordEntry) {
+    addDevice = document.createElement("button");
+    addDevice.id = "pressureAddDevice";
+    addDevice.className = "pressure-add-device";
+    addDevice.type = "button";
+    addDevice.textContent = "添加设备";
+    addDevice.addEventListener("click", () => showToast("设备绑定功能待接入"));
+    metricDetailActions.insertBefore(addDevice, metricRecordEntry);
+  }
+}
+
+function applyPressureDetailLayout(isDataDetail) {
+  if (!metricDetailPage || !metricRangeTabs || !metricDateNav || !metricDetailSummary || !metricTrendCard || !metricAverageCard) return;
+  let panel = document.querySelector("#pressureDataPanel");
+  if (isDataDetail) {
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "pressureDataPanel";
+      panel.className = "pressure-data-panel";
+      const nav = metricDetailPage.querySelector(".sub-nav");
+      metricDetailPage.insertBefore(panel, nav?.nextSibling || metricDetailPage.firstChild);
+    }
+    panel.hidden = false;
+    panel.append(metricRangeTabs, metricDateNav, metricDetailSummary, metricTrendCard, metricAverageCard);
+    return;
+  }
+  if (panel) panel.hidden = true;
+  const anchor = weightDetailRecordsSection || metricDetailActions;
+  metricDetailPage.insertBefore(metricDetailSummary, anchor);
+  metricDetailPage.insertBefore(metricRangeTabs, anchor);
+  metricDetailPage.insertBefore(metricDateNav, anchor);
+  metricDetailPage.insertBefore(metricTrendCard, anchor);
+  metricDetailPage.insertBefore(metricAverageCard, anchor);
+}
+
+function resetMetricDetailExtras(metricId) {
+  const isPressure = metricId === "bp";
+  const isSugar = metricId === "sugar";
+  const isWeight = metricId === "weight";
+  document.querySelector("#metricPulseAverageBlock")?.toggleAttribute("hidden", !isPressure);
+  document.querySelector("#pressureAverageHead")?.toggleAttribute("hidden", !(isPressure || isSugar));
+  document.querySelector("#pressureAddDevice")?.toggleAttribute("hidden", !(isPressure || isSugar));
+  metricAllRecords && (metricAllRecords.textContent = (isPressure || isSugar) ? "全部数据" : "全部记录");
+  metricRecordEntry && (metricRecordEntry.textContent = isWeight ? "记体重" : (isPressure || isSugar) ? "记录数据" : "记录指标");
+  const averageLabel = metricAverageCard?.querySelector(":scope > div:not(.pressure-average-head):not(.metric-pulse-average) span");
+  if (averageLabel) averageLabel.textContent = isPressure ? "平均血压值 mmHg" : isSugar ? "最高血糖" : "平均值";
+  applyPressureDetailLayout(isPressure || isSugar);
+}
+
+function pressureRecordParts(record) {
+  if (!record) return null;
+  const values = record.values || {};
+  let systolic = Number(values.systolic);
+  let diastolic = Number(values.diastolic);
+  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) {
+    const match = String(record.display || "").match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/);
+    systolic = Number(match?.[1]);
+    diastolic = Number(match?.[2]);
+  }
+  const pulse = Number(values.pulse);
+  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) return null;
+  return {
+    systolic,
+    diastolic,
+    pulse: Number.isFinite(pulse) ? pulse : null,
+    time: record.time
+  };
+}
+
+function pressureAverage(parts, key) {
+  const values = parts.map((item) => item[key]).filter((value) => Number.isFinite(value));
+  if (!values.length) return null;
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function pressurePartsForSelectedRange(records) {
+  const selected = new Date(selectedMetricDate);
+  let start = new Date(selected);
+  let end = new Date(selected);
+  if (selectedMetricRange === "day") {
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+  } else if (selectedMetricRange === "week") {
+    start.setDate(selected.getDate() - 6);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+  } else {
+    start = new Date(selected.getFullYear(), selected.getMonth(), 1);
+    end = new Date(selected.getFullYear(), selected.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+  return records
+    .filter((record) => {
+      const date = new Date(record.time);
+      return !Number.isNaN(date.getTime()) && date >= start && date <= end;
+    })
+    .map(pressureRecordParts)
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.time) - new Date(b.time));
+}
+
+function renderPressureChart(parts) {
+  const minValue = 60;
+  const maxValue = 160;
+  const chartTop = 28;
+  const chartHeight = 128;
+  const selected = new Date(selectedMetricDate);
+  const weekStart = new Date(selected);
+  weekStart.setDate(selected.getDate() - 6);
+  weekStart.setHours(0, 0, 0, 0);
+  const monthDays = new Date(selected.getFullYear(), selected.getMonth() + 1, 0).getDate();
+  const xForTime = (time) => {
+    const date = new Date(time);
+    if (Number.isNaN(date.getTime())) return 42;
+    if (selectedMetricRange === "week") {
+      const dayOffset = Math.max(0, Math.min(6, Math.floor((date - weekStart) / 86400000)));
+      return 42 + (dayOffset / 6) * 266;
+    }
+    if (selectedMetricRange === "month") {
+      return 42 + ((date.getDate() - 1) / Math.max(monthDays - 1, 1)) * 266;
+    }
+    return 42 + ((date.getHours() + date.getMinutes() / 60) / 24) * 266;
+  };
+  const axisLabels = selectedMetricRange === "day"
+    ? ["00:00", "06:00", "12:00", "18:00", "24:00"]
+    : selectedMetricRange === "week"
+      ? Array.from({ length: 7 }, (_, index) => {
+          const date = new Date(weekStart);
+          date.setDate(weekStart.getDate() + index);
+          return `${date.getMonth() + 1}/${date.getDate()}`;
+        })
+      : ["1日", "7日", "14日", "21日", `${monthDays}日`];
+  const axisXs = selectedMetricRange === "week"
+    ? [42, 86, 130, 174, 218, 262, 308]
+    : [48, 114, 180, 246, 304];
+  const yForValue = (value) => chartTop + ((maxValue - value) / (maxValue - minValue)) * chartHeight;
+  const systolicPoints = parts.map((item) => ({ x: xForTime(item.time), y: yForValue(item.systolic) }));
+  const diastolicPoints = parts.map((item) => ({ x: xForTime(item.time), y: yForValue(item.diastolic) }));
+  const linePath = (points) => points.length > 1 ? points.map((point) => `${point.x},${point.y}`).join(" ") : "";
+  const dotList = (points, color) => points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="${color}"/>`).join("");
+  return `
+    <svg viewBox="0 0 340 210" role="img" aria-label="血压数据趋势">
+      <path d="M42 28H310M42 60H310M42 92H310M42 124H310M42 156H310" stroke="#d8dee9" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="14" y="32">160</text><text x="14" y="64">140</text><text x="14" y="96">120</text><text x="18" y="128">100</text><text x="22" y="160">80</text>
+      <line x1="42" x2="310" y1="${yForValue(140)}" y2="${yForValue(140)}" stroke="#ff8a00" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <line x1="42" x2="310" y1="${yForValue(90)}" y2="${yForValue(90)}" stroke="#00957f" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="314" y="${yForValue(140) + 4}" fill="#ff8a00">140</text>
+      <text x="314" y="${yForValue(90) + 4}" fill="#00957f">90</text>
+      ${systolicPoints.length > 1 ? `<polyline points="${linePath(systolicPoints)}" fill="none" stroke="#ff8a00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}
+      ${diastolicPoints.length > 1 ? `<polyline points="${linePath(diastolicPoints)}" fill="none" stroke="#00957f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}
+      ${dotList(systolicPoints, "#ff8a00")}
+      ${dotList(diastolicPoints, "#00957f")}
+      <path d="M42 156H310" stroke="#cfd6e2" stroke-width="1"/>
+      ${axisLabels.map((label, index) => `<text x="${axisXs[index]}" y="180">${label}</text>`).join("")}
+      <circle cx="112" cy="198" r="4" fill="#ff8a00"/><text x="124" y="202" fill="#ff8a00">高压值</text>
+      <circle cx="202" cy="198" r="4" fill="#00957f"/><text x="214" y="202" fill="#00957f">低压值</text>
+    </svg>
+  `;
+}
+
+function renderPressureMetricDetail(metric) {
+  ensurePressureDetailExtras();
+  resetMetricDetailExtras("bp");
+  const records = allMetricRecords(metric);
+  const rangeParts = pressurePartsForSelectedRange(records);
+  const latest = rangeParts.at(-1) || pressureRecordParts(records[0]);
+  const chartParts = rangeParts.length ? rangeParts : latest ? [latest] : [];
+  const avgSystolic = pressureAverage(chartParts, "systolic");
+  const avgDiastolic = pressureAverage(chartParts, "diastolic");
+  const avgPulse = pressureAverage(chartParts, "pulse") || latest?.pulse || 80;
+
+  metricDetailTitle.textContent = "全部数据";
+  metricDetailValue.textContent = latest ? `${latest.systolic}/${latest.diastolic}` : "--/--";
+  metricDetailUnit.textContent = "mmHg";
+  metricDetailStatus.textContent = "";
+  metricDetailStatus.classList.remove("attention");
+  metricDetailTime.textContent = latest?.pulse ? `脉搏 ${latest.pulse} bpm` : "";
+  metricDateCurrent.textContent = metricDateLabel();
+  metricDatePicker.value = dateInputValue(selectedMetricDate);
+  metricTrendCaption.textContent = "";
+  metricStatAverage.textContent = avgSystolic && avgDiastolic ? `${avgSystolic}/${avgDiastolic}` : "--/--";
+  document.querySelector("#metricStatPulseAverage") && (document.querySelector("#metricStatPulseAverage").textContent = avgPulse ? `${avgPulse}` : "--");
+  document.querySelector("#pressureAverageDate") && (document.querySelector("#pressureAverageDate").textContent = metricDateCurrent.textContent);
+  metricLineChart.innerHTML = renderPressureChart(chartParts);
+}
+
+function sugarRecordParts(record) {
+  if (!record) return null;
+  const value = Number(record.values?.value ?? record.chartValue ?? record.display);
+  if (!Number.isFinite(value)) return null;
+  return { value, time: record.time };
+}
+
+function renderSugarChart(parts) {
+  const maxValue = 35;
+  const chartTop = 20;
+  const chartHeight = 168;
+  const xForTime = (time) => {
+    const date = new Date(time);
+    if (Number.isNaN(date.getTime())) return 208;
+    return 42 + ((date.getHours() + date.getMinutes() / 60) / 24) * 284;
+  };
+  const yForValue = (value) => chartTop + ((maxValue - value) / maxValue) * chartHeight;
+  return `
+    <svg viewBox="0 0 360 250" role="img" aria-label="血糖值趋势">
+      <path d="M42 20H326M42 44H326M42 68H326M42 92H326M42 116H326M42 140H326M42 164H326M42 188H326" stroke="#d8dee9" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="18" y="24">35</text><text x="18" y="48">30</text><text x="18" y="72">25</text><text x="18" y="96">20</text><text x="18" y="120">15</text><text x="18" y="144">10</text><text x="22" y="168">5</text><text x="22" y="192">0</text>
+      ${parts.map((item) => `<circle cx="${xForTime(item.time)}" cy="${yForValue(item.value)}" r="3.5" fill="#00957f"/>`).join("")}
+      <text x="52" y="210">00:00</text><text x="126" y="210">06:00</text><text x="202" y="210">12:00</text><text x="276" y="210">18:00</text><text x="320" y="210">24:00</text>
+      <circle cx="166" cy="232" r="4" fill="#00957f"/><text x="178" y="236" fill="#00957f">血糖值</text>
+    </svg>
+  `;
+}
+
+function renderSugarMetricDetail(metric) {
+  ensurePressureDetailExtras();
+  resetMetricDetailExtras("sugar");
+  const records = allMetricRecords(metric);
+  const selectedKey = dateInputValue(selectedMetricDate);
+  let dayParts = records
+    .filter((record) => dateInputValue(new Date(record.time)) === selectedKey)
+    .map(sugarRecordParts)
+    .filter(Boolean)
+    .sort((a, b) => new Date(a.time) - new Date(b.time));
+  if (!dayParts.length) {
+    const fallback = records.map(sugarRecordParts).filter(Boolean)[0] || { value: Number(metric.value || 5), time: localDateTimeInputValue(selectedMetricDate) };
+    dayParts = [fallback];
+  }
+  const latest = dayParts.at(-1);
+  const values = dayParts.map((item) => item.value);
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
+  let lowBlock = document.querySelector("#metricSugarLowBlock");
+  const pulseBlock = document.querySelector("#metricPulseAverageBlock");
+  if (!lowBlock && metricAverageCard && pulseBlock) {
+    lowBlock = document.createElement("div");
+    lowBlock.id = "metricSugarLowBlock";
+    lowBlock.className = "metric-sugar-low";
+    metricAverageCard.insertBefore(lowBlock, pulseBlock);
+  }
+
+  metricDetailTitle.textContent = "血糖详情";
+  metricDetailValue.textContent = formatMetricNumber(latest.value);
+  metricDetailUnit.textContent = "mmol/L";
+  metricDetailStatus.textContent = "";
+  metricDetailStatus.classList.remove("attention");
+  metricDetailTime.textContent = "";
+  metricDateCurrent.textContent = `${selectedMetricDate.getFullYear()}年${padDateNumber(selectedMetricDate.getMonth() + 1)}月${padDateNumber(selectedMetricDate.getDate())}日`;
+  metricDatePicker.value = dateInputValue(selectedMetricDate);
+  metricTrendCaption.textContent = "";
+  document.querySelector("#pressureAverageDate") && (document.querySelector("#pressureAverageDate").textContent = `${selectedMetricDate.getFullYear()}年${padDateNumber(selectedMetricDate.getMonth() + 1)}月${padDateNumber(selectedMetricDate.getDate())}日`);
+  metricStatAverage.textContent = formatMetricNumber(max);
+  if (lowBlock) {
+    lowBlock.hidden = false;
+    lowBlock.innerHTML = `<span>最低血糖</span><strong>${formatMetricNumber(min)}</strong>`;
+  }
+  if (pulseBlock) {
+    pulseBlock.hidden = false;
+    pulseBlock.innerHTML = `<span>平均血糖</span><strong id="metricStatPulseAverage">${formatMetricNumber(avg)}</strong>`;
+  }
+  metricLineChart.innerHTML = renderSugarChart(dayParts);
+}
+
 function renderMetricDetail() {
   applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   const metric = getSelectedMetric();
   selectedFocusMetric = metric.id;
+  metricDetailPage?.classList.toggle("weight-detail-mode", metric.id === "weight");
+  metricDetailPage?.classList.toggle("pressure-detail-mode", metric.id === "bp");
+  metricDetailPage?.classList.toggle("sugar-detail-mode", metric.id === "sugar");
+  ensurePressureDetailExtras();
+  document.querySelector("#metricSugarLowBlock")?.toggleAttribute("hidden", metric.id !== "sugar");
+  resetMetricDetailExtras(metric.id);
+  if (metric.id === "weight") {
+    renderWeightMetricDetail(metric);
+    return;
+  }
+  if (metric.id === "bp") {
+    renderPressureMetricDetail(metric);
+    return;
+  }
+  if (metric.id === "sugar") {
+    renderSugarMetricDetail(metric);
+    return;
+  }
   const values = rangeMetricValues(metric, selectedMetricRange);
   const labels = metricRangeLabels(selectedMetricRange, values.length);
   const min = Math.min(...values);
@@ -4728,7 +5890,7 @@ function openSubPage(pageId) {
   pageStack.push(currentPageId());
   document.body.classList.toggle(
     "detail-page-open",
-    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage"
+    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "sportDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage"
   );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
@@ -4751,7 +5913,7 @@ function goBackPage() {
     previousSubPage.classList.add("active");
     document.body.classList.toggle(
       "detail-page-open",
-      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage"
+      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "sportDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage"
     );
   } else if (previous === "minePage") {
     minePage.classList.add("active");
@@ -5087,6 +6249,9 @@ document.querySelector(".cycle-confirm").addEventListener("click", () => {
       return;
     }
     finishPeriod(selectedDate);
+    showUnifiedCheckinSuccess([
+      { label: "经期结束", value: selectedDate }
+    ]);
   } else {
     if (selectedDate > todayString()) {
       toast.textContent = "开始时间不能晚于今天";
@@ -5101,6 +6266,9 @@ document.querySelector(".cycle-confirm").addEventListener("click", () => {
       return;
     }
     startPeriod(selectedDate);
+    showUnifiedCheckinSuccess([
+      { label: "经期开始", value: selectedDate }
+    ]);
     if (cycleReminderText && cycleAction && cycleClose && cycleReminder) {
       cycleReminderText.textContent = "已记录，后续我会帮你持续关注周期变化";
       cycleAction.classList.add("hidden");
@@ -5202,6 +6370,7 @@ function closeOverlays() {
   periodEditDialog.classList.remove("active");
   periodDeleteDialog.classList.remove("active");
   metricDeleteDialog?.classList.remove("active");
+  weightRecordDetailDialog?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");
   taskDeleteDialog.classList.remove("active");
@@ -5214,6 +6383,7 @@ function closeOverlays() {
   medicineTimePicker?.classList.remove("active");
   sportCheckinSheet?.classList.remove("active");
   sportTimePicker?.classList.remove("active");
+  sportRecordEditor?.classList.remove("active");
   sportSuccessDialog?.classList.remove("active");
   weightCheckinPage?.classList.remove("active");
   weightTimePicker?.classList.remove("active");
@@ -5225,6 +6395,7 @@ function closeOverlays() {
   sugarCheckinSheet?.classList.remove("active");
   sugarTimePicker?.classList.remove("active");
   sugarSuccessDialog?.classList.remove("active");
+  unifiedCheckinSuccessDialog?.classList.remove("active");
   checkinSuccessDialog?.classList.remove("active");
 }
 
@@ -5417,7 +6588,21 @@ metricDatePicker?.addEventListener("change", () => {
   renderMetricDetail();
 });
 
-metricRecordEntry?.addEventListener("click", openMetricRecordSheet);
+metricRecordEntry?.addEventListener("click", () => {
+  if (selectedFocusMetric === "weight") {
+    openWeightCheckinPage();
+    return;
+  }
+  if (selectedFocusMetric === "sugar") {
+    openSugarCheckinSheet();
+    return;
+  }
+  if (selectedFocusMetric === "bp") {
+    openPressureCheckinSheet();
+    return;
+  }
+  openMetricRecordSheet();
+});
 metricRecordTimeTrigger?.addEventListener("click", openMetricRecordTimePicker);
 document.querySelector(".metric-record-picker-cancel")?.addEventListener("click", closeMetricRecordTimePicker);
 document.querySelector(".metric-record-picker-confirm")?.addEventListener("click", confirmMetricRecordTimePicker);
@@ -5429,14 +6614,35 @@ metricRecordsGroups?.addEventListener("click", (event) => {
   const deleteButton = event.target.closest("[data-delete-metric-record]");
   if (deleteButton) openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
 });
+weightDetailRecords?.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-weight-record-key]");
+  if (card) openWeightRecordDetail(card.dataset.weightRecordKey);
+});
+weightDetailRecords?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const card = event.target.closest("[data-weight-record-key]");
+  if (!card) return;
+  event.preventDefault();
+  openWeightRecordDetail(card.dataset.weightRecordKey);
+});
 document.querySelector(".metric-record-close")?.addEventListener("click", closeOverlays);
+document.querySelector(".weight-record-dialog-close")?.addEventListener("click", closeOverlays);
 metricRecordFields?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-metric-step]");
   if (!button) return;
   stepMetricRecordValue(button.dataset.metricStep, Number(button.dataset.delta));
 });
+metricRecordFields?.addEventListener("change", (event) => {
+  const timeInput = event.target.closest("[data-metric-time]");
+  if (!timeInput) return;
+  const timeText = metricRecordFields.querySelector(`[data-metric-time-text="${timeInput.dataset.metricTime}"]`);
+  if (timeText) timeText.textContent = formatMetricRecordInputTime(timeInput.value);
+});
+metricRecordNote?.addEventListener("input", updateMetricRecordNoteCount);
 metricRecordConfirm?.addEventListener("click", saveMetricRecord);
 document.querySelector(".metric-delete-confirm")?.addEventListener("click", confirmMetricRecordDelete);
+weightRecordDeleteAction?.addEventListener("click", deleteSelectedWeightRecord);
+weightRecordSaveAction?.addEventListener("click", saveSelectedWeightRecord);
 
 dietUploadArea?.addEventListener("click", () => openDietCameraPage());
 dietImageGrid?.addEventListener("click", (event) => {
@@ -5473,10 +6679,16 @@ dietMealOptions?.addEventListener("click", (event) => {
   dietSelectedMeal = button.dataset.dietMeal;
   renderDietMealOptions();
 });
+dietMealTimeTrigger?.addEventListener("click", () => {
+  if (!dietMealTime) return;
+  if (typeof dietMealTime.showPicker === "function") dietMealTime.showPicker();
+  else dietMealTime.click();
+});
 dietMealTime?.addEventListener("change", () => {
   const selectedTime = dietMealTime.value ? new Date(dietMealTime.value) : new Date();
   if (Number.isNaN(selectedTime.getTime())) return;
   dietSelectedMeal = mealByTime(selectedTime);
+  updateDietMealTimeText();
   renderDietMealOptions();
 });
 dietCancelUpload?.addEventListener("click", closeOverlays);
@@ -5497,7 +6709,19 @@ dietResultTabs?.addEventListener("click", (event) => {
 });
 dietFoodList?.addEventListener("click", (event) => {
   const editFood = event.target.closest("[data-edit-food]");
-  if (editFood) openDietGramSheet(editFood.dataset.editFood);
+  if (editFood) {
+    openDietGramSheet(editFood.dataset.editFood);
+    return;
+  }
+  const foodCard = event.target.closest("[data-food-id]");
+  if (foodCard) openDietGramSheet(foodCard.dataset.foodId);
+});
+dietFoodList?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const foodCard = event.target.closest("[data-food-id]");
+  if (!foodCard) return;
+  event.preventDefault();
+  openDietGramSheet(foodCard.dataset.foodId);
 });
 dietDetailRecords?.addEventListener("click", (event) => {
   const mealButton = event.target.closest("[data-detail-meal-index]");
@@ -5522,13 +6746,26 @@ dietDetailRecords?.addEventListener("keydown", (event) => {
   openDietDetailFoodSheet(row.dataset.detailFood);
 });
 document.querySelector(".diet-gram-close")?.addEventListener("click", closeDietGramSheet);
-document.querySelector(".diet-gram-cancel")?.addEventListener("click", closeDietGramSheet);
+dietGramCancel?.addEventListener("click", closeDietGramSheet);
 dietGramConfirm?.addEventListener("click", confirmDietGramEdit);
 dietFoodSheetDelete?.addEventListener("click", deleteEditingDietFood);
 dietResultTime?.addEventListener("change", renderDietResult);
 dietConfirmCheckin?.addEventListener("click", confirmDietCheckin);
-dietDetailCheckin?.addEventListener("click", () => openDietUploadSheet());
-dietDetailRecordFood?.addEventListener("click", () => openDietUploadSheet());
+dietDetailCheckin?.addEventListener("click", () => openDietCameraPage(true));
+dietDetailRecordFood?.addEventListener("click", () => openDietCameraPage(true));
+sportDetailCheckin?.addEventListener("click", openSportCheckinSheet);
+sportDetailRecords?.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-sport-record-id]");
+  if (!card) return;
+  openSportRecordEditor(card.dataset.sportRecordId);
+});
+sportDetailRecords?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const card = event.target.closest("[data-sport-record-id]");
+  if (!card) return;
+  event.preventDefault();
+  openSportRecordEditor(card.dataset.sportRecordId);
+});
 dietDetailRangeTabs?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-diet-range]");
   if (!button) return;
@@ -5623,6 +6860,10 @@ medicineImagePicker?.addEventListener("change", () => {
 });
 medicineConfirm?.addEventListener("click", confirmMedicineCheckin);
 medicineRecordsList?.addEventListener("click", (event) => {
+  if (event.target.closest(".medicine-empty-action")) {
+    openMedicineCheckinSheet();
+    return;
+  }
   const row = event.target.closest("[data-medicine-record]");
   if (!row) return;
   openMedicineDetailPage(row.dataset.medicineRecord);
@@ -5670,6 +6911,15 @@ sportTimeTrigger?.addEventListener("click", openSportTimePicker);
 document.querySelector(".sport-picker-cancel")?.addEventListener("click", closeSportTimePicker);
 document.querySelector(".sport-picker-confirm")?.addEventListener("click", confirmSportTimePicker);
 sportSubmit?.addEventListener("click", submitSportCheckin);
+sportRecordClose?.addEventListener("click", closeSportRecordEditor);
+sportRecordDurationInput?.addEventListener("input", renderSportRecordEditor);
+sportRecordTimeTrigger?.addEventListener("click", () => {
+  if (typeof sportRecordTimeInput?.showPicker === "function") sportRecordTimeInput.showPicker();
+  else sportRecordTimeInput?.click();
+});
+sportRecordTimeInput?.addEventListener("change", renderSportRecordEditor);
+sportRecordSave?.addEventListener("click", saveSportRecordEdit);
+sportRecordDelete?.addEventListener("click", deleteSportRecordEdit);
 sportSuccessDone?.addEventListener("click", closeSportSuccessDialog);
 weightCheckinPage?.addEventListener("click", (event) => {
   const stepButton = event.target.closest("[data-weight-step]");
@@ -5687,10 +6937,16 @@ weightSubmit?.addEventListener("click", submitWeightCheckin);
 waistValueInput?.addEventListener("input", () => {
   if (waistError) waistError.textContent = "";
 });
+waistCheckinSheet?.addEventListener("click", (event) => {
+  const stepButton = event.target.closest("[data-waist-step]");
+  if (!stepButton) return;
+  stepWaistValue(Number(stepButton.dataset.waistStep));
+});
 waistTimeTrigger?.addEventListener("click", openWaistTimePicker);
 waistClose?.addEventListener("click", closeOverlays);
 document.querySelector(".waist-picker-cancel")?.addEventListener("click", closeWaistTimePicker);
 document.querySelector(".waist-picker-confirm")?.addEventListener("click", confirmWaistTimePicker);
+waistNoteInput?.addEventListener("input", updateWaistNoteCount);
 waistSubmit?.addEventListener("click", saveWaistCheckin);
 pressureCheckinSheet?.addEventListener("click", (event) => {
   const stepButton = event.target.closest("[data-pressure-step]");
@@ -5721,6 +6977,7 @@ document.querySelector(".sugar-picker-confirm")?.addEventListener("click", confi
 sugarClose?.addEventListener("click", closeOverlays);
 sugarNoteInput?.addEventListener("input", updateSugarNoteCount);
 sugarSubmit?.addEventListener("click", submitSugarCheckin);
+unifiedCheckinSuccessDone?.addEventListener("click", closeOverlays);
 checkinSuccessDone?.addEventListener("click", closeOverlays);
 
 orderStatusTabs?.addEventListener("click", (event) => {
