@@ -7636,6 +7636,338 @@ body.detail-page-open #reportDetailPage .report-actions {
   margin: 0 16px 16px;
 }
 
+.metric-detail-page.lipid-detail-mode {
+  padding-bottom: 28px;
+  background: #f6f8fc;
+}
+
+.metric-detail-page.lipid-detail-mode .metric-detail-summary,
+.metric-detail-page.lipid-detail-mode .metric-range-tabs,
+.metric-detail-page.lipid-detail-mode .metric-date-nav,
+.metric-detail-page.lipid-detail-mode .metric-trend-card,
+.metric-detail-page.lipid-detail-mode .metric-average-card,
+.metric-detail-page.lipid-detail-mode .weight-detail-records-section,
+.metric-detail-page.lipid-detail-mode .metric-detail-actions {
+  display: none !important;
+}
+
+.metric-detail-page.lipid-detail-mode .sub-nav {
+  margin-bottom: 14px;
+}
+
+.lipid-header-delete {
+  position: relative;
+  justify-self: end;
+  grid-column: 3;
+  width: 34px;
+  height: 34px;
+}
+
+.lipid-header-delete::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 11px;
+  width: 14px;
+  height: 16px;
+  border: 2px solid #111;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.lipid-header-delete::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 7px;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: #111;
+  box-shadow: 5px -3px 0 -1px #111;
+}
+
+.lipid-detail-panel {
+  display: grid;
+  gap: 14px;
+  padding: 0 16px 22px;
+}
+
+.lipid-detail-tip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d9e6ff;
+  border-radius: 8px;
+  color: #263757;
+  background: #f5f8ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lipid-detail-tip i {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border: 2px solid #3671ff;
+  border-radius: 50%;
+}
+
+.lipid-detail-tip i::before {
+  content: "i";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #3671ff;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.lipid-detail-card,
+.lipid-detail-note {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(22, 42, 93, 0.04);
+}
+
+.lipid-detail-card {
+  padding: 16px 16px 0;
+}
+
+.lipid-detail-card h2,
+.lipid-detail-note h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #03102e;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.lipid-detail-card h2 > i,
+.lipid-detail-note h2 > i {
+  width: 4px;
+  height: 20px;
+  border-radius: 4px;
+  background: #3671ff;
+}
+
+.lipid-detail-extra h2 > i {
+  background: #38cfa3;
+}
+
+.lipid-detail-card h2 em {
+  color: #6b7280;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.lipid-detail-card h2 b {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border: 1.5px solid #9aa6b8;
+  border-radius: 50%;
+  color: #9aa6b8;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.lipid-detail-card > div {
+  margin-top: 14px;
+}
+
+.lipid-detail-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto 10px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 96px;
+  padding: 14px 0;
+  border-top: 1px solid #eef2f7;
+  text-align: left;
+}
+
+.lipid-detail-basic .lipid-detail-row:first-child,
+.lipid-detail-extra .lipid-detail-row:first-child {
+  border-top: 0;
+}
+
+.lipid-detail-row span {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.lipid-detail-row strong {
+  overflow: hidden;
+  color: #03102e;
+  font-size: 16px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lipid-detail-row small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #7a879b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.lipid-detail-row small i {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #7a879b;
+  border-radius: 50%;
+}
+
+.lipid-detail-row small i::before,
+.lipid-detail-row small i::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 1.5px;
+  height: 4px;
+  border-radius: 2px;
+  background: #7a879b;
+}
+
+.lipid-detail-row small i::after {
+  top: 6px;
+  height: 3px;
+  transform: rotate(90deg);
+  transform-origin: top center;
+}
+
+.lipid-detail-row > em {
+  padding: 4px 9px;
+  border-radius: 6px;
+  color: #8b95a7;
+  background: #f5f7fb;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.lipid-detail-row > b {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #03102e;
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.lipid-detail-row > b small {
+  color: #434b5c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lipid-detail-row > i {
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #8c96a6;
+  border-right: 2px solid #8c96a6;
+  transform: rotate(45deg);
+}
+
+.lipid-detail-extra {
+  padding-bottom: 2px;
+}
+
+.lipid-detail-extra .lipid-detail-row {
+  grid-template-columns: minmax(0, 1fr) auto 10px;
+}
+
+.lipid-detail-extra .lipid-detail-row > b {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.lipid-detail-extra .lipid-detail-row > em {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.lipid-detail-extra .lipid-detail-row > i {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+.lipid-detail-note {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.lipid-detail-note h2 > i {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #3671ff;
+}
+
+.lipid-detail-note p {
+  margin: 0;
+  color: #03102e;
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 750;
+}
+
+.lipid-detail-delete {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  border: 1px solid #ffccc7;
+  border-radius: 10px;
+  color: #ff4d4f;
+  background: #fff1f0;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.lipid-detail-delete::before {
+  content: "";
+  width: 13px;
+  height: 14px;
+  border: 2px solid #ff4d4f;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 -5px 0 -3px #ff4d4f, 0 -8px 0 -5px #ff4d4f;
+}
+
+.lipid-detail-delete-help,
+.lipid-detail-empty {
+  margin: -6px 0 0;
+  color: #98a2b3;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 750;
+}
+
 .weight-detail-records-section h2 {
   position: relative;
   margin: 0;
@@ -9601,7 +9933,7 @@ body.detail-page-open #reportDetailPage .report-actions {
   bottom: 0;
   z-index: 22;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   width: min(100%, 414px);
   padding: 10px 16px max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid #eef2fb;
@@ -9614,17 +9946,17 @@ body.detail-page-open #reportDetailPage .report-actions {
   width: 100%;
   height: 42px;
   margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #03102ee5;
+  border: 1px solid rgba(255, 77, 79, 0.32);
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #ff4d4f;
   font-size: 14px;
   font-weight: 900;
 }
 
 .medicine-detail-actions button + button {
   border-left: 1px solid #eef2fb;
-  color: #03102ee5;
+  color: #ff4d4f;
 }
 
 .medicine-detail-actions .medicine-detail-edit::before,

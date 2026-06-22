@@ -455,6 +455,7 @@ let metricRecordsByPatient = {};
 let deletedMetricRecordIdsByPatient = {};
 let deletingMetricRecordId = "";
 let selectedWeightRecordKey = "";
+let selectedLipidRecordId = "";
 let dietUploadImages = [];
 let dietSelectedMeal = "";
 let dietRecognitionIndex = 0;
@@ -2936,8 +2937,7 @@ function renderMedicineDetailPage() {
   const parts = medicineDateParts(record.time);
   const groups = medicineRecordGroups(record);
   const itemCount = (record.items || []).length;
-  if (medicineDetailEdit) medicineDetailEdit.hidden = false;
-  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除记录";
+  if (medicineDetailDelete) medicineDetailDelete.textContent = "删除这一次的用药记录";
   if (medicineDetailSummary) {
     medicineDetailSummary.innerHTML = `
       <div class="medicine-detail-hero">
@@ -2978,7 +2978,6 @@ function renderMedicineDetailPage() {
                     const index = imageCursor++;
                     return `<button type="button" data-medicine-image="${record.id}" data-image-index="${index}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`;
                   }).join("")}
-                  <button class="medicine-detail-upload" type="button"><i aria-hidden="true"></i><span>继续上传</span></button>
                 </div>
               </div>
             </article>
@@ -6011,6 +6010,127 @@ function renderSugarMetricDetail(metric) {
   metricLineChart.innerHTML = renderSugarChart(dayParts);
 }
 
+function formatLipidValue(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(2) : "--";
+}
+
+function lipidDetailRecord(metric) {
+  const saved = metricRecordsFor(metric.id)[0];
+  if (saved?.values) return saved;
+  return {
+    id: "lipid-sample-record",
+    time: "2026-06-22T08:30",
+    values: {
+      tc: 5.2,
+      tg: 1.8,
+      hdl: 1.2,
+      ldl: 3.1,
+      sdldl: 0.85,
+      sdldlTime: "2026-06-22T08:30",
+      oxldl: 0.45,
+      oxldlTime: "2026-06-18T07:40"
+    },
+    note: "空腹抽血，早上8点左右检查。"
+  };
+}
+
+function lipidDetailTimeText(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value || "").replace("T", " ");
+  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function lipidMetricRow({ name, code, value, time }) {
+  return `
+    <button class="lipid-detail-row" type="button">
+      <span>
+        <strong>${name}</strong>
+        <small><i aria-hidden="true"></i> 检查时间&nbsp;&nbsp;${lipidDetailTimeText(time)}</small>
+      </span>
+      <em>${code}</em>
+      <b>${formatLipidValue(value)} <small>mmol/L</small></b>
+      <i aria-hidden="true"></i>
+    </button>
+  `;
+}
+
+function ensureLipidDetailPanel() {
+  let panel = document.querySelector("#lipidDetailPanel");
+  if (!panel && metricDetailPage) {
+    panel = document.createElement("section");
+    panel.id = "lipidDetailPanel";
+    panel.className = "lipid-detail-panel";
+    const nav = metricDetailPage.querySelector(".sub-nav");
+    metricDetailPage.insertBefore(panel, nav?.nextSibling || metricDetailPage.firstChild);
+  }
+  let headerDelete = document.querySelector("#lipidHeaderDelete");
+  const nav = metricDetailPage?.querySelector(".sub-nav");
+  if (!headerDelete && nav) {
+    headerDelete = document.createElement("button");
+    headerDelete.id = "lipidHeaderDelete";
+    headerDelete.className = "lipid-header-delete";
+    headerDelete.type = "button";
+    headerDelete.setAttribute("aria-label", "删除本次血脂打卡记录");
+    headerDelete.addEventListener("click", deleteSelectedLipidRecord);
+    nav.append(headerDelete);
+  }
+  return panel;
+}
+
+function renderLipidMetricDetail(metric) {
+  resetMetricDetailExtras("lipid");
+  const record = lipidDetailRecord(metric);
+  selectedLipidRecordId = record.id;
+  const values = record.values || {};
+  const panel = ensureLipidDetailPanel();
+  if (!panel) return;
+  const basicRows = [
+    { name: "总胆固醇", code: "TC", value: values.tc, time: record.time },
+    { name: "甘油三酯", code: "TG", value: values.tg, time: record.time },
+    { name: "高密度脂蛋白胆固醇", code: "HDL-C", value: values.hdl, time: record.time },
+    { name: "低密度脂蛋白胆固醇", code: "LDL-C", value: values.ldl, time: record.time }
+  ];
+  const extraRows = [
+    { name: "小而密低密度脂蛋白胆固醇", code: "sdLDL-C", value: values.sdldl, time: values.sdldlTime || record.time },
+    { name: "氧化低密度脂蛋白胆固醇", code: "oxLDL-C", value: values.oxldl, time: values.oxldlTime || record.time }
+  ].filter((item) => item.value != null);
+  metricDetailTitle.textContent = "血脂打卡详情";
+  panel.innerHTML = `
+    <section class="lipid-detail-tip"><i aria-hidden="true"></i><span>本次数据来自您手动录入，请以医院检验报告为准。</span></section>
+    <section class="lipid-detail-card lipid-detail-basic">
+      <h2><i aria-hidden="true"></i><span>基础血脂四项</span><em>（必填）</em><b aria-hidden="true">i</b></h2>
+      <div>${basicRows.map(lipidMetricRow).join("")}</div>
+    </section>
+    <section class="lipid-detail-card lipid-detail-extra">
+      <h2><i aria-hidden="true"></i><span>扩展血脂指标</span><em>（选填）</em><b aria-hidden="true">i</b></h2>
+      <div>${extraRows.length ? extraRows.map(lipidMetricRow).join("") : `<p class="lipid-detail-empty">暂无扩展指标</p>`}</div>
+    </section>
+    <section class="lipid-detail-note">
+      <h2><i aria-hidden="true"></i><span>备注</span></h2>
+      <p>${escapeAttr(record.note || "暂无备注")}</p>
+    </section>
+    <button class="lipid-detail-delete" type="button" id="lipidDetailDelete">删除本次打卡记录</button>
+    <p class="lipid-detail-delete-help">删除后将无法恢复，请谨慎操作</p>
+  `;
+  panel.querySelector("#lipidDetailDelete")?.addEventListener("click", deleteSelectedLipidRecord);
+}
+
+function deleteSelectedLipidRecord() {
+  if (!selectedLipidRecordId || selectedLipidRecordId === "lipid-sample-record") {
+    showToast("暂无可删除的血脂记录");
+    return;
+  }
+  removeMetricRecordById("lipid", selectedLipidRecordId);
+  selectedLipidRecordId = "";
+  saveMetricRecords();
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
+  renderFocusPlans();
+  renderSchedule();
+  renderMetricDetail();
+  showToast("血脂打卡记录已删除");
+}
+
 function renderMetricDetail() {
   applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   const metric = getSelectedMetric();
@@ -6018,6 +6138,10 @@ function renderMetricDetail() {
   metricDetailPage?.classList.toggle("weight-detail-mode", metric.id === "weight");
   metricDetailPage?.classList.toggle("pressure-detail-mode", metric.id === "bp");
   metricDetailPage?.classList.toggle("sugar-detail-mode", metric.id === "sugar");
+  metricDetailPage?.classList.toggle("lipid-detail-mode", metric.id === "lipid");
+  const lipidPanel = document.querySelector("#lipidDetailPanel");
+  if (lipidPanel) lipidPanel.hidden = metric.id !== "lipid";
+  document.querySelector("#lipidHeaderDelete")?.toggleAttribute("hidden", metric.id !== "lipid");
   ensurePressureDetailExtras();
   document.querySelector("#metricSugarLowBlock")?.toggleAttribute("hidden", metric.id !== "sugar");
   resetMetricDetailExtras(metric.id);
@@ -6031,6 +6155,10 @@ function renderMetricDetail() {
   }
   if (metric.id === "sugar") {
     renderSugarMetricDetail(metric);
+    return;
+  }
+  if (metric.id === "lipid") {
+    renderLipidMetricDetail(metric);
     return;
   }
   const values = rangeMetricValues(metric, selectedMetricRange);
