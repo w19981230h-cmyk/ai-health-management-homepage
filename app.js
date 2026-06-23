@@ -480,6 +480,7 @@ let selectedMedicineRecordId = "";
 let selectedMedicineItemRecordId = "";
 let selectedMedicineItemId = "";
 let editingMedicineRecordId = "";
+let medicineTimePickerMode = "checkin";
 let medicinePreviewImages = [];
 let medicinePreviewIndex = 0;
 let sportSelectedType = "walk";
@@ -2943,11 +2944,21 @@ function renderMedicineDetailPage() {
       <div class="medicine-detail-hero">
         <i aria-hidden="true"></i>
         <span>
-          <strong>${parts.time} 用药打卡</strong>
-          <small>${parts.time}</small>
+          <strong>记录时间</strong>
+          <small>本次用药打卡时间</small>
         </span>
         <em>共${itemCount}项</em>
       </div>
+      <button class="medicine-detail-time-trigger" type="button" data-medicine-detail-time>
+        <i aria-hidden="true"></i>
+        <strong>${parts.time}</strong>
+        <span>修改</span>
+        <b aria-hidden="true"></b>
+      </button>
+      <section class="medicine-detail-note">
+        <strong>备注</strong>
+        <p>${escapeAttr(record.note || "无")}</p>
+      </section>
     `;
   }
   if (medicineDetailList) {
@@ -2984,12 +2995,7 @@ function renderMedicineDetailPage() {
           `;
         }).join("")}
       </section>
-    `).join("") + `
-      <section class="medicine-detail-note">
-        <strong>备注</strong>
-        <p>${escapeAttr(record.note || "无")}</p>
-      </section>
-    `;
+    `).join("");
   }
 }
 
@@ -3203,17 +3209,24 @@ function populateMedicineTimePicker() {
 }
 
 function openMedicineTimePicker() {
+  medicineTimePickerMode = "checkin";
   populateMedicineTimePicker();
   medicineTimePicker?.classList.add("active");
 }
 
 function closeMedicineTimePicker() {
   medicineTimePicker?.classList.remove("active");
+  medicineTimePickerMode = "checkin";
 }
 
 function confirmMedicineTimePicker() {
   if (!medicinePickerDate?.value || !medicinePickerHour?.value || !medicinePickerMinute?.value || !medicineTime) return;
   medicineTime.value = `${medicinePickerDate.value}T${medicinePickerHour.value}:${medicinePickerMinute.value}`;
+  if (medicineTimePickerMode === "detail" && selectedMedicineRecordId) {
+    updateSelectedMedicineRecordTime(medicineTime.value);
+    closeMedicineTimePicker();
+    return;
+  }
   updateMedicineTimeText();
   closeMedicineTimePicker();
 }
@@ -3221,6 +3234,27 @@ function confirmMedicineTimePicker() {
 function updateMedicineNoteCount() {
   if (!medicineNoteCount || !medicineNote) return;
   medicineNoteCount.textContent = `${medicineNote.value.length}/200`;
+}
+
+function openMedicineDetailTimePicker() {
+  const record = medicineRecordById(selectedMedicineRecordId);
+  if (!record || !medicineTime) return;
+  medicineTimePickerMode = "detail";
+  medicineTime.value = record.time || localDateTimeValue();
+  populateMedicineTimePicker();
+  medicineTimePicker?.classList.add("active");
+}
+
+function updateSelectedMedicineRecordTime(value) {
+  const key = medicinePatientKey();
+  medicineRecordsByPatient[key] = currentMedicineRecords().map((record) => (
+    record.id === selectedMedicineRecordId ? { ...record, time: value } : record
+  ));
+  saveMedicineRecords();
+  updateMedicineScheduleCard();
+  renderMedicineRecordsPage();
+  renderMedicineDetailPage();
+  showToast("记录时间已更新");
 }
 
 function renderMedicineItems() {
@@ -7204,6 +7238,10 @@ medicineRecordsList?.addEventListener("click", (event) => {
   const row = event.target.closest("[data-medicine-record]");
   if (!row) return;
   openMedicineDetailPage(row.dataset.medicineRecord);
+});
+medicineDetailSummary?.addEventListener("click", (event) => {
+  if (!event.target.closest("[data-medicine-detail-time]")) return;
+  openMedicineDetailTimePicker();
 });
 medicineDetailList?.addEventListener("click", (event) => {
   const image = event.target.closest("[data-medicine-image]");

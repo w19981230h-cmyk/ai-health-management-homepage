@@ -9693,6 +9693,8 @@ body.detail-page-open #reportDetailPage .report-actions {
 }
 
 .medicine-detail-summary {
+  display: grid;
+  gap: 10px;
   margin: 0 16px 12px;
   padding: 0;
   border: 0;
@@ -9705,7 +9707,7 @@ body.detail-page-open #reportDetailPage .report-actions {
   grid-template-columns: 32px minmax(0, 1fr) 54px;
   align-items: start;
   gap: 10px;
-  min-height: 54px;
+  min-height: 46px;
 }
 
 .medicine-detail-hero > i {
@@ -9748,8 +9750,8 @@ body.detail-page-open #reportDetailPage .report-actions {
 
 .medicine-detail-hero strong {
   color: #03102ee5;
-  font-size: 18px;
-  line-height: 25px;
+  font-size: 16px;
+  line-height: 23px;
   font-weight: 950;
 }
 
@@ -9769,6 +9771,60 @@ body.detail-page-open #reportDetailPage .report-actions {
   line-height: 32px;
   text-align: center;
   font-weight: 900;
+}
+
+.medicine-detail-time-trigger {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto 10px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid #dce8ff;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(10, 6, 130, 0.04);
+  text-align: left;
+}
+
+.medicine-detail-time-trigger i {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 1.8px solid #03102ee5;
+  border-radius: 5px;
+}
+
+.medicine-detail-time-trigger i::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: #03102ee5;
+}
+
+.medicine-detail-time-trigger strong {
+  color: #03102ee5;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.medicine-detail-time-trigger span {
+  color: #3671ff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.medicine-detail-time-trigger b {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #03102ee5;
+  border-right: 2px solid #03102ee5;
+  transform: rotate(45deg);
 }
 
 .medicine-detail-card {
@@ -9909,8 +9965,12 @@ body.detail-page-open #reportDetailPage .report-actions {
 }
 
 .medicine-detail-note {
-  margin: 0 16px 12px;
+  margin: 0;
   padding: 14px 16px;
+  border: 1px solid rgba(54, 113, 255, 0.08);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(10, 6, 130, 0.04);
 }
 
 .medicine-detail-note strong {
