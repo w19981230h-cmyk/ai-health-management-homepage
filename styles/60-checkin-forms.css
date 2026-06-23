@@ -1,0 +1,3468 @@
+
+.task-date-row {
+  margin-top: 6px;
+  background: #fff;
+}
+
+.task-date-row i {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #6b7486;
+  border-radius: 2px;
+  background:
+    linear-gradient(#6b7486 0 0) center 4px / 9px 1px no-repeat,
+    linear-gradient(#6b7486 0 0) center 8px / 9px 1px no-repeat;
+}
+
+.task-date-row em {
+  color: #6b7486;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.add-button {
+  position: fixed;
+  right: calc(50% - 187.5px + 20px);
+  bottom: 76px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--color-primary);
+  font-size: 0;
+  font-weight: 300;
+  line-height: 1;
+  box-shadow: 0 5px 11px rgba(54, 113, 255, 0.5);
+  z-index: 22;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.add-button::before,
+.add-button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 2.5px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.add-button::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.add-button.active {
+  right: auto;
+  left: 50%;
+  bottom: 32px;
+  color: #fff;
+  background: #d9dce5;
+  transform: translateX(-50%);
+  box-shadow: none;
+}
+
+.add-button.active::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.add-button.active::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.tabbar {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 18;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 62px;
+  padding: 7px 18px 6px;
+  background: rgba(255,255,255,0.96);
+  border-top: 1px solid rgba(238,238,238,0.9);
+  box-shadow: 0 -8px 22px rgba(21, 36, 138, 0.08);
+}
+
+.tabbar a {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  color: #555f6e;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.15;
+  transition: color 0.2s ease;
+}
+
+.tabbar a.active {
+  color: var(--color-primary);
+}
+
+.tabbar i {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 11px;
+  background: rgba(3, 16, 46, 0.05);
+  color: inherit;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tabbar a.active i {
+  color: #fff;
+  background: linear-gradient(145deg, var(--color-primary), #6fa4ff);
+  box-shadow: 0 4px 10px rgba(54, 113, 255, 0.24);
+}
+
+.tabbar i::before,
+.tabbar i::after {
+  content: "";
+  position: absolute;
+  border-color: currentColor;
+}
+
+.tab-home i::before {
+  left: 50%;
+  top: 54%;
+  width: 46%;
+  height: 38%;
+  border: 1.7px solid currentColor;
+  border-top: 0;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+}
+
+.tab-home i::after {
+  left: 50%;
+  top: 37%;
+  width: 44%;
+  height: 44%;
+  border-left: 1.7px solid currentColor;
+  border-top: 1.7px solid currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.tab-task i::before {
+  left: 50%;
+  top: 50%;
+  width: 46%;
+  height: 58%;
+  border: 1.7px solid currentColor;
+  border-radius: 3px;
+  transform: translate(-50%, -50%);
+}
+
+.tab-task i::after {
+  left: 50%;
+  top: 51%;
+  width: 30%;
+  height: 16%;
+  border-left: 1.7px solid currentColor;
+  border-bottom: 1.7px solid currentColor;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.tab-shop i::before {
+  left: 50%;
+  top: 56%;
+  width: 58%;
+  height: 42%;
+  border: 1.7px solid currentColor;
+  border-radius: 2px 2px 4px 4px;
+  transform: translate(-50%, -50%);
+}
+
+.tab-shop i::after {
+  left: 50%;
+  top: 35%;
+  width: 38%;
+  height: 22%;
+  border: 1.7px solid currentColor;
+  border-bottom: 0;
+  border-radius: 7px 7px 0 0;
+  transform: translate(-50%, -50%);
+}
+
+.tab-mine i::before {
+  left: 50%;
+  top: 35%;
+  width: 32%;
+  height: 32%;
+  border: 1.7px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tab-mine i::after {
+  left: 50%;
+  top: 68%;
+  width: 56%;
+  height: 28%;
+  border: 1.7px solid currentColor;
+  border-radius: 9px 9px 3px 3px;
+  transform: translate(-50%, -50%);
+}
+
+.tabbar i::before,
+.tabbar i::after {
+  content: none !important;
+}
+
+.tabbar i {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.tabbar i svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.weight-checkin-page {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, 760px);
+  padding: 0 14px 0;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.95) 0 68px, transparent 69px),
+    radial-gradient(circle at 86% 0%, rgba(167,193,253,0.45) 0 70px, transparent 71px),
+    linear-gradient(180deg, #f4f8ff 0%, #eef5ff 48%, #f7fbff 100%);
+  border-radius: 24px 24px 0 0;
+  color: #03102e;
+  box-shadow: 0 -18px 42px rgba(18,46,132,0.2);
+  overflow: hidden;
+  transform: translateY(105%);
+  transition: transform 0.24s ease;
+  pointer-events: none;
+}
+
+.weight-checkin-page.active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.weight-checkin-nav {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 44px 1fr 92px;
+  align-items: center;
+  height: 64px;
+  padding-top: 6px;
+}
+
+.weight-checkin-nav h1 {
+  margin: 0;
+  color: #03102e;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.weight-checkin-nav .mini-program-capsule {
+  justify-self: end;
+}
+
+.weight-sheet-close {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.weight-sheet-close::before,
+.weight-sheet-close::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 15px;
+  width: 15px;
+  height: 2px;
+  border-radius: 2px;
+  background: #03102e;
+}
+
+.weight-sheet-close::before {
+  transform: rotate(45deg);
+}
+
+.weight-sheet-close::after {
+  transform: rotate(-45deg);
+}
+
+.weight-checkin-content {
+  display: grid;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 12px;
+}
+
+.weight-input-card,
+.weight-card {
+  border: 1px solid rgba(255,255,255,0.86);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 8px 24px rgba(130,152,194,0.12);
+}
+
+.weight-input-card {
+  padding: 14px 16px;
+}
+
+.weight-value-row {
+  display: grid;
+  gap: 9px;
+}
+
+.weight-value-row h3,
+.weight-card h3,
+.weight-note-head h3 {
+  margin: 0;
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.weight-value-row h3 em,
+.weight-card h3 em {
+  color: #ff4d4f;
+  font-style: normal;
+}
+
+.weight-value-row h3 span,
+.weight-note-head h3 span {
+  color: #667085;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.weight-stepper {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  min-height: 62px;
+  gap: 6px;
+}
+
+.weight-step-btn {
+  justify-self: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(54,113,255,0.26);
+  border-radius: 12px;
+  color: #1265ff;
+  background: #f7faff;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 500;
+}
+
+.weight-number-field {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.weight-number-field input {
+  width: min(146px, 100%);
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #03102e;
+  background: transparent;
+  font-size: clamp(34px, 10vw, 42px);
+  font-weight: 900;
+  text-align: right;
+}
+
+.weight-number-field span {
+  color: #6a7890;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.weight-value-row p {
+  margin: -2px 0 0;
+  color: #7d8aa3;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.weight-value-row p:empty {
+  display: none;
+}
+
+.weight-value-row p.error {
+  color: #ff4d4f;
+}
+
+.weight-divider {
+  height: 1px;
+  margin: 16px 0 14px;
+  background: #e8eef7;
+}
+
+.weight-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.weight-time-trigger {
+  display: grid;
+  grid-template-columns: 24px 1fr 12px;
+  align-items: center;
+  min-height: 52px;
+  border: 1px solid #dce6f6;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.weight-time-trigger i {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #03102e;
+  border-radius: 4px;
+}
+
+.weight-time-trigger i::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 5px;
+  height: 2px;
+  background: #03102e;
+}
+
+.weight-time-trigger b {
+  width: 10px;
+  height: 10px;
+  border-top: 3px solid #03102e;
+  border-right: 3px solid #03102e;
+  transform: rotate(45deg);
+}
+
+.weight-note-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.weight-note-head em {
+  color: #8b98ad;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.weight-note-card textarea {
+  height: 86px;
+  border: 1px solid #dce6f6;
+  border-radius: 12px;
+  padding: 12px;
+  resize: none;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 14px;
+  line-height: 1.6;
+  outline: 0;
+}
+
+.weight-submit-bar {
+  flex: 0 0 auto;
+  margin: 0 -14px;
+  padding: 12px 0 max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(247,251,255,0), #f7fbff 28%);
+}
+
+.weight-submit-bar button {
+  display: block;
+  width: calc(100% - 28px);
+  margin: 0 14px;
+  height: 52px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #1265ff);
+  box-shadow: 0 10px 22px rgba(54,113,255,0.22);
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.waist-checkin-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 41;
+  max-height: min(86vh, 650px);
+  padding: 20px 18px max(18px, env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: #fff;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.18);
+  overflow-y: auto;
+  transform: translateY(105%);
+  transition: transform 0.22s ease;
+  pointer-events: none;
+}
+
+.waist-checkin-sheet.active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.waist-checkin-sheet::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d9e2f2;
+  transform: translateX(-50%);
+}
+
+.waist-dialog-head {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.waist-dialog-head h3 {
+  grid-column: 2;
+  margin: 0;
+  color: #03102e;
+  font-size: 17px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.waist-dialog-head button {
+  position: relative;
+  grid-column: 3;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f2f5fa;
+}
+
+.waist-dialog-head button::before,
+.waist-dialog-head button::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 15px;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #667085;
+}
+
+.waist-dialog-head button::before { transform: rotate(45deg); }
+.waist-dialog-head button::after { transform: rotate(-45deg); }
+
+.waist-value-field {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.waist-value-field div {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.waist-value-field input {
+  width: 118px;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #3671ff;
+  background: transparent;
+  font-size: 31px;
+  line-height: 1;
+  font-weight: 950;
+  text-align: right;
+}
+
+.waist-value-field em {
+  color: #3671ff;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.waist-value-field span {
+  color: #8b98ad;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.waist-time-field {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.waist-time-field > strong,
+.waist-note-field span {
+  color: #34435f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.waist-time-trigger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #e2ebfb;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: #1f2d46;
+  background: #fbfdff;
+  text-align: left;
+}
+
+.waist-time-trigger span {
+  color: #34435f;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.waist-time-trigger i {
+  justify-self: end;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #7b879b;
+  border-right: 2px solid #7b879b;
+  transform: rotate(45deg);
+}
+
+.waist-note-field {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.waist-note-field textarea {
+  min-height: 88px;
+  border: 1px solid #e2ebfb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: none;
+  outline: 0;
+}
+
+.waist-note-field textarea::placeholder {
+  color: #abacbd;
+}
+
+.waist-error {
+  min-height: 18px;
+  margin: 8px 0 10px;
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.waist-submit {
+  width: 100%;
+  height: 46px;
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #1265ff);
+  box-shadow: 0 10px 22px rgba(54,113,255,0.22);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.pressure-checkin-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, 650px);
+  padding: 0 0 max(10px, env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: #fff;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.18);
+  overflow: hidden;
+  transform: translateY(105%);
+  transition: transform 0.22s ease;
+  pointer-events: none;
+}
+
+.pressure-checkin-sheet.active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pressure-sheet-nav {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  min-height: 50px;
+  padding: 6px 12px 0;
+  border-bottom: 1px solid #eef2f8;
+}
+
+.pressure-sheet-nav h3 {
+  margin: 0;
+  color: #03102e;
+  font-size: 17px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.pressure-close {
+  position: relative;
+  justify-self: end;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+}
+
+.pressure-close::before,
+.pressure-close::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 15px;
+  width: 15px;
+  height: 2px;
+  border-radius: 2px;
+  background: #03102e;
+}
+
+.pressure-close::before {
+  transform: rotate(45deg);
+}
+
+.pressure-close::after {
+  transform: rotate(-45deg);
+}
+
+.pressure-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 14px 0;
+}
+
+.pressure-value-row {
+  display: grid;
+  gap: 8px;
+  padding: 2px 0 14px;
+}
+
+.pressure-value-row h4,
+.pressure-card h4,
+.pressure-note-head h4 {
+  margin: 0;
+  color: #03102e;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.pressure-value-row h4 em,
+.pressure-card h4 em {
+  color: #ff4d4f;
+  font-style: normal;
+}
+
+.pressure-value-row h4 span,
+.pressure-note-head h4 span {
+  color: #6d7b92;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pressure-stepper {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.pressure-step-btn {
+  justify-self: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(54, 113, 255, 0.28);
+  border-radius: 10px;
+  color: #3671ff;
+  background: #f7faff;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.pressure-number-field {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.pressure-number-field input {
+  width: 92px;
+  border: 0;
+  outline: 0;
+  color: #03102e;
+  background: transparent;
+  font-size: 28px;
+  font-weight: 950;
+  text-align: right;
+}
+
+.pressure-number-field span {
+  color: #6a7890;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.pressure-value-row p {
+  margin: -2px 0 0;
+  color: #8a97aa;
+  font-size: 10px;
+  font-weight: 750;
+  text-align: center;
+}
+
+.pressure-value-row p.error,
+.pressure-error {
+  color: #ff4d4f;
+}
+
+.pressure-divider {
+  height: 1px;
+  margin-bottom: 14px;
+  background: #eef2f7;
+}
+
+.pressure-card {
+  display: grid;
+  gap: 10px;
+  padding: 13px 0 16px;
+  border-top: 1px solid #eef2f7;
+}
+
+.pressure-time-trigger {
+  display: grid;
+  grid-template-columns: 22px 1fr 12px;
+  align-items: center;
+  min-height: 48px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  padding: 0 12px;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.pressure-time-trigger i {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #03102e;
+  border-radius: 4px;
+}
+
+.pressure-time-trigger i::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 5px;
+  height: 2px;
+  background: #03102e;
+}
+
+.pressure-time-trigger b {
+  width: 9px;
+  height: 9px;
+  border-top: 3px solid #03102e;
+  border-right: 3px solid #03102e;
+  transform: rotate(45deg);
+}
+
+.pressure-note-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.pressure-note-head em {
+  color: #8b98ad;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.pressure-note-card textarea {
+  height: 92px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  padding: 11px 12px;
+  resize: none;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 13px;
+  line-height: 1.55;
+  outline: 0;
+}
+
+.pressure-error {
+  min-height: 16px;
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pressure-submit-bar {
+  flex: 0 0 auto;
+  padding: 10px 14px 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0), #fff 32%);
+}
+
+.pressure-submit-bar button {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #1265ff);
+  box-shadow: 0 10px 22px rgba(54, 113, 255, 0.22);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.sugar-checkin-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, 680px);
+  padding: 0 0 max(10px, env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: linear-gradient(180deg, #f7fbff 0%, #fff 34%);
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.18);
+  overflow: hidden;
+  transform: translateY(105%);
+  transition: transform 0.22s ease;
+  pointer-events: none;
+}
+
+.sugar-checkin-sheet.active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.sugar-sheet-nav {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  min-height: 48px;
+  padding: 4px 10px 0;
+  border-bottom: 1px solid #eef2f8;
+}
+
+.sugar-sheet-nav h3 {
+  margin: 0;
+  color: #03102e;
+  font-size: 17px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.sugar-back {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+}
+
+.sugar-back::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #03102e;
+  border-bottom: 2px solid #03102e;
+  transform: rotate(45deg);
+}
+
+.sugar-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 8px 0;
+}
+
+.sugar-section {
+  display: grid;
+  gap: 9px;
+  padding-bottom: 13px;
+}
+
+.sugar-section h4,
+.sugar-note-head h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #03102e;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.sugar-section h4 em,
+.sugar-note-head h4 em {
+  color: #6d7b92;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 750;
+}
+
+.sugar-stepper {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  min-height: 62px;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
+.sugar-stepper.error {
+  border-color: #ff4d4f;
+}
+
+.sugar-step-btn {
+  justify-self: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(54,113,255,0.26);
+  border-radius: 12px;
+  color: #1265ff;
+  background: #f7faff;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 500;
+}
+
+.sugar-step-btn:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.42);
+  outline-offset: 2px;
+}
+
+.sugar-number-field {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sugar-number-field input {
+  width: min(132px, 100%);
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #03102e;
+  background: transparent;
+  font-size: clamp(32px, 9vw, 40px);
+  font-weight: 900;
+  text-align: right;
+}
+
+.sugar-number-field span {
+  color: #6a7890;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.weight-stepper,
+.pressure-stepper,
+.sugar-stepper,
+.waist-stepper,
+.metric-value-stepper,
+.sport-duration-control {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  min-height: 62px;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+}
+
+.weight-step-btn,
+.pressure-step-btn,
+.sugar-step-btn,
+.waist-step-btn,
+.metric-value-step-btn,
+.sport-duration-control button {
+  justify-self: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(54,113,255,0.26);
+  border-radius: 12px;
+  color: #1265ff;
+  background: #f7faff;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 500;
+}
+
+.weight-number-field,
+.pressure-number-field,
+.sugar-number-field,
+.waist-number-field,
+.metric-value-number-field,
+.sport-duration-control strong {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.weight-number-field input,
+.pressure-number-field input,
+.sugar-number-field input,
+.waist-number-field input,
+.metric-value-number-field input {
+  width: min(132px, 100%);
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #03102e;
+  background: transparent;
+  font-size: clamp(32px, 9vw, 40px);
+  font-weight: 900;
+  text-align: right;
+}
+
+.weight-number-field input::-webkit-outer-spin-button,
+.weight-number-field input::-webkit-inner-spin-button,
+.pressure-number-field input::-webkit-outer-spin-button,
+.pressure-number-field input::-webkit-inner-spin-button,
+.sugar-number-field input::-webkit-outer-spin-button,
+.sugar-number-field input::-webkit-inner-spin-button,
+.waist-number-field input::-webkit-outer-spin-button,
+.waist-number-field input::-webkit-inner-spin-button,
+.metric-value-number-field input::-webkit-outer-spin-button,
+.metric-value-number-field input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.weight-number-field input[type="number"],
+.pressure-number-field input[type="number"],
+.sugar-number-field input[type="number"],
+.waist-number-field input[type="number"],
+.metric-value-number-field input[type="number"] {
+  appearance: textfield;
+}
+
+.sport-duration-control strong span {
+  color: #03102e;
+  font-size: clamp(32px, 9vw, 40px);
+  font-weight: 900;
+}
+
+.weight-number-field span,
+.pressure-number-field span,
+.sugar-number-field span,
+.waist-number-field em,
+.metric-value-number-field span,
+.sport-duration-control strong em {
+  color: #6a7890;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.sport-intensity-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.sport-intensity-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sport-intensity-options button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-height: 56px;
+  padding: 9px 4px;
+  border: 1px solid #dce6f6;
+  border-radius: 12px;
+  color: #03102e;
+  background: #fbfdff;
+}
+
+.sport-intensity-options button.active {
+  border-color: rgba(54, 113, 255, 0.72);
+  color: #3671ff;
+  background: #f2f6ff;
+  box-shadow: inset 0 0 0 1px rgba(54, 113, 255, 0.12);
+}
+
+.sport-intensity-options strong {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 950;
+}
+
+.sport-intensity-options span {
+  color: #6a7890;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 800;
+}
+
+.metric-value-field {
+  display: grid;
+  gap: 9px;
+}
+
+.metric-value-field h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #03102e;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.metric-value-field h4 .metric-required,
+.required-mark {
+  color: #ff4d4f;
+  font-size: 13px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.waist-value-field h4 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  color: #03102e;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.waist-value-field h4 em {
+  color: #6d7b92;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 750;
+}
+
+.metric-value-field h4 em {
+  color: #6d7b92;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 750;
+}
+
+.metric-record-sheet-lipid .metric-value-field {
+  gap: 7px;
+}
+
+.metric-record-sheet-lipid .metric-value-field h4 {
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.metric-record-sheet-lipid .metric-value-stepper {
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  min-height: 48px;
+  gap: 8px;
+}
+
+.metric-record-sheet-lipid .metric-value-step-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.metric-record-sheet-lipid .metric-value-number-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(54,113,255,0.14);
+  border-radius: 10px;
+  background: rgba(247,250,255,0.88);
+}
+
+.metric-record-sheet-lipid .metric-value-number-field input {
+  width: 100%;
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 800;
+  text-align: left;
+}
+
+.metric-record-sheet-lipid .metric-value-number-field input::placeholder {
+  color: #8b94a5;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.metric-record-sheet-lipid .metric-value-number-field span {
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.metric-record-sheet-lipid .metric-value-number-field input::-webkit-outer-spin-button,
+.metric-record-sheet-lipid .metric-value-number-field input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.metric-record-sheet-lipid .metric-value-number-field input[type="number"] {
+  appearance: textfield;
+}
+
+.metric-extra-time {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #e7edf7;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.metric-extra-time span {
+  color: #34435f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.metric-extra-time input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: #03102e;
+  background: transparent;
+  text-align: right;
+  font: 800 13px "PingFang SC", sans-serif;
+}
+
+.lipid-level {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+}
+
+.lipid-level + .lipid-level {
+  margin-top: 2px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.lipid-level-global {
+  gap: 0;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
+}
+
+.metric-required {
+  color: #ff4d4f;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.sugar-period-select {
+  position: relative;
+  display: block;
+}
+
+.sugar-period-select select {
+  width: 100%;
+  height: 46px;
+  padding: 0 42px 0 12px;
+  border: 1px solid #dce6f6;
+  border-radius: 8px;
+  outline: 0;
+  color: #03102e;
+  background: #fff;
+  appearance: none;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.sugar-period-select i {
+  position: absolute;
+  right: 16px;
+  top: 17px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #6d7b92;
+  border-bottom: 2px solid #6d7b92;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.sugar-section > p {
+  margin: 0;
+  color: #7d8aa3;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.sugar-time-trigger {
+  display: grid;
+  grid-template-columns: 1fr 18px;
+  align-items: center;
+  min-height: 46px;
+  border: 1px solid #dce6f6;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: #03102e;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.sugar-time-trigger i {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 1.8px solid #6d7b92;
+  border-radius: 4px;
+}
+
+.sugar-time-trigger i::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 5px;
+  height: 1.8px;
+  background: #6d7b92;
+}
+
+.sugar-note-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sugar-note-head strong {
+  color: #8b98ad;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.sugar-note-section textarea {
+  height: 82px;
+  border: 1px solid #dce6f6;
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: #03102e;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: none;
+  outline: 0;
+}
+
+.sugar-note-section textarea::placeholder {
+  color: #b3bdcb;
+}
+
+.sugar-error {
+  min-height: 16px;
+  margin: -4px 0 4px;
+  color: #ff4d4f;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sugar-submit-bar {
+  flex: 0 0 auto;
+  padding: 10px 8px 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0), #fff 32%);
+}
+
+.sugar-submit-bar button {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #1265ff);
+  box-shadow: 0 10px 22px rgba(54, 113, 255, 0.22);
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.checkin-success-dialog > button,
+.pressure-success-dialog > button {
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  color: #fff;
+  background: #3671ff;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.weight-time-picker,
+.metric-record-time-picker,
+.pressure-time-picker,
+.sugar-time-picker {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 42;
+  display: none;
+  border-radius: 22px 22px 0 0;
+  background: #fff;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.2);
+  overflow: hidden;
+}
+
+.waist-time-picker {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 42;
+  display: none;
+  border-radius: 22px 22px 0 0;
+  background: #fff;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.2);
+  overflow: hidden;
+}
+
+.weight-time-picker.active,
+.metric-record-time-picker.active,
+.waist-time-picker.active,
+.pressure-time-picker.active,
+.sugar-time-picker.active {
+  display: block;
+}
+
+.weight-picker-head {
+  display: grid;
+  grid-template-columns: 72px 1fr 72px;
+  align-items: center;
+  height: 54px;
+  border-bottom: 1px solid #edf2fb;
+}
+
+.weight-picker-head strong {
+  color: #03102e;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.weight-picker-head button {
+  height: 100%;
+  color: #3671ff;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.weight-picker-body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 10px;
+  padding: 18px 16px max(22px, env(safe-area-inset-bottom));
+}
+
+.weight-picker-body label {
+  display: grid;
+  gap: 8px;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.weight-picker-body select {
+  height: 46px;
+  border: 1px solid #dce6f6;
+  border-radius: 12px;
+  padding: 0 10px;
+  color: #03102e;
+  background: #f8fbff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.diet-time-row,
+.medicine-time-card,
+.sport-time-card,
+.weight-time-card,
+.waist-time-field,
+.pressure-time-card,
+.sugar-time-card,
+.metric-record-time,
+.medicine-note-card,
+.sport-note-card,
+.weight-note-card,
+.waist-note-field,
+.pressure-note-card,
+.sugar-note-section,
+.metric-record-note {
+  display: grid;
+  gap: 12px;
+  min-height: auto;
+  margin: 0;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
+}
+
+.diet-time-row,
+.medicine-time-card,
+.sport-time-card,
+.weight-time-card,
+.waist-time-field,
+.pressure-time-card,
+.sugar-time-card,
+.metric-record-time {
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.medicine-time-card > span,
+.medicine-note-card > span,
+.sport-time-card .sport-section-title,
+.sport-note-head,
+.weight-time-card h3,
+.weight-note-head,
+.waist-time-field > strong,
+.waist-note-field > span,
+.pressure-time-card h4,
+.pressure-note-head,
+.sugar-time-card h4,
+.sugar-note-head,
+.metric-record-time > span,
+.metric-record-note > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.medicine-time-card > span em,
+.medicine-note-card > span em,
+.sport-note-head span,
+.weight-note-head span,
+.waist-note-field small,
+.pressure-note-head span,
+.sugar-note-head em,
+.metric-record-note > span::after {
+  color: #5f6d83;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.sport-note-head em,
+.weight-note-head em,
+.waist-note-field > em,
+.pressure-note-head em,
+.sugar-note-head strong,
+.metric-record-note > em,
+.medicine-note-card > em {
+  color: #8b98ad;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.diet-time-row::after,
+.medicine-time-card b,
+.weight-time-card h3 em,
+.pressure-time-card h4 em {
+  color: #ff4d4f;
+  font-style: normal;
+}
+
+.waist-time-field > strong::after,
+.metric-record-time > span::after {
+  content: " ※";
+  color: #ff4d4f;
+}
+
+.medicine-time-card > span::before,
+.medicine-time-card > span::after,
+.medicine-note-card > span::before,
+.medicine-note-card > span::after {
+  content: none;
+}
+
+.diet-time-trigger,
+.medicine-time-trigger,
+.sport-time-row,
+.weight-time-trigger,
+.waist-time-trigger,
+.pressure-time-trigger,
+.sugar-time-trigger,
+.metric-record-time-control {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  color: #03102e;
+  background: #fbfdff;
+  box-shadow: none;
+  text-align: left;
+}
+
+.diet-time-trigger::before,
+.medicine-time-trigger::before,
+.sport-time-row::before,
+.weight-time-trigger::before,
+.waist-time-trigger::before,
+.pressure-time-trigger::before,
+.sugar-time-trigger::before,
+.metric-record-time-control::before {
+  content: "";
+  grid-column: 1;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #03102e;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(#03102e 0 0) 3px 5px / 8px 2px no-repeat;
+}
+
+.diet-time-trigger::after,
+.medicine-time-trigger::after,
+.sport-time-row::after,
+.weight-time-trigger::after,
+.waist-time-trigger::after,
+.pressure-time-trigger::after,
+.sugar-time-trigger::after,
+.metric-record-time-control::after {
+  content: "";
+  grid-column: 3;
+  justify-self: end;
+  width: 9px;
+  height: 9px;
+  border-top: 3px solid #03102e;
+  border-right: 3px solid #03102e;
+  transform: rotate(45deg);
+}
+
+.diet-time-trigger > i,
+.medicine-time-trigger > i,
+.medicine-time-trigger > em,
+.sport-time-row > i,
+.weight-time-trigger > i,
+.weight-time-trigger > b,
+.waist-time-trigger > i,
+.pressure-time-trigger > i,
+.pressure-time-trigger > b,
+.sugar-time-trigger > i,
+.metric-record-time-control > i {
+  display: none;
+}
+
+.diet-time-trigger strong,
+.medicine-time-trigger strong,
+.sport-time-row span,
+.weight-time-trigger span,
+.waist-time-trigger span,
+.pressure-time-trigger span,
+.sugar-time-trigger span,
+.metric-record-time-control strong {
+  grid-column: 2;
+  min-width: 0;
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.medicine-note-card,
+.metric-record-note {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.medicine-note-card > span,
+.metric-record-note > span {
+  grid-column: 1;
+}
+
+.medicine-note-card > em,
+.metric-record-note > em {
+  grid-column: 2;
+  justify-self: end;
+}
+
+.medicine-note-card textarea,
+.sport-note-card textarea,
+.weight-note-card textarea,
+.waist-note-field textarea,
+.pressure-note-card textarea,
+.sugar-note-section textarea,
+.metric-record-note textarea {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 84px;
+  height: 84px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  padding: 12px;
+  resize: none;
+  color: #03102e;
+  background: #fbfdff;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: left;
+  outline: 0;
+}
+
+.medicine-note-card textarea::placeholder,
+.sport-note-card textarea::placeholder,
+.weight-note-card textarea::placeholder,
+.waist-note-field textarea::placeholder,
+.pressure-note-card textarea::placeholder,
+.sugar-note-section textarea::placeholder,
+.metric-record-note textarea::placeholder {
+  color: #8d98aa;
+}
+
+.diet-time-row,
+.medicine-field-title,
+.medicine-item-type > span,
+.medicine-card-head strong,
+.medicine-list-section h4,
+.medicine-time-card > span strong,
+.medicine-note-card > span,
+.medicine-note-card > span strong,
+.sport-time-card .sport-section-title span,
+.sport-section-title span,
+.sport-note-head h3,
+.weight-time-card h3,
+.weight-note-head h3,
+.waist-value-field > span,
+.waist-time-field > strong,
+.waist-note-field > span,
+.pressure-value-row h4,
+.pressure-card h4,
+.pressure-note-head h4,
+.sugar-section h4,
+.sugar-note-head h4,
+.metric-value-field h4,
+.metric-record-time > span,
+.metric-record-note > span {
+  justify-content: flex-start;
+  text-align: left;
+  color: #03102e;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.medicine-time-card > span,
+.medicine-note-card > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 3px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 !important;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.medicine-time-card > span::before,
+.medicine-time-card > span::after,
+.medicine-note-card > span::before,
+.medicine-note-card > span::after {
+  display: none !important;
+  content: none !important;
+}
+
+.medicine-field-title b,
+.medicine-note-card > span em,
+.medicine-time-card > span em,
+.medicine-list-section p,
+.sport-note-head h3 span,
+.weight-note-head h3 span,
+.waist-note-field small,
+.pressure-value-row h4 em,
+.pressure-card h4 em,
+.pressure-note-head h4 span,
+.sugar-section h4 em,
+.sugar-note-head h4 em,
+.metric-value-field h4 em,
+.metric-record-note > span::after {
+  margin-left: 3px;
+  color: #6d7b92;
+  font-size: 12px;
+  line-height: 18px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.diet-time-row,
+.medicine-time-card,
+.sport-time-card,
+.weight-time-card,
+.waist-time-field,
+.pressure-time-card,
+.sugar-time-card,
+.metric-record-time,
+.metric-extra-time {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.diet-time-row,
+.medicine-time-card > span,
+.sport-time-card .sport-section-title,
+.weight-time-card h3,
+.waist-time-field > strong,
+.pressure-time-card h4,
+.sugar-time-card h4,
+.metric-record-time > span,
+.metric-extra-time > span {
+  grid-column: 1;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.diet-time-trigger,
+.medicine-time-trigger,
+.sport-time-row,
+.weight-time-trigger,
+.waist-time-trigger,
+.pressure-time-trigger,
+.sugar-time-trigger,
+.metric-record-time-control,
+.metric-extra-time input {
+  grid-column: 1;
+  width: 100%;
+  justify-self: stretch;
+}
+
+.metric-extra-time {
+  min-height: auto;
+  padding: 16px;
+}
+
+.metric-extra-time input {
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  background: #fbfdff;
+  text-align: left;
+  font-size: 15px;
+}
+
+.metric-record-sheet-lipid .metric-extra-time {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: stretch;
+  min-height: auto;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
+}
+
+.metric-record-sheet-lipid .metric-extra-time > span {
+  display: block;
+  width: 100%;
+  color: #03102e;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 20px;
+  text-align: left;
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1;
+  justify-self: stretch;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  color: #03102e;
+  background: #fbfdff;
+  box-shadow: none;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control::before {
+  content: "";
+  grid-column: 1;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #03102e;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(#03102e 0 0) 3px 5px / 8px 2px no-repeat;
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control::after {
+  content: "";
+  grid-column: 3;
+  justify-self: end;
+  width: 9px;
+  height: 9px;
+  border-top: 3px solid #03102e;
+  border-right: 3px solid #03102e;
+  transform: rotate(45deg);
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control strong {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control i {
+  display: none;
+}
+
+.metric-record-sheet-lipid .metric-extra-time-control input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.metric-record-sheet-lipid .lipid-metric-group {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
+}
+
+.metric-record-sheet-lipid .lipid-metric-group .metric-value-field {
+  gap: 8px;
+}
+
+.metric-record-sheet-lipid .lipid-metric-group .metric-extra-time {
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.metric-record-sheet-lipid .lipid-metric-group .metric-extra-time > span {
+  color: #34435f;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.metric-record-sheet-lipid .lipid-metric-group .metric-extra-time-control {
+  min-height: 46px;
+}
+
+.metric-record-sheet-lipid .lipid-level-global .metric-record-time,
+.metric-record-sheet-lipid .lipid-level-global .metric-record-note {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.metric-record-sheet-lipid .lipid-level-global .metric-record-note {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef3fb;
+}
+
+.metric-record-sheet-lipid .metric-record-note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
+}
+
+.metric-record-sheet-lipid .metric-record-note > span {
+  grid-column: 1;
+  margin: 0;
+  color: #03102e;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 20px;
+}
+
+.metric-record-sheet-lipid .metric-record-note > em {
+  grid-column: 2;
+  justify-self: end;
+  color: #8b98ad;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.metric-record-sheet-lipid .metric-record-note textarea {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 84px;
+  height: 84px;
+  padding: 12px;
+  border: 1px solid #dce6f6;
+  border-radius: 10px;
+  background: #fbfdff;
+  text-align: left;
+}
+
+/* 统一所有健康打卡弹窗为“运动打卡”底部抽屉样式 */
+.medicine-checkin-sheet,
+.sport-checkin-sheet,
+.weight-checkin-page,
+.waist-checkin-sheet,
+.pressure-checkin-sheet,
+.sugar-checkin-sheet,
+.metric-record-sheet {
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  border-radius: 24px 24px 0 0;
+  background: #f7faff;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.18);
+  overflow: hidden;
+}
+
+.weight-checkin-nav,
+.medicine-sheet-head,
+.sport-sheet-nav,
+.waist-dialog-head,
+.pressure-sheet-nav,
+.sugar-sheet-nav,
+.metric-record-sheet-head {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  height: 58px;
+  min-height: 58px;
+  margin: 0;
+  padding: 0 12px;
+  border-bottom: 1px solid #edf2fb;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.weight-checkin-nav h1,
+.medicine-sheet-head h3,
+.sport-sheet-nav h3,
+.waist-dialog-head h3,
+.pressure-sheet-nav h3,
+.sugar-sheet-nav h3,
+.metric-record-sheet-head h3 {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  color: #03102e;
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 24px;
+  text-align: center;
+}
+
+.medicine-sheet-head > span {
+  display: none;
+}
+
+.weight-checkin-nav > span,
+.sport-sheet-nav > span,
+.pressure-sheet-nav > span,
+.sugar-sheet-nav > span {
+  grid-column: 3;
+  grid-row: 1;
+  width: 36px;
+  height: 36px;
+}
+
+.weight-checkin-nav .mini-program-capsule {
+  display: none;
+}
+
+.weight-sheet-close,
+.medicine-close,
+.sport-close,
+.waist-dialog-head button,
+.pressure-close,
+.sugar-back,
+.metric-record-close {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 12px;
+  color: transparent;
+  background: transparent;
+  font-size: 0;
+  line-height: 0;
+}
+
+.weight-sheet-close::before,
+.medicine-close::before,
+.sport-close::before,
+.waist-dialog-head button::before,
+.pressure-close::before,
+.sugar-back::before,
+.metric-record-close::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 11px;
+  width: 11px;
+  height: 11px;
+  border: 0;
+  border-left: 2px solid #1f2d46;
+  border-bottom: 2px solid #1f2d46;
+  border-radius: 0;
+  background: transparent;
+  transform: rotate(45deg);
+}
+
+.weight-sheet-close::after,
+.medicine-close::after,
+.sport-close::after,
+.waist-dialog-head button::after,
+.pressure-close::after,
+.sugar-back::after,
+.metric-record-close::after {
+  content: none;
+}
+
+.medicine-sheet-scroll,
+.sport-sheet-body,
+.weight-checkin-content,
+.pressure-sheet-body,
+.sugar-sheet-body {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  background: #f7faff;
+}
+
+.weight-input-card,
+.weight-card,
+.pressure-value-card,
+.pressure-card,
+.sugar-section,
+.medicine-time-card,
+.medicine-note-card,
+.medicine-list-section,
+.sport-card,
+.waist-value-field,
+.waist-time-field,
+.waist-note-field,
+.metric-record-fields label,
+.metric-record-time,
+.metric-record-note {
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(140, 157, 199, 0.1);
+}
+
+.waist-checkin-sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: min(86vh, 740px);
+  padding: 0 14px max(14px, env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+.sugar-checkin-sheet .sugar-sheet-body {
+  display: grid;
+  gap: 0;
+  margin: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(140, 157, 199, 0.1);
+}
+
+.sugar-checkin-sheet .sugar-section {
+  gap: 10px;
+  margin: 0;
+  padding: 0 0 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.sugar-checkin-sheet .sugar-section + .sugar-section {
+  padding-top: 16px;
+  border-top: 1px solid #edf2f8;
+}
+
+.sugar-checkin-sheet .sugar-note-section {
+  padding-bottom: 0;
+}
+
+.sugar-checkin-sheet .sugar-error {
+  margin: 10px 0 0;
+}
+
+.waist-checkin-sheet::before {
+  content: none;
+}
+
+.waist-value-field,
+.waist-time-field,
+.waist-note-field {
+  flex: 0 0 auto;
+  margin: 14px 0 0;
+  padding: 14px;
+}
+
+.waist-submit,
+.metric-record-confirm,
+.medicine-actions button,
+.sport-actions button,
+.weight-submit-bar button,
+.pressure-submit-bar button,
+.sugar-submit-bar button {
+  height: 52px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #1265ff);
+  box-shadow: 0 10px 22px rgba(54, 113, 255, 0.22);
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.medicine-actions,
+.sport-actions,
+.weight-submit-bar,
+.pressure-submit-bar,
+.sugar-submit-bar {
+  padding: 12px 14px max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(247, 250, 255, 0), #f7faff 28%);
+}
+
+.weight-submit-bar {
+  margin: 0;
+}
+
+.metric-record-sheet {
+  max-height: min(86vh, 740px);
+  padding: 0 14px max(14px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+
+.metric-record-sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 -14px;
+}
+
+.metric-record-fields {
+  margin-top: 14px;
+}
+
+.metric-record-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 12px -14px 0;
+  padding: 10px 14px max(10px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(247, 250, 255, 0), #f7faff 28%);
+}
+
+.metric-record-actions.has-delete {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.metric-record-confirm {
+  width: 100%;
+}
+
+.metric-record-inline-delete {
+  width: 100%;
+  height: 48px;
+  border: 1px solid rgba(255, 77, 79, 0.22);
+  border-radius: 10px;
+  color: #ff4d4f;
+  background: #fff1f0;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.metric-record-sheet-combined-note .metric-record-time {
+  margin-top: 10px;
+  border-radius: 16px 16px 0 0;
+  box-shadow: none;
+}
+
+.metric-record-sheet-combined-note .metric-record-note {
+  margin-top: 0;
+  padding-top: 0;
+  border-radius: 0 0 16px 16px;
+  box-shadow: none;
+}
+
+.metric-record-sheet-combined-note .metric-record-time + .metric-record-note {
+  position: relative;
+}
+
+.pressure-detail-mode {
+  min-height: 100vh;
+  padding-bottom: 92px;
+  background: linear-gradient(180deg, #dfe8ff 0%, #f4f8ff 34%, #ffffff 100%);
+}
+
+.pressure-detail-mode .sub-nav {
+  height: 56px;
+  padding: 0 10px;
+}
+
+.pressure-detail-mode .sub-nav h1 {
+  color: #22304a;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.pressure-device-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 0 10px 12px;
+  padding: 0 12px 0 2px;
+  border: 1px solid rgba(0, 149, 127, 0.18);
+  border-radius: 6px;
+  color: #00957f;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.pressure-device-banner[hidden] {
+  display: none;
+}
+
+.pressure-device-banner i {
+  width: 48px;
+  height: 44px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 26px 19px, #06122c 0 11px, transparent 12px),
+    radial-gradient(circle at 20px 18px, #6fe2ff 0 2px, transparent 3px),
+    radial-gradient(circle at 32px 18px, #6fe2ff 0 2px, transparent 3px),
+    linear-gradient(145deg, #ffffff, #c5d8ff);
+}
+
+.pressure-device-banner span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pressure-device-banner b {
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #3671ff;
+  border-right: 2px solid #3671ff;
+  transform: rotate(45deg);
+}
+
+.pressure-detail-mode .metric-range-tabs {
+  margin: 0 10px;
+  padding: 5px;
+  border-radius: 8px;
+  background: #edf3ff;
+}
+
+.pressure-detail-mode .metric-range-tabs button {
+  height: 34px;
+  border-radius: 8px;
+  color: #263654;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-range-tabs button.active {
+  color: #00957f;
+  box-shadow: none;
+}
+
+.pressure-detail-mode .metric-date-nav {
+  margin: 0;
+  padding: 18px 16px;
+  border: 0;
+  border-top: 1px solid #e8edf7;
+  border-bottom: 1px solid #e8edf7;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.pressure-detail-mode .metric-date-current {
+  color: #34435f;
+  background: transparent;
+  box-shadow: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-detail-summary,
+.pressure-detail-mode .metric-trend-card,
+.pressure-detail-mode .metric-average-card {
+  margin: 0;
+  padding: 0 16px;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.pressure-detail-mode .metric-detail-summary {
+  padding-top: 16px;
+}
+
+.pressure-detail-mode .metric-detail-summary > div {
+  gap: 8px;
+}
+
+.pressure-detail-mode .metric-detail-summary strong {
+  color: #263654;
+  font-size: 27px;
+  font-weight: 900;
+}
+
+.pressure-detail-mode .metric-detail-summary em {
+  color: #75839a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pressure-detail-mode .metric-detail-summary b,
+.pressure-detail-mode .metric-detail-summary p,
+.pressure-detail-mode .metric-chart-head {
+  display: none;
+}
+
+.pressure-detail-mode .metric-line-chart {
+  height: 224px;
+  margin-top: 0;
+}
+
+.pressure-detail-mode .metric-line-chart text {
+  fill: #9aa6b8;
+  font-size: 11px;
+}
+
+.pressure-detail-mode .metric-average-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 16px 22px 0;
+  padding: 14px 16px 18px;
+  border-radius: 7px;
+  background: rgba(235, 248, 247, 0.88);
+}
+
+.pressure-average-head {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.pressure-average-head span {
+  color: #65748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-average-card > div:not(.pressure-average-head) {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.pressure-detail-mode .metric-average-card > div:not(.pressure-average-head):not(.metric-pulse-average) {
+  border-right: 1px solid #d8ebe8;
+}
+
+.pressure-detail-mode .metric-average-card span {
+  color: #7b879b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-average-card strong {
+  margin: 0;
+  color: #263654;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.metric-pulse-average[hidden],
+.pressure-average-head[hidden] {
+  display: none;
+}
+
+.pressure-detail-mode .metric-average-card button {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  height: 22px;
+  padding: 0;
+  color: #00957f;
+  background: transparent;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pressure-detail-mode .metric-average-card button::after {
+  content: "›";
+  margin-left: 4px;
+}
+
+.pressure-detail-mode .weight-detail-records-section {
+  display: none;
+}
+
+.pressure-detail-mode .metric-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  border-top: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.pressure-add-device,
+.pressure-detail-mode .metric-detail-actions .metric-record-entry {
+  height: 43px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.pressure-add-device {
+  color: #00957f;
+  background: #edf4ff;
+}
+
+.pressure-detail-mode .metric-detail-actions .metric-record-entry {
+  color: #fff;
+  background: #00957f;
+}
+
+/* 血压详情 1:1 专用布局 */
+.pressure-detail-mode {
+  padding-bottom: 82px;
+  background: #dfe8ff;
+}
+
+.pressure-detail-mode .pressure-device-banner {
+  display: none !important;
+}
+
+.pressure-data-panel {
+  margin: 14px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.pressure-data-panel[hidden] {
+  display: none;
+}
+
+.pressure-detail-mode .metric-range-tabs {
+  margin: 13px 14px 14px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f0f4fc;
+}
+
+.pressure-detail-mode .metric-range-tabs button {
+  height: 36px;
+  border-radius: 9px;
+  color: #263654;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-range-tabs button.active {
+  color: #00957f;
+  background: #fff;
+}
+
+.pressure-detail-mode .metric-date-nav {
+  display: grid;
+  grid-template-columns: 38px 1fr 38px;
+  align-items: center;
+  height: 64px;
+  margin: 0;
+  padding: 0 12px;
+  border-top: 1px solid #e8edf7;
+  border-bottom: 1px solid #e8edf7;
+  background: #fff;
+}
+
+.pressure-detail-mode .metric-date-nav > button:not(.metric-date-current) {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.pressure-detail-mode .metric-date-nav > button:not(.metric-date-current)::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #5e6d83;
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+.pressure-detail-mode .metric-date-nav > button[data-metric-date-step="-1"]::before {
+  left: 14px;
+}
+
+.pressure-detail-mode .metric-date-nav > button[data-metric-date-step="1"]::before {
+  right: 14px;
+}
+
+.pressure-detail-mode .metric-date-current {
+  display: block;
+  height: auto;
+  color: #34435f;
+  background: transparent;
+  box-shadow: none;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.pressure-detail-mode .metric-date-current i {
+  display: none;
+}
+
+.pressure-detail-mode .metric-detail-summary {
+  margin: 0;
+  padding: 14px 16px 0;
+  background: #fff;
+}
+
+.pressure-detail-mode .metric-detail-summary > div {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.pressure-detail-mode .metric-detail-summary strong {
+  color: #263654;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.pressure-detail-mode .metric-detail-summary em {
+  color: #7b879b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-trend-card {
+  margin: 0;
+  padding: 0 12px;
+  background: #fff;
+}
+
+.pressure-detail-mode .metric-line-chart {
+  height: 242px;
+  margin: 0;
+}
+
+.pressure-detail-mode .metric-line-chart svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pressure-detail-mode .metric-line-chart text {
+  fill: #9aa6b8;
+  font-size: 11px;
+}
+
+.pressure-detail-mode .metric-average-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin: 0 13px 14px;
+  padding: 13px 12px 14px;
+  border-radius: 7px;
+  background: #f2fbfa;
+}
+
+.pressure-detail-mode .pressure-average-head {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  margin: 0 0 15px;
+  padding-left: 22px;
+}
+
+.pressure-detail-mode .pressure-average-head::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin-left: -22px;
+  border: 1.8px solid #667085;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background: linear-gradient(#667085 0 0) 3px 5px / 7px 1.5px no-repeat;
+}
+
+.pressure-detail-mode .pressure-average-head span {
+  color: #65748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-average-card button {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  height: 20px;
+  padding: 0;
+  color: #00957f;
+  background: transparent;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pressure-detail-mode .metric-average-card button::after {
+  content: none;
+}
+
+.pressure-detail-mode .metric-average-card > div:not(.pressure-average-head) {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-height: 54px;
+  grid-row: 2;
+}
+
+.pressure-detail-mode .metric-average-card > div:not(.pressure-average-head):not(.metric-pulse-average) {
+  border-right: 1px solid #d8ebe8;
+}
+
+.pressure-detail-mode .metric-average-card strong {
+  color: #263654;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.pressure-detail-mode .metric-average-card span {
+  color: #7b879b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pressure-detail-mode .metric-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+}
+
+.pressure-add-device,
+.pressure-detail-mode .metric-detail-actions .metric-record-entry {
+  width: 100%;
+  height: 43px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.sugar-detail-mode {
+  min-height: 100vh;
+  padding-bottom: 70px;
+  background: #dfe8ff;
+}
+
+.sugar-detail-mode .sub-nav {
+  display: grid;
+  height: 56px;
+  padding: 0 10px;
+}
+
+.sugar-detail-mode .sub-nav h1 {
+  color: #22304a;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.sugar-detail-mode .pressure-data-panel {
+  margin: 0 5px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.sugar-detail-mode .metric-range-tabs {
+  margin: 14px 14px 16px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #edf3ff;
+}
+
+.sugar-detail-mode .metric-range-tabs button {
+  height: 36px;
+  border-radius: 9px;
+  color: #263654;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sugar-detail-mode .metric-range-tabs button.active {
+  color: #00957f;
+  background: #fff;
+  box-shadow: none;
+}
+
+.sugar-detail-mode .metric-date-nav {
+  display: grid;
+  grid-template-columns: 38px 1fr 38px;
+  align-items: center;
+  height: 64px;
+  margin: 0;
+  padding: 0 12px;
+  border-top: 1px solid #e8edf7;
+  border-bottom: 1px solid #e8edf7;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.sugar-detail-mode .metric-date-nav > button:not(.metric-date-current) {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.sugar-detail-mode .metric-date-nav > button:not(.metric-date-current)::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #263654;
+  border-right: 2px solid #263654;
+}
+
+.sugar-detail-mode .metric-date-nav > button[data-metric-date-step="-1"]::before {
+  left: 14px;
+  transform: rotate(-135deg);
+}
+
+.sugar-detail-mode .metric-date-nav > button[data-metric-date-step="1"]::before {
+  right: 14px;
+  transform: rotate(45deg);
+}
+
+.sugar-detail-mode .metric-date-current {
+  display: block;
+  height: auto;
+  color: #34435f;
+  background: transparent;
+  box-shadow: none;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.sugar-detail-mode .metric-date-current i {
+  display: none;
+}
+
+.sugar-detail-mode .metric-detail-summary,
+.sugar-detail-mode .metric-trend-card {
+  margin: 0;
+  padding: 0 16px;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.sugar-detail-mode .metric-detail-summary {
+  padding-top: 14px;
+}
+
+.sugar-detail-mode .metric-detail-summary > div {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.sugar-detail-mode .metric-detail-summary strong {
+  color: #263654;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.sugar-detail-mode .metric-detail-summary em {
+  color: #8b96a8;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sugar-detail-mode .metric-detail-summary b,
+.sugar-detail-mode .metric-detail-summary p,
+.sugar-detail-mode .metric-chart-head {
+  display: none;
+}
+
+.sugar-detail-mode .metric-line-chart {
+  height: 250px;
+  margin: 0;
+}
+
+.sugar-detail-mode .metric-line-chart svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sugar-detail-mode .metric-line-chart text {
+  fill: #9aa6b8;
+  font-size: 11px;
+}
+
+.sugar-detail-mode .metric-average-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: 18px 14px 14px;
+  padding: 14px 12px 16px;
+  border-radius: 7px;
+  background: #f2fbfa;
+}
+
+.sugar-detail-mode .pressure-average-head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  margin: 0 0 15px;
+  padding-left: 22px;
+}
+
+.sugar-detail-mode .pressure-average-head::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin-left: -22px;
+  border: 1.8px solid #667085;
+  border-radius: 3px;
+  box-sizing: border-box;
+  background: linear-gradient(#667085 0 0) 3px 5px / 7px 1.5px no-repeat;
+}
+
+.sugar-detail-mode .pressure-average-head span {
+  color: #65748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sugar-detail-mode .metric-average-card button {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  height: 20px;
+  color: #00957f;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sugar-detail-mode .metric-average-card button::after {
+  content: "›";
+  margin-left: 4px;
+}
+
+.sugar-detail-mode .metric-average-card > div:not(.pressure-average-head) {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-height: 56px;
+}
+
+.sugar-detail-mode .metric-average-card > div:not(.pressure-average-head):not(.metric-pulse-average) {
+  border-right: 1px solid #d8ebe8;
+}
+
+.sugar-detail-mode .metric-average-card span {
+  color: #7b879b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sugar-detail-mode .metric-average-card strong {
+  color: #263654;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.metric-sugar-low[hidden] {
+  display: none;
+}
+
+.sugar-detail-mode .weight-detail-records-section {
+  display: none;
+}
+
+.sugar-detail-mode .metric-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 10px 4px calc(10px + env(safe-area-inset-bottom));
+  border-top: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.sugar-detail-mode .pressure-add-device,
+.sugar-detail-mode .metric-detail-actions .metric-record-entry {
+  height: 43px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.sugar-detail-mode .pressure-add-device {
+  color: #00957f;
+  background: #edf4ff;
+}
+
+.sugar-detail-mode .metric-detail-actions .metric-record-entry {
+  color: #fff;
+  background: #00957f;
+}
+
+.pressure-detail-mode .metric-detail-actions,
+.sugar-detail-mode .metric-detail-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.metric-detail-page.active.pressure-detail-mode .metric-detail-actions,
+.metric-detail-page.active.sugar-detail-mode .metric-detail-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.pressure-detail-mode .pressure-add-device,
+.sugar-detail-mode .pressure-add-device {
+  grid-column: 1;
+  width: 100%;
+}
+
+.pressure-detail-mode .metric-detail-actions .metric-record-entry,
+.sugar-detail-mode .metric-detail-actions .metric-record-entry {
+  grid-column: 2;
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    display: grid;
+    place-items: start center;
+    padding: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .home-page {
+    width: min(100%, 375px);
+    min-height: 100vh;
+    box-shadow: none;
+  }
+
+  .tabbar {
+    left: 0;
+    right: 0;
+  }
+
+  .task-panel {
+    left: 0;
+    right: 0;
+  }
+
+  .diet-detail-action-bar {
+    left: 0;
+    right: 0;
+  }
+
+  .add-button {
+    right: 20px;
+  }
+
+  .medical-fab {
+    right: 18px;
+  }
+
+  .service-fab {
+    right: 18px;
+  }
+
+  .buy-bar {
+    left: 0;
+    right: 0;
+  }
+
+  .bottom-sheet {
+    left: 12px;
+    right: 12px;
+  }
+
+  .metric-record-sheet {
+    left: 0;
+    right: 0;
+  }
+
+  .metric-detail-actions {
+    left: 0;
+    right: 0;
+  }
+
+  .diet-upload-sheet {
+    left: 0;
+    right: 0;
+  }
+
+  .medicine-checkin-sheet {
+    left: 0;
+    right: 0;
+  }
+
+  .medicine-time-picker {
+    left: 0;
+    right: 0;
+  }
+
+  .sport-checkin-sheet,
+  .sport-time-picker {
+    left: 0;
+    right: 0;
+  }
+
+  .weight-checkin-page {
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+  }
+
+  .pressure-checkin-sheet,
+  .sugar-checkin-sheet {
+    left: 0;
+    right: 0;
+  }
+
+  .weight-time-picker,
+  .metric-record-time-picker,
+  .waist-time-picker,
+  .pressure-time-picker,
+  .sugar-time-picker {
+    left: 0;
+    right: 0;
+  }
+
+  .sport-success-dialog,
+  .checkin-success-dialog,
+  .pressure-success-dialog,
+  .sugar-success-dialog,
+  .unified-checkin-success-dialog {
+    left: 28px;
+    right: 28px;
+  }
+
+  .diet-result-actions {
+    left: 14px;
+    right: 14px;
+  }
+
+  .diet-gram-sheet {
+    left: 0;
+    right: 0;
+  }
+
+  .cycle-sheet {
+    left: 12px;
+    right: 12px;
+  }
+}
