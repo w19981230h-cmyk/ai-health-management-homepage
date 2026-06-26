@@ -987,6 +987,97 @@
   margin-top: 12px;
 }
 
+.diet-doctor-review-card {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 18px 20px 20px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(22, 42, 93, 0.05);
+}
+
+.diet-doctor-review-card[hidden] {
+  display: none !important;
+}
+
+.diet-doctor-review-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  min-height: 28px;
+  margin-left: 34px;
+  padding: 0 14px 0 18px;
+  border-radius: 0 999px 999px 0;
+  color: #fff;
+  background: linear-gradient(90deg, #4e86ff, #76a2ff);
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.diet-doctor-review-badge i {
+  position: absolute;
+  left: -36px;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 34%, #273a66 0 5px, transparent 6px),
+    radial-gradient(circle at 50% 46%, #f2c7ae 0 9px, transparent 10px),
+    linear-gradient(135deg, #e9f1ff, #f8fbff);
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.12);
+}
+
+.diet-doctor-review-badge.ai i {
+  background:
+    linear-gradient(#fff 0 0) center 14px / 16px 2px no-repeat,
+    linear-gradient(#fff 0 0) center 22px / 16px 2px no-repeat,
+    linear-gradient(135deg, #3671ff, #6ea0ff);
+}
+
+.diet-ai-auth-mark {
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  color: rgba(3, 16, 46, 0.45);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.diet-doctor-review-card strong {
+  color: #34435f;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.diet-doctor-review-card p {
+  margin: 0;
+  color: #34435f;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 400;
+}
+
+.diet-doctor-review-card time {
+  justify-self: end;
+  color: #8b98ad;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.diet-result-page.doctor-reviewed .diet-food-card {
+  cursor: default;
+}
+
+.diet-result-page.doctor-reviewed .diet-food-card menu,
+.diet-result-page.doctor-reviewed .diet-result-actions {
+  display: none;
+}
+
 .diet-section-title {
   display: flex;
   align-items: center;
@@ -1956,9 +2047,7 @@
 
 .sport-detail-record {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 11px;
+  gap: 10px;
   min-height: 86px;
   padding: 13px 12px;
   border: 1px solid #edf2f8;
@@ -1968,13 +2057,25 @@
   cursor: pointer;
 }
 
-.sport-detail-record > .sport-icon {
+.sport-detail-record.reviewed {
+  border-color: #dbe7ff;
+}
+
+.sport-detail-record-main {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.sport-detail-record-main > .sport-icon {
   width: 42px;
   height: 42px;
   border-radius: 12px;
 }
 
-.sport-detail-record div {
+.sport-detail-record-main > div {
   display: grid;
   gap: 5px;
   min-width: 0;
@@ -1998,7 +2099,7 @@
   white-space: nowrap;
 }
 
-.sport-detail-record div em {
+.sport-detail-record-main > div > em {
   justify-self: start;
   min-width: 44px;
   height: 22px;
@@ -2012,7 +2113,7 @@
   font-weight: 900;
 }
 
-.sport-detail-record p {
+.sport-detail-record-main > p {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -2023,19 +2124,112 @@
   white-space: nowrap;
 }
 
-.sport-detail-record p b {
+.sport-detail-record-main > p b {
   color: #03102e;
   font-size: 18px;
   font-weight: 950;
 }
 
-.sport-detail-record p em {
+.sport-detail-record-main > p em {
+  display: block;
+  flex: none;
   width: 8px;
+  min-width: 0;
   height: 8px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
   margin-left: 2px;
   border-top: 1.8px solid #9aa6b8;
   border-right: 1.8px solid #9aa6b8;
+  font-size: 0;
+  line-height: 1;
   transform: rotate(45deg);
+}
+
+.sport-record-review-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #f4f8ff;
+  color: #3671ff;
+  font-size: 13px;
+  font-weight: 850;
+  text-align: left;
+}
+
+.sport-record-review-toggle em {
+  color: #3671ff;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.sport-record-review-panel {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f7fbff, #fff);
+  border: 1px solid #e2ebff;
+}
+
+.sport-record-review-panel div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sport-record-review-panel i {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #3671ff;
+}
+
+.sport-record-review-panel i::before {
+  content: "评";
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.sport-record-review-panel strong {
+  color: #122e84;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.sport-record-review-panel p {
+  margin: 0;
+  color: #03102ea8;
+  font-size: 13px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.sport-record-review-panel time {
+  justify-self: end;
+  color: #03102e73;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.sport-record-review-panel button {
+  justify-self: end;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #3671ff;
+  font-size: 12px;
+  font-weight: 850;
 }
 
 .sport-detail-record:active {
@@ -3024,4 +3218,19 @@
   color: #657184;
   font-size: 12px;
   line-height: 1.5;
+}
+
+/* Keep diet and sport drill-down pages visually aligned with other details. */
+.diet-detail-page .diet-detail-summary,
+.diet-detail-page .diet-detail-section,
+.diet-detail-page .diet-detail-list-card,
+.diet-detail-page .diet-note-card,
+.diet-result-page .diet-result-summary,
+.diet-result-page .diet-food-section,
+.diet-result-page .diet-note-card,
+.diet-result-page .diet-doctor-review-card,
+.sport-detail-summary,
+.sport-detail-record-card {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }

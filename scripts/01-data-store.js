@@ -167,7 +167,10 @@ const scheduleTasks = {
     "2025-03-23": {
       reminders: ["复诊提醒", "用药提醒", "报告查看"],
       followups: [
-        { type: "随访量表", plan: "高血压服务包", title: "出院随访跟踪量表", range: "2025/05/01 至 2025/05/10", status: "进行中", action: "立即查看" }
+        { type: "随访量表", plan: "高血压服务包", title: "出院随访跟踪量表", range: "2025/05/01 至 2025/05/10", status: "进行中", action: "立即查看" },
+        { type: "血压记录", plan: "", title: "完成血压打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" },
+        { type: "饮食记录", plan: "", title: "完成饮食打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" },
+        { type: "用药记录", plan: "", title: "完成用药打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" }
       ],
       assessments: [
         { title: "糖尿病风险评估", desc: "健康管理师邀请您完成健康评估，了解健康状况。", status: "待完成", action: "开始评估" }

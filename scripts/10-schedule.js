@@ -132,22 +132,46 @@ function renderReminderSection(reminders) {
 }
 
 function renderFollowupSection(followups) {
-  const body = followups.length ? followups.map((task) => {
-    const statusClass = task.status === "已完成" ? "done" : task.status === "已逾期" ? "overdue" : "";
+  const body = followups.length ? followups.map((task, index) => {
     const buttonClass = task.status === "已完成" ? "done" : "";
+    const isCheckinTask = task.taskKind === "checkin" || ["饮食记录", "运动记录", "用药记录", "体重记录", "血压记录", "血糖记录", "血脂记录", "尿酸记录", "腰围记录", "心率记录"].includes(task.type);
+    const checkinType = isCheckinTask ? scheduleTaskCheckinType(task.type) : "";
+    const taskKind = isCheckinTask ? "checkin-task" : "follow-task";
+    const isCompletedCheckin = isCheckinTask && task.status === "已完成";
+    const scheduleAction = isCheckinTask ? (isCompletedCheckin ? "records" : "checkin") : "follow";
+    const action = isCheckinTask ? (isCompletedCheckin ? "查看" : "去打卡") : "填写";
+    const taskIdAttr = isCheckinTask ? ` data-task-id="followup-${index}"` : "";
+    const completedClass = isCompletedCheckin ? " completed" : "";
+    const completedMark = isCompletedCheckin ? `<i class="task-done-mark" aria-hidden="true"></i>` : "";
     return `
-      <article class="schedule-card follow-card" data-schedule-action="follow">
-        <div class="follow-head">
-          <span class="task-tag-small">${task.type}</span>
-          <span class="task-plan-tag">${task.plan}</span>
+      <article class="schedule-card follow-card ${taskKind}${completedClass}" data-schedule-action="${scheduleAction}"${checkinType ? ` data-type="${checkinType}"` : ""}${taskIdAttr}>
+        <div class="follow-copy">
+          <div class="follow-head">
+            <span class="task-tag-small">${task.type}</span>
+          </div>
+          <strong>${completedMark}${task.title}</strong>
         </div>
-        <strong>${task.title}</strong>
-        <p>${task.range} · <span class="task-status ${statusClass}">${task.status}</span></p>
-        <button class="task-primary ${buttonClass}" type="button" data-schedule-action="follow">${task.action}</button>
+        <button class="task-primary ${buttonClass}" type="button" data-schedule-action="${scheduleAction}"${checkinType ? ` data-type="${checkinType}"` : ""}${taskIdAttr}>${action}</button>
       </article>
     `;
   }).join("") : `<div class="empty-card"><strong>暂无随访任务</strong></div>`;
   return renderSection("健康任务", body, `<button type="button" data-schedule-plans>全部计划 〉</button>`);
+}
+
+function scheduleTaskCheckinType(label) {
+  const text = String(label || "");
+  if (text.includes("饮食")) return "diet";
+  if (text.includes("运动")) return "sport";
+  if (text.includes("用药")) return "medicine";
+  if (text.includes("体重")) return "weight";
+  if (text.includes("血压")) return "pressure";
+  if (text.includes("血糖")) return "sugar";
+  if (text.includes("血脂")) return "lipid";
+  if (text.includes("尿酸")) return "uric";
+  if (text.includes("腰围")) return "waist";
+  if (text.includes("心率")) return "heart";
+  if (text.includes("经期")) return "period";
+  return "";
 }
 
 function renderAssessmentSection(assessments) {
@@ -549,7 +573,7 @@ function formatDietTime(value) {
 }
 
 function updateDietMealTimeText() {
-  if (dietMealTimeText) dietMealTimeText.textContent = formatCheckinTimeDisplay(dietMealTime?.value, "请选择记录时间");
+  if (dietMealTimeText) dietMealTimeText.textContent = formatCheckinTimeDisplay(dietMealTime?.value, "请选择饮食时间");
 }
 
 function mealByTime(date = new Date()) {
@@ -608,4 +632,3 @@ function showDietUploadSheet() {
   sheetMask.classList.add("active");
   dietUploadSheet?.classList.add("active");
 }
-

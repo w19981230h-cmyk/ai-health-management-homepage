@@ -1,4 +1,7 @@
 function openDietUploadSheet() {
+  activeDietTaskBindingId = "";
+  selectedDietTaskBindingId = "";
+  pendingDietTaskBinding = false;
   closeOverlays();
   resetDietUploadState();
   showDietUploadSheet();
@@ -109,7 +112,11 @@ function startDietRecognition() {
   dietRecognitionIndex = 0;
   dietResults = buildDietResults();
   clearTimeout(dietRecognitionTimer);
+  const taskBindingId = selectedDietTaskBindingId;
+  const taskBindingPending = pendingDietTaskBinding;
   closeOverlays();
+  selectedDietTaskBindingId = taskBindingId;
+  pendingDietTaskBinding = taskBindingPending;
   openSubPage("dietRecognizePage");
   renderDietRecognition(false);
   runDietRecognitionStep();
@@ -148,6 +155,7 @@ function showDietRecognitionFailure() {
 function openDietResultPage() {
   clearTimeout(dietRecognitionTimer);
   dietResultMode = "checkin";
+  dietResultReadonly = false;
   dietResultIndex = 0;
   if (dietResultTime && dietMealTime?.value) dietResultTime.value = dietMealTime.value;
   if (dietResultNoteInput) dietResultNoteInput.value = dietNoteInput?.value?.trim() || "今天的分量比平时稍少。";
@@ -157,36 +165,65 @@ function openDietResultPage() {
 
 function renderDietResult() {
   if (!dietFoodList) return;
-  const readonlyResult = dietResultMode === "detail";
+  const current = dietResults[dietResultIndex] || dietResults[0];
+  const doctorReview = current?.doctorReview;
+  const lockedByDoctorReview = Boolean(doctorReview);
+  const lockedByTaskView = Boolean(dietResultReadonly);
+  const lockedResult = lockedByDoctorReview || lockedByTaskView;
+  const readonlyResult = dietResultMode === "detail" || lockedByDoctorReview;
+  dietResultPage?.classList.toggle("doctor-reviewed", lockedByDoctorReview);
+  dietResultPage?.classList.toggle("readonly-result", lockedByTaskView);
   const totals = dietTotals();
   dietTotalCalories.innerHTML = `${Math.round(totals.calories)} <em>kcal · 食物总热量</em>`;
   dietProteinTotal.textContent = `${Math.round(totals.protein)}g`;
   dietFatTotal.textContent = `${Number(totals.fat.toFixed(1))}g`;
   dietCarbTotal.textContent = `${Math.round(totals.carb)}g`;
-  const current = dietResults[dietResultIndex] || dietResults[0];
   dietMealTitle.textContent = current?.meal || "早餐";
   const resultTime = formatDietTime(dietResultTime?.value || dietMealTime?.value);
   dietRecordTimeText.textContent = `${resultTime || current?.time || "12:00"} 记录`;
   dietFoodList.innerHTML = (current?.foods || []).map((food) => `
-    <article class="diet-food-card" data-food-id="${food.id}" role="button" tabindex="0">
+    <article class="diet-food-card${lockedResult ? " readonly" : ""}" data-food-id="${food.id}"${lockedResult ? "" : ` role="button" tabindex="0"`}>
       <i class="food-thumb ${food.image}" aria-hidden="true"></i>
       <div>
         <strong>${food.name}</strong>
         <p>${food.calories} kcal · ${formatFoodNumber(food.grams || 100)}g</p>
       </div>
-      <menu class="diet-food-actions">
+      ${lockedResult ? "" : `<menu class="diet-food-actions">
         <button class="diet-food-edit" type="button" data-edit-food="${food.id}" aria-label="编辑${escapeAttr(food.name)}"></button>
-      </menu>
+      </menu>`}
     </article>
   `).join("") + (current ? renderDietResultMeta(current) : "") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
   if (dietResultNoteInput) {
     dietResultNoteInput.readOnly = readonlyResult;
     dietResultNoteInput.setAttribute("aria-readonly", String(readonlyResult));
   }
+  renderDietDoctorReview(doctorReview);
   if (dietConfirmCheckin) {
-    dietConfirmCheckin.textContent = readonlyResult ? "删除" : "打卡";
-    dietConfirmCheckin.classList.toggle("danger", readonlyResult);
+    dietConfirmCheckin.hidden = lockedResult;
+    dietConfirmCheckin.textContent = dietResultMode === "detail" ? "删除" : "打卡";
+    dietConfirmCheckin.classList.toggle("danger", dietResultMode === "detail");
   }
+}
+
+function renderDietDoctorReview(review) {
+  const card = document.querySelector("#dietDoctorReviewCard");
+  if (!card) return;
+  card.hidden = !review;
+  if (!review) {
+    card.innerHTML = "";
+    return;
+  }
+  const label = review.label || "健康建议";
+  card.innerHTML = `
+    <div class="diet-doctor-review-badge${label === "AI建议" ? " ai" : ""}">
+      <i aria-hidden="true"></i>
+      <span>${escapeAttr(label)}</span>
+    </div>
+    ${label === "AI建议" ? `<span class="diet-ai-auth-mark">AI生成，仅供参考</span>` : ""}
+    ${review.team ? `<strong>${escapeAttr(review.team)}：</strong>` : ""}
+    <p>${escapeAttr(review.content || "")}</p>
+    <time>${escapeAttr(review.time || "")}</time>
+  `;
 }
 
 function findDietFood(foodId) {
@@ -212,6 +249,8 @@ function currentEditingDietFood() {
 }
 
 function openDietGramSheet(foodId) {
+  const current = dietResults[dietResultIndex] || dietResults[0];
+  if (current?.doctorReview || dietResultReadonly) return;
   const food = findDietFood(foodId);
   if (!food) return;
   editingDietFoodId = foodId;
@@ -334,6 +373,14 @@ function deleteEditingDietFood() {
 function deleteCurrentDietMealResult() {
   if (dietResultMode !== "detail") return false;
   const current = dietResults[dietResultIndex] || dietResults[0];
+  if (dietResultReadonly) {
+    showToast("任务查看记录仅支持查看");
+    return true;
+  }
+  if (current?.doctorReview) {
+    showToast("医生已评价的记录仅支持查看");
+    return true;
+  }
   const meal = current?.meal;
   if (meal && dietDetailMealGroups) {
     dietDetailMealGroups = dietDetailMealGroups.filter((group) => group.meal !== meal);
@@ -345,8 +392,139 @@ function deleteCurrentDietMealResult() {
   return true;
 }
 
+function currentDietBindingTasks() {
+  const data = scheduleDataFor();
+  const tasks = [];
+  (data.followups || []).forEach((task, index) => {
+    const isDietTask = scheduleTaskCheckinType(task.type) === "diet"
+      || String(task.type || "").includes("饮食")
+      || String(task.title || "").includes("饮食");
+    if (!isDietTask) return;
+    tasks.push({
+      id: `followup-${index}`,
+      plan: task.plan || "健康管理方案",
+      title: task.title || task.type || "饮食打卡任务",
+      desc: task.range || task.status || "按任务要求完成饮食打卡",
+      source: task
+    });
+  });
+  (data.checkins || []).forEach((item, index) => {
+    if (item.type !== "diet") return;
+    tasks.push({
+      id: `checkin-${index}`,
+      plan: item.plan || "今日健康日程",
+      title: item.title || "饮食打卡",
+      desc: item.desc || "记录今日饮食，完成健康日程打卡",
+      source: item
+    });
+  });
+  return tasks;
+}
+
+function startDietTaskCheckin(taskId) {
+  activeDietTaskBindingId = taskId || "";
+  openDietCameraPage(true);
+  selectedDietTaskBindingId = activeDietTaskBindingId;
+  pendingDietTaskBinding = Boolean(activeDietTaskBindingId);
+}
+
+function openBoundDietTaskRecord(taskId) {
+  const task = currentDietBindingTasks().find((item) => item.id === taskId);
+  const record = task?.source?.boundRecord;
+  if (!record) {
+    openDietDetailPage();
+    return;
+  }
+  const groups = dietDetailFoodsForRender();
+  const index = groups.findIndex((group) => (
+    (!record.meal || group.meal === record.meal)
+    && (!record.time || String(group.time || "").includes(record.time))
+  ));
+  if (index >= 0) {
+    openDietMealResult(index, true);
+    return;
+  }
+  openDietDetailPage();
+}
+
+function openDietTaskBindSheet() {
+  const tasks = currentDietBindingTasks();
+  if (!tasks.length) return false;
+  selectedDietTaskBindingId = selectedDietTaskBindingId || tasks[0].id;
+  const planName = tasks[0]?.plan || "当前";
+  if (dietTaskBindSummary) {
+    dietTaskBindSummary.textContent = `当前（${planName}）方案存在 ${tasks.length} 条可关联任务，可选择绑定或仅保存为普通记录`;
+  }
+  if (dietTaskBindList) {
+    dietTaskBindList.innerHTML = [
+      ...tasks.map((task) => `
+        <label class="diet-task-bind-option">
+          <input type="radio" name="dietTaskBinding" value="${escapeAttr(task.id)}" ${selectedDietTaskBindingId === task.id ? "checked" : ""}>
+          <span aria-hidden="true"></span>
+          <b>${escapeAttr(task.title)}</b>
+          <em>${escapeAttr(task.plan || "打卡任务")}</em>
+        </label>
+      `),
+      `<label class="diet-task-bind-option muted">
+        <input type="radio" name="dietTaskBinding" value="none" ${selectedDietTaskBindingId === "none" ? "checked" : ""}>
+        <span aria-hidden="true"></span>
+        <b>暂不绑定</b>
+        <em>不绑定任务，直接完成打卡</em>
+      </label>`
+    ].join("");
+  }
+  pendingDietTaskBinding = true;
+  sheetMask.classList.add("active");
+  dietTaskBindSheet?.classList.add("active");
+  return true;
+}
+
+function closeDietTaskBindSheet() {
+  pendingDietTaskBinding = false;
+  activeDietTaskBindingId = "";
+  dietTaskBindSheet?.classList.remove("active");
+  if (!document.querySelector(".diet-upload-sheet.active, .diet-gram-sheet.active")) {
+    sheetMask.classList.remove("active");
+  }
+}
+
+function applyDietTaskBinding(nextDietItem) {
+  const bindingId = activeDietTaskBindingId || selectedDietTaskBindingId;
+  if (!bindingId || bindingId === "none") return;
+  const task = currentDietBindingTasks().find((item) => item.id === bindingId);
+  if (!task?.source) return;
+  task.source.boundRecord = {
+    type: "diet",
+    calories: nextDietItem.totalCalories,
+    time: nextDietItem.latestRecordTime,
+    value: nextDietItem.value,
+    meal: dietResults[0]?.meal || dietSelectedMeal || ""
+  };
+  task.source.status = "已完成";
+  task.source.action = "查看";
+}
+
+function confirmDietTaskBinding() {
+  const checked = dietTaskBindList?.querySelector("input[name='dietTaskBinding']:checked");
+  selectedDietTaskBindingId = checked?.value || "none";
+  activeDietTaskBindingId = "";
+  pendingDietTaskBinding = false;
+  dietTaskBindSheet?.classList.remove("active");
+  sheetMask.classList.remove("active");
+  submitDietCheckin();
+}
+
 function confirmDietCheckin() {
   if (deleteCurrentDietMealResult()) return;
+  if (activeDietTaskBindingId) {
+    selectedDietTaskBindingId = activeDietTaskBindingId;
+    pendingDietTaskBinding = true;
+  }
+  if (!pendingDietTaskBinding && openDietTaskBindSheet()) return;
+  submitDietCheckin();
+}
+
+function submitDietCheckin() {
   const totals = dietTotals();
   const totalFoods = dietResults.flatMap((result) => result.foods).length;
   const totalGrams = dietResults
@@ -368,6 +546,10 @@ function confirmDietCheckin() {
   };
   if (dietItem) Object.assign(dietItem, nextDietItem);
   else data.checkins.unshift(nextDietItem);
+  applyDietTaskBinding(nextDietItem);
+  activeDietTaskBindingId = "";
+  pendingDietTaskBinding = false;
+  selectedDietTaskBindingId = "";
   if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
   dietCheckinSummary = nextDietItem;
@@ -516,7 +698,16 @@ function normalizeSportRecord(record, index = 0) {
   next.intensityLabel = next.intensityLabel || sportIntensities[next.intensity] || "中强度";
   next.kcalRate = Number(next.kcalRate || 0) || sportRateForRecord(next);
   next.calories = Number(next.calories || Math.round(next.duration * sportRateForRecord(next)));
+  if (!next.review && next.type === "run") next.review = defaultSportReview();
   return next;
+}
+
+function defaultSportReview() {
+  return {
+    label: "健康建议",
+    content: "本次慢跑强度偏高，建议运动前后做好热身和拉伸；如果出现胸闷、头晕或明显不适，请降低强度并及时休息。",
+    time: "2021/01/10 17:20"
+  };
 }
 
 function sortSportRecordsNewest(records) {
@@ -578,7 +769,7 @@ function defaultSportDetailData() {
       { id: "sport-default-1", type: "fitness", timeText: "10:15", name: "力量训练", duration: 20, calories: 140, kcalRate: 7, intensity: "high", intensityLabel: "高强度" },
       { id: "sport-default-2", type: "cycle", timeText: "16:40", name: "骑行", duration: 25, calories: 150, kcalRate: 6, intensity: "medium", intensityLabel: "中强度" },
       { id: "sport-default-3", type: "fitness", timeText: "19:20", name: "瑜伽", duration: 15, calories: 45, kcalRate: 3, intensity: "low", intensityLabel: "低强度" },
-      { id: "sport-default-4", type: "run", timeText: "20:30", name: "慢跑", duration: 18, calories: 144, kcalRate: 8, intensity: "high", intensityLabel: "高强度" }
+      { id: "sport-default-4", type: "run", timeText: "20:30", name: "慢跑", duration: 18, calories: 144, kcalRate: 8, intensity: "high", intensityLabel: "高强度", review: defaultSportReview() }
     ]
   };
 }
@@ -624,6 +815,34 @@ function sportRecordSortValue(record) {
   return matched ? Number(matched[1]) * 60 + Number(matched[2]) : 0;
 }
 
+function renderSportRecordReview(record) {
+  if (!record?.review) return "";
+  const expanded = expandedSportReviewIds.has(record.id);
+  if (!expanded) {
+    return `
+      <button class="sport-record-review-toggle" type="button" data-sport-review-toggle="${escapeAttr(record.id)}">
+        <span>您有一条新评价</span>
+        <em>展开</em>
+      </button>
+    `;
+  }
+  return `
+    <section class="sport-record-review-panel">
+      <div><i aria-hidden="true"></i><strong>${escapeAttr(record.review.label || "健康建议")}</strong></div>
+      <p>${escapeAttr(record.review.content || "")}</p>
+      <time>${escapeAttr(record.review.time || "")}</time>
+      <button type="button" data-sport-review-toggle="${escapeAttr(record.id)}">收起</button>
+    </section>
+  `;
+}
+
+function toggleSportRecordReview(recordId) {
+  if (!recordId) return;
+  if (expandedSportReviewIds.has(recordId)) expandedSportReviewIds.delete(recordId);
+  else expandedSportReviewIds.add(recordId);
+  renderSportDetailPage();
+}
+
 function renderSportDetailPage() {
   const data = sportDetailDataForRender();
   if (sportDetailSummary) {
@@ -637,14 +856,17 @@ function renderSportDetailPage() {
   if (sportDetailRecords) {
     sportDetailRecords.innerHTML = data.records.length
       ? data.records.map((record) => `
-        <article class="sport-detail-record" data-sport-record-id="${escapeAttr(record.id)}" tabindex="0">
-          <i class="sport-icon ${escapeAttr(record.type || sportTypeKeyByName(record.name) || "walk")}" aria-hidden="true"></i>
-          <div>
-            <strong>${escapeAttr(record.name)}</strong>
-            <span>${Math.round(record.duration)}分钟 · ${escapeAttr(record.timeText)}</span>
-            <em>${escapeAttr(record.intensityLabel || sportIntensities[record.intensity] || "中强度")}</em>
+        <article class="sport-detail-record${record.review ? " reviewed" : ""}" data-sport-record-id="${escapeAttr(record.id)}" tabindex="0">
+          <div class="sport-detail-record-main">
+            <i class="sport-icon ${escapeAttr(record.type || sportTypeKeyByName(record.name) || "walk")}" aria-hidden="true"></i>
+            <div>
+              <strong>${escapeAttr(record.name)}</strong>
+              <span>${Math.round(record.duration)}分钟 · ${escapeAttr(record.timeText)}</span>
+              <em>${escapeAttr(record.intensityLabel || sportIntensities[record.intensity] || "中强度")}</em>
+            </div>
+            <p><b>${Math.round(record.calories)}</b> 千卡 <em aria-hidden="true"></em></p>
           </div>
-          <p><b>${Math.round(record.calories)}</b> 千卡 <em aria-hidden="true"></em></p>
+          ${renderSportRecordReview(record)}
         </article>
       `).join("")
       : `<div class="sport-detail-empty">今日暂无运动记录</div>`;
@@ -697,6 +919,10 @@ function openSportRecordEditor(recordId) {
   const { records } = ensureSportRecordStore();
   const record = records.find((item) => item.id === recordId);
   if (!record) return;
+  if (record.review) {
+    toggleSportRecordReview(record.id);
+    return;
+  }
   editingSportRecordId = record.id;
   editingSportRecordIntensity = record.intensity || "medium";
   if (sportRecordDurationInput) sportRecordDurationInput.value = String(Math.round(record.duration || 1));
@@ -714,6 +940,10 @@ function saveSportRecordEdit() {
   const { item, records } = ensureSportRecordStore();
   const record = records.find((entry) => entry.id === editingSportRecordId);
   if (!record) return;
+  if (record.review) {
+    showToast("有评价的记录仅支持查看");
+    return;
+  }
   record.duration = sportEditorDurationValue();
   record.intensity = editingSportRecordIntensity || "medium";
   record.intensityLabel = sportIntensities[record.intensity] || "中强度";
@@ -729,6 +959,11 @@ function saveSportRecordEdit() {
 
 function deleteSportRecordEdit() {
   const { item } = ensureSportRecordStore();
+  const record = item.records.find((entry) => entry.id === editingSportRecordId);
+  if (record?.review) {
+    showToast("有评价的记录不能删除");
+    return;
+  }
   item.records = item.records.filter((record) => record.id !== editingSportRecordId);
   syncSportCheckinItem(item);
   renderSchedule();
@@ -939,26 +1174,56 @@ function dietDetailMealSortValue(group) {
   return dietDetailSortTimeValue(group?.time || group?.foods?.[0]?.recordTime);
 }
 
+function dietDetailMealOrderValue(meal) {
+  const mealOrder = ["早餐", "午餐", "晚餐", "加餐"];
+  const index = mealOrder.indexOf(String(meal || ""));
+  return index === -1 ? mealOrder.length : index;
+}
+
 function sortedDietDetailMealEntries() {
   return dietDetailFoodsForRender()
     .map((group, groupIndex) => ({ group, groupIndex }))
-    .sort((a, b) => dietDetailMealSortValue(b.group) - dietDetailMealSortValue(a.group));
+    .sort((a, b) => {
+      const mealDiff = dietDetailMealOrderValue(a.group?.meal) - dietDetailMealOrderValue(b.group?.meal);
+      if (mealDiff !== 0) return mealDiff;
+      return dietDetailMealSortValue(a.group) - dietDetailMealSortValue(b.group);
+    });
 }
 
-function openDietMealResult(groupIndex) {
+function openDietMealResult(groupIndex, readonly = false) {
   const group = dietDetailFoodsForRender()[groupIndex];
   if (!group) return;
   dietReturnView = "dietDetail";
   dietResultMode = "detail";
+  dietResultReadonly = Boolean(readonly);
   dietResultIndex = 0;
   dietResults = [{
     meal: group.meal,
     time: String(group.time || "").replace(/\s*记录$/, ""),
-    foods: group.foods
+    foods: group.foods,
+    doctorReview: dietDoctorReviewForMeal(group.meal)
   }];
   if (dietResultNoteInput) dietResultNoteInput.value = "今天的分量比平时稍少。";
   renderDietResult();
   openSubPage("dietResultPage");
+}
+
+function dietDoctorReviewForMeal(meal) {
+  const mealName = String(meal || "");
+  if (mealName === "午餐") {
+    return {
+      label: "AI建议",
+      content: "午餐整体蛋白质和碳水搭配较均衡，建议继续保持蔬菜摄入；如果下午活动量不高，主食分量可以略微控制，避免总热量偏高。",
+      time: "2021/01/10 17:20"
+    };
+  }
+  if (mealName !== "早餐") return null;
+  return {
+    label: "健康建议",
+    team: "高血压随访团队-张医生",
+    content: "烹饪方式上，鸡胸肉如果是煎的，注意控制用油量，尽量选择清蒸、水煮等更健康的方式，也可以改善“柴”的口感。",
+    time: "2021/01/10 17:00"
+  };
 }
 
 function renderDietDetailPage() {

@@ -1,7 +1,7 @@
-@import url("styles/00-base-home.css?v=20260623-modular");
-@import url("styles/10-reports-services.css?v=20260623-sport-record-note");
-@import url("styles/20-schedule-tasks.css?v=20260623-modular");
-@import url("styles/30-metrics.css?v=20260623-lipid-extra-no-icon");
-@import url("styles/40-medicine.css?v=20260623-medicine-thumb-small");
-@import url("styles/50-diet-sport.css?v=20260623-modular");
-@import url("styles/60-checkin-forms.css?v=20260623-lipid-edit-delete");
+@import url("styles/00-base-home.css?v=20260625-medicine-history-dropdown");
+@import url("styles/10-reports-services.css?v=20260625-sport-review-arrow");
+@import url("styles/20-schedule-tasks.css?v=20260625-task-complete-state");
+@import url("styles/30-metrics.css?v=20260625-all-checkin-complete");
+@import url("styles/40-medicine.css?v=20260625-medicine-overview");
+@import url("styles/50-diet-sport.css?v=20260625-diet-task-bind-v2");
+@import url("styles/60-checkin-forms.css?v=20260625-medicine-history-dropdown");

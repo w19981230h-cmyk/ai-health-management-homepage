@@ -185,6 +185,161 @@
   padding: 0 16px 24px;
 }
 
+.metric-records-page.checkin-records-mode {
+  background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+}
+
+.all-checkin-filters {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.all-checkin-filters[hidden] {
+  display: none;
+}
+
+.all-checkin-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.all-checkin-filters button {
+  flex: 0 0 auto;
+  min-width: 54px;
+  height: 32px;
+  padding: 0 13px;
+  border: 1px solid rgba(54, 113, 255, 0.12);
+  border-radius: 16px;
+  color: rgba(3, 16, 46, 0.64);
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.all-checkin-filters button.active {
+  border-color: #3671ff;
+  color: #fff;
+  background: #3671ff;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.2);
+}
+
+.all-checkin-record-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 14px;
+  align-items: center;
+  gap: 10px;
+  min-height: 84px;
+  padding: 14px 12px;
+  border: 1px solid rgba(54, 113, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 22px rgba(140, 157, 199, 0.12);
+}
+
+.all-checkin-record-card .checkin-symbol {
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  font-size: 14px;
+}
+
+.all-checkin-record-card .checkin-symbol.green {
+  color: #0aa879;
+  background: rgba(10, 168, 121, 0.12);
+}
+
+.all-checkin-record-card .checkin-symbol.purple {
+  color: #7b61d9;
+  background: rgba(123, 97, 217, 0.12);
+}
+
+.all-checkin-record-card .checkin-symbol.pink {
+  color: #ef6b9b;
+  background: rgba(239, 107, 155, 0.12);
+}
+
+.all-checkin-record-card .checkin-symbol.orange {
+  color: #f49529;
+  background: rgba(244, 149, 41, 0.12);
+}
+
+.all-checkin-record-card .checkin-symbol.blue {
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.12);
+}
+
+.all-checkin-record-card span,
+.all-checkin-record-card strong {
+  display: block;
+}
+
+.all-checkin-record-card span {
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.all-checkin-record-card strong {
+  margin-top: 7px;
+  color: rgba(3, 16, 46, 0.68);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.all-checkin-record-card time {
+  align-self: start;
+  padding-top: 2px;
+  color: rgba(3, 16, 46, 0.45);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.all-checkin-record-card b {
+  position: relative;
+  width: 8px;
+  height: 14px;
+}
+
+.all-checkin-record-card b::before {
+  content: "";
+  position: absolute;
+  right: 1px;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  border-right: 1.8px solid rgba(3, 16, 46, 0.42);
+  border-bottom: 1.8px solid rgba(3, 16, 46, 0.42);
+  transform: rotate(-45deg);
+}
+
+.all-checkin-empty {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 190px;
+  border: 1px dashed rgba(54, 113, 255, 0.24);
+  border-radius: 16px;
+  color: rgba(3, 16, 46, 0.45);
+  background: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.all-checkin-empty strong {
+  color: rgba(3, 16, 46, 0.78);
+  font-size: 15px;
+}
+
+.all-checkin-empty span {
+  max-width: 220px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .metric-record-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto 34px;
@@ -1215,16 +1370,16 @@
 
 .medicine-overview-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
 .medicine-overview-grid article {
   display: grid;
   justify-items: center;
-  gap: 10px;
-  min-height: 96px;
-  padding: 13px 8px 12px;
+  gap: 8px;
+  min-height: 86px;
+  padding: 12px 6px 10px;
   border: 1px solid #eef2fb;
   border-radius: 12px;
   background: #fff;
@@ -1234,14 +1389,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
 }
 
 .medicine-overview-icon {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   flex: none;
   border-radius: 50%;
 }
@@ -1252,7 +1407,7 @@
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 900;
 }
@@ -1283,7 +1438,7 @@
 
 .medicine-overview-grid span {
   color: #03102ea8;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
 }
@@ -1293,7 +1448,7 @@
   align-items: baseline;
   gap: 3px;
   color: #03102ee5;
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1;
   font-weight: 950;
 }
@@ -2334,4 +2489,26 @@
 
 .medicine-detail-page .medicine-detail-actions button {
   height: 48px;
+}
+
+/* Unified drill-down width for all check-in record pages. */
+.metric-records-page.checkin-records-mode .all-checkin-filters {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.metric-records-page.checkin-records-mode .metric-records-groups {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.medicine-records-page .medicine-records-list {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.medicine-detail-page .medicine-detail-summary,
+.medicine-detail-page .medicine-detail-card {
+  margin-left: 0;
+  margin-right: 0;
 }

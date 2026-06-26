@@ -34,6 +34,21 @@ const metricRecordConfigs = {
   bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80" }]
 };
 
+function metricRecordTimeLabelFor(metricId) {
+  return {
+    sugar: "血糖测量时间",
+    bp: "血压测量时间",
+    weight: "称重时间",
+    waist: "腰围测量时间",
+    height: "身高测量时间",
+    heart: "心率测量时间",
+    lipid: "血脂记录时间",
+    uric: "检查时间",
+    fat: "体脂测量时间",
+    bmi: "BMI测量时间"
+  }[metricId] || "打卡时间";
+}
+
 function metricRecordsFor(metricId) {
   const patientRecords = metricRecordsByPatient[currentPatient.id] || {};
   return patientRecords[metricId] || [];
@@ -118,7 +133,8 @@ function populateMetricRecordTimePicker() {
 
 function openMetricRecordTimePicker() {
   const title = metricRecordTimePicker?.querySelector(".weight-picker-head strong");
-  if (title) title.textContent = "选择记录时间";
+  const metric = getSelectedMetric();
+  if (title) title.textContent = `选择${metricRecordTimeLabelFor(metric?.id)}`;
   populateMetricRecordTimePicker();
   metricRecordTimePicker?.classList.add("active");
 }
@@ -172,7 +188,248 @@ function metricRecordDateParts(value) {
   };
 }
 
+const allCheckinFilterOptions = [
+  { type: "all", label: "全部" },
+  { type: "diet", label: "饮食" },
+  { type: "sport", label: "运动" },
+  { type: "medicine", label: "用药/补充" },
+  { type: "weight", label: "体重" },
+  { type: "pressure", label: "血压" },
+  { type: "sugar", label: "血糖" },
+  { type: "lipid", label: "血脂" },
+  { type: "uric", label: "尿酸" },
+  { type: "waist", label: "腰围" },
+  { type: "heart", label: "心率" },
+  { type: "period", label: "经期" }
+];
+
+const allCheckinTypeMeta = {
+  diet: { label: "饮食记录", icon: "食", tone: "orange" },
+  sport: { label: "运动", icon: "动", tone: "green" },
+  medicine: { label: "用药/补充", icon: "药", tone: "purple" },
+  weight: { label: "体重", icon: "重", tone: "blue" },
+  pressure: { label: "血压", icon: "压", tone: "pink" },
+  sugar: { label: "血糖", icon: "糖", tone: "orange" },
+  lipid: { label: "血脂", icon: "脂", tone: "blue" },
+  uric: { label: "尿酸", icon: "尿", tone: "purple" },
+  waist: { label: "腰围", icon: "围", tone: "orange" },
+  heart: { label: "心率", icon: "心", tone: "pink" },
+  period: { label: "经期管理", icon: "经", tone: "pink" },
+  water: { label: "饮水", icon: "水", tone: "blue" },
+  sleep: { label: "睡眠", icon: "眠", tone: "purple" }
+};
+
+const allCheckinDemoRecords = {
+  diet: { title: "饮食记录", value: "摄入 430 kcal", time: "08:10", sort: 810 },
+  sport: { title: "运动", value: "快走 · 45分钟 · 180 kcal", time: "19:20", sort: 1920 },
+  medicine: { title: "用药/补充", value: "药品 1次 · 营养素 1次", time: "22:00", sort: 2200 },
+  weight: { title: "体重", value: "68.5 kg", time: "10:18", sort: 1018 },
+  pressure: { title: "血压", value: "血压 128/82 mmHg", time: "08:30", sort: 830 },
+  sugar: { title: "血糖", value: "血糖 5.0 mmol/L · 午餐后2h", time: "13:42", sort: 1342 },
+  lipid: { title: "血脂", value: "低密度脂蛋白LDL-C：3.1 mmol/L", time: "18:07", sort: 1807 },
+  uric: { title: "尿酸", value: "尿酸 362 μmol/L", time: "08:30", sort: 831 },
+  waist: { title: "腰围", value: "腰围 82 cm", time: "10:20", sort: 1020 },
+  heart: { title: "心率", value: "心率 72 bpm", time: "14:40", sort: 1440 },
+  period: { title: "经期管理", value: "经期第 2 天", time: "09:10", sort: 910 }
+};
+
+function setMetricRecordsPageMode(mode) {
+  const page = metricRecordsGroups?.closest(".metric-records-page");
+  const title = page?.querySelector(".sub-nav h1");
+  const isCheckinMode = mode === "checkin";
+  page?.classList.toggle("checkin-records-mode", isCheckinMode);
+  if (allCheckinFilters) allCheckinFilters.hidden = !isCheckinMode;
+  if (title) title.textContent = isCheckinMode ? "全部打卡记录" : "全部记录";
+}
+
+function allCheckinTimeValue(value) {
+  const date = value ? new Date(value) : null;
+  if (date && !Number.isNaN(date.getTime())) return date.getTime();
+  const matched = String(value || "").match(/(\d{1,2}):(\d{2})/);
+  return matched ? Number(matched[1]) * 60 + Number(matched[2]) : 0;
+}
+
+function allCheckinRecordTime(item, record) {
+  return record?.time || record?.recordTime || item?.latestRecordTime || item?.latestTime || item?.recordTime || item?.records?.[0]?.time || item?.value || "";
+}
+
+function allCheckinDisplayTime(item, record) {
+  const raw = allCheckinRecordTime(item, record);
+  return checkinTimeText(raw) || formatCheckinTimeDisplay(raw, "--:--");
+}
+
+function allCheckinValueText(item, record) {
+  const type = item?.type || "";
+  if (type === "sport" && record) {
+    const duration = Number(record.duration || 0);
+    const calories = Number(record.calories || 0);
+    return `${record.name || "运动"} · ${duration ? `${Math.round(duration)}分钟` : "未填时长"} · ${Math.round(calories)} kcal`;
+  }
+  if (type === "medicine" && record?.items) {
+    const medicines = record.items.filter((entry) => entry.type !== "nutrition").length;
+    const nutrition = record.items.length - medicines;
+    return `药品 ${medicines}次 · 营养素 ${nutrition}次`;
+  }
+  if (type === "diet") {
+    const display = checkinDisplay(item);
+    return display.empty ? "暂无记录" : `摄入 ${display.main}`;
+  }
+  if (type === "water") {
+    const display = checkinDisplay(item);
+    return display.empty ? "暂无记录" : `饮水 ${display.main}`;
+  }
+  if (type === "medicine") {
+    const display = checkinDisplay(item);
+    return display.empty ? "暂无记录" : display.main;
+  }
+  if (type === "pressure") {
+    const value = metricCheckinValue(item) || checkinValueWithoutTime(item.value);
+    return value ? `血压 ${value}` : "暂无记录";
+  }
+  if (type === "sugar") {
+    const value = metricCheckinValue(item) || checkinValueWithoutTime(item.value);
+    return value ? `血糖 ${value}` : "暂无记录";
+  }
+  if (type === "lipid") {
+    return metricCheckinValue(item) || checkinValueWithoutTime(item.value) || "暂无记录";
+  }
+  if (type === "uric") {
+    const value = metricCheckinValue(item) || checkinValueWithoutTime(item.value);
+    return value ? `尿酸 ${value}` : "暂无记录";
+  }
+  if (["weight", "waist", "heart", "period"].includes(type)) {
+    return metricCheckinValue(item) || checkinDisplay(item).main || "暂无记录";
+  }
+  return checkinDisplay(item).main || "暂无记录";
+}
+
+function allCheckinRecordCards() {
+  const data = scheduleDataFor();
+  const cards = [];
+  (data.checkins || []).forEach((item) => {
+    if (!hasCheckinRecord(item)) return;
+    if (item.type === "sport" && Array.isArray(item.records) && item.records.length) {
+      item.records.forEach((record, index) => {
+        cards.push({
+          id: record.id || `${item.type}-${index}`,
+          type: item.type,
+          title: record.name || allCheckinTypeMeta[item.type]?.label || item.title,
+          value: allCheckinValueText(item, record),
+          time: allCheckinDisplayTime(item, record),
+          sort: allCheckinTimeValue(allCheckinRecordTime(item, record))
+        });
+      });
+      return;
+    }
+    if (item.type === "medicine" && typeof sortedMedicineRecords === "function" && typeof medicineRecordDateKey === "function") {
+      const medicineRecords = sortedMedicineRecords().filter((record) => medicineRecordDateKey(record) === scheduleSelectedDate);
+      if (medicineRecords.length) {
+        medicineRecords.forEach((record) => {
+          cards.push({
+            id: record.id,
+            type: item.type,
+            title: allCheckinTypeMeta[item.type]?.label || item.title,
+            value: allCheckinValueText(item, record),
+            time: allCheckinDisplayTime(item, record),
+            sort: allCheckinTimeValue(record.time)
+          });
+        });
+        return;
+      }
+    }
+    cards.push({
+      id: item.type,
+      type: item.type,
+      title: allCheckinTypeMeta[item.type]?.label || item.title || "打卡记录",
+      value: allCheckinValueText(item),
+      time: allCheckinDisplayTime(item),
+      sort: allCheckinTimeValue(allCheckinRecordTime(item))
+    });
+  });
+  const existingTypes = new Set(cards.map((card) => card.type));
+  allCheckinFilterOptions
+    .filter((option) => option.type !== "all" && !existingTypes.has(option.type))
+    .forEach((option) => {
+      const demo = allCheckinDemoRecords[option.type];
+      if (!demo) return;
+      cards.push({
+        id: `demo-${option.type}`,
+        type: option.type,
+        title: demo.title,
+        value: demo.value,
+        time: demo.time,
+        sort: demo.sort,
+        demo: true
+      });
+    });
+  return cards.sort((a, b) => b.sort - a.sort);
+}
+
+function renderAllCheckinFilters() {
+  if (!allCheckinFilters) return;
+  allCheckinFilters.innerHTML = allCheckinFilterOptions.map((option) => `
+    <button type="button" role="tab" aria-selected="${option.type === allCheckinFilter}" class="${option.type === allCheckinFilter ? "active" : ""}" data-all-checkin-filter="${option.type}">
+      ${escapeAttr(option.label)}
+    </button>
+  `).join("");
+}
+
+function renderAllCheckinRecords(filter = "all") {
+  allCheckinFilter = filter || "all";
+  setMetricRecordsPageMode("checkin");
+  renderAllCheckinFilters();
+  const records = allCheckinRecordCards().filter((record) => allCheckinFilter === "all" || record.type === allCheckinFilter);
+  metricRecordsGroups.innerHTML = records.length ? records.map((record) => {
+    const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };
+    return `
+      <article class="all-checkin-record-card" data-checkin-record-type="${escapeAttr(record.type)}" data-checkin-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="查看${escapeAttr(record.title)}详情">
+        <i class="checkin-symbol ${escapeAttr(meta.tone || "blue")}" aria-hidden="true">${escapeAttr(meta.icon)}</i>
+        <div>
+          <span>${escapeAttr(record.title || meta.label)}</span>
+          <strong>${escapeAttr(record.value)}</strong>
+        </div>
+        <time>${escapeAttr(record.time)}</time>
+        <b aria-hidden="true"></b>
+      </article>
+    `;
+  }).join("") : `
+    <div class="all-checkin-empty">
+      <strong>暂无打卡记录</strong>
+      <span>切换类型或点击卡片右上角新增打卡。</span>
+    </div>
+  `;
+}
+
+function openAllCheckinRecordDetail(type, recordId) {
+  if (type === "diet") {
+    openDietDetailPage();
+    return;
+  }
+  if (type === "sport") {
+    openSportDetailPage();
+    if (recordId) openSportRecordEditor(recordId);
+    return;
+  }
+  if (type === "medicine") {
+    if (recordId && typeof openMedicineDetailPage === "function") openMedicineDetailPage(recordId);
+    else openMedicineRecordsPage();
+    return;
+  }
+  if (type === "period") {
+    openSubPage("periodDetailPage");
+    renderPeriodDetail();
+    return;
+  }
+  const metricMap = { pressure: "bp", sugar: "sugar", weight: "weight", waist: "waist", heart: "heart", lipid: "lipid", uric: "uric" };
+  if (metricMap[type]) {
+    openMetricDetail(metricMap[type]);
+    return;
+  }
+  showToast("已进入打卡记录");
+}
+
 function renderAllMetricRecords() {
+  setMetricRecordsPageMode("metric");
   applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   const metric = getSelectedMetric();
   metricRecordsGroups.innerHTML = allMetricRecords(metric).map((record) => {
@@ -393,14 +650,14 @@ function openMetricRecordSheet(recordId = "") {
     metricRecordFields.after(metricRecordTimeField);
   }
   metricRecordTime.value = editingRecord?.time || localDateTimeInputValue();
-  if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = metric.id === "heart" ? "测量时间" : metric.id === "lipid" || isUric ? "检查时间" : "记录时间";
+  if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = metricRecordTimeLabelFor(metric.id);
   updateMetricRecordTimeText();
   metricRecordNoteField.hidden = !["heart", "uric", "lipid"].includes(metric.id);
   metricRecordNoteField.querySelector("span").textContent = metric.id === "lipid" ? "备注（全局）" : "备注";
   metricRecordNote.placeholder = metric.id === "heart" ? "记录运动后、静息、心慌、服药后等情况" : isUric ? "可记录饮酒、饮食、痛风发作、用药变化等" : "请输入备注";
   if (metric.id === "lipid") {
     const globalLevel = metricRecordFields.querySelector(".lipid-level-global");
-    if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = "记录时间";
+    if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = "血脂记录时间";
     metricRecordNoteField.querySelector("span").textContent = "备注（全局）";
     metricRecordNote.placeholder = "请输入备注";
     globalLevel?.append(metricRecordTimeField);
@@ -500,7 +757,7 @@ function saveMetricRecord() {
     }
   }
   if (!metricRecordTime.value) {
-    metricRecordError.textContent = "请选择记录时间";
+    metricRecordError.textContent = `请选择${metricRecordTimeLabelFor(metric.id)}`;
     return;
   }
   if (metric.id === "sugar" && !values.period) values.period = "空腹";
@@ -786,7 +1043,7 @@ function openWeightRecordDetail(recordKey) {
       <div><input id="weightRecordEditFat" type="number" inputmode="decimal" min="1" max="70" step="0.1" value="${escapeAttr(fat)}" placeholder="选填"><em>%</em></div>
     </label>
     <label>
-      <span>记录时间</span>
+      <span>称重时间</span>
       <input id="weightRecordEditTime" type="datetime-local" value="${escapeAttr(weightRecordInputTime(record.time))}">
     </label>
     <label class="weight-record-note-field">
@@ -840,7 +1097,7 @@ function saveSelectedWeightRecord() {
     return;
   }
   if (!time) {
-    if (error) error.textContent = "请选择记录时间";
+    if (error) error.textContent = "请选择称重时间";
     timeInput?.focus();
     return;
   }
@@ -1012,7 +1269,7 @@ function openHeartRecordDetail(recordId) {
       <div><input id="heartRecordEditValue" type="number" inputmode="numeric" min="20" max="250" step="1" value="${escapeAttr(record.display)}"><em>bpm</em></div>
     </label>
     <label>
-      <span>记录时间</span>
+      <span>心率测量时间</span>
       <input id="heartRecordEditTime" type="time" value="${escapeAttr(metricRecordDateParts(record.time).time)}">
     </label>
     <label class="weight-record-note-field">
@@ -1040,7 +1297,7 @@ function saveSelectedHeartRecord() {
     return;
   }
   if (!time) {
-    if (error) error.textContent = "请选择记录时间";
+    if (error) error.textContent = "请选择心率测量时间";
     timeInput?.focus();
     return;
   }
@@ -1465,7 +1722,7 @@ function renderWaistListDetail(metric) {
     <section class="waist-current-card">
       <p>当前腰围</p>
       <strong>${escapeAttr(latest.display)} <em>cm</em></strong>
-      <span>记录时间：${escapeAttr(waistFullTimeText(latest.time))}</span>
+      <span>腰围测量时间：${escapeAttr(waistFullTimeText(latest.time))}</span>
     </section>
     <section class="waist-record-list">
       <h2>腰围记录</h2>
@@ -1497,7 +1754,7 @@ function renderWaistRecordDetail(metric) {
         <strong>${escapeAttr(record.display)} <em>cm</em></strong>
       </div>
       <div>
-        <p>记录时间</p>
+        <p>腰围测量时间</p>
         <span>${escapeAttr(waistFullTimeText(record.time))}</span>
       </div>
       <div>
@@ -1708,15 +1965,7 @@ function renderLipidMetricDetail(metric) {
   if (!panel) return;
   metricDetailTitle.textContent = "血脂详情";
   panel.innerHTML = `
-    <section class="lipid-overview-card">
-      <div class="lipid-overview-grid">
-        <article><i class="count" aria-hidden="true"></i><span>记录次数</span><strong>${records.length}<em>次</em></strong></article>
-      </div>
-    </section>
     <section class="lipid-today-section">
-      <header>
-        <h2>血脂记录</h2>
-      </header>
       <div class="lipid-today-list">${records.map(lipidRecordCard).join("")}</div>
     </section>
     <button class="lipid-detail-entry" type="button" id="lipidDetailEntry">＋ 记血脂</button>
@@ -1882,7 +2131,7 @@ function renderUricRecordDetail(metric) {
         <strong>${formatUricValue(record.value)} <em>μmol/L</em></strong>
       </div>
       <div>
-        <p>记录时间</p>
+        <p>检查时间</p>
         <span>${uricTimeText(record.time)}</span>
       </div>
       <div>
@@ -1913,7 +2162,7 @@ function openUricRecordDetail(recordId) {
       <div><input id="uricRecordEditValue" type="number" inputmode="numeric" min="1" max="1500" step="1" value="${escapeAttr(String(formatUricValue(record.value)))}"><em>μmol/L</em></div>
     </label>
     <label>
-      <span>记录时间 <b class="metric-required">※</b></span>
+      <span>检查时间 <b class="metric-required">※</b></span>
       <input id="uricRecordEditTime" type="datetime-local" value="${escapeAttr(weightRecordInputTime(record.time))}">
     </label>
     <label class="weight-record-note-field">
@@ -1941,7 +2190,7 @@ function saveSelectedUricRecord() {
     return;
   }
   if (!time) {
-    if (error) error.textContent = "请选择记录时间";
+    if (error) error.textContent = "请选择检查时间";
     timeInput?.focus();
     return;
   }

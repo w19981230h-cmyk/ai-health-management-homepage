@@ -465,6 +465,7 @@ function closeOverlays() {
   scheduleCheckinSheet?.classList.remove("active");
   dietUploadSheet?.classList.remove("active");
   dietUploadActionSheet?.classList.remove("active");
+  dietTaskBindSheet?.classList.remove("active");
   dietGramSheet?.classList.remove("active");
   medicineCheckinSheet?.classList.remove("active");
   medicineItemDetailSheet?.classList.remove("active");
@@ -486,6 +487,8 @@ function closeOverlays() {
   sugarSuccessDialog?.classList.remove("active");
   unifiedCheckinSuccessDialog?.classList.remove("active");
   checkinSuccessDialog?.classList.remove("active");
+  pendingDietTaskBinding = false;
+  selectedDietTaskBindingId = "";
 }
 
 function setProfileTab(tabName) {
@@ -703,9 +706,26 @@ metricAllRecords?.addEventListener("click", () => {
   renderAllMetricRecords();
   openSubPage("metricRecordsPage");
 });
+allCheckinFilters?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-all-checkin-filter]");
+  if (!button) return;
+  renderAllCheckinRecords(button.dataset.allCheckinFilter || "all");
+});
 metricRecordsGroups?.addEventListener("click", (event) => {
   const deleteButton = event.target.closest("[data-delete-metric-record]");
-  if (deleteButton) openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
+  if (deleteButton) {
+    openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
+    return;
+  }
+  const checkinCard = event.target.closest("[data-checkin-record-type]");
+  if (checkinCard) openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
+});
+metricRecordsGroups?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const checkinCard = event.target.closest("[data-checkin-record-type]");
+  if (!checkinCard) return;
+  event.preventDefault();
+  openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
 });
 weightDetailRecords?.addEventListener("click", (event) => {
   const card = event.target.closest("[data-weight-record-key]");
@@ -798,7 +818,12 @@ dietMealTime?.addEventListener("change", () => {
   updateDietMealTimeText();
   renderDietMealOptions();
 });
-dietCancelUpload?.addEventListener("click", closeOverlays);
+dietCancelUpload?.addEventListener("click", () => {
+  activeDietTaskBindingId = "";
+  selectedDietTaskBindingId = "";
+  pendingDietTaskBinding = false;
+  closeOverlays();
+});
 dietStartRecognize?.addEventListener("click", startDietRecognition);
 dietRetryRecognize?.addEventListener("click", () => {
   dietRecognitionIndex = 0;
@@ -815,6 +840,8 @@ dietResultTabs?.addEventListener("click", (event) => {
   renderDietResult();
 });
 dietFoodList?.addEventListener("click", (event) => {
+  const current = dietResults[dietResultIndex] || dietResults[0];
+  if (current?.doctorReview || dietResultReadonly) return;
   const editFood = event.target.closest("[data-edit-food]");
   if (editFood) {
     openDietGramSheet(editFood.dataset.editFood);
@@ -825,6 +852,8 @@ dietFoodList?.addEventListener("click", (event) => {
 });
 dietFoodList?.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
+  const current = dietResults[dietResultIndex] || dietResults[0];
+  if (current?.doctorReview || dietResultReadonly) return;
   const foodCard = event.target.closest("[data-food-id]");
   if (!foodCard) return;
   event.preventDefault();
@@ -858,6 +887,13 @@ dietGramConfirm?.addEventListener("click", confirmDietGramEdit);
 dietFoodSheetDelete?.addEventListener("click", deleteEditingDietFood);
 dietResultTime?.addEventListener("change", renderDietResult);
 dietConfirmCheckin?.addEventListener("click", confirmDietCheckin);
+dietTaskBindCancel?.addEventListener("click", closeDietTaskBindSheet);
+dietTaskBindClose?.addEventListener("click", closeDietTaskBindSheet);
+dietTaskBindConfirm?.addEventListener("click", confirmDietTaskBinding);
+dietTaskBindList?.addEventListener("change", (event) => {
+  const input = event.target.closest("input[name='dietTaskBinding']");
+  if (input) selectedDietTaskBindingId = input.value;
+});
 dietDetailCheckin?.addEventListener("click", () => openDietCameraPage(true));
 dietDetailRecordFood?.addEventListener("click", () => openDietCameraPage(true));
 sportDetailCheckin?.addEventListener("click", openSportCheckinSheet);
@@ -922,6 +958,7 @@ medicineAdd?.addEventListener("click", () => {
   saveMedicineNamesFromDom();
   addMedicineItem();
 });
+medicineReuseLast?.addEventListener("click", reuseLastMedicineRecord);
 medicineList?.addEventListener("input", (event) => {
   const input = event.target.closest("[data-medicine-name]");
   if (!input) return;
@@ -933,6 +970,17 @@ medicineList?.addEventListener("click", (event) => {
   const deleteButton = event.target.closest("[data-delete-medicine]");
   const addImage = event.target.closest("[data-add-medicine-image]");
   const removeImage = event.target.closest("[data-remove-medicine-image]");
+  const historyName = event.target.closest("[data-medicine-history-name]");
+  if (historyName) {
+    const item = medicineItems.find((medicine) => medicine.id === historyName.dataset.medicineHistoryName);
+    const value = historyName.dataset.historyValue || "";
+    if (!item || !value) return;
+    item.name = value;
+    const input = medicineList.querySelector(`[data-medicine-name="${historyName.dataset.medicineHistoryName}"]`);
+    if (input) input.value = value;
+    renderMedicineItems();
+    return;
+  }
   if (typeButton) {
     saveMedicineNamesFromDom();
     const item = medicineItems.find((medicine) => medicine.id === typeButton.dataset.medicineItemType);

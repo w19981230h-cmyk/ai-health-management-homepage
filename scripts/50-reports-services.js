@@ -708,8 +708,19 @@ allPlansButton?.addEventListener("click", () => showScheduleToast("已进入全�
 scheduleContent?.addEventListener("click", (event) => {
   const target = event.target.closest("[data-schedule-action], [data-schedule-records], [data-schedule-plans]");
   if (!target) return;
+  if (target.dataset.scheduleRecords !== undefined) {
+    renderAllCheckinRecords("all");
+    openSubPage("metricRecordsPage");
+    return;
+  }
   if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "diet") {
-    openDietCameraPage(true);
+    if (target.dataset.taskId) startDietTaskCheckin(target.dataset.taskId);
+    else {
+      activeDietTaskBindingId = "";
+      selectedDietTaskBindingId = "";
+      pendingDietTaskBinding = false;
+      openDietCameraPage(true);
+    }
     return;
   }
   if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "sport") {
@@ -744,6 +755,10 @@ scheduleContent?.addEventListener("click", (event) => {
     openSugarCheckinSheet();
     return;
   }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "period") {
+    openCycleSheet(calculatePeriodSummary().inPeriod ? "end" : "start");
+    return;
+  }
   if (target.dataset.scheduleAction === "checkin" && openMetricCheckinByType(target.dataset.type)) {
     return;
   }
@@ -753,7 +768,8 @@ scheduleContent?.addEventListener("click", (event) => {
     return;
   }
   if (target.dataset.scheduleAction === "records" && target.dataset.type === "diet") {
-    openDietDetailPage();
+    if (target.dataset.taskId) openBoundDietTaskRecord(target.dataset.taskId);
+    else openDietDetailPage();
     return;
   }
   if (target.dataset.scheduleAction === "records" && target.dataset.type === "medicine") {
@@ -778,4 +794,3 @@ scheduleContent?.addEventListener("click", (event) => {
   }[action] || "打开任务";
   showScheduleToast(text);
 });
-

@@ -2450,6 +2450,195 @@
   font-size: 12px;
 }
 
+.diet-task-bind-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 35;
+  display: none;
+  padding: 8px 16px max(18px, env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: #fff;
+  box-shadow: 0 -14px 34px rgba(22, 42, 93, 0.16);
+}
+
+.diet-task-bind-sheet.active {
+  display: block;
+}
+
+.diet-task-bind-sheet header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  min-height: 48px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.diet-task-bind-sheet header::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 48px;
+  height: 4px;
+  border-radius: 999px;
+  background: #dbe4f1;
+  transform: translateX(-50%);
+}
+
+.diet-task-bind-sheet h3 {
+  grid-column: 2;
+  margin: 0;
+  color: #03102e;
+  font-size: 17px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.diet-task-bind-close {
+  position: relative;
+  grid-column: 3;
+  justify-self: end;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f6fb;
+}
+
+.diet-task-bind-close::before,
+.diet-task-bind-close::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: #7b879b;
+}
+
+.diet-task-bind-close::before {
+  transform: rotate(45deg);
+}
+
+.diet-task-bind-close::after {
+  transform: rotate(-45deg);
+}
+
+.diet-task-bind-sheet > p {
+  margin: 14px 0 12px;
+  color: rgba(3, 16, 46, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.diet-task-bind-list {
+  display: grid;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+}
+
+.diet-task-bind-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 4px;
+  align-items: start;
+  padding: 13px 14px;
+  border: 1px solid #dce8ff;
+  border-radius: 14px;
+  background: #f8fbff;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.diet-task-bind-option:has(input:checked) {
+  border-color: #3671ff;
+  background: #f5f8ff;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.1);
+}
+
+.diet-task-bind-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.diet-task-bind-option span {
+  position: relative;
+  grid-row: 1 / span 2;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1.5px solid #b8cdfd;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.diet-task-bind-option input:checked + span {
+  border-color: #3671ff;
+  background: #3671ff;
+  box-shadow: inset 0 0 0 5px #fff;
+}
+
+.diet-task-bind-option b {
+  min-width: 0;
+  color: #03102e;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.diet-task-bind-option em {
+  min-width: 0;
+  color: rgba(3, 16, 46, 0.48);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.diet-task-bind-option.muted {
+  border-color: #edf1f7;
+  background: #fbfcff;
+}
+
+.diet-task-bind-option.muted:has(input:checked) {
+  border-color: #b8cdfd;
+  background: #f8fbff;
+  box-shadow: none;
+}
+
+.diet-task-bind-sheet footer {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.diet-task-bind-sheet footer button {
+  height: 46px;
+  border-radius: 13px;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.diet-task-bind-cancel {
+  color: #3671ff;
+  background: #eef4ff;
+}
+
+.diet-task-bind-confirm {
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #5f8cff);
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.24);
+}
+
 .upload-actions {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;

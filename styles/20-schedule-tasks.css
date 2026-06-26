@@ -41,8 +41,20 @@
 .follow-card,
 .assessment-card {
   display: grid;
-  gap: 10px;
-  padding: 14px;
+  gap: 9px;
+  padding: 13px 14px;
+}
+
+.follow-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+.follow-copy {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
 }
 
 .follow-head {
@@ -53,11 +65,18 @@
 }
 
 .follow-head strong,
+.follow-copy > strong,
 .assessment-card strong,
 .checkin-copy strong {
   color: #263654;
   font-size: 15px;
   font-weight: 900;
+}
+
+.follow-copy > strong {
+  display: flex;
+  align-items: center;
+  min-width: 0;
 }
 
 .task-plan-tag {
@@ -90,17 +109,69 @@
 }
 
 .task-primary {
-  height: 40px;
-  border-radius: 12px;
+  justify-self: end;
+  align-self: center;
+  min-width: 76px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
   color: #fff;
   background: linear-gradient(135deg, #3671ff, #6c91ff);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
 }
 
 .task-primary.done {
   color: #3671ff;
   background: rgba(54,113,255,0.1);
+}
+
+.follow-card.checkin-task .task-tag-small {
+  color: #16a36b;
+  background: rgba(22, 183, 119, 0.12);
+}
+
+.follow-card.checkin-task .task-plan-tag {
+  color: #16a36b;
+}
+
+.follow-card.checkin-task .task-primary {
+  background: linear-gradient(135deg, #20c886, #3671ff);
+}
+
+.follow-card.checkin-task.completed .task-tag-small {
+  color: #16a36b;
+  background: rgba(22, 183, 119, 0.12);
+}
+
+.follow-card.checkin-task.completed .task-primary,
+.follow-card.checkin-task .task-primary.done {
+  color: #3671ff;
+  border: 1px solid rgba(54, 113, 255, 0.18);
+  background: #eef4ff;
+  box-shadow: none;
+}
+
+.task-done-mark {
+  position: relative;
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  place-items: center;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #20c886;
+  vertical-align: -3px;
+}
+
+.task-done-mark::before {
+  content: "";
+  width: 7px;
+  height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
 }
 
 .assessment-card {

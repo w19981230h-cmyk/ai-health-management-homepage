@@ -2386,6 +2386,11 @@
   background: #f7faff;
 }
 
+.medicine-sheet-scroll {
+  gap: 16px;
+  padding: 16px 14px 18px;
+}
+
 .weight-input-card,
 .weight-card,
 .pressure-value-card,
@@ -2405,6 +2410,46 @@
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 8px 22px rgba(140, 157, 199, 0.1);
+}
+
+.medicine-list-section {
+  padding: 16px 14px 18px;
+}
+
+.medicine-list-head {
+  margin-bottom: 10px;
+}
+
+.medicine-list-section > p {
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.medicine-list {
+  gap: 16px;
+}
+
+.medicine-card {
+  gap: 16px;
+  padding: 16px 14px;
+  border-radius: 16px;
+}
+
+.medicine-card-head {
+  margin-bottom: 2px;
+}
+
+.medicine-item-type {
+  gap: 10px;
+}
+
+.medicine-field-title {
+  margin-bottom: 10px;
+}
+
+.medicine-image-help {
+  margin-top: 2px;
+  margin-bottom: 10px;
 }
 
 .waist-checkin-sheet {

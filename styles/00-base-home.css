@@ -1717,13 +1717,102 @@ body.detail-page-open #reportDetailPage .report-actions {
   font-weight: 800;
 }
 
+.medicine-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 6px;
+}
+
 .medicine-list-section h4 {
   position: relative;
-  margin: 0 0 6px;
+  min-width: 0;
+  margin: 0;
   padding-left: 24px;
   color: #03102e;
   font-size: 16px;
   font-weight: 950;
+}
+
+.medicine-reuse-last {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(54, 113, 255, 0.18);
+  border-radius: 999px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.medicine-reuse-last[hidden] {
+  display: none;
+}
+
+.medicine-name-field {
+  position: relative;
+  z-index: 1;
+}
+
+.medicine-name-field:focus-within {
+  z-index: 20;
+}
+
+.medicine-name-history {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  display: none;
+  max-height: 188px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid #dce8ff;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(22, 42, 93, 0.16);
+}
+
+.medicine-name-field:focus-within .medicine-name-history,
+.medicine-name-history:hover {
+  display: block;
+}
+
+.medicine-name-history > span {
+  display: block;
+  margin: 0 0 6px;
+  color: #03102e73;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.medicine-name-history > div {
+  display: grid;
+  gap: 4px;
+}
+
+.medicine-name-history button {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  overflow: hidden;
+  border-radius: 9px;
+  color: #03102ee5;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.medicine-name-history button:hover,
+.medicine-name-history button:focus-visible {
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.08);
 }
 
 .medicine-list-section h4::before {

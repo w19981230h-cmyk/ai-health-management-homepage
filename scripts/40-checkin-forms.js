@@ -237,7 +237,7 @@ function confirmWeightTimePicker() {
 function submitWeightCheckin() {
   if (!validateWeightInputs(true)) return;
   if (!weightCheckinTimeValue) {
-    showToast("请选择记录时间");
+    showToast("请选择称重时间");
     return;
   }
   const weightValue = Number(weightValueInput.value);
@@ -375,7 +375,7 @@ function saveWaistCheckin() {
     return;
   }
   if (!waistCheckinTimeValue) {
-    if (waistError) waistError.textContent = "请选择记录时间";
+    if (waistError) waistError.textContent = "请选择腰围测量时间";
     return;
   }
   const metric = waistMetric();
@@ -556,7 +556,7 @@ function updateSchedulePressureCheckin(display, pulse) {
 function submitPressureCheckin() {
   if (!validatePressureInputs(true)) return;
   if (!pressureCheckinTimeValue) {
-    if (pressureError) pressureError.textContent = "请选择记录时间";
+    if (pressureError) pressureError.textContent = "请选择血压测量时间";
     return;
   }
   const systolic = Number(pressureSystolicInput?.value);
@@ -616,7 +616,7 @@ function recommendedSugarPeriod(date = new Date()) {
 }
 
 function formatSugarTimeText(value) {
-  return formatCheckinTimeDisplay(value, "请选择记录时间");
+  return formatCheckinTimeDisplay(value, "请选择血糖测量时间");
 }
 
 function updateSugarPeriodSelect() {
@@ -733,7 +733,7 @@ function submitSugarCheckin() {
     return;
   }
   if (!sugarCheckinTimeValue) {
-    if (sugarError) sugarError.textContent = "请选择记录时间";
+    if (sugarError) sugarError.textContent = "请选择血糖测量时间";
     return;
   }
   const value = Number(sugarValueInput.value);
