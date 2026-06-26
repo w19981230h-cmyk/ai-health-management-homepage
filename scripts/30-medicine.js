@@ -28,11 +28,11 @@ function renderMedicineOverviewCard(records) {
       <h2>今日整体概览</h2>
       <div class="medicine-overview-grid">
         <article>
-          <div><i class="medicine-overview-icon medicine" aria-hidden="true"></i><span>药品总数</span></div>
+          <div><i class="medicine-overview-icon medicine" aria-hidden="true"></i><span>药品类型</span></div>
           <strong>${stats.medicine}<em>次</em></strong>
         </article>
         <article>
-          <div><i class="medicine-overview-icon nutrition" aria-hidden="true"></i><span>营养药总数</span></div>
+          <div><i class="medicine-overview-icon nutrition" aria-hidden="true"></i><span>营养素类型</span></div>
           <strong>${stats.nutrition}<em>次</em></strong>
         </article>
         <article>
