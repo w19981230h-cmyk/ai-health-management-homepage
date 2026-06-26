@@ -654,13 +654,13 @@ function populateMedicineTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+    const label = `${date.getFullYear()}年${pad(date.getMonth() + 1)}月${pad(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
-  medicinePickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}</option>`).join("");
+  medicinePickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}时</option>`).join("");
   medicinePickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const minute = pad(index * 5);
-    return `<option value="${minute}">${minute}</option>`;
+    return `<option value="${minute}">${minute}分</option>`;
   }).join("");
   medicinePickerDate.value = `${selected.getFullYear()}-${pad(selected.getMonth() + 1)}-${pad(selected.getDate())}`;
   medicinePickerHour.value = pad(selected.getHours());
@@ -745,30 +745,30 @@ function updateSelectedMedicineItemRecordTime(value) {
 
 function renderMedicineItems() {
   if (!medicineList) return;
-  if (medicineListTitle) medicineListTitle.textContent = "用药/补充记录";
-  if (medicineListDesc) medicineListDesc.textContent = "最多添加10个药品或营养素，时间和备注对所有条目生效";
+  if (medicineListTitle) medicineListTitle.innerHTML = `用药/补充记录 <b class="required-mark">*</b>`;
+  if (medicineListDesc) medicineListDesc.textContent = "最多只能添加10个药品/营养素";
   if (medicineAdd) medicineAdd.textContent = "+ 添加记录";
-  if (medicineReuseLast) medicineReuseLast.hidden = Boolean(editingMedicineRecordId);
   medicineList.innerHTML = medicineItems.map((item, index) => {
     const itemType = item.type === "nutrition" ? "nutrition" : "medicine";
     const copy = medicineRecordCopy(itemType);
     const history = medicineNameHistory(itemType, item.name);
+    const canDeleteItem = medicineItems.length > 1;
     return `
     <article class="medicine-card" data-medicine-id="${item.id}">
       <div class="medicine-card-head">
         <i class="medicine-drag" aria-hidden="true"></i>
         <strong>${copy.itemTitle} ${index + 1}</strong>
-        <button class="medicine-delete" type="button" data-delete-medicine="${item.id}" aria-label="删除${copy.itemTitle}"></button>
+        ${canDeleteItem ? `<button class="medicine-delete" type="button" data-delete-medicine="${item.id}" aria-label="删除${copy.itemTitle}"></button>` : ""}
       </div>
       <div class="medicine-item-type" aria-label="${copy.itemTitle}记录类型">
-        <span>记录类型</span>
+        <span>记录类型 <b class="required-mark">*</b></span>
         <div role="tablist">
           <button class="${itemType === "medicine" ? "active" : ""}" type="button" data-medicine-item-type="${item.id}" data-item-type="medicine">药品</button>
           <button class="${itemType === "nutrition" ? "active" : ""}" type="button" data-medicine-item-type="${item.id}" data-item-type="nutrition">营养素</button>
         </div>
       </div>
       <label class="medicine-name-field">
-        <span class="medicine-field-title">${copy.fieldTitle} <b class="required-mark">※</b></span>
+        <span class="medicine-field-title">${copy.fieldTitle} <b class="required-mark">*</b></span>
         <input class="medicine-name-input" value="${escapeAttr(item.name)}" data-medicine-name="${item.id}" placeholder="${copy.placeholder}">
         ${history.length ? `
           <div class="medicine-name-history" aria-label="${copy.fieldTitle}历史记录">
@@ -830,6 +830,7 @@ function addMedicineItem() {
 }
 
 function deleteMedicineItem(id) {
+  if (medicineItems.length <= 1) return;
   const removed = medicineItems.find((item) => item.id === id);
   removed?.images.forEach((image) => {
     if (image.startsWith("blob:")) URL.revokeObjectURL(image);
@@ -857,30 +858,6 @@ function addMedicineImages(files) {
   });
   if (Array.from(files || []).length > 1) showToast("每个药品最多上传1张图片");
   renderMedicineItems();
-}
-
-function reuseLastMedicineRecord() {
-  saveMedicineNamesFromDom();
-  const latest = sortedMedicineRecords().find((record) => record.items?.length);
-  if (!latest) {
-    showToast("暂无上次用药记录");
-    return;
-  }
-  medicineItems.forEach((item) => {
-    (item.images || []).forEach((image) => {
-      if (image.startsWith("blob:")) URL.revokeObjectURL(image);
-    });
-  });
-  medicineItems = (latest.items || []).slice(0, 10).map((item) => createMedicineItem(
-    item.name || "",
-    [...(item.images || []).slice(0, 1)],
-    item.type === "nutrition" ? "nutrition" : "medicine"
-  ));
-  if (!medicineItems.length) medicineItems = [createMedicineItem()];
-  if (medicineNote && latest.note) medicineNote.value = latest.note;
-  updateMedicineNoteCount();
-  renderMedicineItems();
-  showToast("已沿用上次用药");
 }
 
 function saveMedicineNamesFromDom() {

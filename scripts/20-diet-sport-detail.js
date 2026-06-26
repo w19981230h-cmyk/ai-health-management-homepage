@@ -1,3 +1,5 @@
+const DIET_IMAGE_LIMIT = 5;
+
 function openDietUploadSheet() {
   activeDietTaskBindingId = "";
   selectedDietTaskBindingId = "";
@@ -21,12 +23,12 @@ function renderDietUploadImages() {
     <div class="diet-image-thumb" style="${image.preview?.startsWith("blob:") ? `background-image:url('${image.preview}')` : `background:${image.preview || dietMockImages[index % dietMockImages.length]}`}">
       <button type="button" data-remove-diet-image="${index}" aria-label="删除图片">×</button>
     </div>
-  `).join("") + (dietUploadImages.length < 9 ? `<button class="diet-image-add" type="button" data-add-diet-image>+</button>` : "");
+  `).join("") + (dietUploadImages.length < DIET_IMAGE_LIMIT ? `<button class="diet-image-add" type="button" data-add-diet-image>+</button>` : "");
 }
 
 function addDietMockImage() {
-  if (dietUploadImages.length >= 9) {
-    showToast("最多上传 9 张图片");
+  if (dietUploadImages.length >= DIET_IMAGE_LIMIT) {
+    showToast(`最多上传 ${DIET_IMAGE_LIMIT} 张图片`);
     return;
   }
   const index = dietUploadImages.length;
@@ -39,14 +41,16 @@ function addDietMockImage() {
 }
 
 function addDietFiles(files) {
-  [...files].slice(0, 9 - dietUploadImages.length).forEach((file, index) => {
+  const incomingFiles = [...files];
+  const remainingCount = DIET_IMAGE_LIMIT - dietUploadImages.length;
+  incomingFiles.slice(0, remainingCount).forEach((file, index) => {
     dietUploadImages.push({
       id: `file-${Date.now()}-${index}`,
       name: file.name || `meal-${dietUploadImages.length + 1}.jpg`,
       preview: URL.createObjectURL(file)
     });
   });
-  if (files.length > 9 || dietUploadImages.length >= 9) showToast("最多上传 9 张图片");
+  if (incomingFiles.length > remainingCount || dietUploadImages.length >= DIET_IMAGE_LIMIT) showToast(`最多上传 ${DIET_IMAGE_LIMIT} 张图片`);
   renderDietUploadImages();
 }
 
@@ -271,17 +275,19 @@ function openDietFoodEditSheet(food) {
   const currentGroup = isDetailEdit ? findDietDetailFoodGroup(editingDietFoodId) : findDietResultFoodGroup(editingDietFoodId);
   const resultTime = !isDetailEdit ? formatDietTime(dietResultTime?.value || dietMealTime?.value) : "";
   const currentTime = dietDetailTimeOnly(food.recordTime || currentGroup?.time || resultTime);
+  const currentDateTime = dietDateTimeWithTime(dietMealTime?.value || new Date(), currentTime === "--:--" ? "08:00" : currentTime);
   if (dietFoodNameInput) dietFoodNameInput.value = food.name;
   if (dietGramInput) dietGramInput.value = food.grams || detailFoodGrams(food) || 100;
   if (dietEditMealSelect) dietEditMealSelect.value = currentGroup?.meal || dietSelectedMeal || "早餐";
-  if (dietEditTimeInput) dietEditTimeInput.value = currentTime === "--:--" ? "08:00" : currentTime;
+  if (dietEditTimeInput) dietEditTimeInput.value = currentDateTime;
+  if (dietEditTimeText) dietEditTimeText.textContent = formatCheckinTimeDisplay(currentDateTime, "请选择饮食时间");
   const grams = food.grams || detailFoodGrams(food) || 100;
   if (dietEditTitle) dietEditTitle.textContent = "编辑食物";
   if (dietEditFoodThumb) dietEditFoodThumb.className = `food-thumb ${food.image || ""}`;
   if (dietEditFoodMeta) dietEditFoodMeta.textContent = food.name || "";
   sheetMask.classList.add("active");
   dietGramSheet?.classList.add("active");
-  dietGramSheet?.classList.add("detail-edit-mode");
+  dietGramSheet?.classList.toggle("detail-edit-mode", isDetailEdit);
 }
 
 function closeDietGramSheet() {
@@ -307,7 +313,7 @@ function confirmDietGramEdit() {
   if (editingDietFoodContext === "detail") {
     const currentGroup = findDietDetailFoodGroup(editingDietFoodId);
     const nextMeal = dietEditMealSelect?.value || currentGroup?.meal || "早餐";
-    const nextTime = dietEditTimeInput?.value || dietDetailTimeOnly(food.recordTime || currentGroup?.time);
+    const nextTime = dietDetailTimeOnly(dietEditTimeInput?.value || food.recordTime || currentGroup?.time);
     food.amount = `${formatFoodNumber(food.grams || 100)}g`;
     food.recordTime = nextTime;
     if (currentGroup) {
@@ -324,21 +330,6 @@ function confirmDietGramEdit() {
         dietDetailMealGroups = dietDetailMealGroups.filter((group) => group.foods?.length);
       }
     }
-  } else {
-    const currentGroup = findDietResultFoodGroup(editingDietFoodId);
-    const nextMeal = dietEditMealSelect?.value || currentGroup?.meal || dietSelectedMeal || "早餐";
-    const nextTime = dietEditTimeInput?.value || dietDetailTimeOnly(food.recordTime || currentGroup?.time || dietResultTime?.value);
-    food.recordTime = nextTime;
-    if (currentGroup) {
-      currentGroup.meal = nextMeal;
-      currentGroup.time = nextTime;
-      currentGroup.foods.forEach((item) => {
-        item.recordTime = nextTime;
-      });
-    }
-    const nextDateTime = dietDateTimeWithTime(dietResultTime?.value || dietMealTime?.value, nextTime);
-    if (dietResultTime) dietResultTime.value = nextDateTime;
-    if (dietMealTime) dietMealTime.value = nextDateTime;
   }
   const context = editingDietFoodContext;
   closeDietGramSheet();
@@ -1122,12 +1113,28 @@ function defaultDietDetailMealGroups() {
       ]
     },
     {
+      meal: "早加餐",
+      time: "10:15 记录",
+      foods: [
+        { name: "原味坚果", amount: "10g", calories: 62, image: "nuts" },
+        { name: "蓝莓", amount: "80g", calories: 46, image: "green" }
+      ]
+    },
+    {
       meal: "午餐",
       time: "12:36 记录",
       foods: [
         { name: "香煎三文鱼配轻食沙拉", amount: "100g", calories: 155, image: "fish" },
         { name: "水煮西兰花", amount: "100g", calories: 64, image: "green" },
         { name: "糙米饭", amount: "120g", calories: 170, image: "rice" }
+      ]
+    },
+    {
+      meal: "午加餐",
+      time: "15:40 记录",
+      foods: [
+        { name: "无糖酸奶", amount: "120g", calories: 90, image: "yogurt" },
+        { name: "苹果", amount: "半个（90g）", calories: 48, image: "apple" }
       ]
     },
     {
@@ -1140,12 +1147,11 @@ function defaultDietDetailMealGroups() {
       ]
     },
     {
-      meal: "加餐",
-      time: "15:40 记录",
+      meal: "晚加餐",
+      time: "20:30 记录",
       foods: [
-        { name: "无糖酸奶", amount: "120g", calories: 90, image: "yogurt" },
-        { name: "坚果", amount: "15g", calories: 95, image: "nuts" },
-        { name: "苹果", amount: "半个（90g）", calories: 48, image: "apple" }
+        { name: "温牛奶", amount: "200 ml", calories: 120, image: "milk" },
+        { name: "苏打饼干", amount: "2片（20g）", calories: 86, image: "bread" }
       ]
     }
   ];
@@ -1175,7 +1181,7 @@ function dietDetailMealSortValue(group) {
 }
 
 function dietDetailMealOrderValue(meal) {
-  const mealOrder = ["早餐", "午餐", "晚餐", "加餐"];
+  const mealOrder = ["早餐", "早加餐", "午餐", "午加餐", "晚餐", "晚加餐", "加餐"];
   const index = mealOrder.indexOf(String(meal || ""));
   return index === -1 ? mealOrder.length : index;
 }
@@ -1241,7 +1247,7 @@ function renderDietDetailPage() {
       dietDetailRecords.innerHTML = `
         <div class="diet-detail-empty">
           <strong>记录今日饮食，获取饮食建议</strong>
-          <span>点击右上角去打卡，完成后这里会展示早餐、午餐、晚餐和加餐记录。</span>
+          <span>点击右上角去打卡，完成后这里会展示早餐、早加餐、午餐、午加餐、晚餐和晚加餐记录。</span>
         </div>
       `;
     }

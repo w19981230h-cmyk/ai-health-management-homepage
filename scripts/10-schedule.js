@@ -576,11 +576,77 @@ function updateDietMealTimeText() {
   if (dietMealTimeText) dietMealTimeText.textContent = formatCheckinTimeDisplay(dietMealTime?.value, "请选择饮食时间");
 }
 
+function dietPickerDateLabel(date) {
+  const weekLabels = ["日", "一", "二", "三", "四", "五", "六"];
+  return `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日 周${weekLabels[date.getDay()]}`;
+}
+
+function dietPickerBaseValue() {
+  const source = dietTimePickerMode === "detail" ? dietEditTimeInput?.value : dietMealTime?.value;
+  const selected = source ? new Date(source) : new Date();
+  return Number.isNaN(selected.getTime()) ? new Date() : selected;
+}
+
+function populateDietTimePicker() {
+  if (!dietPickerDate || !dietPickerHour || !dietPickerMinute) return;
+  const selected = dietPickerBaseValue();
+  dietPickerDate.innerHTML = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3].map((offset) => {
+    const date = addDays(selected, offset);
+    return `<option value="${dateInputValue(date)}">${dietPickerDateLabel(date)}</option>`;
+  }).join("");
+  dietPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
+    const value = padDateNumber(hour);
+    return `<option value="${value}">${value}时</option>`;
+  }).join("");
+  dietPickerMinute.innerHTML = Array.from({ length: 60 }, (_, minute) => {
+    const value = padDateNumber(minute);
+    return `<option value="${value}">${value}分</option>`;
+  }).join("");
+  dietPickerDate.value = dateInputValue(selected);
+  dietPickerHour.value = padDateNumber(selected.getHours());
+  dietPickerMinute.value = padDateNumber(selected.getMinutes());
+}
+
+function openDietTimePicker(mode = "checkin") {
+  dietTimePickerMode = mode;
+  populateDietTimePicker();
+  sheetMask.classList.add("active");
+  dietTimePicker?.classList.add("active");
+}
+
+function closeDietTimePicker() {
+  dietTimePicker?.classList.remove("active");
+  dietTimePickerMode = "checkin";
+  if (!document.querySelector(".diet-upload-sheet.active, .diet-gram-sheet.active")) {
+    sheetMask.classList.remove("active");
+  }
+}
+
+function confirmDietTimePicker() {
+  if (!dietPickerDate?.value || !dietPickerHour?.value || !dietPickerMinute?.value) return;
+  const value = `${dietPickerDate.value}T${dietPickerHour.value}:${dietPickerMinute.value}`;
+  if (dietTimePickerMode === "detail") {
+    if (dietEditTimeInput) dietEditTimeInput.value = value;
+    if (dietEditTimeText) dietEditTimeText.textContent = formatCheckinTimeDisplay(value, "请选择饮食时间");
+    closeDietTimePicker();
+    return;
+  }
+  if (dietMealTime) dietMealTime.value = value;
+  const selectedTime = new Date(value);
+  if (!Number.isNaN(selectedTime.getTime())) dietSelectedMeal = mealByTime(selectedTime);
+  updateDietMealTimeText();
+  renderDietMealOptions();
+  closeDietTimePicker();
+}
+
 function mealByTime(date = new Date()) {
   const hour = date.getHours();
-  if (hour >= 5 && hour < 10) return "早餐";
-  if (hour >= 10 && hour < 14) return "午餐";
-  if (hour >= 17 && hour < 21) return "晚餐";
+  if (hour >= 5 && hour < 9) return "早餐";
+  if (hour >= 9 && hour < 11) return "早加餐";
+  if (hour >= 11 && hour < 14) return "午餐";
+  if (hour >= 14 && hour < 17) return "午加餐";
+  if (hour >= 17 && hour < 20) return "晚餐";
+  if (hour >= 20 && hour < 23) return "晚加餐";
   return "加餐";
 }
 

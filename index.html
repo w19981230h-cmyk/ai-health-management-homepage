@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260625-task-complete-state">
+  <link rel="stylesheet" href="styles.css?v=20260626-diet-datetime-picker">
 </head>
 <body>
   <main class="app-shell">
@@ -794,14 +794,20 @@
             <span>餐次</span>
             <select id="dietEditMealSelect">
               <option value="早餐">早餐</option>
+              <option value="早加餐">早加餐</option>
               <option value="午餐">午餐</option>
+              <option value="午加餐">午加餐</option>
               <option value="晚餐">晚餐</option>
+              <option value="晚加餐">晚加餐</option>
               <option value="加餐">加餐</option>
             </select>
           </label>
           <label class="diet-edit-food-row diet-detail-edit-only">
             <span>饮食时间</span>
-            <input id="dietEditTimeInput" type="time">
+            <button class="diet-time-trigger" id="dietEditTimeTrigger" type="button">
+              <strong id="dietEditTimeText">请选择饮食时间</strong><i aria-hidden="true"></i>
+            </button>
+            <input id="dietEditTimeInput" type="hidden">
           </label>
           <label class="diet-gram-picker">
             <span>克重</span>
@@ -864,7 +870,7 @@
         <div class="weight-checkin-content">
           <section class="weight-input-card">
             <div class="weight-value-row" data-weight-field="weight">
-              <h3>体重 <em>※</em></h3>
+              <h3>体重 <em>*</em></h3>
               <div class="weight-stepper">
                 <button class="weight-step-btn" type="button" data-weight-step="weight" data-delta="-0.1" aria-label="减少体重">−</button>
                 <label class="weight-number-field">
@@ -891,7 +897,7 @@
           </section>
 
           <section class="weight-card weight-time-card">
-            <h3>称重时间 <em>※</em></h3>
+            <h3>称重时间 <em>*</em></h3>
             <button class="weight-time-trigger" id="weightTimeTrigger" type="button">
               <i aria-hidden="true"></i>
               <span id="weightTimeText">今天 2025-05-19 15:50</span>
@@ -915,7 +921,7 @@
           <button id="waistClose" type="button" aria-label="关闭"></button>
         </header>
         <label class="waist-value-field">
-          <h4><span>腰围值</span><b class="required-mark">※</b><em>（cm）</em></h4>
+          <h4><span>腰围值</span><b class="required-mark">*</b><em>（cm）</em></h4>
           <div class="waist-stepper">
             <button class="waist-step-btn" type="button" data-waist-step="-0.1" aria-label="减少腰围">−</button>
             <label class="waist-number-field">
@@ -949,7 +955,7 @@
         <div class="pressure-sheet-body">
           <section class="pressure-value-card">
             <div class="pressure-value-row" data-pressure-field="systolic">
-              <h4>收缩压 <em>※</em></h4>
+              <h4>收缩压 <em>*</em></h4>
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="systolic" data-delta="-1" aria-label="减少收缩压">−</button>
                 <label class="pressure-number-field">
@@ -962,7 +968,7 @@
             </div>
             <div class="pressure-divider"></div>
             <div class="pressure-value-row" data-pressure-field="diastolic">
-              <h4>舒张压 <em>※</em></h4>
+              <h4>舒张压 <em>*</em></h4>
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="diastolic" data-delta="-1" aria-label="减少舒张压">−</button>
                 <label class="pressure-number-field">
@@ -989,7 +995,7 @@
           </section>
 
           <section class="pressure-card pressure-time-card">
-            <h4>血压测量时间 <em>※</em></h4>
+            <h4>血压测量时间 <em>*</em></h4>
             <button class="pressure-time-trigger" id="pressureTimeTrigger" type="button">
               <i aria-hidden="true"></i>
               <span id="pressureTimeText">2026-06-18 14:23</span>
@@ -1016,7 +1022,7 @@
         </header>
         <div class="sugar-sheet-body">
           <section class="sugar-section">
-            <h4><span>血糖值</span><b class="required-mark">※</b><em>（mmol/L）</em></h4>
+            <h4><span>血糖值</span><b class="required-mark">*</b><em>（mmol/L）</em></h4>
             <div class="sugar-stepper">
               <button class="sugar-step-btn" type="button" data-sugar-step="-0.1" aria-label="减少血糖值">−</button>
               <label class="sugar-number-field">
@@ -1028,7 +1034,7 @@
             <p id="sugarValueHint">建议范围：1.0 ~ 33.3 mmol/L</p>
           </section>
           <section class="sugar-section">
-            <h4><span>血糖时段</span><b class="required-mark">※</b></h4>
+            <h4><span>血糖时段</span><b class="required-mark">*</b></h4>
             <label class="sugar-period-select">
               <select id="sugarPeriodSelect" aria-label="选择血糖时段">
                 <option value="空腹">空腹</option>
@@ -1043,7 +1049,7 @@
             <p>根据当前时间推荐，可手动切换</p>
           </section>
           <section class="sugar-section sugar-time-card">
-            <h4><span>血糖测量时间</span><b class="required-mark">※</b></h4>
+            <h4><span>血糖测量时间</span><b class="required-mark">*</b></h4>
             <button class="sugar-time-trigger" id="sugarTimeTrigger" type="button">
               <span id="sugarTimeText">2026-06-18 07:30</span><i aria-hidden="true"></i>
             </button>
@@ -1205,19 +1211,22 @@
         <div class="diet-upload-scroll">
           <button class="diet-upload-empty" id="dietUploadArea" type="button">
             <i aria-hidden="true"></i>
-            <span>点击上传食物图片 <b class="required-mark">※</b></span>
+            <span>点击上传食物图片 <b class="required-mark">*</b></span>
           </button>
           <div class="diet-image-grid" id="dietImageGrid"></div>
           <section class="diet-form-block">
-            <h4>餐次 <em>※</em></h4>
+            <h4>餐次 <em>*</em></h4>
             <div class="diet-meal-options" id="dietMealOptions">
               <button type="button" data-diet-meal="早餐">早餐</button>
+              <button type="button" data-diet-meal="早加餐">早加餐</button>
               <button type="button" data-diet-meal="午餐">午餐</button>
+              <button type="button" data-diet-meal="午加餐">午加餐</button>
               <button type="button" data-diet-meal="晚餐">晚餐</button>
+              <button type="button" data-diet-meal="晚加餐">晚加餐</button>
               <button type="button" data-diet-meal="加餐">加餐</button>
             </div>
           </section>
-          <label class="diet-time-row"><span>饮食时间 <em>※</em></span>
+          <label class="diet-time-row"><span>饮食时间 <em>*</em></span>
             <button class="diet-time-trigger" id="dietMealTimeTrigger" type="button">
               <strong id="dietMealTimeText">00:00</strong><i aria-hidden="true"></i>
             </button>
@@ -1233,6 +1242,18 @@
         <button type="button" data-diet-upload-action="camera">拍照</button>
         <button type="button" data-diet-upload-action="album">从相册选择</button>
         <button class="diet-action-cancel" type="button">取消</button>
+      </section>
+      <section class="diet-time-picker" id="dietTimePicker" aria-label="选择饮食时间">
+        <div class="weight-picker-head">
+          <button class="diet-picker-cancel" type="button">取消</button>
+          <strong>选择饮食时间</strong>
+          <button class="diet-picker-confirm" type="button">确定</button>
+        </div>
+        <div class="weight-picker-body">
+          <label>日期<select id="dietPickerDate"></select></label>
+          <label>小时<select id="dietPickerHour"></select></label>
+          <label>分钟<select id="dietPickerMinute"></select></label>
+        </div>
       </section>
       <section class="diet-task-bind-sheet" id="dietTaskBindSheet" aria-label="关联打卡任务">
         <header>
@@ -1255,7 +1276,7 @@
         </div>
         <div class="medicine-sheet-scroll">
           <section class="medicine-time-card">
-            <span><strong>用药时间 <b>※</b></strong><em>默认当前时间，可修改</em></span>
+            <span><strong>用药时间 <b>*</b></strong><em>默认当前时间，可修改</em></span>
             <button class="medicine-time-trigger" id="medicineTimeTrigger" type="button">
               <i aria-hidden="true"></i><strong id="medicineTimeText">今天 15:50</strong><em aria-hidden="true"></em>
             </button>
@@ -1268,10 +1289,9 @@
           </label>
           <section class="medicine-list-section">
             <div class="medicine-list-head">
-              <h4 id="medicineListTitle">用药/补充记录 <b class="required-mark">※</b></h4>
-              <button class="medicine-reuse-last" id="medicineReuseLast" type="button">沿用上次用药</button>
+              <h4 id="medicineListTitle">用药/补充记录 <b class="required-mark">*</b></h4>
             </div>
-            <p id="medicineListDesc">可添加多个记录，时间和备注对所有条目生效</p>
+            <p id="medicineListDesc">最多只能添加10个药品/营养素</p>
             <div class="medicine-list" id="medicineList"></div>
           </section>
           <button class="medicine-add" id="medicineAdd" type="button">+ 添加记录</button>
@@ -1311,7 +1331,7 @@
         </header>
         <div class="sport-sheet-body">
           <section class="sport-card sport-type-card">
-            <div class="sport-section-title"><span>选择运动类型</span><b class="required-mark">※</b></div>
+            <div class="sport-section-title"><span>选择运动类型</span><b class="required-mark">*</b></div>
             <div class="sport-type-grid" id="sportTypeGrid">
               <button class="active" type="button" data-sport-type="walk"><i class="sport-icon walk"></i><span>步行</span></button>
               <button type="button" data-sport-type="run"><i class="sport-icon run"></i><span>跑步</span></button>
@@ -1322,13 +1342,13 @@
               <button type="button" data-sport-type="other"><i class="sport-icon other"></i><span id="sportOtherLabel">其他</span></button>
             </div>
             <label class="sport-other-field" id="sportOtherField">
-              <span>请输入运动名称 <b class="required-mark">※</b></span>
+              <span>请输入运动名称 <b class="required-mark">*</b></span>
               <div><input id="sportOtherInput" maxlength="10" placeholder="如：瑜伽、爬楼、广场舞"><em id="sportOtherCount">0/10</em></div>
             </label>
           </section>
           <section class="sport-card">
             <div class="sport-section-head">
-              <div class="sport-section-title"><span>运动时长</span><b class="required-mark">※</b></div>
+              <div class="sport-section-title"><span>运动时长</span><b class="required-mark">*</b></div>
               <em>可调整范围 5–180 分钟</em>
             </div>
             <div class="sport-duration-control">
@@ -1339,7 +1359,7 @@
             <p class="sport-duration-tip">每次建议不少于5分钟</p>
           </section>
           <section class="sport-card sport-intensity-card">
-            <div class="sport-section-title"><span>运动强度</span><b class="required-mark">※</b></div>
+            <div class="sport-section-title"><span>运动强度</span><b class="required-mark">*</b></div>
             <div class="sport-intensity-options" id="sportIntensityOptions">
               <button type="button" data-sport-intensity="low">
                 <strong>低强度</strong>
@@ -1356,7 +1376,7 @@
             </div>
           </section>
           <section class="sport-card sport-time-card">
-            <div class="sport-section-title"><span>运动时间</span><b class="required-mark">※</b></div>
+            <div class="sport-section-title"><span>运动时间</span><b class="required-mark">*</b></div>
             <button class="sport-time-row" id="sportTimeTrigger" type="button">
               <span id="sportTimeText">15:50</span><i aria-hidden="true"></i>
             </button>
@@ -1395,11 +1415,11 @@
             <p><em aria-hidden="true">🔥</em> 热量 <b id="sportRecordCalories">0</b><small> kcal</small></p>
           </article>
           <label class="sport-record-duration-field">
-            <span>时长 <b>※</b></span>
+            <span>时长 <b>*</b></span>
             <input id="sportRecordDurationInput" type="number" min="1" max="300" step="1" inputmode="numeric" value="30">
           </label>
           <section class="sport-record-intensity-field">
-            <span>运动强度 <b>※</b></span>
+            <span>运动强度 <b>*</b></span>
             <div id="sportRecordIntensityOptions">
               <button type="button" data-record-sport-intensity="low">低强度</button>
               <button type="button" data-record-sport-intensity="medium">中强度</button>
@@ -1407,7 +1427,7 @@
             </div>
           </section>
           <label class="sport-record-time-field">
-            <span>运动时间 <b>※</b></span>
+            <span>运动时间 <b>*</b></span>
             <button class="sport-record-time-trigger" id="sportRecordTimeTrigger" type="button">
               <i aria-hidden="true"></i>
               <strong id="sportRecordTimeText">--:--</strong>
@@ -1604,14 +1624,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260625-medicine-reuse-last"></script>
+  <script src="scripts/00-dom-state.js?v=20260626-diet-datetime-picker"></script>
   <script src="scripts/01-data-store.js?v=20260625-diet-task-example"></script>
-  <script src="scripts/10-schedule.js?v=20260625-type-time-labels"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260625-diet-task-bind-v2"></script>
-  <script src="scripts/30-medicine.js?v=20260626-medicine-type-label"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260625-type-time-labels"></script>
+  <script src="scripts/10-schedule.js?v=20260626-diet-datetime-picker"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260626-diet-datetime-picker"></script>
+  <script src="scripts/30-medicine.js?v=20260626-datetime-picker-labels"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/50-reports-services.js?v=20260625-task-direct-binding"></script>
-  <script src="scripts/60-metrics.js?v=20260625-type-time-labels"></script>
-  <script src="scripts/70-events-init.js?v=20260625-medicine-history"></script>
+  <script src="scripts/60-metrics.js?v=20260626-datetime-picker-labels"></script>
+  <script src="scripts/70-events-init.js?v=20260626-diet-datetime-picker"></script>
 </body>
 </html>

@@ -29,7 +29,7 @@ const metricRecordConfigs = {
     { key: "sdldl", label: "小而密低密度脂蛋白胆固醇 sdLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "sdldl" },
     { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "oxldl" }
   ],
-  uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "1", min: "1", max: "1500" }],
+  uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "1", min: "1", max: "1500", required: true }],
   fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
   bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80" }]
 };
@@ -115,16 +115,16 @@ function populateMetricRecordTimePicker() {
   metricRecordPickerDate.innerHTML = [-1, 0, 1, 2, 3].map((offset) => {
     const date = new Date();
     date.setDate(date.getDate() + offset);
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    const label = `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`;
     return `<option value="${dateInputValue(date)}">${label}</option>`;
   }).join("");
   metricRecordPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
     const value = padDateNumber(hour);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}时</option>`;
   }).join("");
   metricRecordPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const value = padDateNumber(index * 5);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}分</option>`;
   }).join("");
   metricRecordPickerDate.value = dateInputValue(selected);
   metricRecordPickerHour.value = padDateNumber(selected.getHours());
@@ -531,7 +531,7 @@ function openMetricRecordSheet(recordId = "") {
   metricRecordSheetTitle.textContent = editingMetricRecordId ? `编辑${metric.name}记录` : `记录${metric.name}`;
   metricRecordFields.innerHTML = metric.id === "heart" ? `
     <section class="metric-heart-field">
-      <span>心率值 <b class="metric-required">※</b></span>
+      <span>心率值 <b class="metric-required">*</b></span>
       <div class="weight-stepper">
         <button class="weight-step-btn" type="button" data-metric-step="value" data-delta="-1" aria-label="减少心率值">−</button>
         <div class="weight-number-field">
@@ -549,7 +549,7 @@ function openMetricRecordSheet(recordId = "") {
     `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">※</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
         <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
         <label class="metric-value-number-field">
@@ -562,7 +562,7 @@ function openMetricRecordSheet(recordId = "") {
   `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">※</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
         <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
         <label class="metric-value-number-field">
@@ -581,7 +581,7 @@ function openMetricRecordSheet(recordId = "") {
   `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">※</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
         <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
         <label class="metric-value-number-field">
@@ -601,7 +601,7 @@ function openMetricRecordSheet(recordId = "") {
   if (metric.id === "lipid") {
     const renderMetricValueField = (field) => `
       <section class="metric-value-field">
-        <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">※</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+        <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
         <div class="metric-value-stepper">
           <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
           <label class="metric-value-number-field">
@@ -2158,11 +2158,11 @@ function openUricRecordDetail(recordId) {
   if (weightRecordSaveAction) weightRecordSaveAction.textContent = "保存修改";
   weightRecordDetailBody.innerHTML = `
     <label>
-      <span>尿酸值 <b class="metric-required">※</b></span>
+      <span>尿酸值 <b class="metric-required">*</b></span>
       <div><input id="uricRecordEditValue" type="number" inputmode="numeric" min="1" max="1500" step="1" value="${escapeAttr(String(formatUricValue(record.value)))}"><em>μmol/L</em></div>
     </label>
     <label>
-      <span>检查时间 <b class="metric-required">※</b></span>
+      <span>检查时间 <b class="metric-required">*</b></span>
       <input id="uricRecordEditTime" type="datetime-local" value="${escapeAttr(weightRecordInputTime(record.time))}">
     </label>
     <label class="weight-record-note-field">

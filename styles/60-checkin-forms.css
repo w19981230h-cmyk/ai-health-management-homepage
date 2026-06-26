@@ -1314,6 +1314,20 @@
   font-weight: 950;
 }
 
+.weight-input-card h3 em,
+.weight-time-card h3 em,
+.pressure-value-row h4 em,
+.pressure-time-card h4 em,
+.diet-meal-card h4 em,
+.diet-time-row em,
+.medicine-time-card strong b,
+.sport-record-edit-field b,
+.sport-record-time-field b {
+  color: #ff4d4f;
+  font-style: normal;
+  font-weight: 950;
+}
+
 .waist-value-field h4 {
   display: flex;
   align-items: center;
@@ -1444,8 +1458,8 @@
 }
 
 .lipid-level-global {
-  gap: 0;
-  padding: 16px;
+  gap: 16px;
+  padding: 18px 16px 16px;
   border-radius: 14px;
   background: #fff;
   box-shadow: 0 6px 18px rgba(18, 46, 132, 0.05);
@@ -1594,6 +1608,7 @@
   font-weight: 950;
 }
 
+.diet-time-picker,
 .weight-time-picker,
 .metric-record-time-picker,
 .pressure-time-picker,
@@ -1623,6 +1638,7 @@
   overflow: hidden;
 }
 
+.diet-time-picker.active,
 .weight-time-picker.active,
 .metric-record-time-picker.active,
 .waist-time-picker.active,
@@ -1780,7 +1796,7 @@
 
 .waist-time-field > strong::after,
 .metric-record-time > span::after {
-  content: " ※";
+  content: " *";
   color: #ff4d4f;
 }
 
@@ -2207,8 +2223,8 @@
 }
 
 .metric-record-sheet-lipid .lipid-level-global .metric-record-note {
-  margin-top: 14px;
-  padding-top: 14px;
+  margin-top: 0;
+  padding-top: 16px;
   border-top: 1px solid #eef3fb;
 }
 
@@ -3478,6 +3494,7 @@
     right: 0;
   }
 
+  .diet-time-picker,
   .weight-time-picker,
   .metric-record-time-picker,
   .waist-time-picker,

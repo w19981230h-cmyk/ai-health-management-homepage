@@ -465,6 +465,7 @@ function closeOverlays() {
   scheduleCheckinSheet?.classList.remove("active");
   dietUploadSheet?.classList.remove("active");
   dietUploadActionSheet?.classList.remove("active");
+  dietTimePicker?.classList.remove("active");
   dietTaskBindSheet?.classList.remove("active");
   dietGramSheet?.classList.remove("active");
   medicineCheckinSheet?.classList.remove("active");
@@ -807,17 +808,11 @@ dietMealOptions?.addEventListener("click", (event) => {
   renderDietMealOptions();
 });
 dietMealTimeTrigger?.addEventListener("click", () => {
-  if (!dietMealTime) return;
-  if (typeof dietMealTime.showPicker === "function") dietMealTime.showPicker();
-  else dietMealTime.click();
+  openDietTimePicker("checkin");
 });
-dietMealTime?.addEventListener("change", () => {
-  const selectedTime = dietMealTime.value ? new Date(dietMealTime.value) : new Date();
-  if (Number.isNaN(selectedTime.getTime())) return;
-  dietSelectedMeal = mealByTime(selectedTime);
-  updateDietMealTimeText();
-  renderDietMealOptions();
-});
+dietEditTimeTrigger?.addEventListener("click", () => openDietTimePicker("detail"));
+document.querySelector(".diet-picker-cancel")?.addEventListener("click", closeDietTimePicker);
+document.querySelector(".diet-picker-confirm")?.addEventListener("click", confirmDietTimePicker);
 dietCancelUpload?.addEventListener("click", () => {
   activeDietTaskBindingId = "";
   selectedDietTaskBindingId = "";
@@ -958,7 +953,6 @@ medicineAdd?.addEventListener("click", () => {
   saveMedicineNamesFromDom();
   addMedicineItem();
 });
-medicineReuseLast?.addEventListener("click", reuseLastMedicineRecord);
 medicineList?.addEventListener("input", (event) => {
   const input = event.target.closest("[data-medicine-name]");
   if (!input) return;

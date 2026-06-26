@@ -36,13 +36,13 @@ function populateSportTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
+    const label = `${date.getFullYear()}年${pad(date.getMonth() + 1)}月${pad(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
-  sportPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}</option>`).join("");
+  sportPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${pad(hour)}">${pad(hour)}时</option>`).join("");
   sportPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const minute = pad(index * 5);
-    return `<option value="${minute}">${minute}</option>`;
+    return `<option value="${minute}">${minute}分</option>`;
   }).join("");
   sportPickerDate.value = `${selected.getFullYear()}-${pad(selected.getMonth() + 1)}-${pad(selected.getDate())}`;
   sportPickerHour.value = pad(selected.getHours());
@@ -203,13 +203,13 @@ function populateWeightTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = dateInputValue(date);
-    const label = offset === 0 ? "今天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    const label = `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
-  weightPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${padDateNumber(hour)}">${padDateNumber(hour)}</option>`).join("");
+  weightPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => `<option value="${padDateNumber(hour)}">${padDateNumber(hour)}时</option>`).join("");
   weightPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const minute = padDateNumber(index * 5);
-    return `<option value="${minute}">${minute}</option>`;
+    return `<option value="${minute}">${minute}分</option>`;
   }).join("");
   weightPickerDate.value = dateInputValue(selected);
   weightPickerHour.value = padDateNumber(selected.getHours());
@@ -335,16 +335,16 @@ function populateWaistTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = dateInputValue(date);
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    const label = `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
   waistPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
     const value = padDateNumber(hour);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}时</option>`;
   }).join("");
   waistPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const value = padDateNumber(index * 5);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}分</option>`;
   }).join("");
   waistPickerDate.value = dateInputValue(selected);
   waistPickerHour.value = padDateNumber(selected.getHours());
@@ -502,16 +502,16 @@ function populatePressureTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = dateInputValue(date);
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    const label = `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
   pressurePickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
     const value = padDateNumber(hour);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}时</option>`;
   }).join("");
   pressurePickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const value = padDateNumber(index * 5);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}分</option>`;
   }).join("");
   pressurePickerDate.value = dateInputValue(selected);
   pressurePickerHour.value = padDateNumber(selected.getHours());
@@ -675,16 +675,16 @@ function populateSugarTimePicker() {
     const date = new Date();
     date.setDate(date.getDate() + offset);
     const value = dateInputValue(date);
-    const label = offset === 0 ? "今天" : offset === -1 ? "昨天" : `${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())}`;
+    const label = `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`;
     return `<option value="${value}">${label}</option>`;
   }).join("");
   sugarPickerHour.innerHTML = Array.from({ length: 24 }, (_, hour) => {
     const value = padDateNumber(hour);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}时</option>`;
   }).join("");
   sugarPickerMinute.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const value = padDateNumber(index * 5);
-    return `<option value="${value}">${value}</option>`;
+    return `<option value="${value}">${value}分</option>`;
   }).join("");
   sugarPickerDate.value = dateInputValue(selected);
   sugarPickerHour.value = padDateNumber(selected.getHours());
