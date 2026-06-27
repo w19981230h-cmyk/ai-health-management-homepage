@@ -686,6 +686,7 @@
   border-radius: 14px;
   background: #fbfdff;
   text-align: left;
+  cursor: pointer;
 }
 
 .archive-service-card span {
@@ -718,6 +719,7 @@
 
 .archive-service-actions {
   display: grid;
+  gap: 8px;
   justify-items: end;
   align-self: start;
   min-width: 58px;
@@ -732,9 +734,26 @@
   background: rgba(244, 149, 41, 0.12);
 }
 
+.archive-service-record-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff 0%, #14b8a6 100%);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 .order-service-section.ended .archive-service-card b {
   color: #667085;
   background: #f2f4f7;
+}
+
+.order-service-section.ended .archive-service-card b.pending-status {
+  color: #f49529;
+  background: rgba(244, 149, 41, 0.12);
 }
 
 .medical-fab {
@@ -2527,12 +2546,12 @@
   transform: rotate(-45deg);
 }
 
-.diet-task-bind-sheet > p {
-  margin: 14px 0 12px;
-  color: rgba(3, 16, 46, 0.72);
-  font-size: 14px;
-  line-height: 1.55;
-  font-weight: 500;
+.diet-task-bind-note {
+  margin: 10px 0 12px;
+  color: rgba(3, 16, 46, 0.68);
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
 }
 
 .diet-task-bind-list {
@@ -2974,7 +2993,7 @@
   min-height: 100vh;
   transform: translateX(-50%);
   overflow: hidden;
-  background: #182238 url("assets/camera-report-preview.jpg") center / cover no-repeat;
+  background: #182238 url("../assets/camera-report-preview.jpg") center / cover no-repeat;
 }
 
 .camera-page.active {

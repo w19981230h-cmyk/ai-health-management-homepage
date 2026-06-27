@@ -1,7 +1,7 @@
 @import url("styles/00-base-home.css?v=20260626-diet-meal-snacks");
-@import url("styles/10-reports-services.css?v=20260626-diet-detail-edit-restore");
+@import url("styles/10-reports-services.css?v=20260627-diet-review-readonly");
 @import url("styles/20-schedule-tasks.css?v=20260625-task-complete-state");
 @import url("styles/30-metrics.css?v=20260625-all-checkin-complete");
 @import url("styles/40-medicine.css?v=20260625-medicine-overview");
-@import url("styles/50-diet-sport.css?v=20260625-diet-task-bind-v2");
+@import url("styles/50-diet-sport.css?v=20260627-camera-asset-path");
 @import url("styles/60-checkin-forms.css?v=20260626-diet-datetime-picker");

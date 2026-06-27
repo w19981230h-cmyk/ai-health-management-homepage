@@ -445,33 +445,33 @@
               <button type="button" data-order-tab="ended">已结束</button>
             </div>
             <section class="order-service-section active" data-order-panel="active">
-              <button class="archive-service-card" type="button" data-service-id="weight">
+              <article class="archive-service-card" data-service-id="weight" role="button" tabindex="0">
                 <i class="owned-img img-weight"></i>
                 <span><strong>90天减重服务</strong><em>服务周期至 2027/02/02</em></span>
                 <div class="archive-service-actions"><b>生效中</b></div>
-              </button>
-              <button class="archive-service-card" type="button" data-service-id="sugar">
+              </article>
+              <article class="archive-service-card" data-service-id="sugar" role="button" tabindex="0">
                 <i class="owned-img img-sugar"></i>
                 <span><strong>90天控糖服务</strong><em>服务周期至 2027/02/02</em></span>
                 <div class="archive-service-actions"><b>生效中</b></div>
-              </button>
-              <button class="archive-service-card" type="button" data-service-id="comprehensive">
+              </article>
+              <article class="archive-service-card" data-service-id="comprehensive" role="button" tabindex="0">
                 <i class="owned-img img-comprehensive"></i>
                 <span><strong>术后质量管理服务</strong><em>服务周期至 2027/02/02</em></span>
                 <div class="archive-service-actions"><b>生效中</b></div>
-              </button>
+              </article>
             </section>
             <section class="order-service-section ended" data-order-panel="ended">
-              <button class="archive-service-card" type="button" data-service-id="pressure">
+              <article class="archive-service-card" data-service-id="pressure" role="button" tabindex="0">
                 <i class="owned-img img-pressure"></i>
                 <span><strong>高血压管理服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b>已失效</b></div>
-              </button>
-              <button class="archive-service-card" type="button" data-service-id="nutrition">
+                <div class="archive-service-actions"><b class="pending-status">待评价</b><button class="archive-service-record-btn" type="button" data-service-records="pressure">执行记录</button></div>
+              </article>
+              <article class="archive-service-card" data-service-id="nutrition" role="button" tabindex="0">
                 <i class="owned-img img-nutrition"></i>
                 <span><strong>营养检测服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b>已失效</b></div>
-              </button>
+                <div class="archive-service-actions"><b class="pending-status">待评价</b><button class="archive-service-record-btn" type="button" data-service-records="nutrition">执行记录</button></div>
+              </article>
             </section>
           </section>
           <section class="devices-panel profile-panel" data-profile-panel="devices">
@@ -799,7 +799,6 @@
               <option value="午加餐">午加餐</option>
               <option value="晚餐">晚餐</option>
               <option value="晚加餐">晚加餐</option>
-              <option value="加餐">加餐</option>
             </select>
           </label>
           <label class="diet-edit-food-row diet-detail-edit-only">
@@ -1223,7 +1222,6 @@
               <button type="button" data-diet-meal="午加餐">午加餐</button>
               <button type="button" data-diet-meal="晚餐">晚餐</button>
               <button type="button" data-diet-meal="晚加餐">晚加餐</button>
-              <button type="button" data-diet-meal="加餐">加餐</button>
             </div>
           </section>
           <label class="diet-time-row"><span>饮食时间 <em>*</em></span>
@@ -1260,7 +1258,7 @@
           <h3>关联打卡任务</h3>
           <button class="diet-task-bind-close" id="dietTaskBindClose" type="button" aria-label="关闭"></button>
         </header>
-        <p id="dietTaskBindSummary"></p>
+        <p class="diet-task-bind-note" id="dietTaskBindSummary">存在2条可关联任务，可选择绑定或仅保存为普通记录</p>
         <div class="diet-task-bind-list" id="dietTaskBindList"></div>
         <footer>
           <button class="diet-task-bind-cancel" id="dietTaskBindCancel" type="button">取消</button>
@@ -1624,14 +1622,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260626-diet-datetime-picker"></script>
+  <script src="scripts/00-dom-state.js?v=20260627-diet-bind-note"></script>
   <script src="scripts/01-data-store.js?v=20260625-diet-task-example"></script>
-  <script src="scripts/10-schedule.js?v=20260626-diet-datetime-picker"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260626-diet-datetime-picker"></script>
+  <script src="scripts/10-schedule.js?v=20260627-diet-meal-domain"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260627-diet-result-name-gram"></script>
   <script src="scripts/30-medicine.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/40-checkin-forms.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/50-reports-services.js?v=20260625-task-direct-binding"></script>
-  <script src="scripts/60-metrics.js?v=20260626-datetime-picker-labels"></script>
-  <script src="scripts/70-events-init.js?v=20260626-diet-datetime-picker"></script>
+  <script src="scripts/60-metrics.js?v=20260626-metric-input-clamp"></script>
+  <script src="scripts/70-events-init.js?v=20260627-diet-review-readonly"></script>
 </body>
 </html>

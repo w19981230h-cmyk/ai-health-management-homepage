@@ -147,7 +147,7 @@ function renderFollowupSection(followups) {
       <article class="schedule-card follow-card ${taskKind}${completedClass}" data-schedule-action="${scheduleAction}"${checkinType ? ` data-type="${checkinType}"` : ""}${taskIdAttr}>
         <div class="follow-copy">
           <div class="follow-head">
-            <span class="task-tag-small">${task.type}</span>
+            <span class="task-tag-small">健康行动</span>
           </div>
           <strong>${completedMark}${task.title}</strong>
         </div>
@@ -647,7 +647,7 @@ function mealByTime(date = new Date()) {
   if (hour >= 14 && hour < 17) return "午加餐";
   if (hour >= 17 && hour < 20) return "晚餐";
   if (hour >= 20 && hour < 23) return "晚加餐";
-  return "加餐";
+  return "早餐";
 }
 
 function escapeAttr(value) {

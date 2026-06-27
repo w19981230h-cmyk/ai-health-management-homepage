@@ -424,8 +424,25 @@ packageList.addEventListener("click", (event) => {
 });
 
 document.querySelector(".orders-panel")?.addEventListener("click", (event) => {
+  const recordsButton = event.target.closest("[data-service-records]");
+  if (recordsButton) {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.textContent = "执行记录功能待接入";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1600);
+    return;
+  }
   const card = event.target.closest(".archive-service-card");
   if (!card) return;
+  openServiceDetail(card.dataset.serviceId, "orders");
+});
+
+document.querySelector(".orders-panel")?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const card = event.target.closest(".archive-service-card");
+  if (!card || event.target.closest("[data-service-records]")) return;
+  event.preventDefault();
   openServiceDetail(card.dataset.serviceId, "orders");
 });
 
@@ -758,7 +775,9 @@ metricRecordFields?.addEventListener("click", (event) => {
   if (!button) return;
   stepMetricRecordValue(button.dataset.metricStep, Number(button.dataset.delta));
 });
+metricRecordFields?.addEventListener("input", (event) => clampMetricRecordInputEvent(event));
 metricRecordFields?.addEventListener("change", (event) => {
+  clampMetricRecordInputEvent(event, true);
   const timeInput = event.target.closest("[data-metric-time]");
   if (!timeInput) return;
   const timeText = metricRecordFields.querySelector(`[data-metric-time-text="${timeInput.dataset.metricTime}"]`);
@@ -835,8 +854,6 @@ dietResultTabs?.addEventListener("click", (event) => {
   renderDietResult();
 });
 dietFoodList?.addEventListener("click", (event) => {
-  const current = dietResults[dietResultIndex] || dietResults[0];
-  if (current?.doctorReview || dietResultReadonly) return;
   const editFood = event.target.closest("[data-edit-food]");
   if (editFood) {
     openDietGramSheet(editFood.dataset.editFood);
@@ -847,8 +864,6 @@ dietFoodList?.addEventListener("click", (event) => {
 });
 dietFoodList?.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
-  const current = dietResults[dietResultIndex] || dietResults[0];
-  if (current?.doctorReview || dietResultReadonly) return;
   const foodCard = event.target.closest("[data-food-id]");
   if (!foodCard) return;
   event.preventDefault();
@@ -893,6 +908,12 @@ dietDetailCheckin?.addEventListener("click", () => openDietCameraPage(true));
 dietDetailRecordFood?.addEventListener("click", () => openDietCameraPage(true));
 sportDetailCheckin?.addEventListener("click", openSportCheckinSheet);
 sportDetailRecords?.addEventListener("click", (event) => {
+  const reviewToggle = event.target.closest("[data-sport-review-toggle]");
+  if (reviewToggle) {
+    event.stopPropagation();
+    toggleSportRecordReview(reviewToggle.dataset.sportReviewToggle);
+    return;
+  }
   const card = event.target.closest("[data-sport-record-id]");
   if (!card) return;
   openSportRecordEditor(card.dataset.sportRecordId);

@@ -20,16 +20,16 @@ const metricRecordConfigs = {
   weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
   waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
   height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
-  heart: [{ key: "value", label: "心率值", unit: "bpm/次/分", step: "1", min: "20", max: "250", required: true }],
+  heart: [{ key: "value", label: "心率值", unit: "bpm/次/分", step: "1", min: "20", max: "200", required: true }],
   lipid: [
-    { key: "tc", label: "总胆固醇 TC", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, ownTime: true, group: "basic" },
-    { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, ownTime: true, group: "basic" },
-    { key: "hdl", label: "高密度脂蛋白胆固醇 HDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, ownTime: true, group: "basic" },
-    { key: "ldl", label: "低密度脂蛋白胆固醇 LDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", required: true, ownTime: true, group: "basic" },
-    { key: "sdldl", label: "小而密低密度脂蛋白胆固醇 sdLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "sdldl" },
-    { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "mmol/L", step: "0.1", min: "0.1", max: "20", ownTime: true, group: "oxldl" }
+    { key: "tc", label: "总胆固醇 TC", unit: "mmol/L", step: "0.01", min: "0.1", max: "20", decimals: 2, required: true, ownTime: true, group: "basic" },
+    { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.01", min: "0.1", max: "50", decimals: 2, required: true, ownTime: true, group: "basic" },
+    { key: "hdl", label: "高密度脂蛋白胆固醇 HDL-C", unit: "mmol/L", step: "0.01", min: "0.1", max: "5", decimals: 2, required: true, ownTime: true, group: "basic" },
+    { key: "ldl", label: "低密度脂蛋白胆固醇 LDL-C", unit: "mmol/L", step: "0.01", min: "0.1", max: "15", decimals: 2, required: true, ownTime: true, group: "basic" },
+    { key: "sdldl", label: "小而密低密度脂蛋白胆固醇 sdLDL-C", unit: "mmol/L", step: "0.01", min: "0", max: "5", decimals: 2, ownTime: true, group: "sdldl" },
+    { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "ng/ml", step: "0.01", min: "0", max: "200", decimals: 2, ownTime: true, group: "oxldl" }
   ],
-  uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "1", min: "1", max: "1500", required: true }],
+  uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "0.01", min: "0", max: "1200", decimals: 2, required: true }],
   fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
   bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80" }]
 };
@@ -495,8 +495,34 @@ function metricRecordById(metricId, recordId) {
 
 function metricRecordEditValue(metric, field) {
   const editingRecord = metricRecordById(metric.id, editingMetricRecordId);
-  if (editingRecord?.values?.[field.key] != null) return editingRecord.values[field.key];
+  if (editingRecord?.values?.[field.key] != null) return formatMetricFieldValue(editingRecord.values[field.key], field);
   return metricRecordDefaultValue(metric, field);
+}
+
+function metricFieldDecimals(field) {
+  if (Number.isInteger(field.decimals)) return field.decimals;
+  return Number(field.step) < 1 ? 1 : 0;
+}
+
+function formatMetricFieldValue(value, field) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "";
+  const decimals = metricFieldDecimals(field);
+  return decimals > 0 ? number.toFixed(decimals) : String(Math.round(number));
+}
+
+function sanitizeIntegerInputValue(input) {
+  if (!input) return;
+  const normalized = String(input.value || "").replace(/[^\d].*$/, "");
+  if (input.value !== normalized) input.value = normalized;
+}
+
+function lipidRecordField(key) {
+  return metricRecordConfigs.lipid.find((field) => field.key === key);
+}
+
+function formatLipidMetricValue(key, value) {
+  return formatMetricFieldValue(value, lipidRecordField(key) || { step: "0.01", decimals: 2 });
 }
 
 function metricRecordEditTime(metric, key = "") {
@@ -535,7 +561,7 @@ function openMetricRecordSheet(recordId = "") {
       <div class="weight-stepper">
         <button class="weight-step-btn" type="button" data-metric-step="value" data-delta="-1" aria-label="减少心率值">−</button>
         <div class="weight-number-field">
-          <input type="number" inputmode="numeric" data-metric-input="value" min="20" max="250" step="1" value="72" aria-label="心率值">
+          <input type="number" inputmode="numeric" pattern="[0-9]*" data-metric-input="value" min="20" max="200" step="1" value="72" aria-label="心率值">
           <span>次/分</span>
         </div>
         <button class="weight-step-btn" type="button" data-metric-step="value" data-delta="1" aria-label="增加心率值">+</button>
@@ -682,7 +708,7 @@ function metricRecordDefaultValue(metric, field) {
     ?? Number(field.min);
   const value = Number(raw);
   if (!Number.isFinite(value)) return field.min;
-  return Number(field.step) < 1 ? value.toFixed(1) : String(Math.round(value));
+  return formatMetricFieldValue(value, field);
 }
 
 function stepMetricRecordValue(key, delta) {
@@ -692,29 +718,54 @@ function stepMetricRecordValue(key, delta) {
   if (!field || !input) return;
   const fallback = metric.id === "heart" ? 72 : Number(field.min);
   const current = normalizeDecimal(input.value, fallback);
-  const next = Math.min(Number(field.max), Math.max(Number(field.min), current + delta));
-  input.value = Number(field.step) < 1 ? next.toFixed(1) : String(Math.round(next));
+  const decimals = metricFieldDecimals(field);
+  const factor = 10 ** decimals;
+  const next = Math.min(Number(field.max), Math.max(Number(field.min), Math.round((current + delta) * factor) / factor));
+  input.value = formatMetricFieldValue(next, field);
+}
+
+function clampMetricValueInput(input, field, shouldFormat = false) {
+  if (!input || !field) return;
+  const rawValue = input.value.trim();
+  if (!rawValue) return;
+  const value = Number(rawValue);
+  if (!Number.isFinite(value)) return;
+  const min = Number(field.min);
+  const max = Number(field.max);
+  const clamped = Math.min(max, Math.max(min, value));
+  if (clamped !== value || shouldFormat) {
+    input.value = formatMetricFieldValue(clamped, field);
+  }
+}
+
+function clampMetricRecordValueInput(input, shouldFormat = false) {
+  const metric = getSelectedMetric();
+  const key = input?.dataset?.metricInput;
+  const field = metricRecordConfigs[metric.id]?.find((item) => item.key === key);
+  clampMetricValueInput(input, field, shouldFormat);
+}
+
+function clampMetricRecordInputEvent(event, shouldFormat = false) {
+  const input = event.target.closest("[data-metric-input]");
+  if (!input) return;
+  clampMetricRecordValueInput(input, shouldFormat);
 }
 
 function metricRecordSuccessLines(metric, record) {
   if (metric.id === "lipid") {
+    const lipidLine = (key, label) => {
+      const field = lipidRecordField(key);
+      return { label, value: formatMetricFieldValue(record.values[key], field), unit: field?.unit || "mmol/L" };
+    };
     const lipidLines = [
-      { label: "总胆固醇 TC", value: formatMetricNumber(record.values.tc), unit: "mmol/L" },
-      { label: "甘油三酯 TG", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
-      { label: "HDL-C", value: formatMetricNumber(record.values.hdl), unit: "mmol/L" },
-      { label: "LDL-C", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" }
+      lipidLine("tc", "总胆固醇 TC"),
+      lipidLine("tg", "甘油三酯 TG"),
+      lipidLine("hdl", "HDL-C"),
+      lipidLine("ldl", "LDL-C")
     ];
-    if (record.values.sdldl != null) lipidLines.push({ label: "sdLDL-C", value: formatMetricNumber(record.values.sdldl), unit: "mmol/L" });
-    if (record.values.oxldl != null) lipidLines.push({ label: "oxLDL-C", value: formatMetricNumber(record.values.oxldl), unit: "mmol/L" });
+    if (record.values.sdldl != null) lipidLines.push(lipidLine("sdldl", "sdLDL-C"));
+    if (record.values.oxldl != null) lipidLines.push(lipidLine("oxldl", "oxLDL-C"));
     return lipidLines;
-    return [
-      { label: "总胆固醇 TC", value: formatMetricNumber(record.values.tc), unit: "mmol/L" },
-      { label: "甘油三酯 TG", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
-      { label: "HDL-C", value: formatMetricNumber(record.values.hdl), unit: "mmol/L" },
-      { label: "LDL-C", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" },
-      { label: "sdLDL-C", value: formatMetricNumber(record.values.sdldl), unit: "mmol/L" },
-      { label: "oxLDL-C", value: formatMetricNumber(record.values.oxldl), unit: "mmol/L" }
-    ];
   }
   if (metric.id === "heart") return [{ label: "当前心率", value: record.display, unit: record.unit }];
   if (metric.id === "uric") return [{ label: "当前尿酸", value: record.display, unit: record.unit }];
@@ -740,12 +791,14 @@ function saveMetricRecord() {
       continue;
     }
     const value = Number(input?.value);
-    if (!rawValue || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) {
-      metricRecordError.textContent = `请正确填写${field.label}`;
+    if (!rawValue || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max) || (metric.id === "heart" && !Number.isInteger(value))) {
+      metricRecordError.textContent = metric.id === "heart"
+        ? "请输入 20 ~ 200 bpm 范围内的整数心率"
+        : `请填写${field.label}，范围 ${field.min}-${field.max}${field.unit}`;
       input?.focus();
       return;
     }
-    values[field.key] = value;
+    values[field.key] = Number.isInteger(field.decimals) ? Number(formatMetricFieldValue(value, field)) : value;
     if (field.ownTime) {
       const timeInput = metricRecordFields.querySelector(`[data-metric-time="${field.key}"]`);
       if (!timeInput?.value) {
@@ -764,7 +817,9 @@ function saveMetricRecord() {
   const display = metric.id === "bp"
     ? `${values.systolic}/${values.diastolic}`
     : metric.id === "lipid"
-      ? `TC ${formatMetricNumber(values.tc)} / TG ${formatMetricNumber(values.tg)} / LDL-C ${formatMetricNumber(values.ldl)}`
+      ? `TC ${formatLipidMetricValue("tc", values.tc)} / TG ${formatLipidMetricValue("tg", values.tg)} / LDL-C ${formatLipidMetricValue("ldl", values.ldl)}`
+      : metric.id === "uric"
+        ? formatUricValue(values.value)
       : formatMetricNumber(values.value);
   const chartValue = metric.id === "bp" ? values.systolic : metric.id === "lipid" ? values.tg : values.value;
   const status = metricStatus(metric.id, values);
@@ -1266,7 +1321,7 @@ function openHeartRecordDetail(recordId) {
   heartRecordDetailBody.innerHTML = `
     <label>
       <span>心率</span>
-      <div><input id="heartRecordEditValue" type="number" inputmode="numeric" min="20" max="250" step="1" value="${escapeAttr(record.display)}"><em>bpm</em></div>
+      <div><input id="heartRecordEditValue" type="number" inputmode="numeric" pattern="[0-9]*" min="20" max="200" step="1" value="${escapeAttr(record.display)}"><em>bpm</em></div>
     </label>
     <label>
       <span>心率测量时间</span>
@@ -1291,8 +1346,8 @@ function saveSelectedHeartRecord() {
   const error = document.querySelector("#heartRecordEditError");
   const value = Number(valueInput?.value);
   const time = timeInput?.value || "";
-  if (!Number.isFinite(value) || value < 20 || value > 250) {
-    if (error) error.textContent = "请输入 20 ~ 250 bpm 范围内的心率";
+  if (!Number.isFinite(value) || !Number.isInteger(value) || value < 20 || value > 200) {
+    if (error) error.textContent = "请输入 20 ~ 200 bpm 范围内的整数心率";
     valueInput?.focus();
     return;
   }
@@ -1884,7 +1939,7 @@ function lipidBasicCell(code, value) {
   return `
     <div class="lipid-result-cell">
       <span>${code}</span>
-      <strong>${lipidResultValue(value, 1)}</strong>
+      <strong>${lipidResultValue(value, 2)}</strong>
       <em>mmol/L</em>
     </div>
   `;
@@ -1905,7 +1960,7 @@ function lipidRecordCard(record, index) {
   const values = record.values || {};
   const extraItems = [
     lipidExtraCell("sdLDL-C", values.sdldl),
-    lipidExtraCell("oxLDL-C", values.oxldl)
+    lipidExtraCell("oxLDL-C", values.oxldl, "ng/ml")
   ].filter(Boolean);
   return `
     <article class="lipid-today-card" data-lipid-record="${escapeAttr(record.id)}" role="button" tabindex="0">
@@ -2007,7 +2062,7 @@ function deleteSelectedLipidRecord() {
 
 function formatUricValue(value) {
   const number = Number(value);
-  return Number.isFinite(number) ? String(Math.round(number)) : "--";
+  return Number.isFinite(number) ? number.toFixed(2).replace(/\.?0+$/, "") : "--";
 }
 
 function sampleUricRecords() {
@@ -2159,7 +2214,7 @@ function openUricRecordDetail(recordId) {
   weightRecordDetailBody.innerHTML = `
     <label>
       <span>尿酸值 <b class="metric-required">*</b></span>
-      <div><input id="uricRecordEditValue" type="number" inputmode="numeric" min="1" max="1500" step="1" value="${escapeAttr(String(formatUricValue(record.value)))}"><em>μmol/L</em></div>
+      <div><input id="uricRecordEditValue" type="number" inputmode="decimal" min="0" max="1200" step="0.01" value="${escapeAttr(String(formatUricValue(record.value)))}"><em>μmol/L</em></div>
     </label>
     <label>
       <span>检查时间 <b class="metric-required">*</b></span>
@@ -2171,6 +2226,10 @@ function openUricRecordDetail(recordId) {
     </label>
     <p class="weight-record-edit-error" id="uricRecordEditError"></p>
   `;
+  const valueInput = document.querySelector("#uricRecordEditValue");
+  const uricField = metricRecordConfigs.uric?.[0];
+  valueInput?.addEventListener("input", () => clampMetricValueInput(valueInput, uricField));
+  valueInput?.addEventListener("change", () => clampMetricValueInput(valueInput, uricField, true));
   sheetMask.classList.add("active");
   weightRecordDetailDialog?.classList.add("active");
 }
@@ -2184,8 +2243,8 @@ function saveSelectedUricRecord() {
   const error = document.querySelector("#uricRecordEditError");
   const value = Number(valueInput?.value);
   const time = timeInput?.value || "";
-  if (!Number.isFinite(value) || value < 1 || value > 1500) {
-    if (error) error.textContent = "请输入 1 ~ 1500 μmol/L 范围内的尿酸值";
+  if (!Number.isFinite(value) || value < 0 || value > 1200) {
+    if (error) error.textContent = "请输入 0 ~ 1200 μmol/L 范围内的尿酸值";
     valueInput?.focus();
     return;
   }
