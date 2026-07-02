@@ -341,15 +341,14 @@
           <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
             <button class="archive-settings-btn" type="button" data-open-page="settingsPage" aria-label="设置"></button>
           </section>
-          <section class="archive-progress-card" aria-label="资料评估提示">
-            <div class="archive-progress-side">
-              <div class="archive-gauge" aria-hidden="true"><span>--</span></div>
+          <section class="archive-progress-card" aria-label="健康评分">
+            <div class="archive-score-card">
+              <span class="archive-score-ring" aria-hidden="true"></span>
+              <strong>良好</strong>
+              <em>健康评级</em>
               <button class="archive-detail-btn" type="button">查看详情</button>
             </div>
-            <div class="archive-progress-copy">
-              <p>完善资料评估更准确</p>
-            </div>
-            <div class="archive-doctor" aria-hidden="true"></div>
+            <button class="archive-doctor" type="button" data-open-page="healthPortraitPage" aria-label="查看健康画像"></button>
           </section>
           <section class="archive-assistant-card" aria-label="医护助理">
             <div class="assistant-bot" aria-hidden="true"></div>
@@ -557,6 +556,47 @@
           <button type="button" data-patient-id="mother" data-name="妈妈" data-sex="female" data-age="55"><i class="profile-avatar small"></i><span><strong>妈妈</strong><em>女｜55岁</em></span><b></b></button>
           <button type="button" data-patient-id="son" data-name="儿子" data-sex="male" data-age="10"><i class="avatar-boy"></i><span><strong>儿子</strong><em>男｜10岁</em></span><b></b></button>
         </div><button class="add-family-entry" type="button" data-open-page="addFamilyPage">+ 添加家庭成员</button>
+      </section>
+
+      <section class="sub-page health-portrait-page" id="healthPortraitPage" aria-label="健康画像">
+        <header class="portrait-nav">
+          <button class="back-page" type="button" aria-label="返回"></button>
+          <h1>健康画像</h1>
+          <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span>
+            <span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <section class="portrait-patient">
+          <i class="profile-avatar small" aria-hidden="true"></i>
+          <strong>张患者</strong>
+          <span>♂ 24岁</span>
+        </section>
+        <main class="portrait-body">
+          <section class="portrait-side">
+            <article class="portrait-bmi-card">
+              <strong>21.5<em>% · BMI指数</em></strong>
+              <div><span>178cm</span><span>68kg</span></div>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>心血管 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-high">高</b><span>心血管病</span></p>
+              <p><b class="risk-mid">中</b><span>高血压</span></p>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>肺部 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-high">高</b><span>慢性阻塞性肺病</span></p>
+              <p><b class="risk-mid">中</b><span>肺癌</span></p>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>消化系统 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-low">低</b><span>胃癌</span></p>
+            </article>
+          </section>
+          <section class="portrait-figure" aria-label="人体风险可视化">
+            <img src="assets/health-portrait-structure.jpg" alt="人体健康画像">
+          </section>
+        </main>
       </section>
 
       <section class="sub-page period-detail-page" id="periodDetailPage" aria-label="经期管理详情">

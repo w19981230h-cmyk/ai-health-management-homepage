@@ -1454,16 +1454,21 @@
 
 .archive-member-row {
   display: grid;
-  grid-template-columns: 40px minmax(82px, auto) 38px 38px 1fr 36px;
+  grid-template-columns: 34px minmax(82px, auto) 32px 32px 1fr 34px;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   margin-top: 8px;
 }
 
 .archive-avatar {
-  width: 38px;
-  height: 38px;
-  box-shadow: 0 4px 12px rgba(54, 113, 255, 0.16);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 38%, #ffe1c5 0 9px, transparent 10px),
+    radial-gradient(circle at 50% 22%, #4a2735 0 11px, transparent 12px),
+    linear-gradient(180deg, #fff 0 52%, #ffd8e2 53%);
+  box-shadow: 0 4px 10px rgba(54, 113, 255, 0.14);
 }
 
 .archive-member-main {
@@ -1507,20 +1512,50 @@
 
 .archive-switch,
 .archive-add {
-  width: 36px;
-  height: 36px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
   padding: 0;
+  border-radius: 50%;
   background: rgba(54, 113, 255, 0.08);
+  box-shadow: none;
 }
 
 .archive-switch .member-avatar {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 26px;
 }
 
 .archive-add {
+  position: relative;
   border-radius: 50%;
   border: 1px dashed rgba(54, 113, 255, 0.22);
+}
+
+.archive-add span {
+  display: none;
+}
+
+.archive-add::before,
+.archive-add::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #3671ff;
+  transform: translate(-50%, -50%);
+}
+
+.archive-add::after {
+  transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .archive-settings-btn {
@@ -1552,85 +1587,103 @@
 
 .archive-progress-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 106px 1fr 118px;
-  align-items: center;
-  min-height: 168px;
-  margin-top: 18px;
-  padding: 14px 10px 12px 16px;
+  display: flex;
+  align-items: stretch;
+  min-height: 252px;
+  margin-top: 16px;
+  padding: 0;
   overflow: hidden;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.56), rgba(230,239,255,0.38));
-  border: 1px solid rgba(255,255,255,0.72);
-}
-
-.archive-progress-side {
-  display: grid;
-  justify-items: center;
-  align-self: start;
-  gap: 6px;
-}
-
-.archive-gauge {
-  position: relative;
-  width: 104px;
-  height: 82px;
-  margin-top: 16px;
-  overflow: hidden;
-}
-
-.archive-gauge::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 104px;
-  height: 104px;
-  border-radius: 50%;
   background:
-    radial-gradient(circle, rgba(239,245,255,0.9) 0 39px, transparent 40px),
-    conic-gradient(from 270deg, rgba(54,113,255,0.72) 0 54deg, rgba(255,255,255,0.54) 54deg 180deg, transparent 180deg 360deg);
+    radial-gradient(circle at 91% 28%, rgba(160, 194, 255, 0.4) 0 6px, transparent 7px),
+    radial-gradient(circle at 74% 82%, rgba(255,255,255,0.72) 0 116px, transparent 117px),
+    radial-gradient(circle at 70% 92%, rgba(192,214,255,0.22) 0 92px, transparent 93px),
+    linear-gradient(135deg, rgba(255,255,255,0.58), rgba(227,238,255,0.42));
+  border: 1px solid rgba(255,255,255,0.78);
 }
 
-.archive-gauge::after {
+.archive-score-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  width: 138px;
+  min-height: 178px;
+  margin: 16px 0 16px 0;
+  padding: 20px 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 22px rgba(54, 113, 255, 0.08);
+}
+
+.archive-score-ring {
+  position: relative;
+  z-index: 0;
+  width: 72px;
+  height: 42px;
+  margin: 0 0 4px;
+}
+
+.archive-score-ring::before {
   content: "";
   position: absolute;
-  left: 52px;
-  bottom: 7px;
-  width: 2px;
-  height: 22px;
-  border-radius: 2px;
-  background: rgba(255,255,255,0.9);
-  box-shadow: -36px -4px 0 rgba(255,255,255,0.6), 36px -4px 0 rgba(255,255,255,0.6);
-  transform-origin: bottom;
-  transform: rotate(-52deg);
+  left: 50%;
+  top: 0;
+  width: 82px;
+  height: 82px;
+  border-radius: 50% 50% 0 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(245,248,255,0.95) 0 30px, transparent 31px),
+    conic-gradient(from 270deg, #6d96ff 0 90deg, rgba(216,229,255,0.72) 90deg 180deg, transparent 180deg 360deg);
+  transform: translateX(-50%);
 }
 
-.archive-gauge span {
+.archive-score-ring::after {
+  content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 18px;
-  color: #31529d;
-  font-size: 22px;
-  font-weight: 900;
-  text-align: center;
+  left: 34px;
+  bottom: 2px;
+  width: 2px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.95);
+  transform-origin: bottom;
+  transform: rotate(-42deg);
 }
 
-.archive-progress-copy {
-  align-self: end;
-  padding-bottom: 8px;
+.archive-score-card strong {
+  position: relative;
+  z-index: 1;
+  margin-top: -16px;
+  color: #1b5cff;
+  font-size: 21px;
+  line-height: 1.15;
+  font-weight: 950;
 }
 
-.archive-progress-copy p {
-  margin: 0;
-  color: rgba(18, 46, 132, 0.7);
+.archive-score-card em {
+  position: relative;
+  z-index: 1;
+  margin-top: 5px;
+  color: rgba(18,46,132,0.62);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.archive-score-card p {
+  margin: 10px 0 0;
+  color: rgba(18,46,132,0.58);
   font-size: 12px;
   font-weight: 800;
 }
 
 .archive-detail-btn {
+  justify-self: center;
   height: 26px;
+  margin-top: 14px;
   padding: 0 14px;
   border: 1px solid rgba(54, 113, 255, 0.22);
   border-radius: 999px;
@@ -1643,36 +1696,254 @@
 
 .archive-doctor {
   position: absolute;
-  right: 14px;
+  right: 7px;
   bottom: 0;
-  width: 122px;
-  height: 160px;
+  width: 210px;
+  height: 238px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: url("../assets/archive-patient-boy.webp") center bottom / auto 238px no-repeat;
 }
 
 .archive-doctor::before {
-  content: "";
-  position: absolute;
-  left: 32px;
-  top: 18px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 42%, #ffd9bd 0 17px, transparent 18px),
-    radial-gradient(circle at 50% 18%, #26364f 0 21px, transparent 22px);
+  content: none;
 }
 
 .archive-doctor::after {
-  content: "";
-  position: absolute;
-  left: 16px;
-  bottom: -18px;
-  width: 88px;
-  height: 104px;
-  border-radius: 34px 34px 18px 18px;
+  content: none;
+}
+
+.health-portrait-page {
+  min-height: 100%;
+  padding: 0 14px 20px;
+  overflow: hidden;
   background:
-    linear-gradient(90deg, #ffffff 0 28%, #e9f1ff 28% 33%, #9fc5ff 33% 67%, #e9f1ff 67% 72%, #ffffff 72% 100%);
-  box-shadow: 0 -10px 18px rgba(54,113,255,0.12);
+    radial-gradient(circle at 93% 48%, rgba(163,195,255,0.42) 0 6px, transparent 7px),
+    radial-gradient(circle at 55% 72%, rgba(214,229,255,0.52) 0 86px, transparent 87px),
+    linear-gradient(156deg, #eef6ff 0%, #f8fbff 60%, #fffaf4 100%);
+}
+
+.portrait-nav {
+  display: grid;
+  grid-template-columns: 40px 1fr 86px;
+  align-items: center;
+  min-height: 72px;
+  padding-top: 18px;
+}
+
+.portrait-nav h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.portrait-patient {
+  display: inline-grid;
+  grid-template-columns: 28px auto auto;
+  align-items: center;
+  gap: 7px;
+  margin: 2px 0 12px;
+}
+
+.portrait-patient .profile-avatar.small {
+  width: 28px;
+  height: 28px;
+}
+
+.portrait-patient strong {
+  color: #15315f;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.portrait-patient span {
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: #3671ff;
+  background: rgba(54,113,255,0.12);
+  font-size: 13px;
+  line-height: 24px;
+  font-weight: 900;
+}
+
+.portrait-body {
+  position: relative;
+  min-height: calc(100vh - 112px);
+}
+
+.portrait-side {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 16px;
+  width: 146px;
+}
+
+.portrait-bmi-card,
+.portrait-risk-card {
+  border: 1px solid rgba(210,225,250,0.9);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.74);
+  box-shadow: 0 8px 20px rgba(54,113,255,0.06);
+}
+
+.portrait-bmi-card {
+  display: grid;
+  gap: 13px;
+  padding: 14px 12px 12px;
+}
+
+.portrait-bmi-card strong {
+  color: #122e84;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.portrait-bmi-card em {
+  color: rgba(18,46,132,0.56);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.portrait-bmi-card div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 34px;
+  border-radius: 8px;
+  background: rgba(54,113,255,0.08);
+}
+
+.portrait-bmi-card span {
+  display: grid;
+  place-items: center;
+  color: rgba(18,46,132,0.72);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.portrait-bmi-card span + span {
+  border-left: 1px solid rgba(54,113,255,0.12);
+}
+
+.portrait-risk-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px 10px;
+}
+
+.portrait-risk-card h2 {
+  display: grid;
+  grid-template-columns: 3px 1fr 12px;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #122e84;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.portrait-risk-card h2::before {
+  content: "";
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: #3671ff;
+}
+
+.portrait-risk-card h2 i {
+  width: 8px;
+  height: 8px;
+  border-top: 1.8px solid #122e84;
+  border-right: 1.8px solid #122e84;
+  transform: rotate(45deg);
+}
+
+.portrait-risk-card p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: #34435f;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.portrait-risk-card b {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.risk-high { color: #ff5b5f; background: #ffe9ea; }
+.risk-mid { color: #f49529; background: #fff2dc; }
+.risk-low { color: #16a36b; background: #e8f8ef; }
+
+.portrait-figure {
+  position: absolute;
+  right: -10px;
+  top: 0;
+  bottom: 0;
+  width: 256px;
+  height: auto;
+  min-height: 690px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.portrait-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  opacity: 0.96;
+  filter: saturate(1.02);
+}
+
+.body-outline {
+  fill: rgba(248,252,255,0.58);
+  stroke: #82bdff;
+  stroke-width: 1.6;
+}
+
+.body-inner,
+.skeleton {
+  fill: none;
+  stroke: rgba(100,174,255,0.55);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.organ {
+  fill: rgba(82,158,240,0.34);
+  stroke: rgba(82,158,240,0.62);
+  stroke-width: 1.2;
+}
+
+.liver,
+.gut {
+  fill: rgba(95,170,246,0.24);
+}
+
+.hotspot {
+  fill: #ff7a1a;
+  stroke: #fff;
+  stroke-width: 4;
+  filter: drop-shadow(0 5px 10px rgba(244,149,41,0.26));
+}
+
+.gut-dot {
+  fill: #f4b000;
 }
 
 .archive-assistant-card {
