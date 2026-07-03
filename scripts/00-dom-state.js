@@ -197,6 +197,7 @@ const periodDeleteDialog = document.querySelector("#periodDeleteDialog");
 const periodEditStart = document.querySelector("#periodEditStart");
 const periodEditEnd = document.querySelector("#periodEditEnd");
 const periodEditError = document.querySelector("#periodEditError");
+const focusPlanSwitch = document.querySelector("#focusPlanSwitch");
 const focusMetricGrid = document.querySelector("#focusMetricGrid");
 const metricDetailPage = document.querySelector("#metricDetailPage");
 const metricDetailTitle = document.querySelector("#metricDetailTitle");

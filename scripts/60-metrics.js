@@ -1,8 +1,13 @@
 function renderFocusPlans() {
   if (!focusMetricGrid) return;
-  selectedFocusPlan = "weight90";
-  const plan = focusPlanDashboards.weight90;
+  const plan = focusPlanDashboards[selectedFocusPlan] || focusPlanDashboards.weight90;
+  if (!focusPlanDashboards[selectedFocusPlan]) selectedFocusPlan = "weight90";
   applyLatestMetricRecords(plan);
+  focusPlanSwitch?.querySelectorAll("[data-focus-plan]").forEach((button) => {
+    const active = button.dataset.focusPlan === selectedFocusPlan;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
   focusMetricGrid.innerHTML = plan.metrics.map((metric) => `
     <button class="focus-metric-card${metric.attention ? " attention" : ""}" type="button" data-focus-metric="${metric.id}">
       <span>${metric.name}</span>
@@ -934,6 +939,13 @@ function metricDateLabel() {
 
 function metricById(metricId) {
   return focusPlanDashboards[selectedFocusPlan]?.metrics.find((metric) => metric.id === metricId);
+}
+
+function metricBaseId(metricId) {
+  if (metricId === "bp" || metricId.startsWith("bp-")) return "bp";
+  if (metricId === "sugar" || metricId.startsWith("sugar-")) return "sugar";
+  if (metricId === "heart" || metricId.startsWith("heart-")) return "heart";
+  return metricId;
 }
 
 function weightRecordKey(time) {
@@ -2303,89 +2315,87 @@ function deleteSelectedUricRecord() {
   showToast("尿酸记录已删除");
 }
 
-function renderMetricDetail() {
-  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
-  const metric = getSelectedMetric();
-  selectedFocusMetric = metric.id;
-  metricDetailPage?.classList.toggle("weight-detail-mode", metric.id === "weight");
-  metricDetailPage?.classList.toggle("pressure-detail-mode", metric.id === "bp");
-  metricDetailPage?.classList.toggle("sugar-detail-mode", metric.id === "sugar");
-  metricDetailPage?.classList.toggle("heart-detail-mode", metric.id === "heart");
-  metricDetailPage?.classList.toggle("lipid-detail-mode", metric.id === "lipid");
-  metricDetailPage?.classList.toggle("uric-detail-mode", metric.id === "uric");
-  metricDetailPage?.classList.toggle("waist-detail-mode", metric.id === "waist");
-  const lipidPanel = document.querySelector("#lipidDetailPanel");
-  if (lipidPanel) lipidPanel.hidden = metric.id !== "lipid";
-  document.querySelector("#lipidHeaderDelete")?.toggleAttribute("hidden", metric.id !== "lipid");
-  const uricPanel = document.querySelector("#uricDetailPanel");
-  if (uricPanel) uricPanel.hidden = metric.id !== "uric";
-  document.querySelector("#uricHeaderDelete")?.toggleAttribute("hidden", metric.id !== "uric");
-  const waistPanel = document.querySelector("#waistDetailPanel");
-  if (waistPanel) waistPanel.hidden = metric.id !== "waist";
-  document.querySelector("#waistTrendButton")?.toggleAttribute("hidden", metric.id !== "waist" || waistDetailMode === "record");
-  ensurePressureDetailExtras();
-  document.querySelector("#metricSugarLowBlock")?.toggleAttribute("hidden", metric.id !== "sugar");
-  resetMetricDetailExtras(metric.id);
-  if (metric.id === "weight") {
-    renderWeightMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "bp") {
-    renderPressureMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "sugar") {
-    renderSugarMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "heart") {
-    renderHeartMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "lipid") {
-    renderLipidMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "uric") {
-    renderUricMetricDetail(metric);
-    return;
-  }
-  if (metric.id === "waist") {
-    renderWaistMetricDetail(metric);
-    return;
-  }
+function renderStandardMetricTrend(metric, values, labels) {
+  const safeValues = values.length ? values : [Number(metric.value || 0)];
+  const min = Math.min(...safeValues);
+  const max = Math.max(...safeValues);
+  const spread = max - min || Math.max(Math.abs(max) * 0.08, 1);
+  const topValue = max + spread * 0.2;
+  const bottomValue = min - spread * 0.2;
+  const yForValue = (value) => 132 - ((value - bottomValue) / (topValue - bottomValue || 1)) * 82;
+  const points = safeValues.map((value, index) => {
+    const x = 24 + index * (272 / Math.max(safeValues.length - 1, 1));
+    return { x, y: yForValue(value), value, label: labels[index] || "" };
+  });
+  return `
+    <svg viewBox="0 0 320 170" role="img" aria-label="${escapeAttr(metric.name)}趋势图">
+      <defs><linearGradient id="metricAreaStandard" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3671ff" stop-opacity=".22"/><stop offset="1" stop-color="#3671ff" stop-opacity="0"/></linearGradient></defs>
+      <path d="M24 50H296M24 91H296M24 132H296" stroke="#e7edf7" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="24" y="38">${escapeAttr(formatMetricNumber(max))}</text>
+      <text x="24" y="146">${escapeAttr(formatMetricNumber(min))}</text>
+      <path d="M${points.map((point) => `${point.x} ${point.y}`).join(" L")} L296 140 L24 140 Z" fill="url(#metricAreaStandard)"/>
+      <polyline points="${points.map((point) => `${point.x},${point.y}`).join(" ")}" fill="none" stroke="#3671ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#fff" stroke="#3671ff" stroke-width="2"/><text x="${point.x}" y="158" text-anchor="middle">${escapeAttr(point.label)}</text>`).join("")}
+    </svg>`;
+}
+
+function renderStandardMetricDetail(metric) {
+  resetMetricDetailExtras("standard");
   const values = rangeMetricValues(metric, selectedMetricRange);
   const labels = metricRangeLabels(selectedMetricRange, values.length);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const average = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const spread = max - min || 1;
-  const points = values.map((value, index) => {
-    const x = 24 + index * (272 / Math.max(values.length - 1, 1));
-    const y = 132 - ((value - min) / spread) * 82;
-    return { x, y, value, label: labels[index] };
-  });
+  const average = values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+  const latestRecord = allMetricRecords(metric)[0];
+  const latestValue = latestRecord?.display || metric.display || formatMetricNumber(metric.value);
+  const latestUnit = latestRecord?.unit ?? metric.unit ?? "";
   metricDetailTitle.textContent = `${metric.name}详情`;
-  metricDetailValue.textContent = metric.display;
-  metricDetailUnit.textContent = metric.unit;
-  metricDetailStatus.textContent = metric.status;
+  metricDetailValue.textContent = latestValue;
+  metricDetailUnit.textContent = latestUnit;
+  metricDetailStatus.textContent = metric.status || "正常";
   metricDetailStatus.classList.toggle("attention", Boolean(metric.attention));
-  const savedRecords = metricRecordsFor(metric.id);
-  metricDetailTime.textContent = savedRecords.length
-    ? `最近记录 ${displayMetricRecordTime(savedRecords[0].time)}`
+  metricDetailTime.textContent = latestRecord
+    ? `最近记录 ${displayMetricRecordTime(latestRecord.time)}`
     : `最近记录 ${dateInputValue(selectedMetricDate).replaceAll("-", "/")} 08:20`;
   metricDateCurrent.textContent = metricDateLabel();
   metricDatePicker.value = dateInputValue(selectedMetricDate);
   metricTrendCaption.textContent = selectedMetricRange === "day" ? "近24小时" : selectedMetricRange === "week" ? "近7天" : "近30天";
-  metricStatAverage.textContent = `${formatMetricNumber(average)} ${metric.unit}`.trim();
-  metricLineChart.innerHTML = `
-    <svg viewBox="0 0 320 170" role="img" aria-label="${metric.name}变化趋势">
-      <defs><linearGradient id="metricArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3671ff" stop-opacity=".22"/><stop offset="1" stop-color="#3671ff" stop-opacity="0"/></linearGradient></defs>
-      <path d="M24 50H296M24 91H296M24 132H296" stroke="#e7edf7" stroke-width="1" stroke-dasharray="4 4"/>
-      <path d="M${points.map((point) => `${point.x} ${point.y}`).join(" L")} L296 140 L24 140 Z" fill="url(#metricArea)"/>
-      <polyline points="${points.map((point) => `${point.x},${point.y}`).join(" ")}" fill="none" stroke="#3671ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      ${points.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#fff" stroke="#3671ff" stroke-width="2"/><text x="${point.x}" y="158" text-anchor="middle">${point.label}</text>`).join("")}
-    </svg>`;
+  metricStatAverage.textContent = `${formatMetricNumber(average)} ${metric.unit || ""}`.trim();
+  metricLineChart.innerHTML = renderStandardMetricTrend(metric, values, labels);
+}
+
+function renderMetricDetail() {
+  applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
+  const metric = getSelectedMetric();
+  const baseMetricId = metricBaseId(metric.id);
+  selectedFocusMetric = metric.id;
+  metricDetailPage?.classList.toggle("weight-detail-mode", false);
+  metricDetailPage?.classList.toggle("pressure-detail-mode", baseMetricId === "bp");
+  metricDetailPage?.classList.toggle("sugar-detail-mode", baseMetricId === "sugar");
+  metricDetailPage?.classList.toggle("heart-detail-mode", false);
+  metricDetailPage?.classList.toggle("lipid-detail-mode", false);
+  metricDetailPage?.classList.toggle("uric-detail-mode", false);
+  metricDetailPage?.classList.toggle("waist-detail-mode", false);
+  const lipidPanel = document.querySelector("#lipidDetailPanel");
+  if (lipidPanel) lipidPanel.hidden = true;
+  document.querySelector("#lipidHeaderDelete")?.setAttribute("hidden", "");
+  const uricPanel = document.querySelector("#uricDetailPanel");
+  if (uricPanel) uricPanel.hidden = true;
+  document.querySelector("#uricHeaderDelete")?.setAttribute("hidden", "");
+  const waistPanel = document.querySelector("#waistDetailPanel");
+  if (waistPanel) waistPanel.hidden = true;
+  document.querySelector("#waistTrendButton")?.setAttribute("hidden", "");
+  ensurePressureDetailExtras();
+  document.querySelector("#metricSugarLowBlock")?.toggleAttribute("hidden", baseMetricId !== "sugar");
+  if (baseMetricId === "bp") {
+    resetMetricDetailExtras("bp");
+    renderPressureMetricDetail(metric);
+    return;
+  }
+  if (baseMetricId === "sugar") {
+    resetMetricDetailExtras("sugar");
+    renderSugarMetricDetail(metric);
+    return;
+  }
+  renderStandardMetricDetail(metric);
 }
 
 function openMetricDetail(metricId) {

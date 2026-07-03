@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260626-diet-datetime-picker">
+  <link rel="stylesheet" href="styles.css?v=20260703-metric-team-switch">
 </head>
 <body>
   <main class="app-shell">
@@ -407,6 +407,12 @@
           <section class="metrics-panel profile-panel" data-profile-panel="metrics">
             <div class="metrics-head">
               <h2>健康指标</h2>
+              <div class="metrics-team-switch" id="focusPlanSwitch" role="tablist" aria-label="团队切换">
+                <button class="active" type="button" role="tab" aria-selected="true" data-focus-plan="weight90">营养师团队</button>
+                <button type="button" role="tab" aria-selected="false" data-focus-plan="kidney">肾病团队</button>
+                <button type="button" role="tab" aria-selected="false" data-focus-plan="cardiovascular">心血管团队</button>
+                <button type="button" role="tab" aria-selected="false" data-focus-plan="diabetes">控糖团队</button>
+              </div>
             </div>
             <section class="unified-metrics-section" aria-label="健康指标列表">
               <div class="unified-metric-grid">
@@ -1662,14 +1668,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260627-diet-bind-note"></script>
-  <script src="scripts/01-data-store.js?v=20260625-diet-task-example"></script>
+  <script src="scripts/00-dom-state.js?v=20260703-metric-team-switch"></script>
+  <script src="scripts/01-data-store.js?v=20260703-metric-detail-trends"></script>
   <script src="scripts/10-schedule.js?v=20260627-diet-meal-domain"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260627-diet-result-name-gram"></script>
   <script src="scripts/30-medicine.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/40-checkin-forms.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/50-reports-services.js?v=20260625-task-direct-binding"></script>
-  <script src="scripts/60-metrics.js?v=20260626-metric-input-clamp"></script>
-  <script src="scripts/70-events-init.js?v=20260627-diet-review-readonly"></script>
+  <script src="scripts/60-metrics.js?v=20260703-metric-detail-trends"></script>
+  <script src="scripts/70-events-init.js?v=20260703-metric-team-switch"></script>
 </body>
 </html>

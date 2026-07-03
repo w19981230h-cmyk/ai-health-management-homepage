@@ -24,7 +24,7 @@ const focusPlanDashboards = {
       { id: "waist", name: "腰围", value: 82.5, display: "82.5", unit: "cm", status: "正常", values: [84.2, 83.9, 83.6, 83.2, 82.9, 82.7, 82.5] },
       { id: "height", name: "身高", value: 165, display: "165", unit: "cm", status: "稳定", values: [165, 165, 165, 165, 165, 165, 165] },
       { id: "heart", name: "心率", value: 76, display: "76", unit: "次/分", status: "正常", values: [78, 75, 77, 74, 76, 73, 76] },
-      { id: "lipid", name: "血脂", value: 1.6, display: "TG 1.6 / LDL-C 2.5", unit: "mmol/L", status: "正常", values: [1.9, 1.8, 1.8, 1.7, 1.7, 1.6, 1.6] },
+      { id: "lipid", name: "血脂", value: 1.6, display: "1.6", unit: "mmol/L", status: "正常", values: [1.9, 1.8, 1.8, 1.7, 1.7, 1.6, 1.6] },
       { id: "uric", name: "尿酸", value: 368, display: "368", unit: "μmol/L", status: "正常", values: [354, 360, 365, 358, 370, 372, 368] },
       { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] },
       { id: "bmi", name: "BMI", value: 25.2, display: "25.2", unit: "", status: "较上次下降 0.6", values: [25.8, 25.7, 25.6, 25.5, 25.4, 25.3, 25.2] }

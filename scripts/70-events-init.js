@@ -666,6 +666,14 @@ profileTabs.forEach((tab) => {
   });
 });
 
+focusPlanSwitch?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-focus-plan]");
+  if (!button || !focusPlanDashboards[button.dataset.focusPlan]) return;
+  selectedFocusPlan = button.dataset.focusPlan;
+  selectedFocusMetric = focusPlanDashboards[selectedFocusPlan].metrics[0]?.id || "";
+  renderFocusPlans();
+});
+
 focusMetricGrid?.addEventListener("click", (event) => {
   const card = event.target.closest("[data-focus-metric]");
   if (card) openMetricDetail(card.dataset.focusMetric);

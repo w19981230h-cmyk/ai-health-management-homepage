@@ -2500,6 +2500,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .metrics-head h2 {
@@ -2520,6 +2521,41 @@
   height: 16px;
   border-radius: 3px;
   background: #3671ff;
+}
+
+.metrics-team-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 4px;
+  overflow-x: auto;
+  border: 1px solid rgba(54, 113, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 4px 14px rgba(10, 6, 130, 0.04);
+  scrollbar-width: none;
+}
+
+.metrics-team-switch::-webkit-scrollbar {
+  display: none;
+}
+
+.metrics-team-switch button {
+  flex: 0 0 auto;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: #5d6b82;
+  font-size: 12px;
+  font-weight: 800;
+  background: transparent;
+}
+
+.metrics-team-switch button.active {
+  color: #fff;
+  background: linear-gradient(135deg, #3671ff, #5e8cff);
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.22);
 }
 
 .unified-metrics-section {
