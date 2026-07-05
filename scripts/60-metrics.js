@@ -25,7 +25,7 @@ const metricRecordConfigs = {
   weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
   waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
   height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
-  heart: [{ key: "value", label: "心率值", unit: "bpm/次/分", step: "1", min: "20", max: "200", required: true }],
+  heart: [{ key: "value", label: "心率值", unit: "次/分", step: "1", min: "20", max: "200", required: true }],
   lipid: [
     { key: "tc", label: "总胆固醇 TC", unit: "mmol/L", step: "0.01", min: "0.1", max: "20", decimals: 2, required: true, ownTime: true, group: "basic" },
     { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.01", min: "0.1", max: "50", decimals: 2, required: true, ownTime: true, group: "basic" },
@@ -35,11 +35,43 @@ const metricRecordConfigs = {
     { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "ng/ml", step: "0.01", min: "0", max: "200", decimals: 2, ownTime: true, group: "oxldl" }
   ],
   uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "0.01", min: "0", max: "1200", decimals: 2, required: true }],
-  fat: [{ key: "value", label: "体脂", unit: "%", step: "0.1", min: "1", max: "70" }],
-  bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80" }]
+  fat: [{ key: "value", label: "体脂率", unit: "%", step: "0.1", min: "1", max: "70", required: true }],
+  bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80", required: true }],
+  egfr: [{ key: "value", label: "肾小球过滤率", unit: "mL/min", step: "1", min: "1", max: "200", required: true }],
+  "kidney-size": [{ key: "value", label: "肾脏大小", unit: "cm", step: "0.1", min: "5", max: "20", required: true }],
+  creatinine: [{ key: "value", label: "肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }],
+  "serum-creatinine": [{ key: "value", label: "血肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }]
 };
 
+function metricRecordConfigId(metricId) {
+  const baseId = metricBaseId(metricId);
+  if (metricRecordConfigs[metricId]) return metricId;
+  if (metricRecordConfigs[baseId]) return baseId;
+  return metricId;
+}
+
+function metricRecordFieldsFor(metric) {
+  return metricRecordConfigs[metricRecordConfigId(metric.id)] || [{
+    key: "value",
+    label: `${metric.name}值`,
+    unit: metric.unit || "",
+    step: Number(metric.value) >= 100 ? "1" : "0.1",
+    min: "0",
+    max: "9999",
+    required: true
+  }];
+}
+
+function getMetricNameById(metricId) {
+  for (const dashboard of Object.values(focusPlanDashboards)) {
+    const metric = dashboard.metrics.find((item) => item.id === metricId);
+    if (metric) return metric.name;
+  }
+  return "";
+}
+
 function metricRecordTimeLabelFor(metricId) {
+  const baseId = metricBaseId(metricId);
   return {
     sugar: "血糖测量时间",
     bp: "血压测量时间",
@@ -50,8 +82,16 @@ function metricRecordTimeLabelFor(metricId) {
     lipid: "血脂记录时间",
     uric: "检查时间",
     fat: "体脂测量时间",
-    bmi: "BMI测量时间"
-  }[metricId] || "打卡时间";
+    bmi: "BMI测量时间",
+    egfr: "检测时间",
+    "kidney-size": "检查时间",
+    creatinine: "检测时间",
+    "serum-creatinine": "检测时间"
+  }[metricId] || {
+    sugar: "血糖测量时间",
+    bp: "血压测量时间",
+    heart: "心率测量时间"
+  }[baseId] || `${getMetricNameById(metricId) || "指标"}记录时间`;
 }
 
 function metricRecordsFor(metricId) {
@@ -479,13 +519,17 @@ function confirmMetricRecordDelete() {
 }
 
 function metricStatus(metricId, values) {
+  const baseId = metricBaseId(metricId);
   const primary = values.value ?? values.systolic;
   const attention = (
-    (metricId === "sugar" && primary > 6.1) ||
-    (metricId === "bp" && (values.systolic >= 140 || values.diastolic >= 90)) ||
-    (metricId === "heart" && (primary < 60 || primary > 100)) ||
+    (baseId === "sugar" && primary > 6.1) ||
+    (baseId === "bp" && (values.systolic >= 140 || values.diastolic >= 90)) ||
+    (baseId === "heart" && (primary < 60 || primary > 100)) ||
     (metricId === "fat" && primary > 30) ||
-    (metricId === "bmi" && primary >= 24)
+    (metricId === "bmi" && primary >= 24) ||
+    (metricId === "egfr" && primary < 60) ||
+    (metricId === "kidney-size" && (primary < 9 || primary > 12)) ||
+    ((metricId === "creatinine" || metricId === "serum-creatinine") && primary > 97)
   );
   return { text: attention ? "需关注" : "正常", attention };
 }
@@ -555,12 +599,13 @@ function openMetricRecordSheet(recordId = "") {
   const metric = getSelectedMetric();
   editingMetricRecordId = recordId || "";
   const editingRecord = metricRecordById(metric.id, editingMetricRecordId);
-  const fields = metricRecordConfigs[metric.id] || metricRecordConfigs.weight;
-  const isUric = metric.id === "uric";
-  metricRecordSheet.classList.toggle("metric-record-sheet-lipid", metric.id === "lipid");
-  metricRecordSheet.classList.toggle("metric-record-sheet-combined-note", ["heart", "uric"].includes(metric.id));
+  const fields = metricRecordFieldsFor(metric);
+  const configId = metricRecordConfigId(metric.id);
+  const isUric = configId === "uric";
+  metricRecordSheet.classList.toggle("metric-record-sheet-lipid", configId === "lipid");
+  metricRecordSheet.classList.toggle("metric-record-sheet-combined-note", ["heart", "uric"].includes(configId));
   metricRecordSheetTitle.textContent = editingMetricRecordId ? `编辑${metric.name}记录` : `记录${metric.name}`;
-  metricRecordFields.innerHTML = metric.id === "heart" ? `
+  metricRecordFields.innerHTML = configId === "heart" ? `
     <section class="metric-heart-field">
       <span>心率值 <b class="metric-required">*</b></span>
       <div class="weight-stepper">
@@ -629,7 +674,7 @@ function openMetricRecordSheet(recordId = "") {
       ` : ""}
     </section>
   `).join("");
-  if (metric.id === "lipid") {
+  if (configId === "lipid") {
     const renderMetricValueField = (field) => `
       <section class="metric-value-field">
         <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
@@ -683,10 +728,10 @@ function openMetricRecordSheet(recordId = "") {
   metricRecordTime.value = editingRecord?.time || localDateTimeInputValue();
   if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = metricRecordTimeLabelFor(metric.id);
   updateMetricRecordTimeText();
-  metricRecordNoteField.hidden = !["heart", "uric", "lipid"].includes(metric.id);
-  metricRecordNoteField.querySelector("span").textContent = metric.id === "lipid" ? "备注（全局）" : "备注";
-  metricRecordNote.placeholder = metric.id === "heart" ? "记录运动后、静息、心慌、服药后等情况" : isUric ? "可记录饮酒、饮食、痛风发作、用药变化等" : "请输入备注";
-  if (metric.id === "lipid") {
+  metricRecordNoteField.hidden = !["heart", "uric", "lipid"].includes(configId);
+  metricRecordNoteField.querySelector("span").textContent = configId === "lipid" ? "备注（全局）" : "备注";
+  metricRecordNote.placeholder = configId === "heart" ? "记录运动后、静息、心慌、服药后等情况" : isUric ? "可记录饮酒、饮食、痛风发作、用药变化等" : "请输入备注";
+  if (configId === "lipid") {
     const globalLevel = metricRecordFields.querySelector(".lipid-level-global");
     if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = "血脂记录时间";
     metricRecordNoteField.querySelector("span").textContent = "备注（全局）";
@@ -718,10 +763,10 @@ function metricRecordDefaultValue(metric, field) {
 
 function stepMetricRecordValue(key, delta) {
   const metric = getSelectedMetric();
-  const field = metricRecordConfigs[metric.id]?.find((item) => item.key === key);
+  const field = metricRecordFieldsFor(metric).find((item) => item.key === key);
   const input = metricRecordFields?.querySelector(`[data-metric-input="${key}"]`);
   if (!field || !input) return;
-  const fallback = metric.id === "heart" ? 72 : Number(field.min);
+  const fallback = metricRecordConfigId(metric.id) === "heart" ? 72 : Number(field.min);
   const current = normalizeDecimal(input.value, fallback);
   const decimals = metricFieldDecimals(field);
   const factor = 10 ** decimals;
@@ -746,7 +791,7 @@ function clampMetricValueInput(input, field, shouldFormat = false) {
 function clampMetricRecordValueInput(input, shouldFormat = false) {
   const metric = getSelectedMetric();
   const key = input?.dataset?.metricInput;
-  const field = metricRecordConfigs[metric.id]?.find((item) => item.key === key);
+  const field = metricRecordFieldsFor(metric).find((item) => item.key === key);
   clampMetricValueInput(input, field, shouldFormat);
 }
 
@@ -757,7 +802,8 @@ function clampMetricRecordInputEvent(event, shouldFormat = false) {
 }
 
 function metricRecordSuccessLines(metric, record) {
-  if (metric.id === "lipid") {
+  const configId = metricRecordConfigId(metric.id);
+  if (configId === "lipid") {
     const lipidLine = (key, label) => {
       const field = lipidRecordField(key);
       return { label, value: formatMetricFieldValue(record.values[key], field), unit: field?.unit || "mmol/L" };
@@ -772,21 +818,16 @@ function metricRecordSuccessLines(metric, record) {
     if (record.values.oxldl != null) lipidLines.push(lipidLine("oxldl", "oxLDL-C"));
     return lipidLines;
   }
-  if (metric.id === "heart") return [{ label: "当前心率", value: record.display, unit: record.unit }];
-  if (metric.id === "uric") return [{ label: "当前尿酸", value: record.display, unit: record.unit }];
+  if (configId === "heart") return [{ label: "当前心率", value: record.display, unit: record.unit }];
+  if (configId === "uric") return [{ label: "当前尿酸", value: record.display, unit: record.unit }];
   if (metric.id === "fat") return [{ label: "当前体脂率", value: record.display, unit: record.unit }];
-  if (metric.id === "lipid") {
-    return [
-      { label: "甘油三酯", value: formatMetricNumber(record.values.tg), unit: "mmol/L" },
-      { label: "低密度脂蛋白", value: formatMetricNumber(record.values.ldl), unit: "mmol/L" }
-    ];
-  }
   return [{ label: `当前${metric.name}`, value: record.display, unit: record.unit }];
 }
 
 function saveMetricRecord() {
   const metric = getSelectedMetric();
-  const config = metricRecordConfigs[metric.id];
+  const config = metricRecordFieldsFor(metric);
+  const configId = metricRecordConfigId(metric.id);
   const values = {};
   for (const field of config) {
     const input = metricRecordFields.querySelector(`[data-metric-input="${field.key}"]`);
@@ -796,9 +837,9 @@ function saveMetricRecord() {
       continue;
     }
     const value = Number(input?.value);
-    if (!rawValue || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max) || (metric.id === "heart" && !Number.isInteger(value))) {
-      metricRecordError.textContent = metric.id === "heart"
-        ? "请输入 20 ~ 200 bpm 范围内的整数心率"
+    if (!rawValue || !Number.isFinite(value) || value < Number(field.min) || value > Number(field.max) || (configId === "heart" && !Number.isInteger(value))) {
+      metricRecordError.textContent = configId === "heart"
+        ? "请输入 20 ~ 200 次/分范围内的整数心率"
         : `请填写${field.label}，范围 ${field.min}-${field.max}${field.unit}`;
       input?.focus();
       return;
@@ -818,15 +859,15 @@ function saveMetricRecord() {
     metricRecordError.textContent = `请选择${metricRecordTimeLabelFor(metric.id)}`;
     return;
   }
-  if (metric.id === "sugar" && !values.period) values.period = "空腹";
-  const display = metric.id === "bp"
+  if (configId === "sugar" && !values.period) values.period = "空腹";
+  const display = configId === "bp"
     ? `${values.systolic}/${values.diastolic}`
-    : metric.id === "lipid"
+    : configId === "lipid"
       ? `TC ${formatLipidMetricValue("tc", values.tc)} / TG ${formatLipidMetricValue("tg", values.tg)} / LDL-C ${formatLipidMetricValue("ldl", values.ldl)}`
-      : metric.id === "uric"
+      : configId === "uric"
         ? formatUricValue(values.value)
       : formatMetricNumber(values.value);
-  const chartValue = metric.id === "bp" ? values.systolic : metric.id === "lipid" ? values.tg : values.value;
+  const chartValue = configId === "bp" ? values.systolic : configId === "lipid" ? values.tg : values.value;
   const status = metricStatus(metric.id, values);
   const record = {
     id: editingMetricRecordId && !editingMetricRecordId.startsWith("lipid-sample-") ? editingMetricRecordId : `metric-${Date.now()}`,
@@ -837,7 +878,7 @@ function saveMetricRecord() {
     status: status.text,
     attention: status.attention,
     values,
-    note: ["heart", "uric", "lipid"].includes(metric.id) ? metricRecordNote.value.trim() : ""
+    note: ["heart", "uric", "lipid"].includes(configId) ? metricRecordNote.value.trim() : ""
   };
   if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
   if (!metricRecordsByPatient[currentPatient.id][metric.id]) metricRecordsByPatient[currentPatient.id][metric.id] = [];

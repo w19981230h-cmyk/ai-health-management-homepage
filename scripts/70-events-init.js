@@ -645,6 +645,264 @@ function renderPortraitMarkers(regionName) {
   }).join("");
 }
 
+const portraitRegionsV2 = {
+  root: {
+    title: "全身总览",
+    icon: "身",
+    hint: "先选择一级部位",
+    camera: { scale: 1, x: 0, y: 0 },
+    markers: [],
+    organs: []
+  },
+  head: {
+    title: "头颈",
+    icon: "头",
+    hint: "颅脑 / 眼睛 / 鼻子 / 口腔 / 耳朵 / 咽喉",
+    camera: { scale: 1.9, x: 0, y: 260 },
+    markers: ["brain", "eye", "nose", "mouth", "ear", "throat", "thyroid"],
+    organs: [
+      { id: "brain", name: "颅脑", desc: "补充颅脑相关检查报告，为你分析", camera: { scale: 2.05, x: 0, y: 300 } },
+      { id: "eye", name: "眼睛", desc: "关注视力、眼压和眼底检查记录", camera: { scale: 2.08, x: 14, y: 258 } },
+      { id: "nose", name: "鼻子", desc: "关注鼻炎、鼻窦及呼吸通畅情况", camera: { scale: 2.1, x: 0, y: 236 } },
+      { id: "mouth", name: "口腔", desc: "关注牙龈、口腔溃疡和口腔检查", camera: { scale: 2.05, x: 0, y: 210 } },
+      { id: "ear", name: "耳朵", desc: "关注听力、耳鸣和眩晕相关提示", camera: { scale: 2.02, x: -46, y: 252 } },
+      { id: "throat", name: "咽喉", desc: "关注咽痛、咳嗽和吞咽不适", camera: { scale: 1.96, x: 0, y: 182 } },
+      { id: "thyroid", name: "甲状腺", desc: "关注甲状腺结节和代谢指标", camera: { scale: 1.96, x: 0, y: 160 } }
+    ]
+  },
+  chest: {
+    title: "胸部",
+    icon: "胸",
+    hint: "心脏 / 肺 / 气管 / 乳房 / 食管 / 胸腺",
+    camera: { scale: 1.75, x: 15, y: -92 },
+    markers: ["heart", "lung", "trachea", "breast", "esophagus", "thymus"],
+    organs: [
+      { id: "heart", name: "心脏", risk: "1 项需关注", card: "CT：心脏CT见主动脉钙化", desc: "关注心率、血压和心血管风险", camera: { scale: 1.92, x: 8, y: -58 } },
+      { id: "lung", name: "肺", desc: "补充胸部CT或肺部检查报告，为你分析", camera: { scale: 1.82, x: 0, y: -50 } },
+      { id: "trachea", name: "气管", desc: "关注咳嗽、喘息和呼吸道症状", camera: { scale: 1.9, x: 0, y: 8 } },
+      { id: "breast", name: "乳房", desc: "关注乳腺结节、增生和筛查记录", camera: { scale: 1.78, x: 28, y: -62 } },
+      { id: "esophagus", name: "食管", desc: "关注反酸、吞咽不适和消化道症状", camera: { scale: 1.9, x: 0, y: -66 } },
+      { id: "thymus", name: "胸腺", desc: "关注胸腺影像和免疫相关提示", camera: { scale: 1.86, x: 0, y: -18 } }
+    ]
+  },
+  abdomen: {
+    title: "腹部",
+    icon: "腹",
+    hint: "胆 / 胃 / 肝 / 胰 / 脾 / 输尿管 / 肾 / 肠",
+    camera: { scale: 1.8, x: 0, y: -40 },
+    markers: ["gallbladder", "stomach", "liver", "pancreas", "spleen", "ureter", "kidney", "intestine"],
+    organs: [
+      { id: "gallbladder", name: "胆", risk: "1 项需关注", card: "CT：胆囊CT未见显影需评估", desc: "关注胆囊结石、胆囊炎和腹部超声", camera: { scale: 1.95, x: 42, y: -35 } },
+      { id: "stomach", name: "胃", desc: "关注胃痛、胃炎、饮食和胃镜记录", camera: { scale: 1.9, x: -28, y: -36 } },
+      { id: "liver", name: "肝", desc: "关注肝功能、脂肪肝和用药饮酒影响", camera: { scale: 1.88, x: 36, y: -22 } },
+      { id: "pancreas", name: "胰", desc: "关注血糖、胰腺和代谢相关风险", camera: { scale: 1.92, x: 0, y: -58 } },
+      { id: "spleen", name: "脾", desc: "关注脾脏大小和腹部影像提示", camera: { scale: 1.9, x: -42, y: -30 } },
+      { id: "ureter", name: "输尿管", desc: "关注泌尿系统通畅度和相关检查", camera: { scale: 1.92, x: 26, y: -96 } },
+      { id: "kidney", name: "肾", desc: "关注肾小球过滤率、肌酐、尿酸和血压", camera: { scale: 1.9, x: -26, y: -92 } },
+      { id: "intestine", name: "肠", desc: "关注肠道症状、腹泻便秘和肠镜记录", camera: { scale: 1.86, x: 0, y: -112 } }
+    ]
+  },
+  pelvis: {
+    title: "盆腔",
+    icon: "盆",
+    hint: "膀胱 / 子宫及附件 / 阴道 / 前列腺 / 睾丸 / 输精管",
+    camera: { scale: 1.82, x: 0, y: -150 },
+    markers: ["bladder", "uterus", "vagina", "prostate", "testis", "vas"],
+    organs: [
+      { id: "bladder", name: "膀胱", desc: "补充膀胱相关检查报告，为你分析", camera: { scale: 1.95, x: 0, y: -170 } },
+      { id: "uterus", name: "子宫及附件", desc: "关注妇科超声、经期和附件相关记录", camera: { scale: 1.95, x: 12, y: -150 } },
+      { id: "vagina", name: "阴道", desc: "关注分泌物、炎症和妇科检查", camera: { scale: 1.95, x: 0, y: -190 } },
+      { id: "prostate", name: "前列腺", desc: "关注前列腺超声、尿频尿急等提示", camera: { scale: 1.95, x: -12, y: -160 } },
+      { id: "testis", name: "睾丸", desc: "关注男性生殖系统检查", camera: { scale: 1.9, x: 28, y: -205 } },
+      { id: "vas", name: "输精管", desc: "关注男性生殖系统相关记录", camera: { scale: 1.9, x: -34, y: -200 } }
+    ]
+  },
+  skeleton: {
+    title: "骨骼",
+    icon: "骨",
+    hint: "骨骼 / 关节",
+    camera: { scale: 1.22, x: 0, y: -35 },
+    markers: ["bone", "joint"],
+    organs: [
+      { id: "bone", name: "骨骼", desc: "补充骨骼相关检查报告，为你分析", camera: { scale: 1.28, x: 0, y: -42 } },
+      { id: "joint", name: "关节", desc: "关注关节疼痛、活动受限和影像检查", camera: { scale: 1.35, x: -32, y: -80 } }
+    ]
+  },
+  vessel: {
+    title: "血管",
+    icon: "管",
+    hint: "血管",
+    camera: { scale: 1.08, x: 0, y: -18 },
+    markers: ["vessel"],
+    organs: [
+      { id: "vessel", name: "血管", risk: "1 项需关注", card: "CT：动脉硬化，需进一步评估", desc: "关注动脉硬化、血压和心血管风险", camera: { scale: 1.12, x: 0, y: -26 } }
+    ]
+  }
+};
+
+const portraitOrganTargets = {
+  brain: [".brain"],
+  eye: [".eye"],
+  nose: [".nose"],
+  mouth: [".mouth"],
+  ear: [".ear"],
+  throat: [".throat"],
+  thyroid: [".thyroid"],
+  heart: [".heart"],
+  lung: [".lung"],
+  trachea: [".trachea"],
+  breast: [".breast"],
+  esophagus: [".esophagus"],
+  thymus: [".thymus"],
+  gallbladder: [".gallbladder"],
+  stomach: [".stomach"],
+  liver: [".liver"],
+  pancreas: [".pancreas"],
+  spleen: [".spleen"],
+  ureter: [".ureter"],
+  kidney: [".kidney"],
+  intestine: [".intestine"],
+  bladder: [".bladder"],
+  uterus: [".uterus"],
+  vagina: [".vagina"],
+  prostate: [".prostate"],
+  testis: [".testis"],
+  vas: [".vas"],
+  bone: [".bone"],
+  joint: [".joint"],
+  vessel: [".vessel"]
+};
+
+function portraitIconSvg(type) {
+  const paths = {
+    brain: '<path d="M8 13c-2.5-1-2.5-5 0-6 1-3 5-3.5 6-1 2-1.5 5 .2 5 3 2 .6 2.7 3.8.5 5-.6 2.6-4 3-5.5 1.3-1.7 1.5-4.6 1.3-6-.3Z"/><path d="M12 6v10M15 7v8"/>',
+    eye: '<path d="M3 12s3.5-5 9-5 9 5 9 5-3.5 5-9 5-9-5-9-5Z"/><circle cx="12" cy="12" r="2.5"/>',
+    nose: '<path d="M12 4c1 4 3 6.5 3 10 0 2-1.7 3-3 3-1.5 0-3-.7-4-1.8"/><path d="M10 18c1.5.8 3 .8 4 0"/>',
+    mouth: '<path d="M5 11c3 3 11 3 14 0"/><path d="M7 14c3 3 7 3 10 0"/>',
+    ear: '<path d="M8 8c0-3 2-5 5-5s5 2 5 5c0 5-5 5-5 10 0 2-3 2-4 0"/><path d="M11 8c0-1.5 1-2.5 2.5-2.5S16 6.5 16 8c0 2-2 2.3-2.7 4"/>',
+    throat: '<path d="M9 4v8c0 4 6 4 6 0V4"/><path d="M7 11h10M10 16h4"/>',
+    thyroid: '<path d="M12 13c-2-4-4-5-7-4-.5 5 2 8 7 8 5 0 7.5-3 7-8-3-1-5 0-7 4Z"/><path d="M12 7v10"/>',
+    heart: '<path d="M12 20S5 15 5 9.8C5 6 9 4.8 12 8c3-3.2 7-2 7 1.8C19 15 12 20 12 20Z"/>',
+    lung: '<path d="M11 5v14M13 5v14"/><path d="M11 9C7 7 5 10 5 15c0 4 2 6 5 4 1-2 1-6 1-10Z"/><path d="M13 9c4-2 6 1 6 6 0 4-2 6-5 4-1-2-1-6-1-10Z"/>',
+    trachea: '<path d="M12 4v16"/><path d="M9 7h6M9 10h6M9 13h6M9 16h6"/>',
+    breast: '<path d="M6 13a5 5 0 0 0 10 0"/><path d="M18 13a5 5 0 0 1-10 0"/>',
+    esophagus: '<path d="M12 4c-3 5 3 8 0 16"/>',
+    thymus: '<path d="M12 4l6 3v5c0 4-2.6 6.5-6 8-3.4-1.5-6-4-6-8V7l6-3Z"/>',
+    liver: '<path d="M4 11c6-5 13-5 17 1-4 4-12 5-17-1Z"/>',
+    gallbladder: '<path d="M12 4c4 4 4 9 0 14-4-5-4-10 0-14Z"/>',
+    stomach: '<path d="M12 4c5 1 7 6 4 10-2.5 4-9 3-8-2 .5-3 2-6 4-8Z"/>',
+    pancreas: '<path d="M4 13c5-4 11-4 16-1-4 4-11 5-16 1Z"/>',
+    spleen: '<path d="M15 5c5 5 3 13-3 14-4-5-2-12 3-14Z"/>',
+    kidney: '<path d="M9 4c4 2 4 11-1 14-4-2-4-11 1-14Z"/><path d="M15 4c-4 2-4 11 1 14 4-2 4-11-1-14Z"/>',
+    ureter: '<path d="M8 5c0 7 8 7 8 14"/><path d="M16 5c0 7-8 7-8 14"/>',
+    intestine: '<path d="M6 8c5-4 12-1 12 4 0 6-9 7-12 2-2-3-1-5 2-6Z"/><path d="M8 12h8M9 15h5"/>',
+    bladder: '<path d="M8 8c3-3 5-3 8 0 2 7-1 11-4 11s-6-4-4-11Z"/>',
+    uterus: '<path d="M7 7c3 3 7 3 10 0-1 7-3 10-5 10S8 14 7 7Z"/><path d="M7 9H4M17 9h3"/>',
+    vagina: '<path d="M12 5v14M8 11h8"/>',
+    prostate: '<path d="M8 8c3 2 5 2 8 0v8c-3 2-5 2-8 0V8Z"/>',
+    testis: '<circle cx="9" cy="15" r="3"/><circle cx="15" cy="15" r="3"/><path d="M12 4c-4 3-5 7-3 11M12 4c4 3 5 7 3 11"/>',
+    vas: '<path d="M7 18c-4-6-1-12 5-14 6 2 9 8 5 14"/><path d="M9 15h6"/>',
+    bone: '<path d="M8 8a3 3 0 1 1 3-3h2a3 3 0 1 1 3 3l-8 8a3 3 0 1 1-3-3v-2a3 3 0 1 1 3-3Z"/>',
+    joint: '<circle cx="12" cy="12" r="4"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/>',
+    vessel: '<path d="M5 18c4-8 10-4 14-12"/><path d="M5 12c4 0 4 4 8 4"/><path d="M12 8c3 0 4 2 7 2"/>'
+  };
+  return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[type] || paths.thymus}</svg>`;
+}
+
+function applyPortraitCamera(camera) {
+  if (!portraitFigure) return;
+  const next = camera || portraitRegionsV2.root.camera;
+  portraitFigure.style.setProperty("--portrait-scale", next.scale);
+  portraitFigure.style.setProperty("--portrait-x", `${next.x}px`);
+  portraitFigure.style.setProperty("--portrait-y", `${next.y}px`);
+}
+
+function clearPortraitOrganSelection() {
+  portraitFigure?.querySelectorAll(".organ-selected").forEach((node) => node.classList.remove("organ-selected"));
+}
+
+function setPortraitRegion(regionName) {
+  const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
+  currentPortraitRegion = regionName;
+  portraitFigure?.setAttribute("data-portrait-view", regionName);
+  portraitFigure?.removeAttribute("data-portrait-organ");
+  applyPortraitCamera(region.camera);
+  clearPortraitOrganSelection();
+  portraitCurrentIcon.innerHTML = regionName === "root" ? "身" : portraitIconSvg(region.markers[0] || "thymus");
+  if (portraitOrganInfo) portraitOrganInfo.hidden = regionName === "root";
+  if (portraitOrganPanelTitle) portraitOrganPanelTitle.textContent = regionName === "root" ? "一级部位" : region.title;
+  if (portraitOrganPanelHint) portraitOrganPanelHint.textContent = region.hint;
+  renderPortraitMarkers(regionName);
+  portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitRegion === regionName);
+  });
+  portraitOrganList.innerHTML = region.organs.length ? region.organs.map((organ) => `
+    <button type="button" data-portrait-organ="${organ.id}" data-parent-region="${regionName}">
+      <i>${portraitIconSvg(organ.id)}</i>
+      <span>${organ.name}</span>
+    </button>
+  `).join("") : "";
+  if (region.organs.length) activatePortraitOrgan(region.organs[0], regionName, { keepCamera: true });
+}
+
+function setPortraitOrgan(organId) {
+  const entry = Object.entries(portraitRegionsV2).find(([, region]) => region.organs?.some((organ) => organ.id === organId));
+  if (!entry) return;
+  const [regionName, region] = entry;
+  const organ = region.organs.find((item) => item.id === organId);
+  if (currentPortraitRegion !== regionName) {
+    setPortraitRegion(regionName);
+  }
+  activatePortraitOrgan(organ, regionName);
+}
+
+function activatePortraitOrgan(organ, regionName, options = {}) {
+  const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
+  const hasRisk = Boolean(organ.risk || ["heart", "gallbladder", "vessel"].includes(organ.id));
+  portraitFigure?.setAttribute("data-portrait-organ", organ.id);
+  if (!options.keepCamera) applyPortraitCamera(organ.camera || region.camera);
+  clearPortraitOrganSelection();
+  (portraitOrganTargets[organ.id] || []).forEach((selector) => {
+    portraitFigure?.querySelectorAll(selector).forEach((node) => node.classList.add("organ-selected"));
+  });
+  portraitCurrentIcon.innerHTML = portraitIconSvg(organ.id);
+  if (portraitOrganInfo) {
+    portraitOrganInfo.hidden = false;
+    portraitInfoIcon.innerHTML = portraitIconSvg(organ.id);
+    portraitInfoTitle.textContent = organ.name;
+    portraitInfoRisk.textContent = hasRisk ? (organ.risk || "1 项需关注") : "暂无异常";
+    portraitInfoDesc.textContent = organ.card || organ.desc;
+    const action = document.querySelector("#portraitInfoAction");
+    if (action) action.textContent = hasRisk ? "查看详情" : "新增报告";
+  }
+  if (portraitOrganPanelTitle) portraitOrganPanelTitle.textContent = region.title;
+  if (portraitOrganPanelHint) portraitOrganPanelHint.textContent = "点击下方器官继续切换";
+  portraitOrganList?.querySelectorAll("[data-portrait-organ]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
+  });
+  portraitMarkerLayer?.querySelectorAll("[data-portrait-organ]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
+  });
+}
+
+function getPortraitOrgan(organId) {
+  for (const region of Object.values(portraitRegionsV2)) {
+    const organ = region.organs?.find((item) => item.id === organId);
+    if (organ) return organ;
+  }
+  return null;
+}
+
+function renderPortraitMarkers(regionName) {
+  if (!portraitMarkerLayer) return;
+  const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
+  portraitMarkerLayer.innerHTML = (region.markers || []).map((organId) => {
+    const organ = getPortraitOrgan(organId);
+    if (!organ) return "";
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><span>${portraitIconSvg(organ.id)}</span></button>`;
+  }).join("");
+}
+
 setPortraitRegion("root");
 
 function closeOverlays() {
