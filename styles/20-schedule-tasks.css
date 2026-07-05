@@ -1774,6 +1774,7 @@
 .portrait-body {
   position: relative;
   min-height: calc(100vh - 112px);
+  padding-bottom: 178px;
 }
 
 .portrait-side {
@@ -1898,52 +1899,538 @@
   height: auto;
   min-height: 690px;
   overflow: hidden;
+  pointer-events: auto;
+}
+
+.portrait-stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 573px;
+  transform-origin: 50% 38%;
+  transform: translate3d(var(--portrait-x, 0), var(--portrait-y, 0), 0) scale(var(--portrait-scale, 1));
+  transition: transform 420ms ease-out, opacity 280ms ease-out;
+  will-change: transform;
+}
+
+.portrait-svg {
+  display: block;
+  width: 256px;
+  height: 573px;
+  overflow: visible;
+}
+
+.portrait-marker-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  width: 256px;
+  height: 573px;
   pointer-events: none;
 }
 
-.portrait-figure img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center top;
-  opacity: 0.96;
-  filter: saturate(1.02);
+.portrait-figure[data-portrait-view="root"] {
+  --portrait-scale: 1;
+  --portrait-x: 0;
+  --portrait-y: 0;
 }
 
-.body-outline {
-  fill: rgba(248,252,255,0.58);
-  stroke: #82bdff;
-  stroke-width: 1.6;
+.portrait-figure[data-portrait-view="head"],
+.portrait-figure[data-portrait-organ="brain"],
+.portrait-figure[data-portrait-organ="eye"],
+.portrait-figure[data-portrait-organ="nose"],
+.portrait-figure[data-portrait-organ="mouth"],
+.portrait-figure[data-portrait-organ="ear"],
+.portrait-figure[data-portrait-organ="throat"],
+.portrait-figure[data-portrait-organ="thyroid"] {
+  --portrait-scale: 1.9;
+  --portrait-x: 0;
+  --portrait-y: 260px;
 }
 
-.body-inner,
-.skeleton {
+.portrait-figure[data-portrait-view="chest"],
+.portrait-figure[data-portrait-organ="heart"],
+.portrait-figure[data-portrait-organ="lung"],
+.portrait-figure[data-portrait-organ="trachea"],
+.portrait-figure[data-portrait-organ="breast"],
+.portrait-figure[data-portrait-organ="esophagus"],
+.portrait-figure[data-portrait-organ="thymus"] {
+  --portrait-scale: 1.75;
+  --portrait-x: 15px;
+  --portrait-y: -180px;
+}
+
+.portrait-figure[data-portrait-view="abdomen"],
+.portrait-figure[data-portrait-organ="gallbladder"],
+.portrait-figure[data-portrait-organ="stomach"],
+.portrait-figure[data-portrait-organ="liver"],
+.portrait-figure[data-portrait-organ="pancreas"],
+.portrait-figure[data-portrait-organ="spleen"],
+.portrait-figure[data-portrait-organ="ureter"],
+.portrait-figure[data-portrait-organ="kidney"],
+.portrait-figure[data-portrait-organ="intestine"] {
+  --portrait-scale: 1.8;
+  --portrait-x: 0;
+  --portrait-y: -40px;
+}
+
+.portrait-figure[data-portrait-view="pelvis"],
+.portrait-figure[data-portrait-organ="bladder"],
+.portrait-figure[data-portrait-organ="uterus"],
+.portrait-figure[data-portrait-organ="vagina"],
+.portrait-figure[data-portrait-organ="prostate"],
+.portrait-figure[data-portrait-organ="testis"],
+.portrait-figure[data-portrait-organ="vas"] {
+  --portrait-scale: 1.82;
+  --portrait-x: 0;
+  --portrait-y: -150px;
+}
+
+.portrait-figure[data-portrait-view="skeleton"],
+.portrait-figure[data-portrait-organ="bone"],
+.portrait-figure[data-portrait-organ="joint"] {
+  --portrait-scale: 1.22;
+  --portrait-x: 0;
+  --portrait-y: -35px;
+}
+
+.portrait-figure[data-portrait-view="vessel"],
+.portrait-figure[data-portrait-organ="vessel"] {
+  --portrait-scale: 1.08;
+  --portrait-x: 0;
+  --portrait-y: -18px;
+}
+
+.anatomy-layer {
+  opacity: 0.16;
+  visibility: hidden;
+  transition: opacity 360ms ease-out, visibility 360ms ease-out, filter 360ms ease-out;
+}
+
+.anatomy-base {
+  opacity: 0.9;
+  visibility: visible;
+}
+
+.portrait-figure[data-portrait-view="root"] .anatomy-layer {
+  opacity: 0.68;
+  visibility: visible;
+}
+
+.portrait-figure[data-portrait-view="head"] .anatomy-head,
+.portrait-figure[data-portrait-view="chest"] .anatomy-chest,
+.portrait-figure[data-portrait-view="abdomen"] .anatomy-abdomen,
+.portrait-figure[data-portrait-view="pelvis"] .anatomy-pelvis,
+.portrait-figure[data-portrait-view="skeleton"] .anatomy-skeleton,
+.portrait-figure[data-portrait-view="vessel"] .anatomy-vessel {
+  opacity: 1;
+  visibility: visible;
+  filter: drop-shadow(0 12px 20px rgba(54, 113, 255, 0.1));
+}
+
+.portrait-figure:not([data-portrait-view="root"]) .anatomy-base {
+  opacity: 0.36;
+  visibility: visible;
+}
+
+.portrait-figure[data-portrait-view="chest"] .anatomy-head,
+.portrait-figure[data-portrait-view="chest"] .anatomy-abdomen,
+.portrait-figure[data-portrait-view="abdomen"] .anatomy-chest,
+.portrait-figure[data-portrait-view="pelvis"] .anatomy-abdomen,
+.portrait-figure[data-portrait-view="head"] .anatomy-chest {
+  opacity: 0.2;
+  visibility: visible;
+}
+
+.body-hair { fill: rgba(76, 50, 62, 0.22); }
+.body-head,
+.body-neck,
+.body-torso,
+.body-arm,
+.body-leg,
+.body-ear {
+  fill: url("#portraitSkin");
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 1.4;
+}
+.body-face-line,
+.body-mouth {
   fill: none;
-  stroke: rgba(100,174,255,0.55);
-  stroke-width: 1.2;
+  stroke: rgba(3, 16, 46, 0.14);
+  stroke-width: 2;
   stroke-linecap: round;
 }
+.body-eye { fill: rgba(118, 182, 235, 0.32); }
 
 .organ {
-  fill: rgba(82,158,240,0.34);
-  stroke: rgba(82,158,240,0.62);
+  fill: url("#organBlue");
+  stroke: rgba(54, 113, 255, 0.2);
   stroke-width: 1.2;
 }
-
+.brain,
+.throat,
+.thyroid,
+.trachea,
+.intestine,
+.bladder {
+  fill: #9ed9ff;
+}
+.lung,
+.kidney {
+  fill: #a9dcff;
+}
+.heart,
 .liver,
-.gut {
-  fill: rgba(95,170,246,0.24);
+.gallbladder {
+  fill: url("#organWarm");
+}
+.stomach,
+.pancreas,
+.spleen {
+  fill: #91ceff;
+}
+.breast {
+  fill: rgba(255, 255, 255, 0.5);
+}
+.ureter,
+.vas {
+  fill: none;
+  stroke: #4fb4ff;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.bone {
+  fill: none;
+  stroke: rgba(73, 171, 234, 0.68);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bone.skull,
+.bone.pelvis {
+  fill: rgba(157, 218, 255, 0.38);
+}
+.vessel {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.artery { stroke: rgba(255, 148, 119, 0.72); }
+.vein { stroke: rgba(76, 190, 235, 0.72); }
+
+.portrait-organ-marker {
+  position: absolute;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  min-width: 0;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  color: #03102e;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(3, 16, 46, 0.14);
+  box-shadow: 0 6px 14px rgba(3, 16, 46, 0.1);
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
 }
 
-.hotspot {
-  fill: #ff7a1a;
-  stroke: #fff;
-  stroke-width: 4;
-  filter: drop-shadow(0 5px 10px rgba(244,149,41,0.26));
+.portrait-organ-marker::before {
+  content: none;
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3671ff;
+  box-shadow: 0 0 0 4px rgba(54, 113, 255, 0.14);
+  transform: translateX(-50%);
 }
 
-.gut-dot {
-  fill: #f4b000;
+.portrait-organ-marker.active {
+  color: #03102e;
+  background: #fff;
+  border-color: #d9bc69;
+  box-shadow: 0 0 0 8px rgba(217, 188, 105, 0.58), 0 12px 24px rgba(54, 113, 255, 0.18);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.marker-brain { left: 50%; top: 35px; }
+.marker-eye { left: 41%; top: 80px; }
+.marker-nose { left: 50%; top: 92px; }
+.marker-mouth { left: 49%; top: 114px; }
+.marker-ear { left: 70%; top: 83px; }
+.marker-throat { left: 50%; top: 135px; }
+.marker-thyroid { left: 50%; top: 150px; }
+.marker-trachea { left: 50%; top: 176px; }
+.marker-thymus { left: 50%; top: 204px; }
+.marker-lung { left: 62%; top: 220px; }
+.marker-heart { left: 50%; top: 235px; }
+.marker-breast { left: 35%; top: 225px; }
+.marker-esophagus { left: 51%; top: 250px; }
+.marker-liver { left: 36%; top: 282px; }
+.marker-gallbladder { left: 38%; top: 304px; }
+.marker-stomach { left: 57%; top: 286px; }
+.marker-pancreas { left: 52%; top: 315px; }
+.marker-spleen { left: 68%; top: 285px; }
+.marker-kidney { left: 64%; top: 328px; }
+.marker-ureter { left: 41%; top: 366px; }
+.marker-intestine { left: 50%; top: 362px; }
+.marker-bladder { left: 50%; top: 392px; }
+.marker-uterus { left: 44%; top: 382px; }
+.marker-vagina { left: 50%; top: 420px; }
+.marker-prostate { left: 56%; top: 392px; }
+.marker-testis { left: 43%; top: 424px; }
+.marker-vas { left: 60%; top: 424px; }
+.marker-bone { left: 51%; top: 224px; }
+.marker-joint { left: 73%; top: 330px; }
+.marker-vessel { left: 58%; top: 244px; }
+
+.portrait-organ-info {
+  position: absolute;
+  right: 0;
+  top: 238px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px 10px;
+  width: 138px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(54, 113, 255, 0.12);
+  animation: portraitInfoIn 240ms ease-out both;
+}
+
+.portrait-organ-info[hidden] {
+  display: none;
+}
+
+.portrait-organ-info i {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  color: #03102e;
+  background: #fff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.portrait-organ-info strong {
+  align-self: center;
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.portrait-organ-info span,
+.portrait-organ-info p,
+.portrait-organ-info button {
+  grid-column: 1 / -1;
+}
+
+.portrait-organ-info span {
+  color: rgba(3, 16, 46, 0.52);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.portrait-organ-info p {
+  margin: 0;
+  color: rgba(3, 16, 46, 0.62);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.portrait-organ-info button {
+  height: 34px;
+  border-radius: 6px;
+  color: #fff;
+  background: #1da1ff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.portrait-focus-icon {
+  display: none;
+}
+
+.portrait-reset {
+  position: absolute;
+  left: 76px;
+  bottom: 174px;
+  z-index: 7;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: rgba(3, 16, 46, 0.68);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.1);
+  font-size: 12px;
+  font-weight: 900;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-out;
+}
+
+.portrait-figure:not([data-portrait-view="root"]) .portrait-reset {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portrait-organ-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  z-index: 5;
+  display: grid;
+  gap: 9px;
+  padding: 10px 12px 12px;
+  border: 1px solid rgba(210, 225, 250, 0.88);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 12px 30px rgba(54, 113, 255, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.portrait-organ-panel > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 24px;
+}
+
+.portrait-organ-panel span {
+  color: #03102e;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.portrait-organ-panel strong {
+  color: rgba(3, 16, 46, 0.48);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.portrait-organ-list {
+  display: flex;
+  gap: 10px;
+  min-height: 54px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.portrait-organ-list:empty {
+  display: none;
+}
+
+.portrait-organ-list::-webkit-scrollbar {
+  display: none;
+}
+
+.portrait-organ-list button {
+  display: grid;
+  flex: 0 0 64px;
+  justify-items: center;
+  gap: 5px;
+  padding: 0;
+  color: rgba(3, 16, 46, 0.66);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.portrait-organ-list i {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 14px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.1);
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 950;
+  box-shadow: inset 0 0 0 1px rgba(54, 113, 255, 0.08);
+}
+
+.portrait-organ-list button.active {
+  color: #3671ff;
+}
+
+.portrait-organ-list button.active i {
+  color: #fff;
+  background: #3671ff;
+  box-shadow: 0 8px 16px rgba(54, 113, 255, 0.25);
+}
+
+.portrait-region-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 6px 2px 0;
+  border-top: 1px solid rgba(54, 113, 255, 0.08);
+}
+
+.portrait-region-list::-webkit-scrollbar {
+  display: none;
+}
+
+.portrait-region-list button {
+  flex: 0 0 auto;
+  min-width: 58px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: rgba(3, 16, 46, 0.58);
+  background: rgba(3, 16, 46, 0.04);
+  font-size: 13px;
+  font-weight: 900;
+  transition: color 200ms ease-out, background 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.portrait-region-list button.active {
+  color: #03102e;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.12);
+}
+
+@keyframes portraitHotspotPulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.58;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes portraitInfoIn {
+  from {
+    opacity: 0;
+    transform: translate3d(8px, 0, 0) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 .archive-assistant-card {

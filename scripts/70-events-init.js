@@ -4,6 +4,16 @@ document.addEventListener("click", (event) => {
     openReportDetail(reportButton.dataset.reportId);
     return;
   }
+  const portraitRegionButton = event.target.closest("[data-portrait-region]");
+  if (portraitRegionButton) {
+    setPortraitRegion(portraitRegionButton.dataset.portraitRegion);
+    return;
+  }
+  const portraitOrganButton = event.target.closest("[data-portrait-organ]");
+  if (portraitOrganButton) {
+    setPortraitOrgan(portraitOrganButton.dataset.portraitOrgan);
+    return;
+  }
   const deleteReportButton = event.target.closest("[data-delete-report]");
   if (deleteReportButton) {
     deletingReportId = deleteReportButton.dataset.deleteReport;
@@ -451,6 +461,191 @@ function openSheet(sheet) {
   sheetMask.classList.add("active");
   sheet.classList.add("active");
 }
+
+const portraitRegions = {
+  root: {
+    title: "全身总览",
+    desc: "点击一级部位后，可查看对应子级器官。",
+    icon: "身",
+    hint: "一级部位",
+    markers: [],
+    organs: []
+  },
+  head: {
+    title: "头部",
+    desc: "头部包含颅脑、眼睛、鼻子、口腔、耳朵、咽喉和甲状腺。",
+    icon: "头",
+    hint: "点击下方器官继续放大",
+    markers: ["brain", "eye", "nose", "mouth", "ear", "throat", "thyroid"],
+    organs: [
+      { id: "brain", name: "颅脑", icon: "脑", desc: "关注头痛、眩晕、睡眠和血压相关风险。" },
+      { id: "eye", name: "眼睛", icon: "眼", desc: "关注视力、眼压及糖尿病相关眼底风险。" },
+      { id: "nose", name: "鼻子", icon: "鼻", desc: "关注鼻炎、鼻窦不适和呼吸通畅度。" },
+      { id: "mouth", name: "口腔", icon: "口", desc: "关注口腔溃疡、牙龈和饮食相关问题。" },
+      { id: "ear", name: "耳朵", icon: "耳", desc: "关注听力、耳鸣及眩晕相关症状。" },
+      { id: "throat", name: "咽喉", icon: "咽", desc: "关注咽痛、咳嗽、吞咽不适。" },
+      { id: "thyroid", name: "甲状腺", icon: "甲", desc: "关注甲状腺结节和代谢相关指标。" }
+    ]
+  },
+  chest: {
+    title: "胸部",
+    desc: "胸部包含乳房、心脏、肺、气管、食管和胸腺。",
+    icon: "胸",
+    hint: "点击下方器官继续放大",
+    markers: ["breast", "heart", "lung", "trachea", "esophagus", "thymus"],
+    organs: [
+      { id: "breast", name: "乳房", icon: "乳", desc: "关注乳腺结节、乳腺增生和筛查记录。" },
+      { id: "heart", name: "心脏", icon: "心", desc: "关注心率、血压、胸闷和心血管风险。" },
+      { id: "lung", name: "肺", icon: "肺", desc: "关注慢阻肺、肺结节和胸部 CT 报告。" },
+      { id: "trachea", name: "气管", icon: "气", desc: "关注咳嗽、喘息和呼吸道症状。" },
+      { id: "esophagus", name: "食管", icon: "食", desc: "关注反酸、吞咽不适和消化道症状。" },
+      { id: "thymus", name: "胸腺", icon: "腺", desc: "关注胸腺影像和免疫相关提示。" }
+    ]
+  },
+  abdomen: {
+    title: "腹部",
+    desc: "腹部包含胆、胃、肝、胰、脾、输尿管、肾、肠等部位。",
+    icon: "腹",
+    hint: "点击下方器官继续放大",
+    markers: ["gallbladder", "stomach", "liver", "pancreas", "spleen", "ureter", "kidney", "intestine"],
+    organs: [
+      { id: "gallbladder", name: "胆", icon: "胆", desc: "关注胆囊结石、胆囊炎和腹部超声。" },
+      { id: "stomach", name: "胃", icon: "胃", desc: "关注胃痛、胃炎、饮食和胃镜记录。" },
+      { id: "liver", name: "肝", icon: "肝", desc: "关注肝功能、脂肪肝和用药饮酒影响。" },
+      { id: "pancreas", name: "胰", icon: "胰", desc: "关注血糖、胰腺和代谢相关风险。" },
+      { id: "spleen", name: "脾", icon: "脾", desc: "关注脾脏大小和腹部影像提示。" },
+      { id: "ureter", name: "输尿管", icon: "管", desc: "关注泌尿系统通畅度和相关检查。" },
+      { id: "kidney", name: "肾", icon: "肾", desc: "关注肾小球过滤率、肌酐、尿酸和血压。" },
+      { id: "intestine", name: "肠", icon: "肠", desc: "关注肠道症状、便秘腹泻和肠镜记录。" }
+    ]
+  },
+  pelvis: {
+    title: "盆腔",
+    desc: "盆腔包含膀胱、子宫及附件、阴道、前列腺、睾丸和输精管。",
+    icon: "盆",
+    hint: "点击下方器官继续放大",
+    markers: ["bladder", "uterus", "vagina", "prostate", "testis", "vas"],
+    organs: [
+      { id: "bladder", name: "膀胱", icon: "膀", desc: "关注尿频尿急、尿常规和泌尿系统提示。" },
+      { id: "uterus", name: "子宫及附件", icon: "宫", desc: "关注妇科超声、经期和附件相关记录。" },
+      { id: "vagina", name: "阴道", icon: "阴", desc: "关注分泌物、炎症和妇科检查。" },
+      { id: "prostate", name: "前列腺", icon: "前", desc: "关注前列腺超声、尿频尿急等提示。" },
+      { id: "testis", name: "睾丸", icon: "睾", desc: "关注男性生殖系统检查。" },
+      { id: "vas", name: "输精管", icon: "管", desc: "关注男性生殖系统相关记录。" }
+    ]
+  },
+  skeleton: {
+    title: "骨骼",
+    desc: "骨骼包含骨骼和关节。",
+    icon: "骨",
+    hint: "点击下方部位继续放大",
+    markers: ["bone", "joint"],
+    organs: [
+      { id: "bone", name: "骨骼", icon: "骨", desc: "关注骨密度、骨折史和影像报告。" },
+      { id: "joint", name: "关节", icon: "节", desc: "关注关节疼痛、活动受限和影像检查。" }
+    ]
+  },
+  vessel: {
+    title: "血管",
+    desc: "血管用于查看动脉硬化、血管风险等信息。",
+    icon: "管",
+    hint: "点击下方部位继续放大",
+    markers: ["vessel"],
+    organs: [
+      { id: "vessel", name: "血管", icon: "管", desc: "关注动脉硬化、血压和心血管风险。" }
+    ]
+  }
+};
+
+const portraitRootRegions = [
+  ["head", "头部", "头"],
+  ["chest", "胸部", "胸"],
+  ["abdomen", "腹部", "腹"],
+  ["pelvis", "盆腔", "盆"],
+  ["skeleton", "骨骼", "骨"],
+  ["vessel", "血管", "管"]
+];
+
+let currentPortraitRegion = "root";
+
+function setPortraitRegion(regionName) {
+  const region = portraitRegions[regionName] || portraitRegions.root;
+  currentPortraitRegion = regionName;
+  portraitFigure?.setAttribute("data-portrait-view", regionName);
+  portraitFigure?.removeAttribute("data-portrait-organ");
+  portraitCurrentIcon.textContent = region.icon;
+  if (portraitOrganInfo) portraitOrganInfo.hidden = true;
+  portraitOrganPanelTitle.textContent = regionName === "root" ? "一级部位" : `${region.title}子级`;
+  portraitOrganPanelHint.textContent = regionName === "root" ? "请选择上方一级部位" : region.hint;
+  renderPortraitMarkers(regionName);
+  portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitRegion === regionName);
+  });
+  portraitOrganList.innerHTML = region.organs.length ? region.organs.map((organ) => `
+    <button type="button" data-portrait-organ="${organ.id}" data-parent-region="${regionName}">
+      <i>${organ.icon}</i>
+      <span>${organ.name}</span>
+    </button>
+  `).join("") : "";
+  if (region.organs.length) {
+    activatePortraitOrgan(region.organs[0], regionName);
+  }
+}
+
+function setPortraitOrgan(organId) {
+  const entry = Object.entries(portraitRegions).find(([, region]) => region.organs?.some((organ) => organ.id === organId));
+  if (!entry) return;
+  const [regionName, region] = entry;
+  const organ = region.organs.find((item) => item.id === organId);
+  if (currentPortraitRegion !== regionName) {
+    setPortraitRegion(regionName);
+  }
+  activatePortraitOrgan(organ, regionName);
+}
+
+function activatePortraitOrgan(organ, regionName) {
+  const region = portraitRegions[regionName] || portraitRegions.root;
+  const hasRisk = Boolean(organ.risk || ["heart", "gallbladder", "vessel"].includes(organ.id));
+  portraitFigure?.setAttribute("data-portrait-organ", organ.id);
+  portraitCurrentIcon.textContent = organ.icon;
+  if (portraitOrganInfo) {
+    portraitOrganInfo.hidden = false;
+    portraitInfoIcon.textContent = organ.icon;
+    portraitInfoTitle.textContent = organ.name;
+    portraitInfoRisk.textContent = hasRisk ? (organ.risk || "1 项需关注") : "暂无异常";
+    portraitInfoDesc.textContent = organ.card || organ.desc;
+    const action = document.querySelector("#portraitInfoAction");
+    if (action) action.textContent = hasRisk ? "查看详情" : "新增报告";
+  }
+  portraitOrganPanelTitle.textContent = `${region.title} · ${organ.name}`;
+  portraitOrganPanelHint.textContent = "可继续切换同级器官";
+  portraitOrganList?.querySelectorAll("[data-portrait-organ]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
+  });
+  portraitMarkerLayer?.querySelectorAll("[data-portrait-organ]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
+  });
+}
+
+function getPortraitOrgan(organId) {
+  for (const region of Object.values(portraitRegions)) {
+    const organ = region.organs?.find((item) => item.id === organId);
+    if (organ) return organ;
+  }
+  return null;
+}
+
+function renderPortraitMarkers(regionName) {
+  if (!portraitMarkerLayer) return;
+  const region = portraitRegions[regionName] || portraitRegions.root;
+  portraitMarkerLayer.innerHTML = (region.markers || []).map((organId) => {
+    const organ = getPortraitOrgan(organId);
+    if (!organ) return "";
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><span>${organ.icon}</span></button>`;
+  }).join("");
+}
+
+setPortraitRegion("root");
 
 function closeOverlays() {
   sheetMask.classList.remove("active");
