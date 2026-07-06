@@ -700,23 +700,23 @@ const portraitRegionsV2 = {
     title: "头颈",
     icon: "头",
     hint: "头颅 / 眼睛 / 鼻子 / 口腔 / 耳朵 / 咽喉",
-    camera: { scale: 1.9, x: 0, y: 260 },
+    camera: { scale: 1.34, x: 0, y: 74 },
     markers: ["brain", "eye", "nose", "mouth", "ear", "throat", "thyroid"],
     organs: [
-      { id: "brain", name: "头颅", desc: "补充头颅相关检查报告，为你分析", camera: { scale: 2.05, x: 0, y: 300 } },
-      { id: "eye", name: "眼睛", desc: "关注视力、眼压和眼底检查记录", camera: { scale: 2.08, x: 14, y: 258 } },
-      { id: "nose", name: "鼻子", desc: "关注鼻炎、鼻窦及呼吸通畅情况", camera: { scale: 2.1, x: 0, y: 236 } },
-      { id: "mouth", name: "口腔", desc: "关注牙龈、口腔溃疡和口腔检查", camera: { scale: 2.05, x: 0, y: 210 } },
-      { id: "ear", name: "耳朵", desc: "关注听力、耳鸣和眩晕相关提示", camera: { scale: 2.02, x: -46, y: 252 } },
-      { id: "throat", name: "咽喉", desc: "关注咽痛、咳嗽和吞咽不适", camera: { scale: 1.96, x: 0, y: 182 } },
-      { id: "thyroid", name: "甲状腺", desc: "关注甲状腺结节和代谢指标", camera: { scale: 1.96, x: 0, y: 160 } }
+      { id: "brain", name: "头颅", desc: "补充头颅相关检查报告，为你分析", camera: { scale: 1.48, x: 0, y: 96 } },
+      { id: "eye", name: "眼睛", desc: "关注视力、眼压和眼底检查记录", camera: { scale: 1.48, x: 10, y: 78 } },
+      { id: "nose", name: "鼻子", desc: "关注鼻炎、鼻窦及呼吸通畅情况", camera: { scale: 1.48, x: 0, y: 64 } },
+      { id: "mouth", name: "口腔", desc: "关注牙龈、口腔溃疡和口腔检查", camera: { scale: 1.46, x: 0, y: 42 } },
+      { id: "ear", name: "耳朵", desc: "关注听力、耳鸣和眩晕相关提示", camera: { scale: 1.46, x: -30, y: 74 } },
+      { id: "throat", name: "咽喉", desc: "关注咽痛、咳嗽和吞咽不适", camera: { scale: 1.42, x: 0, y: 20 } },
+      { id: "thyroid", name: "甲状腺", desc: "关注甲状腺结节和代谢指标", camera: { scale: 1.42, x: 0, y: 8 } }
     ]
   },
   chest: {
     title: "胸部",
     icon: "胸",
     hint: "心脏 / 肺 / 气管 / 乳房 / 食管 / 胸腺",
-    camera: { scale: 1.75, x: 15, y: -92 },
+    camera: { scale: 1.28, x: 10, y: -56 },
     markers: ["heart", "lung", "trachea", "breast", "esophagus", "thymus"],
     organs: [
       { id: "heart", name: "心脏", risk: "1 项需关注", card: "CT：心脏CT见主动脉钙化", desc: "关注心率、血压和心血管风险", camera: { scale: 1.92, x: 8, y: -58 } },
@@ -731,7 +731,7 @@ const portraitRegionsV2 = {
     title: "腹部",
     icon: "腹",
     hint: "胆 / 胃 / 肝 / 胰 / 脾 / 输尿管 / 肾 / 肠",
-    camera: { scale: 1.8, x: 0, y: -40 },
+    camera: { scale: 1.32, x: 0, y: -118 },
     markers: ["gallbladder", "stomach", "liver", "pancreas", "spleen", "ureter", "kidney", "intestine"],
     organs: [
       { id: "gallbladder", name: "胆", risk: "1 项需关注", card: "CT：胆囊CT未见显影需评估", desc: "关注胆囊结石、胆囊炎和腹部超声", camera: { scale: 1.95, x: 42, y: -35 } },
@@ -748,7 +748,7 @@ const portraitRegionsV2 = {
     title: "盆腔",
     icon: "盆",
     hint: "膀胱 / 子宫及附件 / 阴道 / 前列腺 / 睾丸 / 输精管",
-    camera: { scale: 1.82, x: 0, y: -150 },
+    camera: { scale: 1.36, x: 0, y: -206 },
     markers: ["bladder", "uterus", "vagina", "prostate", "testis", "vas"],
     organs: [
       { id: "bladder", name: "膀胱", desc: "补充膀胱相关检查报告，为你分析", camera: { scale: 1.95, x: 0, y: -170 } },
