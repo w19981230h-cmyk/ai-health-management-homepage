@@ -41,7 +41,7 @@ function renderSchedule() {
   if (!scheduleWeek || !scheduleContent) return;
   const patient = schedulePatient();
   const selected = parseDate(scheduleSelectedDate);
-  schedulePatientName.textContent = `${patient.name} ${patient.sex} ${patient.age}`;
+  schedulePatientName.textContent = patient.name;
   scheduleAvatar.className = `schedule-avatar ${patient.avatar}`;
   scheduleMonthLabel.textContent = `${selected.getFullYear()}年${String(selected.getMonth() + 1).padStart(2, "0")}月`;
   renderScheduleWeek();

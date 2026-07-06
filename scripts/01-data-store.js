@@ -59,6 +59,28 @@ const focusPlanDashboards = {
   }
 };
 
+const extendedHealthMetrics = [
+  { id: "waist-hip", name: "腰臀比", value: 0.84, display: "0.84", unit: "", status: "正常", values: [0.87, 0.86, 0.86, 0.85, 0.85, 0.84, 0.84] },
+  { id: "hip", name: "臀围", value: 98.0, display: "98.0", unit: "cm", status: "稳定", values: [99.4, 99.1, 98.8, 98.6, 98.4, 98.2, 98.0] },
+  { id: "tc", name: "总胆固醇 TC", value: 4.82, display: "4.82", unit: "mmol/L", status: "正常", values: [5.08, 5.0, 4.96, 4.9, 4.88, 4.85, 4.82] },
+  { id: "tg", name: "甘油三酯 TG", value: 1.36, display: "1.36", unit: "mmol/L", status: "正常", values: [1.58, 1.5, 1.46, 1.42, 1.39, 1.38, 1.36] },
+  { id: "hdl", name: "高密度脂蛋白 HDL-C", value: 1.28, display: "1.28", unit: "mmol/L", status: "正常", values: [1.18, 1.2, 1.22, 1.23, 1.25, 1.26, 1.28] },
+  { id: "ldl", name: "低密度脂蛋白 LDL-C", value: 2.72, display: "2.72", unit: "mmol/L", status: "正常", values: [3.1, 3.0, 2.94, 2.88, 2.82, 2.78, 2.72] },
+  { id: "hba1c", name: "糖化血红蛋白 HbA1c", value: 5.8, display: "5.8", unit: "%", status: "正常", values: [6.1, 6.0, 5.9, 5.9, 5.8, 5.8, 5.8] },
+  { id: "tgab", name: "抗甲状腺球蛋白抗体 TgAb", value: 32, display: "32", unit: "IU/mL", status: "正常", values: [35, 34, 34, 33, 33, 32, 32] },
+  { id: "tpoab", name: "抗甲状腺过氧化物酶抗体 TPOAb", value: 18, display: "18", unit: "IU/mL", status: "正常", values: [20, 20, 19, 19, 18, 18, 18] },
+  { id: "ebv-igg", name: "EB病毒核抗原IgG", value: 86, display: "86", unit: "U/mL", status: "既往感染", values: [86, 86, 86, 86, 86, 86, 86] },
+  { id: "beta2-gp1", name: "抗β2糖蛋白1抗体", value: 6.2, display: "6.2", unit: "RU/mL", status: "正常", values: [6.8, 6.6, 6.5, 6.4, 6.3, 6.2, 6.2] }
+];
+
+Object.values(focusPlanDashboards).forEach((dashboard) => {
+  extendedHealthMetrics.forEach((metric) => {
+    if (!dashboard.metrics.some((item) => item.id === metric.id)) {
+      dashboard.metrics.push({ ...metric, values: [...metric.values] });
+    }
+  });
+});
+
 const packages = [
   {
     id: "weight",

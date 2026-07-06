@@ -9,48 +9,136 @@ function renderFocusPlans() {
     button.setAttribute("aria-selected", String(active));
   });
   focusMetricGrid.innerHTML = plan.metrics.map((metric) => `
-    <button class="focus-metric-card${metric.attention ? " attention" : ""}" type="button" data-focus-metric="${metric.id}">
+    <button class="focus-metric-card${metric.attention ? " attention" : ""}" type="button" data-focus-metric="${metric.id}" data-metric-kind="${metricBaseId(metric.id)}" data-metric-icon="${metricIconSymbol(metricBaseId(metric.id))}">
       <span>${metric.name}</span>
       <strong>${metric.display}<em>${metric.unit}</em></strong>
     </button>
   `).join("");
 }
 
-const metricRecordConfigs = {
-  sugar: [{ key: "value", label: "血糖值", unit: "mmol/L", step: "0.1", min: "0.1", max: "40" }],
-  bp: [
-    { key: "systolic", label: "收缩压", unit: "mmHg", step: "1", min: "40", max: "260" },
-    { key: "diastolic", label: "舒张压", unit: "mmHg", step: "1", min: "30", max: "180" }
-  ],
-  weight: [{ key: "value", label: "体重", unit: "kg", step: "0.1", min: "1", max: "500" }],
-  waist: [{ key: "value", label: "腰围", unit: "cm", step: "0.1", min: "40", max: "200" }],
-  height: [{ key: "value", label: "身高", unit: "cm", step: "0.1", min: "30", max: "250" }],
-  heart: [{ key: "value", label: "心率值", unit: "次/分", step: "1", min: "20", max: "200", required: true }],
-  lipid: [
+function metricIconSymbol(kind) {
+  return {
+    sugar: "糖",
+    bp: "压",
+    heart: "心",
+    weight: "重",
+    waist: "围",
+    hip: "臀",
+    height: "高",
+    lipid: "脂",
+    tc: "脂",
+    tg: "脂",
+    hdl: "脂",
+    ldl: "脂",
+    uric: "酸",
+    fat: "脂",
+    bmi: "BMI",
+    "waist-hip": "比",
+    hba1c: "糖",
+    tgab: "抗",
+    tpoab: "抗",
+    "ebv-igg": "Ig",
+    "beta2-gp1": "β2"
+  }[kind] || "数";
+}
+
+const metricFieldRules = {
+  bp: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "systolic", label: "收缩压", unit: "mmHg", step: "1", min: "40", max: "260", required: true },
+    { key: "diastolic", label: "舒张压", unit: "mmHg", step: "1", min: "30", max: "180", required: true }
+  ] },
+  sugar: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "value", label: "血糖值", unit: "mmol/L", step: "0.1", min: "0.1", max: "40", decimals: 1, required: true }
+  ] },
+  heart: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "value", label: "心率值", unit: "次/分", step: "1", min: "20", max: "200", decimals: 0, required: true }
+  ] },
+  weight: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "value", label: "体重值", unit: "kg", step: "0.1", min: "1", max: "500", decimals: 1, required: true }
+  ] },
+  height: { supportsInput: true, inputType: "档案补录", allowCreate: true, fields: [
+    { key: "value", label: "身高值", unit: "cm", step: "0.1", min: "0", max: "300", decimals: 1, required: true }
+  ] },
+  waist: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "value", label: "腰围值", unit: "cm", step: "0.1", min: "40", max: "200", decimals: 1, required: true }
+  ] },
+  hip: { supportsInput: true, inputType: "日常监测", allowCreate: true, fields: [
+    { key: "value", label: "臀围值", unit: "cm", step: "0.1", min: "40", max: "200", decimals: 1, required: true }
+  ] },
+  bmi: { supportsInput: false, inputType: "系统计算", autoCalculate: true, allowCreate: true, fields: [] },
+  "waist-hip": { supportsInput: false, inputType: "系统计算", autoCalculate: true, allowCreate: true, fields: [] },
+  lipid: { supportsInput: true, inputType: "检验补录", fields: [
     { key: "tc", label: "总胆固醇 TC", unit: "mmol/L", step: "0.01", min: "0.1", max: "20", decimals: 2, required: true, ownTime: true, group: "basic" },
     { key: "tg", label: "甘油三酯 TG", unit: "mmol/L", step: "0.01", min: "0.1", max: "50", decimals: 2, required: true, ownTime: true, group: "basic" },
     { key: "hdl", label: "高密度脂蛋白胆固醇 HDL-C", unit: "mmol/L", step: "0.01", min: "0.1", max: "5", decimals: 2, required: true, ownTime: true, group: "basic" },
     { key: "ldl", label: "低密度脂蛋白胆固醇 LDL-C", unit: "mmol/L", step: "0.01", min: "0.1", max: "15", decimals: 2, required: true, ownTime: true, group: "basic" },
     { key: "sdldl", label: "小而密低密度脂蛋白胆固醇 sdLDL-C", unit: "mmol/L", step: "0.01", min: "0", max: "5", decimals: 2, ownTime: true, group: "sdldl" },
     { key: "oxldl", label: "氧化低密度脂蛋白胆固醇 oxLDL-C", unit: "ng/ml", step: "0.01", min: "0", max: "200", decimals: 2, ownTime: true, group: "oxldl" }
-  ],
-  uric: [{ key: "value", label: "尿酸值", unit: "μmol/L", step: "0.01", min: "0", max: "1200", decimals: 2, required: true }],
-  fat: [{ key: "value", label: "体脂率", unit: "%", step: "0.1", min: "1", max: "70", required: true }],
-  bmi: [{ key: "value", label: "BMI", unit: "", step: "0.1", min: "5", max: "80", required: true }],
-  egfr: [{ key: "value", label: "肾小球过滤率", unit: "mL/min", step: "1", min: "1", max: "200", required: true }],
-  "kidney-size": [{ key: "value", label: "肾脏大小", unit: "cm", step: "0.1", min: "5", max: "20", required: true }],
-  creatinine: [{ key: "value", label: "肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }],
-  "serum-creatinine": [{ key: "value", label: "血肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }]
+  ] },
+  tc: { aliasOf: "lipid" },
+  tg: { aliasOf: "lipid" },
+  hdl: { aliasOf: "lipid" },
+  ldl: { aliasOf: "lipid" },
+  hba1c: { supportsInput: true, inputType: "检验补录", allowCreate: true, fields: [
+    { key: "value", label: "糖化血红蛋白 HbA1c", unit: "%", step: "0.1", min: "3.0", max: "20.0", decimals: 1, required: true }
+  ] },
+  tgab: { supportsInput: true, inputType: "检验补录", allowCreate: true, fields: [
+    { key: "value", label: "甲状腺球蛋白抗体 TgAb", unit: "IU/mL", step: "0.01", min: "0", max: "4000", decimals: 2, required: true }
+  ] },
+  tpoab: { supportsInput: true, inputType: "检验补录", allowCreate: true, fields: [
+    { key: "value", label: "甲状腺过氧化物酶抗体 TPOAb", unit: "IU/mL", step: "0.01", min: "0", max: "4000", decimals: 2, required: true }
+  ] },
+  "ebv-igg": { supportsInput: true, inputType: "结果补录", allowCreate: true, fields: [
+    { key: "value", label: "EB病毒核抗原 IgG", unit: "", type: "select", options: ["阴性", "阳性", "弱阳性"], required: true }
+  ] },
+  "beta2-gp1": { supportsInput: true, inputType: "结果补录", allowCreate: true, fields: [
+    { key: "value", label: "抗β2糖蛋白1抗体", unit: "U/mL", step: "0.01", min: "0", max: "200", decimals: 2, required: true }
+  ] },
+  uric: { supportsInput: true, inputType: "检验补录", fields: [
+    { key: "value", label: "血尿酸", unit: "μmol/L", step: "0.01", min: "0", max: "1200", decimals: 2, required: true }
+  ] },
+  fat: { supportsInput: true, inputType: "日常监测", fields: [
+    { key: "value", label: "体脂率", unit: "%", step: "0.1", min: "1", max: "70", decimals: 1, required: true }
+  ] },
+  egfr: { supportsInput: true, inputType: "检验补录", fields: [
+    { key: "value", label: "肾小球过滤率", unit: "mL/min", step: "1", min: "1", max: "200", decimals: 0, required: true }
+  ] },
+  "kidney-size": { supportsInput: true, inputType: "检验补录", fields: [
+    { key: "value", label: "肾脏大小", unit: "cm", step: "0.1", min: "5", max: "20", decimals: 1, required: true }
+  ] },
+  creatinine: { supportsInput: true, inputType: "检验补录", fields: [
+    { key: "value", label: "肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }
+  ] },
+  "serum-creatinine": { supportsInput: true, inputType: "检验补录", fields: [
+    { key: "value", label: "血肌酐", unit: "μmol/L", step: "0.1", min: "10", max: "2000", decimals: 1, required: true }
+  ] }
 };
+
+function metricFieldRuleFor(metricId) {
+  const baseId = metricBaseId(metricId);
+  const rule = metricFieldRules[metricId] || metricFieldRules[baseId];
+  if (rule?.aliasOf) return metricFieldRules[rule.aliasOf];
+  return rule;
+}
+
+const metricRecordConfigs = Object.fromEntries(
+  Object.entries(metricFieldRules)
+    .filter(([, rule]) => !rule.aliasOf && Array.isArray(rule.fields) && rule.fields.length)
+    .map(([key, rule]) => [key, rule.fields])
+);
 
 function metricRecordConfigId(metricId) {
   const baseId = metricBaseId(metricId);
+  const rule = metricFieldRules[metricId] || metricFieldRules[baseId];
+  if (rule?.aliasOf) return rule.aliasOf;
   if (metricRecordConfigs[metricId]) return metricId;
   if (metricRecordConfigs[baseId]) return baseId;
   return metricId;
 }
 
 function metricRecordFieldsFor(metric) {
+  const rule = metricFieldRuleFor(metric.id);
+  if (rule && !rule.supportsInput) return [];
   return metricRecordConfigs[metricRecordConfigId(metric.id)] || [{
     key: "value",
     label: `${metric.name}值`,
@@ -60,6 +148,34 @@ function metricRecordFieldsFor(metric) {
     max: "9999",
     required: true
   }];
+}
+
+function metricInputUnsupportedMessage(metric) {
+  const rule = metricFieldRuleFor(metric?.id);
+  return rule && !rule.supportsInput ? `${metric.name}由系统自动计算，暂不支持手动填写` : "";
+}
+
+function metricFieldRequired(field) {
+  return Boolean(field.required);
+}
+
+function metricFieldIsNumeric(field) {
+  return field.type !== "select";
+}
+
+function metricRecordFieldInputHtml(metric, field) {
+  const value = metricRecordEditValue(metric, field);
+  if (field.type === "select") {
+    return `
+      <select data-metric-input="${field.key}" aria-label="${field.label}">
+        ${(field.options || []).map((option) => `<option value="${option}"${String(value || field.options?.[0] || "") === option ? " selected" : ""}>${option}</option>`).join("")}
+      </select>
+    `;
+  }
+  return `
+    <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${value}" aria-label="${field.label}">
+    ${field.unit ? `<span>${field.unit}</span>` : ""}
+  `;
 }
 
 function getMetricNameById(metricId) {
@@ -77,11 +193,17 @@ function metricRecordTimeLabelFor(metricId) {
     bp: "血压测量时间",
     weight: "称重时间",
     waist: "腰围测量时间",
+    hip: "臀围测量时间",
     height: "身高测量时间",
     heart: "心率测量时间",
     lipid: "血脂记录时间",
     uric: "检查时间",
     fat: "体脂测量时间",
+    hba1c: "检查时间",
+    tgab: "检查时间",
+    tpoab: "检查时间",
+    "ebv-igg": "检查时间",
+    "beta2-gp1": "检查时间",
     bmi: "BMI测量时间",
     egfr: "检测时间",
     "kidney-size": "检查时间",
@@ -233,6 +355,47 @@ function metricRecordDateParts(value) {
   };
 }
 
+function normalizeRecordDate(value) {
+  const parsed = value ? new Date(value) : null;
+  if (parsed && !Number.isNaN(parsed.getTime())) return parsed;
+  const fallback = new Date();
+  const matched = String(value || "").match(/(\d{1,2}):(\d{2})/);
+  if (matched) fallback.setHours(Number(matched[1]), Number(matched[2]), 0, 0);
+  return fallback;
+}
+
+function recordDateGroupParts(value) {
+  const date = normalizeRecordDate(value);
+  return {
+    key: dateInputValue(date),
+    label: `${date.getFullYear()}年${padDateNumber(date.getMonth() + 1)}月${padDateNumber(date.getDate())}日`,
+    time: `${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`,
+    sort: date.getTime()
+  };
+}
+
+function groupRecordsByDate(records, timeGetter) {
+  const groups = new Map();
+  records.forEach((record) => {
+    const parts = recordDateGroupParts(timeGetter(record));
+    if (!groups.has(parts.key)) {
+      groups.set(parts.key, {
+        key: parts.key,
+        label: parts.label,
+        sort: new Date(`${parts.key}T00:00`).getTime(),
+        records: []
+      });
+    }
+    groups.get(parts.key).records.push({ record, parts });
+  });
+  return [...groups.values()]
+    .sort((a, b) => b.sort - a.sort)
+    .map((group) => ({
+      ...group,
+      records: group.records.sort((a, b) => b.parts.sort - a.parts.sort)
+    }));
+}
+
 const allCheckinFilterOptions = [
   { type: "all", label: "全部" },
   { type: "diet", label: "饮食" },
@@ -298,6 +461,16 @@ function allCheckinRecordTime(item, record) {
   return record?.time || record?.recordTime || item?.latestRecordTime || item?.latestTime || item?.recordTime || item?.records?.[0]?.time || item?.value || "";
 }
 
+function allCheckinRawTime(item, record) {
+  const raw = allCheckinRecordTime(item, record);
+  const date = raw ? new Date(raw) : null;
+  if (date && !Number.isNaN(date.getTime())) return raw;
+  if (/^\d{1,2}:\d{2}$/.test(String(raw || ""))) {
+    return `${scheduleSelectedDate || dateInputValue(new Date())}T${raw}`;
+  }
+  return raw;
+}
+
 function allCheckinDisplayTime(item, record) {
   const raw = allCheckinRecordTime(item, record);
   return checkinTimeText(raw) || formatCheckinTimeDisplay(raw, "--:--");
@@ -355,13 +528,15 @@ function allCheckinRecordCards() {
     if (!hasCheckinRecord(item)) return;
     if (item.type === "sport" && Array.isArray(item.records) && item.records.length) {
       item.records.forEach((record, index) => {
+        const rawTime = allCheckinRawTime(item, record);
         cards.push({
           id: record.id || `${item.type}-${index}`,
           type: item.type,
           title: record.name || allCheckinTypeMeta[item.type]?.label || item.title,
           value: allCheckinValueText(item, record),
           time: allCheckinDisplayTime(item, record),
-          sort: allCheckinTimeValue(allCheckinRecordTime(item, record))
+          rawTime,
+          sort: allCheckinTimeValue(rawTime)
         });
       });
       return;
@@ -376,6 +551,7 @@ function allCheckinRecordCards() {
             title: allCheckinTypeMeta[item.type]?.label || item.title,
             value: allCheckinValueText(item, record),
             time: allCheckinDisplayTime(item, record),
+            rawTime: allCheckinRawTime(item, record),
             sort: allCheckinTimeValue(record.time)
           });
         });
@@ -388,6 +564,7 @@ function allCheckinRecordCards() {
       title: allCheckinTypeMeta[item.type]?.label || item.title || "打卡记录",
       value: allCheckinValueText(item),
       time: allCheckinDisplayTime(item),
+      rawTime: allCheckinRawTime(item),
       sort: allCheckinTimeValue(allCheckinRecordTime(item))
     });
   });
@@ -403,6 +580,7 @@ function allCheckinRecordCards() {
         title: demo.title,
         value: demo.value,
         time: demo.time,
+        rawTime: `${scheduleSelectedDate || dateInputValue(new Date())}T${demo.time}`,
         sort: demo.sort,
         demo: true
       });
@@ -424,6 +602,34 @@ function renderAllCheckinRecords(filter = "all") {
   setMetricRecordsPageMode("checkin");
   renderAllCheckinFilters();
   const records = allCheckinRecordCards().filter((record) => allCheckinFilter === "all" || record.type === allCheckinFilter);
+  const groups = groupRecordsByDate(records, (record) => record.rawTime || record.recordTime || record.time);
+  metricRecordsGroups.innerHTML = groups.length ? groups.map((group) => `
+    <section class="records-date-group">
+      <h2>${escapeAttr(group.label)}</h2>
+      <div>
+        ${group.records.map(({ record, parts }) => {
+          const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };
+          return `
+            <article class="all-checkin-record-card" data-checkin-record-type="${escapeAttr(record.type)}" data-checkin-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="鏌ョ湅${escapeAttr(record.title)}璇︽儏">
+              <i class="checkin-symbol ${escapeAttr(meta.tone || "blue")}" aria-hidden="true">${escapeAttr(meta.icon)}</i>
+              <div>
+                <span>${escapeAttr(record.title || meta.label)}</span>
+                <strong>${escapeAttr(record.value)}</strong>
+              </div>
+              <time>${escapeAttr(parts.time)}</time>
+              <b aria-hidden="true"></b>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `).join("") : `
+    <div class="all-checkin-empty">
+      <strong>暂无打卡记录</strong>
+      <span>切换类型或点击卡片右上角新增打卡。</span>
+    </div>
+  `;
+  return;
   metricRecordsGroups.innerHTML = records.length ? records.map((record) => {
     const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };
     return `
@@ -477,6 +683,22 @@ function renderAllMetricRecords() {
   setMetricRecordsPageMode("metric");
   applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   const metric = getSelectedMetric();
+  const groups = groupRecordsByDate(allMetricRecords(metric), (record) => record.time);
+  metricRecordsGroups.innerHTML = groups.map((group) => `
+    <section class="records-date-group">
+      <h2>${escapeAttr(group.label)}</h2>
+      <div>
+        ${group.records.map(({ record, parts }) => `
+          <article class="metric-record-item">
+            <div class="metric-record-date"><strong>${parts.time}</strong><span>${escapeAttr(metric.name)}</span></div>
+            <div class="metric-record-value"><strong>${record.display}</strong><em>${record.unit}</em></div>
+            <button class="metric-record-delete" type="button" data-delete-metric-record="${record.id}" aria-label="鍒犻櫎${group.label}${parts.time}鐨?{metric.name}璁板綍"></button>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `).join("");
+  return;
   metricRecordsGroups.innerHTML = allMetricRecords(metric).map((record) => {
     const date = metricRecordDateParts(record.time);
     return `
@@ -597,6 +819,11 @@ function ensureMetricRecordInlineDelete(metric) {
 function openMetricRecordSheet(recordId = "") {
   closeOverlays();
   const metric = getSelectedMetric();
+  const unsupportedMessage = metricInputUnsupportedMessage(metric);
+  if (unsupportedMessage) {
+    showToast(unsupportedMessage);
+    return;
+  }
   editingMetricRecordId = recordId || "";
   const editingRecord = metricRecordById(metric.id, editingMetricRecordId);
   const fields = metricRecordFieldsFor(metric);
@@ -625,27 +852,25 @@ function openMetricRecordSheet(recordId = "") {
     `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${metricFieldRequired(field) ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>` : ""}
         <label class="metric-value-number-field">
-          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordEditValue(metric, field)}" aria-label="${field.label}">
-          ${field.unit ? `<span>${field.unit}</span>` : ""}
+          ${metricRecordFieldInputHtml(metric, field)}
         </label>
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>` : ""}
       </div>
     </section>
   `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${metricFieldRequired(field) ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>` : ""}
         <label class="metric-value-number-field">
-          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordEditValue(metric, field)}" aria-label="${field.label}">
-          ${field.unit ? `<span>${field.unit}</span>` : ""}
+          ${metricRecordFieldInputHtml(metric, field)}
         </label>
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>` : ""}
       </div>
       ${field.ownTime ? `
         <label class="metric-extra-time">
@@ -657,14 +882,13 @@ function openMetricRecordSheet(recordId = "") {
   `).join("");
   metricRecordFields.innerHTML = fields.map((field) => `
     <section class="metric-value-field">
-      <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+      <h4><span>${field.label}</span>${metricFieldRequired(field) ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
       <div class="metric-value-stepper">
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>` : ""}
         <label class="metric-value-number-field">
-          <input type="number" inputmode="decimal" data-metric-input="${field.key}" step="${field.step}" min="${field.min}" max="${field.max}" value="${metricRecordEditValue(metric, field)}" aria-label="${field.label}">
-          ${field.unit ? `<span>${field.unit}</span>` : ""}
+          ${metricRecordFieldInputHtml(metric, field)}
         </label>
-        <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>
+        ${metricFieldIsNumeric(field) ? `<button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="${field.step}" aria-label="增加${field.label}">+</button>` : ""}
       </div>
       ${field.ownTime ? `
         <label class="metric-extra-time">
@@ -677,7 +901,7 @@ function openMetricRecordSheet(recordId = "") {
   if (configId === "lipid") {
     const renderMetricValueField = (field) => `
       <section class="metric-value-field">
-        <h4><span>${field.label}</span>${field.required ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
+        <h4><span>${field.label}</span>${metricFieldRequired(field) ? `<b class="metric-required">*</b>` : ""}${field.unit ? `<em>（${field.unit}）</em>` : ""}</h4>
         <div class="metric-value-stepper">
           <button class="metric-value-step-btn" type="button" data-metric-step="${field.key}" data-delta="-${field.step}" aria-label="减少${field.label}">−</button>
           <label class="metric-value-number-field">
@@ -752,6 +976,9 @@ function openMetricRecordSheet(recordId = "") {
 function metricRecordDefaultValue(metric, field) {
   const latest = metricRecordsFor(metric.id)[0];
   if (!field.required && latest?.values?.[field.key] == null) return "";
+  if (field.type === "select") {
+    return latest?.values?.[field.key] ?? field.options?.[0] ?? "";
+  }
   const raw = latest?.values?.[field.key]
     ?? (field.key === "value" ? latest?.chartValue : undefined)
     ?? (field.key === "value" ? metric.value : undefined)
@@ -832,6 +1059,15 @@ function saveMetricRecord() {
   for (const field of config) {
     const input = metricRecordFields.querySelector(`[data-metric-input="${field.key}"]`);
     const rawValue = input?.value.trim() || "";
+    if (field.type === "select") {
+      if (!rawValue && field.required) {
+        metricRecordError.textContent = `请选择${field.label}`;
+        input?.focus();
+        return;
+      }
+      values[field.key] = rawValue;
+      continue;
+    }
     if (!rawValue && !field.required) {
       values[field.key] = null;
       continue;
@@ -866,8 +1102,8 @@ function saveMetricRecord() {
       ? `TC ${formatLipidMetricValue("tc", values.tc)} / TG ${formatLipidMetricValue("tg", values.tg)} / LDL-C ${formatLipidMetricValue("ldl", values.ldl)}`
       : configId === "uric"
         ? formatUricValue(values.value)
-      : formatMetricNumber(values.value);
-  const chartValue = configId === "bp" ? values.systolic : configId === "lipid" ? values.tg : values.value;
+      : typeof values.value === "number" ? formatMetricNumber(values.value) : String(values.value || "");
+  const chartValue = configId === "bp" ? values.systolic : configId === "lipid" ? values.tg : typeof values.value === "number" ? values.value : metric.value;
   const status = metricStatus(metric.id, values);
   const record = {
     id: editingMetricRecordId && !editingMetricRecordId.startsWith("lipid-sample-") ? editingMetricRecordId : `metric-${Date.now()}`,
@@ -1565,6 +1801,40 @@ function pressureAverage(parts, key) {
   return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
 }
 
+function pressurePairText(systolic, diastolic) {
+  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) return "";
+  return `${Math.round(systolic)}/${Math.round(diastolic)}`;
+}
+
+function pressureRangeValue(parts, type) {
+  if (!parts.length) return "";
+  const systolicValues = parts.map((item) => item.systolic).filter((value) => Number.isFinite(value));
+  const diastolicValues = parts.map((item) => item.diastolic).filter((value) => Number.isFinite(value));
+  if (!systolicValues.length || !diastolicValues.length) return "";
+  if (type === "min") return pressurePairText(Math.min(...systolicValues), Math.min(...diastolicValues));
+  if (type === "max") return pressurePairText(Math.max(...systolicValues), Math.max(...diastolicValues));
+  return pressurePairText(pressureAverage(parts, "systolic"), pressureAverage(parts, "diastolic"));
+}
+
+function renderPressureStatSummary(parts) {
+  if (!metricAverageCard || !metricAllRecords) return;
+  metricAverageCard.querySelectorAll(":scope > div:not(.pressure-average-head)").forEach((node) => node.remove());
+  const items = [
+    { label: "最低血压", value: pressureRangeValue(parts, "min") },
+    { label: "最高血压", value: pressureRangeValue(parts, "max") },
+    { label: "平均血压", value: pressureRangeValue(parts, "avg") }
+  ].filter((item) => item.value);
+  const grid = document.createElement("div");
+  grid.className = "pressure-stat-grid";
+  grid.innerHTML = items.map((item) => `
+    <article>
+      <span>${item.label}</span>
+      <strong>${item.value}</strong>
+    </article>
+  `).join("");
+  metricAverageCard.insertBefore(grid, metricAllRecords);
+}
+
 function pressurePartsForSelectedRange(records) {
   const selected = new Date(selectedMetricDate);
   let start = new Date(selected);
@@ -1658,7 +1928,6 @@ function renderPressureMetricDetail(metric) {
   const chartParts = rangeParts.length ? rangeParts : latest ? [latest] : [];
   const avgSystolic = pressureAverage(chartParts, "systolic");
   const avgDiastolic = pressureAverage(chartParts, "diastolic");
-  const avgPulse = pressureAverage(chartParts, "pulse") || latest?.pulse || 80;
 
   metricDetailTitle.textContent = "全部数据";
   metricDetailValue.textContent = latest ? `${latest.systolic}/${latest.diastolic}` : "--/--";
@@ -1670,8 +1939,9 @@ function renderPressureMetricDetail(metric) {
   metricDatePicker.value = dateInputValue(selectedMetricDate);
   metricTrendCaption.textContent = "";
   metricStatAverage.textContent = avgSystolic && avgDiastolic ? `${avgSystolic}/${avgDiastolic}` : "--/--";
-  document.querySelector("#metricStatPulseAverage") && (document.querySelector("#metricStatPulseAverage").textContent = avgPulse ? `${avgPulse}` : "--");
   document.querySelector("#pressureAverageDate") && (document.querySelector("#pressureAverageDate").textContent = metricDateCurrent.textContent);
+  document.querySelector("#metricPulseAverageBlock")?.setAttribute("hidden", "");
+  renderPressureStatSummary(chartParts);
   metricLineChart.innerHTML = renderPressureChart(chartParts);
 }
 
@@ -1680,6 +1950,29 @@ function sugarRecordParts(record) {
   const value = Number(record.values?.value ?? record.chartValue ?? record.display);
   if (!Number.isFinite(value)) return null;
   return { value, time: record.time };
+}
+
+function renderSugarStatSummary(parts) {
+  if (!metricAverageCard || !metricAllRecords) return;
+  metricAverageCard.querySelectorAll(":scope > div:not(.pressure-average-head)").forEach((node) => node.remove());
+  const values = parts.map((item) => item.value).filter((value) => Number.isFinite(value));
+  const max = values.length ? Math.max(...values) : null;
+  const min = values.length ? Math.min(...values) : null;
+  const avg = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+  const items = [
+    { label: "最高血糖", value: Number.isFinite(max) ? formatMetricNumber(max) : "" },
+    { label: "最低血糖", value: Number.isFinite(min) ? formatMetricNumber(min) : "" },
+    { label: "平均血糖", value: Number.isFinite(avg) ? formatMetricNumber(avg) : "" }
+  ].filter((item) => item.value);
+  const grid = document.createElement("div");
+  grid.className = "metric-stat-grid sugar-stat-grid";
+  grid.innerHTML = items.map((item) => `
+    <article>
+      <span>${item.label}</span>
+      <strong>${item.value}</strong>
+    </article>
+  `).join("");
+  metricAverageCard.insertBefore(grid, metricAllRecords);
 }
 
 function renderSugarChart(parts) {
@@ -1718,38 +2011,20 @@ function renderSugarMetricDetail(metric) {
     dayParts = [fallback];
   }
   const latest = dayParts.at(-1);
-  const values = dayParts.map((item) => item.value);
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const avg = values.reduce((sum, value) => sum + value, 0) / values.length;
-  let lowBlock = document.querySelector("#metricSugarLowBlock");
-  const pulseBlock = document.querySelector("#metricPulseAverageBlock");
-  if (!lowBlock && metricAverageCard && pulseBlock) {
-    lowBlock = document.createElement("div");
-    lowBlock.id = "metricSugarLowBlock";
-    lowBlock.className = "metric-sugar-low";
-    metricAverageCard.insertBefore(lowBlock, pulseBlock);
-  }
+  const dateLabel = `${selectedMetricDate.getFullYear()}?${padDateNumber(selectedMetricDate.getMonth() + 1)}?${padDateNumber(selectedMetricDate.getDate())}?`;
 
-  metricDetailTitle.textContent = "血糖详情";
+  metricDetailTitle.textContent = "????";
   metricDetailValue.textContent = formatMetricNumber(latest.value);
   metricDetailUnit.textContent = "mmol/L";
   metricDetailStatus.textContent = "";
   metricDetailStatus.classList.remove("attention");
   metricDetailTime.textContent = "";
-  metricDateCurrent.textContent = `${selectedMetricDate.getFullYear()}年${padDateNumber(selectedMetricDate.getMonth() + 1)}月${padDateNumber(selectedMetricDate.getDate())}日`;
+  metricDateCurrent.textContent = dateLabel;
   metricDatePicker.value = dateInputValue(selectedMetricDate);
   metricTrendCaption.textContent = "";
-  document.querySelector("#pressureAverageDate") && (document.querySelector("#pressureAverageDate").textContent = `${selectedMetricDate.getFullYear()}年${padDateNumber(selectedMetricDate.getMonth() + 1)}月${padDateNumber(selectedMetricDate.getDate())}日`);
-  metricStatAverage.textContent = formatMetricNumber(max);
-  if (lowBlock) {
-    lowBlock.hidden = false;
-    lowBlock.innerHTML = `<span>最低血糖</span><strong>${formatMetricNumber(min)}</strong>`;
-  }
-  if (pulseBlock) {
-    pulseBlock.hidden = false;
-    pulseBlock.innerHTML = `<span>平均血糖</span><strong id="metricStatPulseAverage">${formatMetricNumber(avg)}</strong>`;
-  }
+  document.querySelector("#pressureAverageDate") && (document.querySelector("#pressureAverageDate").textContent = dateLabel);
+  document.querySelector("#metricPulseAverageBlock")?.setAttribute("hidden", "");
+  renderSugarStatSummary(dayParts);
   metricLineChart.innerHTML = renderSugarChart(dayParts);
 }
 
@@ -2380,6 +2655,86 @@ function renderStandardMetricTrend(metric, values, labels) {
     </svg>`;
 }
 
+const metricStatConfig = {
+  sugar: ["最高血糖", "最低血糖", "平均血糖"],
+  bp: ["最高血压", "最低血压", "平均血压"],
+  heart: ["最高心率", "最低心率", "平均心率"],
+  weight: ["较上次变化", "近30天变化", "--"],
+  waist: ["较上次变化", "近30天变化", "---"],
+  hip: ["较上次变化", "近30天变化", "--"],
+  "waist-hip": ["较上次变化", "当前腰围", "当前臀围"],
+  bmi: ["当前体重", "当前身高", "-"],
+  height: ["-", "-", "-"],
+  tc: ["较上次变化", "-", "-"],
+  tg: ["较上次变化", "-", "-"],
+  hdl: ["较上次变化", "-", "-"],
+  ldl: ["较上次变化", "-", "-"],
+  hba1c: ["较上次变化", "-", "-"],
+  tgab: ["较上次变化", "-", "-"],
+  tpoab: ["较上次变化", "-", "-"],
+  uric: ["较上次变化", "-", "-"],
+  "ebv-igg": ["-", "-", "-"],
+  "beta2-gp1": ["-", "-", "-"]
+};
+
+function metricStatLabels(metric) {
+  const baseId = metricBaseId(metric.id);
+  return metricStatConfig[metric.id] || metricStatConfig[baseId] || ["较上次变化", "检查时间", "数据来源"];
+}
+
+function signedMetricChange(value) {
+  if (!Number.isFinite(value)) return "--";
+  if (value === 0) return "持平";
+  return `${value > 0 ? "+" : ""}${formatMetricNumber(value)}`;
+}
+
+function metricCheckTimeText(metric) {
+  const latestRecord = allMetricRecords(metric)[0];
+  const date = latestRecord?.time ? new Date(latestRecord.time) : selectedMetricDate;
+  if (Number.isNaN(date.getTime())) return "--";
+  return `${date.getFullYear()}/${padDateNumber(date.getMonth() + 1)}/${padDateNumber(date.getDate())} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+}
+
+function metricStatValue(metric, label, values) {
+  if (/^-+$/.test(label)) return label;
+  const latest = values.at(-1);
+  const previous = values.at(-2);
+  const first = values[0];
+  const unit = metric.unit || "";
+  if (label === "最高心率" || label === "最高血糖") return `${formatMetricNumber(Math.max(...values))}${unit ? ` ${unit}` : ""}`;
+  if (label === "最低心率" || label === "最低血糖") return `${formatMetricNumber(Math.min(...values))}${unit ? ` ${unit}` : ""}`;
+  if (label === "平均心率" || label === "平均血糖") {
+    const avg = values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+    return `${formatMetricNumber(avg)}${unit ? ` ${unit}` : ""}`;
+  }
+  if (label === "较上次变化") return previous == null ? "--" : `${signedMetricChange(latest - previous)}${unit ? ` ${unit}` : ""}`;
+  if (label === "近30天变化") return first == null ? "--" : `${signedMetricChange(latest - first)}${unit ? ` ${unit}` : ""}`;
+  if (label === "当前腰围") return "82.5 cm";
+  if (label === "当前臀围") return "98.0 cm";
+  if (label === "当前体重") return "68.5 kg";
+  if (label === "当前身高") return "178 cm";
+  if (label === "检查时间") return metricCheckTimeText(metric);
+  if (label === "数据来源") return ["tc", "tg", "hdl", "ldl", "hba1c", "tgab", "tpoab", "uric"].includes(metric.id) ? "检验报告" : "手动录入";
+  return "--";
+}
+
+function renderMetricStatCards(metric, values) {
+  if (!metricAverageCard || !metricAllRecords) return;
+  metricAverageCard.querySelectorAll(":scope > div").forEach((node) => node.remove());
+  const statItems = metricStatLabels(metric)
+    .map((label) => ({ label, value: metricStatValue(metric, label, values) }))
+    .filter((item) => item.label && item.value && !/^-+$/.test(item.label) && !/^-+$/.test(item.value));
+  const statGrid = document.createElement("div");
+  statGrid.className = "metric-stat-grid";
+  statGrid.innerHTML = statItems.map((item) => `
+    <article>
+      <span>${item.label}</span>
+      <strong>${item.value}</strong>
+    </article>
+  `).join("");
+  metricAverageCard.insertBefore(statGrid, metricAllRecords);
+}
+
 function renderStandardMetricDetail(metric) {
   resetMetricDetailExtras("standard");
   const values = rangeMetricValues(metric, selectedMetricRange);
@@ -2399,7 +2754,7 @@ function renderStandardMetricDetail(metric) {
   metricDateCurrent.textContent = metricDateLabel();
   metricDatePicker.value = dateInputValue(selectedMetricDate);
   metricTrendCaption.textContent = selectedMetricRange === "day" ? "近24小时" : selectedMetricRange === "week" ? "近7天" : "近30天";
-  metricStatAverage.textContent = `${formatMetricNumber(average)} ${metric.unit || ""}`.trim();
+  renderMetricStatCards(metric, values);
   metricLineChart.innerHTML = renderStandardMetricTrend(metric, values, labels);
 }
 

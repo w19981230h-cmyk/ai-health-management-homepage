@@ -11,6 +11,79 @@
   box-shadow: 0 4px 14px rgba(10, 6, 130, 0.04);
 }
 
+.focus-metric-card[data-metric-kind] {
+  overflow: hidden;
+}
+
+.focus-metric-card[data-metric-kind]::before {
+  content: attr(data-metric-icon);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(54, 113, 255, 0.22);
+  border-radius: 9px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.06);
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.focus-metric-card[data-metric-kind="bp"]::before,
+.focus-metric-card[data-metric-kind="heart"]::before {
+  border-color: rgba(255, 123, 138, 0.24);
+  color: #ef6b80;
+  background: rgba(255, 123, 138, 0.08);
+}
+
+.focus-metric-card[data-metric-kind="sugar"]::before,
+.focus-metric-card[data-metric-kind="hba1c"]::before {
+  border-color: rgba(244, 149, 41, 0.28);
+  color: #f49529;
+  background: rgba(244, 149, 41, 0.09);
+}
+
+.focus-metric-card[data-metric-kind="weight"]::before,
+.focus-metric-card[data-metric-kind="waist"]::before,
+.focus-metric-card[data-metric-kind="waist-hip"]::before,
+.focus-metric-card[data-metric-kind="bmi"]::before,
+.focus-metric-card[data-metric-kind="height"]::before,
+.focus-metric-card[data-metric-kind="fat"]::before {
+  border-color: rgba(54, 113, 255, 0.24);
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.07);
+}
+
+.focus-metric-card[data-metric-kind="tc"]::before,
+.focus-metric-card[data-metric-kind="tg"]::before,
+.focus-metric-card[data-metric-kind="hdl"]::before,
+.focus-metric-card[data-metric-kind="ldl"]::before,
+.focus-metric-card[data-metric-kind="lipid"]::before {
+  border-color: rgba(90, 125, 255, 0.24);
+  color: #5a7dff;
+  background: rgba(90, 125, 255, 0.07);
+}
+
+.focus-metric-card[data-metric-kind="uric"]::before,
+.focus-metric-card[data-metric-kind="tgab"]::before,
+.focus-metric-card[data-metric-kind="tpoab"]::before,
+.focus-metric-card[data-metric-kind="ebv-igg"]::before,
+.focus-metric-card[data-metric-kind="beta2-gp1"]::before {
+  border-color: rgba(122, 92, 255, 0.24);
+  color: #7a5cff;
+  background: rgba(122, 92, 255, 0.07);
+}
+
+.focus-metric-card[data-metric-kind="bmi"]::before,
+.focus-metric-card[data-metric-kind="waist-hip"]::before,
+.focus-metric-card[data-metric-kind="hba1c"]::before,
+.focus-metric-card[data-metric-kind="beta2-gp1"]::before {
+  font-size: 9px;
+}
+
 .focus-metric-card::after {
   content: "";
   position: absolute;
@@ -26,6 +99,38 @@
 .focus-metric-card span { display: block; padding-right: 16px; color: #5d6b82; font-size: 12px; font-weight: 700; }
 .focus-metric-card strong { display: block; margin-top: 12px; color: #122e84; font-size: 23px; line-height: 1; white-space: nowrap; }
 .focus-metric-card strong em { margin-left: 4px; color: #71809a; font-size: 10px; font-style: normal; font-weight: 600; }
+
+.unified-metric-grid .focus-metric-card[data-metric-kind] {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 116px;
+  padding: 12px 12px 13px;
+  border-color: rgba(54, 113, 255, 0.14);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.96));
+}
+
+.unified-metric-grid .focus-metric-card[data-metric-kind]::before {
+  align-self: start;
+  justify-self: start;
+}
+
+.unified-metric-grid .focus-metric-card[data-metric-kind] span {
+  color: #34435f;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.unified-metric-grid .focus-metric-card[data-metric-kind] strong {
+  align-self: end;
+  margin-top: 8px;
+  color: #122e84;
+  font-size: 24px;
+}
+
+.unified-metric-grid .focus-metric-card[data-metric-kind] strong em {
+  color: #6b7892;
+  font-size: 10px;
+}
 .metric-detail-page { padding-bottom: 96px; background: #f4f7fc; }
 .metric-detail-summary,
 .metric-trend-card {
@@ -42,6 +147,60 @@
 .metric-detail-summary b { margin-left: auto; padding: 5px 10px; border-radius: 12px; color: #18a957; background: #eaf9ef; font-size: 11px; }
 .metric-detail-summary b.attention { color: #dc7b14; background: #fff3e6; }
 .metric-detail-summary p { margin: 12px 0 0; color: #98a2b3; font-size: 11px; }
+
+.metric-average-card .metric-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  min-width: 0;
+}
+
+.metric-average-card .metric-stat-grid article {
+  display: grid;
+  gap: 7px;
+  align-content: center;
+  min-width: 0;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.metric-average-card .metric-stat-grid article + article {
+  border-left: 1px solid rgba(54, 113, 255, 0.1);
+}
+
+.metric-average-card .metric-stat-grid span {
+  color: rgba(3, 16, 46, 0.52);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+.metric-average-card .metric-stat-grid strong {
+  color: #122e84;
+  font-size: clamp(14px, 4.4vw, 18px);
+  line-height: 1.2;
+  font-weight: 950;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.metric-detail-page:not(.pressure-detail-mode):not(.sugar-detail-mode) .metric-average-card:has(.metric-stat-grid) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.metric-detail-page:not(.pressure-detail-mode):not(.sugar-detail-mode) .metric-average-card:has(.metric-stat-grid) .metric-stat-grid {
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+}
+
+.metric-detail-page:not(.pressure-detail-mode):not(.sugar-detail-mode) .metric-average-card:has(.metric-stat-grid) button {
+  min-width: 72px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
 .weight-detail-records-section {
   display: none;

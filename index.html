@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260706-portrait-metrics-visual">
+  <link rel="stylesheet" href="styles.css?v=20260706-sugar-stat-blue">
 </head>
 <body>
   <main class="app-shell">
@@ -29,12 +29,15 @@
         <section class="member-switcher" aria-label="就诊人切换">
           <button class="member-chip active" type="button" data-patient-id="self" data-sex="female" data-state="improving" data-name="张女士" data-meta="35岁 · 本人" aria-label="张女士 管理中">
             <span class="member-avatar avatar-self">张</span>
+            <strong class="patient-chip-name">张女士</strong>
           </button>
           <button class="member-chip" type="button" data-patient-id="father" data-sex="male" data-state="risk" data-name="李先生" data-meta="68岁 · 父亲" aria-label="李先生 风险提醒">
             <span class="member-avatar avatar-risk">李</span>
+            <strong class="patient-chip-name">李先生</strong>
           </button>
           <button class="member-chip" type="button" data-patient-id="child" data-sex="unknown" data-state="empty" data-name="小宝" data-meta="8岁 · 子女" aria-label="小宝 待完善">
             <span class="member-avatar avatar-child">小</span>
+            <strong class="patient-chip-name">小宝</strong>
           </button>
           <button class="member-add" type="button" aria-label="添加就诊人">
             <span aria-hidden="true"></span>
@@ -329,16 +332,18 @@
             </button>
           </header>
           <section class="archive-member-row" aria-label="当前就诊人">
-            <div class="profile-avatar archive-avatar"></div>
-            <div class="archive-member-main">
-              <button class="profile-name archive-name" id="profileNameButton" type="button" data-open-page="familySwitchPage">张女士</button>
-              <button class="archive-edit" type="button" data-open-page="settingsPage">编辑资料 〉</button>
-              <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
-            </div>
-            <button class="member-chip archive-switch" type="button" data-open-page="familySwitchPage" aria-label="切换就诊人">
-              <span class="member-avatar avatar-self">张</span>
-            </button>
-          <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
+            <section class="member-switcher archive-member-switcher" role="radiogroup" aria-label="就诊人切换">
+              <button class="member-chip active archive-name" id="profileNameButton" type="button" role="radio" aria-checked="true" data-archive-patient-id="self" data-name="张女士" data-sex="female" data-age="32" aria-label="张女士">
+                <span class="member-avatar avatar-self">张</span>
+                <strong class="patient-chip-name">张女士</strong>
+              </button>
+              <button class="member-chip" type="button" role="radio" aria-checked="false" data-archive-patient-id="zhang" data-name="张患者" data-sex="male" data-age="24" aria-label="张患者">
+                <span class="member-avatar avatar-risk">张</span>
+                <strong class="patient-chip-name">张患者</strong>
+              </button>
+              <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
+            </section>
+            <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
             <button class="archive-settings-btn" type="button" data-open-page="settingsPage" aria-label="设置"></button>
           </section>
           <section class="archive-progress-card" aria-label="健康评分">
@@ -573,32 +578,88 @@
             <span class="capsule-close" aria-hidden="true"></span>
           </button>
         </header>
-        <section class="portrait-patient">
-          <i class="profile-avatar small" aria-hidden="true"></i>
-          <strong>张患者</strong>
-          <span>♂ 24岁</span>
-        </section>
         <main class="portrait-body">
-          <section class="portrait-side">
-            <article class="portrait-metric-card">
-              <span>健康指标</span>
-              <strong>血压</strong>
-              <b>130/85<em>mmHg</em></b>
-              <p>最近记录 14:51</p>
+          <section class="portrait-summary-side" aria-label="健康画像概要">
+            <article class="portrait-profile-card">
+              <div class="portrait-card-title"><i class="icon-person"></i><span>患者信息</span></div>
+              <div class="portrait-profile-main">
+                <i class="portrait-profile-avatar" aria-hidden="true"></i>
+                <div>
+                  <strong>张患者</strong>
+                  <em class="portrait-profile-meta">♂ 24岁</em>
+                </div>
+              </div>
+              <dl>
+                <div><dd>高血压服务包</dd></div>
+                <div><dd>2026-06-23 14:51</dd></div>
+              </dl>
             </article>
-            <article class="portrait-metric-card">
-              <span>健康指标</span>
-              <strong>血糖</strong>
-              <b>5.0<em>mmol/L</em></b>
-              <p>最近记录 14:51</p>
+            <article class="portrait-core-card">
+              <div class="portrait-card-title"><i class="icon-chart"></i><span>核心指标</span></div>
+              <div class="portrait-bmi-line">
+                <span>BMI</span>
+                <strong>21.5</strong>
+                <em>正常</em>
+              </div>
+              <div class="portrait-bmi-scale"><i></i></div>
+              <div class="portrait-core-metrics">
+                <div><span>身高</span><strong>178cm</strong></div>
+                <div><span>体重</span><strong>68kg</strong></div>
+              </div>
             </article>
-            <article class="portrait-metric-card compact">
-              <strong>BMI指数</strong>
-              <b>21.5<em>正常</em></b>
-              <p>178cm · 68kg</p>
+            <article class="portrait-focus-card">
+              <div class="portrait-card-title"><i class="icon-bell"></i><span>重点关注</span><b>3项</b></div>
+              <button type="button">
+                <i class="focus-heart"></i>
+                <span><strong>心血管</strong><em>近7天血压波动偏高</em></span>
+              </button>
+              <button type="button">
+                <i class="focus-lung"></i>
+                <span><strong>肺部</strong><em>暂无相关健康数据</em></span>
+              </button>
+              <button type="button">
+                <i class="focus-digest"></i>
+                <span><strong>消化系统</strong><em>胃部报告提示定期观察</em></span>
+              </button>
+            </article>
+            <article class="portrait-todo-card">
+              <div class="portrait-card-title"><i class="icon-task"></i><span>今日待办</span><b>2项</b></div>
+              <button type="button">
+                <i class="todo-bp"></i>
+                <span><strong>血压打卡</strong><em>建议上午测量</em></span>
+                <b>去完成</b>
+              </button>
+              <button type="button">
+                <i class="todo-diet"></i>
+                <span><strong>饮食打卡</strong><em>记录今日饮食</em></span>
+                <b>去完成</b>
+              </button>
             </article>
           </section>
-          <section class="portrait-figure" id="portraitFigure" data-portrait-view="root" aria-label="人体风险可视化">
+          <section class="portrait-side">
+            <article class="portrait-bmi-card">
+              <strong>21.5<em>% · BMI指数</em></strong>
+              <div><span>178cm</span><span>68kg</span></div>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>心血管 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-high">高</b><span>心血管病</span></p>
+              <p><b class="risk-mid">中</b><span>高血压</span></p>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>肺部 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-high">高</b><span>慢性阻塞性肺病</span></p>
+              <p><b class="risk-mid">中</b><span>肺癌</span></p>
+            </article>
+            <article class="portrait-risk-card">
+              <h2>消化系统 <i aria-hidden="true"></i></h2>
+              <p><b class="risk-low">低</b><span>胃癌</span></p>
+            </article>
+          </section>
+          <section class="portrait-figure" id="portraitFigure" data-portrait-mode="body" data-portrait-view="root" aria-label="人体风险可视化">
+            <img class="portrait-full-body" src="assets/health-portrait-fullbody.png" alt="张患者全身像">
+            <img class="portrait-anatomy-body" src="assets/health-portrait-anatomy.png" alt="张患者健康可视化人体">
+            <img class="portrait-brain-overlay" src="assets/health-portrait-brain.png" alt="头颅">
             <div class="portrait-stage" id="portraitStage" aria-hidden="true">
               <svg class="portrait-svg" viewBox="0 0 256 573" role="img" aria-label="分层人体健康画像">
                 <defs>
@@ -698,7 +759,7 @@
             <button class="portrait-reset" type="button" data-portrait-region="root" aria-label="返回全览">返回全览</button>
             <article class="portrait-organ-info" id="portraitOrganInfo" hidden>
               <i id="portraitInfoIcon">脑</i>
-              <strong id="portraitInfoTitle">颅脑</strong>
+              <strong id="portraitInfoTitle">头颅</strong>
               <span id="portraitInfoRisk">1 项需关注</span>
               <p id="portraitInfoDesc">补充相关检查报告，为你分析</p>
               <button id="portraitInfoAction" type="button">新增报告</button>
@@ -1787,13 +1848,13 @@
   </main>
 
   <script src="scripts/00-dom-state.js?v=20260703-metric-team-switch"></script>
-  <script src="scripts/01-data-store.js?v=20260703-metric-detail-trends"></script>
-  <script src="scripts/10-schedule.js?v=20260627-diet-meal-domain"></script>
+  <script src="scripts/01-data-store.js?v=20260706-metric-field-rules"></script>
+  <script src="scripts/10-schedule.js?v=20260706-patient-chip-switch"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260627-diet-result-name-gram"></script>
   <script src="scripts/30-medicine.js?v=20260626-datetime-picker-labels"></script>
   <script src="scripts/40-checkin-forms.js?v=20260626-datetime-picker-labels"></script>
-  <script src="scripts/50-reports-services.js?v=20260625-task-direct-binding"></script>
-  <script src="scripts/60-metrics.js?v=20260705-metric-record-fields"></script>
-  <script src="scripts/70-events-init.js?v=20260706-portrait-metrics-visual"></script>
+  <script src="scripts/50-reports-services.js?v=20260706-patient-chip-switch"></script>
+  <script src="scripts/60-metrics.js?v=20260706-sugar-stat-blue"></script>
+  <script src="scripts/70-events-init.js?v=20260706-portrait-skull-brain-position"></script>
 </body>
 </html>

@@ -506,6 +506,7 @@ memberSwitcher.addEventListener("click", (event) => {
     newMember.setAttribute("aria-label", `新成员${addedMemberCount} 待评估`);
     newMember.innerHTML = `
       <span class="member-avatar avatar-new">新</span>
+      <strong class="patient-chip-name">新成员${addedMemberCount}</strong>
     `;
     memberSwitcher.insertBefore(newMember, addMemberButton);
     selectMember(newMember);

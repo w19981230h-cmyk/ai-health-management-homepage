@@ -181,8 +181,26 @@
 
 .metric-records-groups {
   display: grid;
-  gap: 10px;
+  gap: 16px;
   padding: 0 16px 24px;
+}
+
+.records-date-group {
+  display: grid;
+  gap: 10px;
+}
+
+.records-date-group h2 {
+  margin: 0;
+  padding-left: 4px;
+  color: rgba(3, 16, 46, 0.72);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.records-date-group > div {
+  display: grid;
+  gap: 10px;
 }
 
 .metric-records-page.checkin-records-mode {

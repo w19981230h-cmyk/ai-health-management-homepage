@@ -1,4 +1,9 @@
 document.addEventListener("click", (event) => {
+  const archivePatientButton = event.target.closest("[data-archive-patient-id]");
+  if (archivePatientButton) {
+    switchArchivePatient(archivePatientButton);
+    return;
+  }
   const reportButton = event.target.closest("[data-report-id]");
   if (reportButton) {
     openReportDetail(reportButton.dataset.reportId);
@@ -14,6 +19,11 @@ document.addEventListener("click", (event) => {
     setPortraitOrgan(portraitOrganButton.dataset.portraitOrgan);
     return;
   }
+  const portraitFigureButton = event.target.closest("#portraitFigure");
+  if (portraitFigureButton && portraitFigure?.dataset.portraitMode === "body") {
+    setPortraitAnatomyView();
+    return;
+  }
   const deleteReportButton = event.target.closest("[data-delete-report]");
   if (deleteReportButton) {
     deletingReportId = deleteReportButton.dataset.deleteReport;
@@ -25,6 +35,7 @@ document.addEventListener("click", (event) => {
   const opener = event.target.closest("[data-open-page]");
   if (opener) {
     openSubPage(opener.dataset.openPage);
+    if (opener.dataset.openPage === "healthPortraitPage") setPortraitBodyView();
     return;
   }
   if (event.target.closest(".back-page")) {
@@ -128,7 +139,21 @@ const cycleRules = {
 
 function updateCurrentPatientView() {
   if (profileNameButton) {
-    profileNameButton.textContent = currentPatient.name;
+    const archiveSwitcher = profileNameButton.closest(".archive-member-switcher");
+    if (archiveSwitcher) {
+      const archivePatientButtons = [...archiveSwitcher.querySelectorAll("[data-archive-patient-id]")];
+      const activeButton = archivePatientButtons.find((item) => item.dataset.archivePatientId === currentPatient.id) || archivePatientButtons[0];
+      archivePatientButtons.forEach((item) => {
+        const active = item === activeButton;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-checked", String(active));
+      });
+    } else {
+      const profileChipName = profileNameButton.querySelector(".patient-chip-name");
+      if (profileChipName) profileChipName.textContent = currentPatient.name;
+      else profileNameButton.textContent = currentPatient.name;
+      profileNameButton.setAttribute("aria-label", currentPatient.name || "切换就诊人");
+    }
   }
   if (profileGenderAge) {
     const sexLabel = currentPatient.sex === "female" ? "女" : currentPatient.sex === "male" ? "男" : "未知";
@@ -137,6 +162,23 @@ function updateCurrentPatientView() {
   renderPeriodCard();
   renderPeriodDetail();
   updateCycleReminderVisibility();
+}
+
+function switchArchivePatient(button) {
+  const switcher = button.closest(".archive-member-switcher");
+  switcher?.querySelectorAll("[data-archive-patient-id]").forEach((item) => {
+    item.classList.remove("active");
+    item.setAttribute("aria-checked", "false");
+  });
+  button.classList.add("active");
+  button.setAttribute("aria-checked", "true");
+  currentPatient = {
+    id: button.dataset.archivePatientId || button.dataset.name || "unknown",
+    name: button.dataset.name || "就诊人",
+    sex: button.dataset.sex || "unknown",
+    age: button.dataset.age || ""
+  };
+  updateCurrentPatientView();
 }
 
 function updateCycleReminderVisibility() {
@@ -473,12 +515,12 @@ const portraitRegions = {
   },
   head: {
     title: "头部",
-    desc: "头部包含颅脑、眼睛、鼻子、口腔、耳朵、咽喉和甲状腺。",
+    desc: "头部包含头颅、眼睛、鼻子、口腔、耳朵、咽喉和甲状腺。",
     icon: "头",
     hint: "点击下方器官继续放大",
     markers: ["brain", "eye", "nose", "mouth", "ear", "throat", "thyroid"],
     organs: [
-      { id: "brain", name: "颅脑", icon: "脑", desc: "关注头痛、眩晕、睡眠和血压相关风险。" },
+      { id: "brain", name: "头颅", icon: "脑", desc: "关注头痛、眩晕、睡眠和血压相关风险。" },
       { id: "eye", name: "眼睛", icon: "眼", desc: "关注视力、眼压及糖尿病相关眼底风险。" },
       { id: "nose", name: "鼻子", icon: "鼻", desc: "关注鼻炎、鼻窦不适和呼吸通畅度。" },
       { id: "mouth", name: "口腔", icon: "口", desc: "关注口腔溃疡、牙龈和饮食相关问题。" },
@@ -657,11 +699,11 @@ const portraitRegionsV2 = {
   head: {
     title: "头颈",
     icon: "头",
-    hint: "颅脑 / 眼睛 / 鼻子 / 口腔 / 耳朵 / 咽喉",
+    hint: "头颅 / 眼睛 / 鼻子 / 口腔 / 耳朵 / 咽喉",
     camera: { scale: 1.9, x: 0, y: 260 },
     markers: ["brain", "eye", "nose", "mouth", "ear", "throat", "thyroid"],
     organs: [
-      { id: "brain", name: "颅脑", desc: "补充颅脑相关检查报告，为你分析", camera: { scale: 2.05, x: 0, y: 300 } },
+      { id: "brain", name: "头颅", desc: "补充头颅相关检查报告，为你分析", camera: { scale: 2.05, x: 0, y: 300 } },
       { id: "eye", name: "眼睛", desc: "关注视力、眼压和眼底检查记录", camera: { scale: 2.08, x: 14, y: 258 } },
       { id: "nose", name: "鼻子", desc: "关注鼻炎、鼻窦及呼吸通畅情况", camera: { scale: 2.1, x: 0, y: 236 } },
       { id: "mouth", name: "口腔", desc: "关注牙龈、口腔溃疡和口腔检查", camera: { scale: 2.05, x: 0, y: 210 } },
@@ -824,6 +866,7 @@ function clearPortraitOrganSelection() {
 function setPortraitRegion(regionName) {
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
   currentPortraitRegion = regionName;
+  portraitFigure?.setAttribute("data-portrait-mode", "anatomy");
   portraitFigure?.setAttribute("data-portrait-view", regionName);
   portraitFigure?.removeAttribute("data-portrait-organ");
   applyPortraitCamera(region.camera);
@@ -842,7 +885,26 @@ function setPortraitRegion(regionName) {
       <span>${organ.name}</span>
     </button>
   `).join("") : "";
-  if (region.organs.length) activatePortraitOrgan(region.organs[0], regionName, { keepCamera: true });
+}
+
+function setPortraitBodyView() {
+  currentPortraitRegion = "root";
+  portraitFigure?.setAttribute("data-portrait-mode", "anatomy");
+  portraitFigure?.setAttribute("data-portrait-view", "root");
+  portraitFigure?.removeAttribute("data-portrait-organ");
+  applyPortraitCamera(portraitRegionsV2.root.camera);
+  clearPortraitOrganSelection();
+  if (portraitOrganInfo) portraitOrganInfo.hidden = true;
+  if (portraitCurrentIcon) portraitCurrentIcon.innerHTML = "身";
+  renderPortraitMarkers("root");
+  if (portraitOrganList) portraitOrganList.innerHTML = "";
+  if (portraitOrganPanelTitle) portraitOrganPanelTitle.textContent = "一级部位";
+  if (portraitOrganPanelHint) portraitOrganPanelHint.textContent = "点击人体标签查看二级部位";
+  portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => button.classList.remove("active"));
+}
+
+function setPortraitAnatomyView() {
+  setPortraitRegion("root");
 }
 
 function setPortraitOrgan(organId) {
@@ -895,15 +957,26 @@ function getPortraitOrgan(organId) {
 
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
+  if (regionName === "root") {
+    const rootRegions = ["head", "chest", "abdomen", "pelvis", "skeleton", "vessel"];
+    portraitMarkerLayer.innerHTML = rootRegions.map((regionId) => {
+      const region = portraitRegionsV2[regionId];
+      if (!region) return "";
+      const label = regionId === "head" ? "头颅" : region.title;
+      return `<button class="portrait-region-marker marker-region-${regionId}" type="button" data-portrait-region="${regionId}" aria-label="${label}"><span>${label}</span></button>`;
+    }).join("");
+    return;
+  }
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
   portraitMarkerLayer.innerHTML = (region.markers || []).map((organId) => {
     const organ = getPortraitOrgan(organId);
     if (!organ) return "";
-    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><span>${portraitIconSvg(organ.id)}</span></button>`;
+    const label = organ.id === "brain" ? `<em>${organ.name}</em>` : "";
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><span>${portraitIconSvg(organ.id)}</span>${label}</button>`;
   }).join("");
 }
 
-setPortraitRegion("root");
+setPortraitBodyView();
 
 function closeOverlays() {
   sheetMask.classList.remove("active");
