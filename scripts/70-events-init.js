@@ -882,7 +882,6 @@ function setPortraitRegion(regionName) {
   });
   portraitOrganList.innerHTML = region.organs.length ? region.organs.map((organ) => `
     <button type="button" data-portrait-organ="${organ.id}" data-parent-region="${regionName}">
-      <i>${portraitIconSvg(organ.id)}</i>
       <span>${organ.name}</span>
     </button>
   `).join("") : "";
@@ -1010,7 +1009,7 @@ function renderPortraitMarkers(regionName) {
     const organ = getPortraitOrgan(organId);
     if (!organ) return "";
     const label = markerLabels[organId] || organ.name;
-    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${label}"><span>${portraitIconSvg(organ.id)}</span><em>${label}</em></button>`;
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${label}"><em>${label}</em></button>`;
   }).join("");
 }
 
