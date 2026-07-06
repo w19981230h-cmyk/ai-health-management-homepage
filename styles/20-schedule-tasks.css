@@ -1723,7 +1723,7 @@
   padding: 0;
   border: 0;
   cursor: pointer;
-  background: url("../assets/archive-patient-portrait.png") center bottom / auto 238px no-repeat;
+  background: url("../assets/archive-patient-portrait.png?v=20260706-portrait-assets") center bottom / auto 238px no-repeat;
 }
 
 .archive-doctor::before {
@@ -2972,7 +2972,7 @@
   height: 54px;
   border-radius: 50%;
   background:
-    url("../assets/archive-patient-portrait.png") center top / auto 82px no-repeat,
+    url("../assets/archive-patient-portrait.png?v=20260706-portrait-assets") center top / auto 82px no-repeat,
     linear-gradient(180deg, #edf5ff, #dceaff);
   box-shadow: inset 0 0 0 1px rgba(54, 113, 255, 0.08);
 }
