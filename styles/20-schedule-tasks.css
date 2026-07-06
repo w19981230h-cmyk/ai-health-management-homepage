@@ -3507,7 +3507,7 @@
 }
 
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="head"] .portrait-brain-overlay {
-  opacity: 1;
+  opacity: 0;
   transform: translateX(-50%) translate3d(var(--portrait-x, 0), var(--portrait-y, 0), 0) scale(var(--portrait-scale, 1));
 }
 
@@ -3623,6 +3623,11 @@
 
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="head"] .anatomy-head .organ:not(.brain) {
   opacity: 0.34;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="head"] .anatomy-head .brain {
+  transform: translateY(-10px) scale(0.66);
+  transform-origin: 128px 58px;
 }
 
 .archive-assistant-card {

@@ -889,7 +889,7 @@ function setPortraitRegion(regionName) {
 
 function setPortraitBodyView() {
   currentPortraitRegion = "root";
-  portraitFigure?.setAttribute("data-portrait-mode", "anatomy");
+  portraitFigure?.setAttribute("data-portrait-mode", "body");
   portraitFigure?.setAttribute("data-portrait-view", "root");
   portraitFigure?.removeAttribute("data-portrait-organ");
   applyPortraitCamera(portraitRegionsV2.root.camera);
