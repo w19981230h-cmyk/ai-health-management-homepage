@@ -958,21 +958,58 @@ function getPortraitOrgan(organId) {
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
   if (regionName === "root") {
-    const rootRegions = ["head", "chest", "abdomen", "pelvis", "skeleton", "vessel"];
-    portraitMarkerLayer.innerHTML = rootRegions.map((regionId) => {
-      const region = portraitRegionsV2[regionId];
-      if (!region) return "";
-      const label = regionId === "head" ? "头颅" : region.title;
+    const rootRegions = [
+      ["head", "\u5934\u90e8"],
+      ["chest", "\u80f8\u90e8"],
+      ["abdomen", "\u8179\u90e8"],
+      ["pelvis", "\u76c6\u8154"],
+      ["skeleton", "\u9aa8\u9abc"],
+      ["vessel", "\u8840\u7ba1"]
+    ];
+    portraitMarkerLayer.innerHTML = rootRegions.map(([regionId, label]) => {
+      if (!portraitRegionsV2[regionId]) return "";
       return `<button class="portrait-region-marker marker-region-${regionId}" type="button" data-portrait-region="${regionId}" aria-label="${label}"><span>${label}</span></button>`;
     }).join("");
     return;
   }
+  const markerLabels = {
+    brain: "\u5934\u9885",
+    eye: "\u773c\u775b",
+    nose: "\u9f3b\u5b50",
+    mouth: "\u53e3\u8154",
+    ear: "\u8033\u6735",
+    throat: "\u54bd\u5589",
+    thyroid: "\u7532\u72b6\u817a",
+    heart: "\u5fc3\u810f",
+    lung: "\u80ba\u90e8",
+    trachea: "\u6c14\u7ba1",
+    breast: "\u4e73\u623f",
+    esophagus: "\u98df\u7ba1",
+    thymus: "\u80f8\u817a",
+    liver: "\u809d\u810f",
+    gallbladder: "\u80c6\u56ca",
+    stomach: "\u80c3",
+    pancreas: "\u80f0\u817a",
+    spleen: "\u813e\u810f",
+    kidney: "\u80be\u810f",
+    ureter: "\u8f93\u5c3f\u7ba1",
+    intestine: "\u80a0\u9053",
+    bladder: "\u8180\u80f1",
+    uterus: "\u5b50\u5bab",
+    vagina: "\u9634\u9053",
+    prostate: "\u524d\u5217\u817a",
+    testis: "\u777e\u4e38",
+    vas: "\u8f93\u7cbe\u7ba1",
+    bone: "\u9aa8\u9abc",
+    joint: "\u5173\u8282",
+    vessel: "\u8840\u7ba1"
+  };
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
   portraitMarkerLayer.innerHTML = (region.markers || []).map((organId) => {
     const organ = getPortraitOrgan(organId);
     if (!organ) return "";
-    const label = organ.id === "brain" ? `<em>${organ.name}</em>` : "";
-    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><span>${portraitIconSvg(organ.id)}</span>${label}</button>`;
+    const label = markerLabels[organId] || organ.name;
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${label}"><span>${portraitIconSvg(organ.id)}</span><em>${label}</em></button>`;
   }).join("");
 }
 
