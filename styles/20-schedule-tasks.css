@@ -2665,6 +2665,8 @@
   font-size: 8px;
   font-weight: 800;
   white-space: nowrap;
+  transform: translate(-50%, -50%) scale(var(--portrait-marker-scale, 1));
+  transform-origin: 50% 50%;
 }
 
 .health-portrait-page .portrait-organ-marker span,
@@ -2696,7 +2698,7 @@
   border-color: #d9bc69;
   background: #fff;
   box-shadow: 0 0 0 8px rgba(217, 188, 105, 0.55), 0 10px 24px rgba(54, 113, 255, 0.16);
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(calc(var(--portrait-marker-scale, 1) * 1.08));
 }
 
 .health-portrait-page .marker-brain {

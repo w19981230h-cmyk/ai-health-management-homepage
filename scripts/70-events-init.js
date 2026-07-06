@@ -857,6 +857,7 @@ function applyPortraitCamera(camera) {
   portraitFigure.style.setProperty("--portrait-scale", next.scale);
   portraitFigure.style.setProperty("--portrait-x", `${next.x}px`);
   portraitFigure.style.setProperty("--portrait-y", `${next.y}px`);
+  portraitFigure.style.setProperty("--portrait-marker-scale", (1 / Number(next.scale || 1)).toFixed(3));
 }
 
 function clearPortraitOrganSelection() {
@@ -872,7 +873,7 @@ function setPortraitRegion(regionName) {
   applyPortraitCamera(region.camera);
   clearPortraitOrganSelection();
   portraitCurrentIcon.innerHTML = regionName === "root" ? "身" : portraitIconSvg(region.markers[0] || "thymus");
-  if (portraitOrganInfo) portraitOrganInfo.hidden = regionName === "root";
+  if (portraitOrganInfo) portraitOrganInfo.hidden = true;
   if (portraitOrganPanelTitle) portraitOrganPanelTitle.textContent = regionName === "root" ? "一级部位" : region.title;
   if (portraitOrganPanelHint) portraitOrganPanelHint.textContent = region.hint;
   renderPortraitMarkers(regionName);
