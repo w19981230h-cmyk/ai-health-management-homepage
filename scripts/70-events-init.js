@@ -146,7 +146,7 @@ const portraitPatientAssets = {
     meta: "♀ 32岁",
     archiveImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
     portraitImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
-    anatomyImage: "assets/health-anatomy-female-clean.png?v=20260707-sex-anatomy",
+    anatomyImage: "assets/health-anatomy-female-clean.png?v=20260707-anatomy-pair",
     portraitAlt: "张女士健康画像"
   },
   zhang: {
@@ -154,7 +154,7 @@ const portraitPatientAssets = {
     meta: "♂ 24岁",
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
-    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-sex-anatomy",
+    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
     portraitAlt: "张患者健康画像"
   }
 };
