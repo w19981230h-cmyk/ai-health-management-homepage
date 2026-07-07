@@ -2900,7 +2900,7 @@
   display: grid;
   width: 158px;
   gap: 8px;
-  margin-left: min(173px, calc(100% - 163px));
+  margin-left: min(183px, calc(100% - 153px));
   margin-top: 0;
   pointer-events: auto;
 }
