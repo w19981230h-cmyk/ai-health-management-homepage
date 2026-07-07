@@ -35,7 +35,10 @@ document.addEventListener("click", (event) => {
   const opener = event.target.closest("[data-open-page]");
   if (opener) {
     openSubPage(opener.dataset.openPage);
-    if (opener.dataset.openPage === "healthPortraitPage") setPortraitBodyView();
+    if (opener.dataset.openPage === "healthPortraitPage") {
+      updatePatientPortraitAssets();
+      setPortraitAnatomyView();
+    }
     return;
   }
   if (event.target.closest(".back-page")) {
@@ -137,6 +140,56 @@ const cycleRules = {
   }
 };
 
+const portraitPatientAssets = {
+  self: {
+    name: "张女士",
+    meta: "♀ 32岁",
+    archiveImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
+    portraitImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
+    anatomyImage: "assets/health-anatomy-female-clean.png?v=20260707-sex-anatomy",
+    portraitAlt: "张女士健康画像"
+  },
+  zhang: {
+    name: "张患者",
+    meta: "♂ 24岁",
+    archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
+    portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
+    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-sex-anatomy",
+    portraitAlt: "张患者健康画像"
+  }
+};
+
+function updatePatientPortraitAssets() {
+  const asset = portraitPatientAssets[currentPatient.id] || (currentPatient.sex === "female" ? portraitPatientAssets.self : portraitPatientAssets.zhang);
+  const archiveDoctor = document.querySelector(".archive-doctor");
+  const portraitFullBody = document.querySelector(".portrait-full-body");
+  const portraitAnatomyBody = document.querySelector(".portrait-anatomy-body");
+  const portraitProfileName = document.querySelector(".portrait-profile-main strong");
+  const portraitProfileMeta = document.querySelector(".portrait-profile-meta");
+  const portraitProfileAvatar = document.querySelector(".portrait-profile-avatar");
+
+  if (archiveDoctor) {
+    archiveDoctor.classList.toggle("female", currentPatient.sex === "female");
+    archiveDoctor.style.backgroundImage = `url("${asset.archiveImage}")`;
+  }
+  if (portraitFullBody) {
+    portraitFullBody.src = asset.portraitImage;
+    portraitFullBody.alt = asset.portraitAlt;
+    portraitFullBody.classList.toggle("female", currentPatient.sex === "female");
+  }
+  if (portraitAnatomyBody) {
+    portraitAnatomyBody.src = asset.anatomyImage || portraitPatientAssets.zhang.anatomyImage;
+    portraitAnatomyBody.alt = currentPatient.sex === "female" ? "女性健康可视化人体" : "男性健康可视化人体";
+    portraitAnatomyBody.classList.toggle("female", currentPatient.sex === "female");
+  }
+  portraitFigure?.setAttribute("data-patient-sex", currentPatient.sex || "unknown");
+  if (portraitProfileAvatar) {
+    portraitProfileAvatar.classList.toggle("female", currentPatient.sex === "female");
+  }
+  if (portraitProfileName) portraitProfileName.textContent = currentPatient.name || asset.name;
+  if (portraitProfileMeta) portraitProfileMeta.textContent = currentPatient.sex === "female" ? `♀ ${currentPatient.age || "32"}岁` : `♂ ${currentPatient.age || "24"}岁`;
+}
+
 function updateCurrentPatientView() {
   if (profileNameButton) {
     const archiveSwitcher = profileNameButton.closest(".archive-member-switcher");
@@ -162,6 +215,7 @@ function updateCurrentPatientView() {
   renderPeriodCard();
   renderPeriodDetail();
   updateCycleReminderVisibility();
+  updatePatientPortraitAssets();
 }
 
 function switchArchivePatient(button) {
@@ -915,7 +969,7 @@ function setPortraitOrgan(organId) {
   if (currentPortraitRegion !== regionName) {
     setPortraitRegion(regionName);
   }
-  activatePortraitOrgan(organ, regionName);
+  activatePortraitOrgan(organ, regionName, { keepCamera: true });
 }
 
 function activatePortraitOrgan(organ, regionName, options = {}) {
@@ -957,6 +1011,8 @@ function getPortraitOrgan(organId) {
 
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
+  portraitMarkerLayer.innerHTML = "";
+  return;
   if (regionName === "root") {
     const rootRegions = [
       ["head", "\u5934\u90e8"],
@@ -972,48 +1028,50 @@ function renderPortraitMarkers(regionName) {
     }).join("");
     return;
   }
+  portraitMarkerLayer.innerHTML = "";
+  return;
   const markerLabels = {
-    brain: "\u5934\u9885",
-    eye: "\u773c\u775b",
-    nose: "\u9f3b\u5b50",
-    mouth: "\u53e3\u8154",
-    ear: "\u8033\u6735",
-    throat: "\u54bd\u5589",
-    thyroid: "\u7532\u72b6\u817a",
-    heart: "\u5fc3\u810f",
-    lung: "\u80ba\u90e8",
-    trachea: "\u6c14\u7ba1",
-    breast: "\u4e73\u623f",
-    esophagus: "\u98df\u7ba1",
-    thymus: "\u80f8\u817a",
-    liver: "\u809d\u810f",
-    gallbladder: "\u80c6\u56ca",
-    stomach: "\u80c3",
-    pancreas: "\u80f0\u817a",
-    spleen: "\u813e\u810f",
-    kidney: "\u80be\u810f",
-    ureter: "\u8f93\u5c3f\u7ba1",
-    intestine: "\u80a0\u9053",
-    bladder: "\u8180\u80f1",
-    uterus: "\u5b50\u5bab",
-    vagina: "\u9634\u9053",
-    prostate: "\u524d\u5217\u817a",
-    testis: "\u777e\u4e38",
-    vas: "\u8f93\u7cbe\u7ba1",
-    bone: "\u9aa8\u9abc",
-    joint: "\u5173\u8282",
-    vessel: "\u8840\u7ba1"
+    brain: "脑",
+    eye: "眼",
+    nose: "鼻",
+    mouth: "口",
+    ear: "耳",
+    throat: "喉",
+    thyroid: "甲",
+    heart: "心",
+    lung: "肺",
+    trachea: "气",
+    breast: "乳",
+    esophagus: "食",
+    thymus: "胸",
+    gallbladder: "胆",
+    stomach: "胃",
+    liver: "肝",
+    pancreas: "胰",
+    spleen: "脾",
+    ureter: "输",
+    kidney: "肾",
+    intestine: "肠",
+    bladder: "膀",
+    uterus: "宫",
+    vagina: "阴",
+    prostate: "前",
+    testis: "睾",
+    vas: "精",
+    bone: "骨",
+    joint: "节",
+    vessel: "管"
   };
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
   portraitMarkerLayer.innerHTML = (region.markers || []).map((organId) => {
     const organ = getPortraitOrgan(organId);
     if (!organ) return "";
     const label = markerLabels[organId] || organ.name;
-    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${label}"><em>${label}</em></button>`;
+    return `<button class="portrait-organ-marker marker-${organ.id}" type="button" data-portrait-organ="${organ.id}" aria-label="${organ.name}"><em>${label}</em></button>`;
   }).join("");
 }
 
-setPortraitBodyView();
+setPortraitAnatomyView();
 
 function closeOverlays() {
   sheetMask.classList.remove("active");

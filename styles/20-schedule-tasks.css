@@ -1726,6 +1726,17 @@
   background: url("../assets/archive-patient-portrait.png?v=20260706-portrait-assets") center bottom / auto 238px no-repeat;
 }
 
+.archive-doctor.female {
+  background-image: url("../assets/health-portrait-female.png?v=20260707-female-portrait");
+  background-position: center bottom;
+  background-size: auto 230px;
+}
+
+.health-portrait-page .portrait-full-body.female {
+  height: min(620px, calc(100vh - 176px));
+  object-position: center top;
+}
+
 .archive-doctor::before {
   content: none;
 }
@@ -1739,17 +1750,17 @@
   padding: 0 14px 20px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 93% 48%, rgba(163,195,255,0.42) 0 6px, transparent 7px),
-    radial-gradient(circle at 55% 72%, rgba(214,229,255,0.52) 0 86px, transparent 87px),
-    linear-gradient(156deg, #eef6ff 0%, #f8fbff 60%, #fffaf4 100%);
+    radial-gradient(circle at 93% 48%, rgba(157, 205, 255, 0.36) 0 6px, transparent 7px),
+    radial-gradient(circle at 58% 72%, rgba(211, 234, 255, 0.48) 0 86px, transparent 87px),
+    linear-gradient(156deg, #eaf8ff 0%, #dff4ff 52%, #ccecff 100%);
 }
 
 .portrait-nav {
   display: grid;
   grid-template-columns: 40px 1fr 86px;
   align-items: center;
-  min-height: 72px;
-  padding-top: 18px;
+  min-height: 60px;
+  padding-top: 8px;
 }
 
 .portrait-nav h1 {
@@ -2650,16 +2661,16 @@
 
 .health-portrait-page .portrait-organ-marker {
   display: inline-flex;
-  width: auto;
-  min-width: 38px;
-  height: 22px;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
   align-items: center;
   justify-content: center;
-  padding: 0 8px;
-  border: 1.5px solid rgba(3, 16, 46, 0.24);
+  padding: 0;
+  border: 1.5px solid rgba(54, 113, 255, 0.28);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 6px 14px rgba(3, 16, 46, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.14);
   color: #122e84;
   font-size: 10px;
   font-weight: 900;
@@ -2694,22 +2705,23 @@
 }
 
 .health-portrait-page .portrait-organ-marker.active {
-  border-color: #d9bc69;
-  background: #fff;
-  box-shadow: 0 0 0 8px rgba(217, 188, 105, 0.55), 0 10px 24px rgba(54, 113, 255, 0.16);
+  border-color: #f49529;
+  background: #fff7e6;
+  color: #d36b00;
+  box-shadow: 0 0 0 7px rgba(244, 149, 41, 0.2), 0 10px 24px rgba(54, 113, 255, 0.16);
   transform: translate(-50%, -50%) scale(calc(var(--portrait-marker-scale, 1) * 1.08));
 }
 
 .health-portrait-page .marker-brain {
   left: 50%;
-  top: 38px;
+  top: 56px;
   display: flex;
-  width: auto;
-  min-width: 42px;
-  height: 22px;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
   align-items: center;
   justify-content: center;
-  padding: 0 8px;
+  padding: 0;
   border-radius: 999px;
   color: #122e84;
   font-size: 10px;
@@ -2729,35 +2741,35 @@
   font-weight: 900;
   white-space: nowrap;
 }
-.health-portrait-page .marker-eye { left: 50%; top: 91px; }
-.health-portrait-page .marker-nose { left: 58%; top: 111px; }
-.health-portrait-page .marker-mouth { left: 40%; top: 129px; }
-.health-portrait-page .marker-ear { left: 77%; top: 101px; }
-.health-portrait-page .marker-throat { left: 61%; top: 155px; }
-.health-portrait-page .marker-thyroid { left: 41%; top: 174px; }
-.health-portrait-page .marker-trachea { left: 47%; top: 188px; }
-.health-portrait-page .marker-thymus { left: 57%; top: 207px; }
-.health-portrait-page .marker-lung { left: 64%; top: 244px; }
-.health-portrait-page .marker-heart { left: 50%; top: 236px; }
-.health-portrait-page .marker-breast { left: 34%; top: 276px; }
-.health-portrait-page .marker-esophagus { left: 45%; top: 218px; }
-.health-portrait-page .marker-liver { left: 39%; top: 291px; }
-.health-portrait-page .marker-gallbladder { left: 38%; top: 331px; }
-.health-portrait-page .marker-stomach { left: 61%; top: 319px; }
-.health-portrait-page .marker-pancreas { left: 55%; top: 335px; }
-.health-portrait-page .marker-spleen { left: 73%; top: 307px; }
-.health-portrait-page .marker-kidney { left: 65%; top: 354px; }
-.health-portrait-page .marker-ureter { left: 40%; top: 403px; }
-.health-portrait-page .marker-intestine { left: 50%; top: 414px; }
-.health-portrait-page .marker-bladder { left: 50%; top: 448px; }
-.health-portrait-page .marker-uterus { left: 42%; top: 413px; }
-.health-portrait-page .marker-vagina { left: 49%; top: 456px; }
-.health-portrait-page .marker-prostate { left: 58%; top: 433px; }
-.health-portrait-page .marker-testis { left: 43%; top: 477px; }
-.health-portrait-page .marker-vas { left: 60%; top: 438px; }
-.health-portrait-page .marker-bone { left: 50%; top: 300px; }
-.health-portrait-page .marker-joint { left: 73%; top: 366px; }
-.health-portrait-page .marker-vessel { left: 60%; top: 260px; }
+.health-portrait-page .marker-eye { left: 50%; top: 96px; }
+.health-portrait-page .marker-nose { left: 50%; top: 113px; }
+.health-portrait-page .marker-mouth { left: 50%; top: 132px; }
+.health-portrait-page .marker-ear { left: 75%; top: 100px; }
+.health-portrait-page .marker-throat { left: 50%; top: 157px; }
+.health-portrait-page .marker-thyroid { left: 50%; top: 177px; }
+.health-portrait-page .marker-trachea { left: 50%; top: 194px; }
+.health-portrait-page .marker-thymus { left: 50%; top: 222px; }
+.health-portrait-page .marker-lung { left: 61%; top: 252px; }
+.health-portrait-page .marker-heart { left: 50%; top: 257px; }
+.health-portrait-page .marker-breast { left: 34%; top: 263px; }
+.health-portrait-page .marker-esophagus { left: 46%; top: 232px; }
+.health-portrait-page .marker-liver { left: 39%; top: 307px; }
+.health-portrait-page .marker-gallbladder { left: 43%; top: 333px; }
+.health-portrait-page .marker-stomach { left: 60%; top: 322px; }
+.health-portrait-page .marker-pancreas { left: 54%; top: 344px; }
+.health-portrait-page .marker-spleen { left: 70%; top: 323px; }
+.health-portrait-page .marker-kidney { left: 65%; top: 366px; }
+.health-portrait-page .marker-ureter { left: 42%; top: 395px; }
+.health-portrait-page .marker-intestine { left: 50%; top: 421px; }
+.health-portrait-page .marker-bladder { left: 50%; top: 457px; }
+.health-portrait-page .marker-uterus { left: 43%; top: 438px; }
+.health-portrait-page .marker-vagina { left: 49%; top: 473px; }
+.health-portrait-page .marker-prostate { left: 57%; top: 441px; }
+.health-portrait-page .marker-testis { left: 43%; top: 486px; }
+.health-portrait-page .marker-vas { left: 60%; top: 452px; }
+.health-portrait-page .marker-bone { left: 50%; top: 307px; }
+.health-portrait-page .marker-joint { left: 73%; top: 375px; }
+.health-portrait-page .marker-vessel { left: 60%; top: 266px; }
 
 .health-portrait-page .portrait-organ-info {
   right: 3px;
@@ -2886,13 +2898,15 @@
   position: relative;
   z-index: 5;
   display: grid;
-  width: 168px;
-  gap: 10px;
-  margin-top: 8px;
+  width: 158px;
+  gap: 8px;
+  margin-left: min(168px, calc(100% - 168px));
+  margin-top: 0;
   pointer-events: auto;
 }
 
 .health-portrait-page .portrait-profile-card,
+.health-portrait-page .portrait-analysis-card,
 .health-portrait-page .portrait-core-card,
 .health-portrait-page .portrait-focus-card,
 .health-portrait-page .portrait-todo-card {
@@ -2904,24 +2918,24 @@
 }
 
 .health-portrait-page .portrait-profile-card {
-  padding: 10px;
+  padding: 9px;
 }
 
 .health-portrait-page .portrait-card-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 5px;
+  margin-bottom: 7px;
   color: #03102e;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 950;
 }
 
 .health-portrait-page .portrait-card-title i {
   position: relative;
   display: grid;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   place-items: center;
   border-radius: 6px;
   color: #3671ff;
@@ -2931,8 +2945,8 @@
 .health-portrait-page .portrait-card-title i::before {
   content: "";
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   background: currentColor;
   mask: var(--portrait-title-icon) center / contain no-repeat;
   -webkit-mask: var(--portrait-title-icon) center / contain no-repeat;
@@ -2944,6 +2958,12 @@
 
 .health-portrait-page .portrait-card-title .icon-chart {
   --portrait-title-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='black' d='M5 19h14v2H5V19Zm1-2h3V9H6v8Zm5 0h3V4h-3v13Zm5 0h3v-6h-3v6Z'/%3E%3C/svg%3E");
+}
+
+.health-portrait-page .portrait-card-title .icon-analysis {
+  --portrait-title-icon: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='black' d='M4 20h16v-2H4v2Zm2-4h3V9H6v7Zm5 0h3V5h-3v11Zm5 0h3v-5h-3v5ZM7.5 6.5 10 9l4-4 3 3 1.5-1.5L14 2l-4 4-2.5-2.5L4 7l1.5 1.5 2-2Z'/%3E%3C/svg%3E");
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.12);
 }
 
 .health-portrait-page .portrait-card-title .icon-task {
@@ -2962,7 +2982,7 @@
 
 .health-portrait-page .portrait-card-title b {
   margin-left: auto;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 999px;
   color: #3671ff;
   background: rgba(54, 113, 255, 0.1);
@@ -2972,32 +2992,38 @@
 
 .health-portrait-page .portrait-profile-main {
   display: grid;
-  grid-template-columns: 54px 1fr;
+  grid-template-columns: 44px 1fr;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .health-portrait-page .portrait-profile-avatar {
-  width: 54px;
-  height: 54px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background:
-    url("../assets/archive-patient-portrait.png?v=20260706-portrait-assets") center top / auto 82px no-repeat,
+    url("../assets/archive-patient-portrait.png?v=20260706-portrait-assets") center top / auto 68px no-repeat,
     linear-gradient(180deg, #edf5ff, #dceaff);
   box-shadow: inset 0 0 0 1px rgba(54, 113, 255, 0.08);
+}
+
+.health-portrait-page .portrait-profile-avatar.female {
+  background:
+    url("../assets/health-portrait-female.png?v=20260707-female-portrait") center 8% / auto 64px no-repeat,
+    linear-gradient(180deg, #fff3fa, #e9f2ff);
 }
 
 .health-portrait-page .portrait-profile-main strong {
   display: block;
   color: #03102e;
-  font-size: 15px;
+  font-size: 12px;
   line-height: 1.25;
   font-weight: 950;
 }
 
 .health-portrait-page .portrait-profile-meta {
   display: block;
-  margin-top: 3px;
+  margin-top: 2px;
   color: #3671ff;
   font-size: 12px;
   font-style: normal;
@@ -3009,7 +3035,7 @@
 .health-portrait-page .portrait-profile-card dl {
   margin: 4px 0 0;
   color: rgba(3, 16, 46, 0.58);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
   font-weight: 800;
 }
@@ -3029,7 +3055,7 @@
 .health-portrait-page .portrait-profile-card dl {
   display: grid;
   gap: 4px;
-  margin-top: 8px;
+  margin-top: 7px;
 }
 
 .health-portrait-page .portrait-profile-card dl div {
@@ -3044,19 +3070,61 @@
 
 .health-portrait-page .portrait-profile-card dd {
   color: #122e84;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
+.health-portrait-page .portrait-analysis-card,
 .health-portrait-page .portrait-core-card,
 .health-portrait-page .portrait-focus-card,
 .health-portrait-page .portrait-todo-card {
-  padding: 10px;
+  padding: 9px;
+}
+
+.health-portrait-page .portrait-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.health-portrait-page .portrait-analysis-grid div {
+  min-width: 0;
+  padding: 7px 6px;
+  border-radius: 9px;
+  background: rgba(54, 113, 255, 0.07);
+}
+
+.health-portrait-page .portrait-analysis-grid span {
+  display: block;
+  color: rgba(3, 16, 46, 0.58);
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.health-portrait-page .portrait-analysis-grid strong {
+  display: block;
+  margin-top: 4px;
+  color: #122e84;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.health-portrait-page .portrait-analysis-grid em {
+  margin-left: 2px;
+  color: rgba(3, 16, 46, 0.62);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 850;
 }
 
 .health-portrait-page .portrait-bmi-line {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: #03102e;
 }
 
@@ -3067,7 +3135,7 @@
 
 .health-portrait-page .portrait-bmi-line strong {
   color: #3671ff;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
   font-weight: 950;
   text-align: right;
@@ -3122,13 +3190,13 @@
 
 .health-portrait-page .portrait-core-metrics span {
   color: rgba(3, 16, 46, 0.55);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .health-portrait-page .portrait-core-metrics strong {
   color: #03102e;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 950;
 }
 
@@ -3139,9 +3207,9 @@
 .health-portrait-page .portrait-focus-card button,
 .health-portrait-page .portrait-todo-card button {
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 28px 1fr;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
   width: 100%;
   min-height: 48px;
   padding: 6px 0;
@@ -3164,8 +3232,8 @@
 .health-portrait-page .portrait-focus-card button > i,
 .health-portrait-page .portrait-todo-card button > i {
   position: relative;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 7px;
   background: rgba(54, 113, 255, 0.08);
 }
@@ -3297,7 +3365,7 @@
 
 .health-portrait-page .portrait-focus-card strong,
 .health-portrait-page .portrait-todo-card strong {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.25;
   font-weight: 950;
 }
@@ -3307,11 +3375,18 @@
   margin-top: 3px;
   overflow: hidden;
   color: rgba(3, 16, 46, 0.56);
-  font-size: 11px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.health-portrait-page .portrait-summary-side .portrait-focus-card em,
+.health-portrait-page .portrait-summary-side .portrait-focus-card strong {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .health-portrait-page .portrait-todo-card button > b {
@@ -3330,7 +3405,7 @@
 .health-portrait-page .portrait-side {
   left: 14px;
   top: 54px;
-  width: 146px;
+  width: 138px;
   gap: 12px;
 }
 
@@ -3407,7 +3482,7 @@
 .health-portrait-page .portrait-figure {
   left: 0;
   right: 0;
-  top: 0;
+  top: -22px;
   width: auto;
   min-height: calc(100vh - 86px);
   overflow: visible;
@@ -3417,9 +3492,9 @@
 .health-portrait-page .portrait-full-body,
 .health-portrait-page .portrait-anatomy-body {
   position: absolute;
-  left: 70%;
+  left: 27%;
   right: auto;
-  top: 104px;
+  top: 36px;
   z-index: 2;
   display: block;
   width: auto;
@@ -3427,21 +3502,22 @@
   height: min(680px, calc(100vh - 142px));
   object-fit: contain;
   object-position: center top;
-  filter: drop-shadow(0 20px 32px rgba(54, 113, 255, 0.14));
+  filter: drop-shadow(0 20px 32px rgba(54, 113, 255, 0.1));
   transition: opacity 260ms ease-out, transform 260ms ease-out;
 }
 
 .health-portrait-page .portrait-anatomy-body {
-  top: 92px;
+  top: 36px;
   z-index: 3;
-  height: min(700px, calc(100vh - 126px));
+  height: min(640px, calc(100vh - 170px));
+  mix-blend-mode: multiply;
   opacity: 0;
   pointer-events: none;
 }
 
 .health-portrait-page .portrait-brain-overlay {
   position: absolute;
-  left: 70%;
+  left: 27%;
   top: 118px;
   z-index: 5;
   display: block;
@@ -3456,7 +3532,7 @@
 }
 
 .health-portrait-page .portrait-stage {
-  left: 122px;
+  left: 18px;
   top: 0;
   z-index: 3;
   transform-origin: 50% 39%;
@@ -3511,6 +3587,14 @@
   transform-origin: 50% 39%;
 }
 
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"]::before {
+  content: none;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="body"]::before {
+  display: none;
+}
+
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] .portrait-brain-overlay {
   opacity: 0;
   transform: translateX(-50%);
@@ -3532,10 +3616,11 @@
 }
 
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"]:not([data-portrait-view="root"]) .portrait-svg {
-  opacity: 0.12;
+  opacity: 0;
 }
 
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-marker-layer {
+  z-index: 5;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -3548,9 +3633,12 @@
   display: none;
 }
 
-.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-reset,
-.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-focus-icon {
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-reset {
   display: grid;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-focus-icon {
+  display: none;
 }
 
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] {
@@ -3645,6 +3733,13 @@
 .health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="head"] .anatomy-head .brain {
   transform: translateY(-10px) scale(0.66);
   transform-origin: 128px 58px;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .body-hair,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .body-eye,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .body-face-line,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .body-mouth {
+  display: none;
 }
 
 .archive-assistant-card {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260706-portrait-text-labels">
+  <link rel="stylesheet" href="styles.css?v=20260707-portrait-info-full">
 </head>
 <body>
   <main class="app-shell">
@@ -594,6 +594,13 @@
                 <div><dd>2026-06-23 14:51</dd></div>
               </dl>
             </article>
+            <article class="portrait-analysis-card">
+              <div class="portrait-card-title"><i class="icon-analysis"></i><span>综合分析</span></div>
+              <div class="portrait-analysis-grid">
+                <div><span>需关注指标</span><strong>7<em>天</em></strong></div>
+                <div><span>需重视指标</span><strong>3<em>条</em></strong></div>
+              </div>
+            </article>
             <article class="portrait-core-card">
               <div class="portrait-card-title"><i class="icon-chart"></i><span>核心指标</span></div>
               <div class="portrait-bmi-line">
@@ -622,19 +629,6 @@
                 <span><strong>消化系统</strong><em>胃部报告提示定期观察</em></span>
               </button>
             </article>
-            <article class="portrait-todo-card">
-              <div class="portrait-card-title"><i class="icon-task"></i><span>今日待办</span><b>2项</b></div>
-              <button type="button">
-                <i class="todo-bp"></i>
-                <span><strong>血压打卡</strong><em>建议上午测量</em></span>
-                <b>去完成</b>
-              </button>
-              <button type="button">
-                <i class="todo-diet"></i>
-                <span><strong>饮食打卡</strong><em>记录今日饮食</em></span>
-                <b>去完成</b>
-              </button>
-            </article>
           </section>
           <section class="portrait-side">
             <article class="portrait-bmi-card">
@@ -656,9 +650,9 @@
               <p><b class="risk-low">低</b><span>胃癌</span></p>
             </article>
           </section>
-          <section class="portrait-figure" id="portraitFigure" data-portrait-mode="body" data-portrait-view="root" aria-label="人体风险可视化">
+          <section class="portrait-figure" id="portraitFigure" data-portrait-mode="anatomy" data-portrait-view="root" aria-label="人体风险可视化">
             <img class="portrait-full-body" src="assets/health-portrait-fullbody.png?v=20260706-portrait-assets" alt="张患者全身像">
-            <img class="portrait-anatomy-body" src="assets/health-portrait-anatomy.png?v=20260706-portrait-assets" alt="张患者健康可视化人体">
+            <img class="portrait-anatomy-body" src="assets/health-anatomy-male-clean.png?v=20260707-sex-anatomy" alt="男性健康可视化人体">
             <img class="portrait-brain-overlay" src="assets/health-portrait-brain.png?v=20260706-portrait-assets" alt="头颅">
             <div class="portrait-stage" id="portraitStage" aria-hidden="true">
               <svg class="portrait-svg" viewBox="0 0 256 573" role="img" aria-label="分层人体健康画像">
@@ -1855,6 +1849,6 @@
   <script src="scripts/40-checkin-forms.js?v=20260706-online-refresh"></script>
   <script src="scripts/50-reports-services.js?v=20260706-online-refresh"></script>
   <script src="scripts/60-metrics.js?v=20260706-online-refresh"></script>
-  <script src="scripts/70-events-init.js?v=20260706-portrait-text-labels"></script>
+  <script src="scripts/70-events-init.js?v=20260707-portrait-info-full"></script>
 </body>
 </html>
