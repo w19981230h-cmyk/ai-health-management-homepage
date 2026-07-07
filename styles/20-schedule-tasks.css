@@ -2474,8 +2474,8 @@
 .health-portrait-page {
   padding: 0 14px 16px;
   background:
-    linear-gradient(145deg, transparent 0 36%, rgba(0, 154, 255, 0.54) 36.2% 58%, transparent 58.2%),
-    linear-gradient(180deg, #e8f7ff 0%, #d9f1ff 54%, #c6ecff 100%);
+    linear-gradient(145deg, transparent 0 38%, rgba(43, 172, 246, 0.46) 38.2% 60%, transparent 60.2%),
+    linear-gradient(180deg, #edf9ff 0%, #dff4ff 54%, #cfefff 100%);
 }
 
 .health-portrait-page .portrait-body {
@@ -2900,7 +2900,7 @@
   display: grid;
   width: 158px;
   gap: 8px;
-  margin-left: min(168px, calc(100% - 168px));
+  margin-left: min(173px, calc(100% - 163px));
   margin-top: 0;
   pointer-events: auto;
 }
@@ -3081,43 +3081,25 @@
   padding: 9px;
 }
 
-.health-portrait-page .portrait-analysis-grid {
+.health-portrait-page .portrait-analysis-lines {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 6px;
 }
 
-.health-portrait-page .portrait-analysis-grid div {
-  min-width: 0;
-  padding: 7px 6px;
-  border-radius: 9px;
-  background: rgba(54, 113, 255, 0.07);
-}
-
-.health-portrait-page .portrait-analysis-grid span {
-  display: block;
-  color: rgba(3, 16, 46, 0.58);
-  font-size: 10px;
-  line-height: 1.2;
+.health-portrait-page .portrait-analysis-lines p {
+  margin: 0;
+  color: rgba(3, 16, 46, 0.72);
+  font-size: 12px;
+  line-height: 1.35;
   font-weight: 850;
-  white-space: nowrap;
 }
 
-.health-portrait-page .portrait-analysis-grid strong {
-  display: block;
-  margin-top: 4px;
-  color: #122e84;
-  font-size: 18px;
+.health-portrait-page .portrait-analysis-lines strong {
+  margin-left: 4px;
+  color: #ff4d4f;
+  font-size: 16px;
   line-height: 1;
   font-weight: 950;
-}
-
-.health-portrait-page .portrait-analysis-grid em {
-  margin-left: 2px;
-  color: rgba(3, 16, 46, 0.62);
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 850;
 }
 
 .health-portrait-page .portrait-bmi-line {
@@ -3502,7 +3484,7 @@
   height: min(680px, calc(100vh - 142px));
   object-fit: contain;
   object-position: center top;
-  filter: drop-shadow(0 20px 32px rgba(54, 113, 255, 0.1));
+  filter: saturate(1.16) contrast(1.1) drop-shadow(0 20px 32px rgba(54, 113, 255, 0.13));
   transition: opacity 260ms ease-out, transform 260ms ease-out;
 }
 
@@ -3510,7 +3492,7 @@
   top: 36px;
   z-index: 3;
   height: min(640px, calc(100vh - 170px));
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
   opacity: 0;
   pointer-events: none;
 }
