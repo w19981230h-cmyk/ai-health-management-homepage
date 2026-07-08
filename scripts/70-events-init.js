@@ -167,24 +167,29 @@ function updatePatientPortraitAssets() {
   const portraitProfileName = document.querySelector(".portrait-profile-main strong");
   const portraitProfileMeta = document.querySelector(".portrait-profile-meta");
   const portraitProfileAvatar = document.querySelector(".portrait-profile-avatar");
+  const portraitFemaleAnomaly = Boolean(portraitPatientAnomalies[currentPatient.id]);
 
   if (archiveDoctor) {
-    archiveDoctor.classList.toggle("female", currentPatient.sex === "female");
+    archiveDoctor.classList.toggle("female", portraitFemaleAnomaly);
     archiveDoctor.style.backgroundImage = `url("${asset.archiveImage}")`;
   }
   if (portraitFullBody) {
     portraitFullBody.src = asset.portraitImage;
     portraitFullBody.alt = asset.portraitAlt;
-    portraitFullBody.classList.toggle("female", currentPatient.sex === "female");
+    portraitFullBody.classList.toggle("female", portraitFemaleAnomaly);
   }
   if (portraitAnatomyBody) {
     portraitAnatomyBody.src = asset.anatomyImage || portraitPatientAssets.zhang.anatomyImage;
     portraitAnatomyBody.alt = currentPatient.sex === "female" ? "女性健康可视化人体" : "男性健康可视化人体";
-    portraitAnatomyBody.classList.toggle("female", currentPatient.sex === "female");
+    portraitAnatomyBody.classList.toggle("female", portraitFemaleAnomaly);
   }
   portraitFigure?.setAttribute("data-patient-sex", currentPatient.sex || "unknown");
+  portraitFigure?.classList.toggle("female-anomaly", portraitFemaleAnomaly);
   if (portraitProfileAvatar) {
-    portraitProfileAvatar.classList.toggle("female", currentPatient.sex === "female");
+    portraitProfileAvatar.classList.toggle("female", portraitFemaleAnomaly);
+  }
+  if (portraitMarkerLayer && portraitFigure?.dataset.portraitMode === "anatomy") {
+    renderPortraitMarkers(portraitFigure.dataset.portraitView || "root");
   }
   if (portraitProfileName) portraitProfileName.textContent = currentPatient.name || asset.name;
   if (portraitProfileMeta) portraitProfileMeta.textContent = currentPatient.sex === "female" ? `♀ ${currentPatient.age || "32"}岁` : `♂ ${currentPatient.age || "24"}岁`;
@@ -710,6 +715,10 @@ function activatePortraitOrgan(organ, regionName) {
     portraitInfoTitle.textContent = organ.name;
     portraitInfoRisk.textContent = hasRisk ? (organ.risk || "1 项需关注") : "暂无异常";
     portraitInfoDesc.textContent = organ.card || organ.desc;
+    if (anomaly) {
+      portraitInfoRisk.textContent = anomaly.risk;
+      portraitInfoDesc.textContent = anomaly.card;
+    }
     const action = document.querySelector("#portraitInfoAction");
     if (action) action.textContent = hasRisk ? "查看详情" : "新增报告";
   }
@@ -869,6 +878,20 @@ const portraitOrganTargets = {
   vessel: [".vessel"]
 };
 
+const portraitPatientAnomalies = {
+  self: {
+    liver: {
+      risk: "1 项需关注",
+      card: "肝功能指标异常；数据来源：健康评估报告、体检报告。建议复查肝功能和腹部超声。",
+      source: "健康评估报告 / 体检报告"
+    }
+  }
+};
+
+function getPortraitAnomaly(organId) {
+  return portraitPatientAnomalies[currentPatient.id]?.[organId] || null;
+}
+
 function portraitIconSvg(type) {
   const paths = {
     brain: '<path d="M8 13c-2.5-1-2.5-5 0-6 1-3 5-3.5 6-1 2-1.5 5 .2 5 3 2 .6 2.7 3.8.5 5-.6 2.6-4 3-5.5 1.3-1.7 1.5-4.6 1.3-6-.3Z"/><path d="M12 6v10M15 7v8"/>',
@@ -974,7 +997,8 @@ function setPortraitOrgan(organId) {
 
 function activatePortraitOrgan(organ, regionName, options = {}) {
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
-  const hasRisk = Boolean(organ.risk || ["heart", "gallbladder", "vessel"].includes(organ.id));
+  const anomaly = getPortraitAnomaly(organ.id);
+  const hasRisk = Boolean(anomaly || organ.risk || ["heart", "gallbladder", "vessel"].includes(organ.id));
   portraitFigure?.setAttribute("data-portrait-organ", organ.id);
   if (!options.keepCamera) applyPortraitCamera(organ.camera || region.camera);
   clearPortraitOrganSelection();
@@ -1011,6 +1035,16 @@ function getPortraitOrgan(organId) {
 
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
+  const liverAnomaly = getPortraitAnomaly("liver");
+  if (liverAnomaly && ["root", "abdomen"].includes(regionName)) {
+    portraitMarkerLayer.innerHTML = `
+      <button class="portrait-anomaly-marker marker-liver-anomaly" type="button" data-portrait-organ="liver" aria-label="肝异常">
+        <strong>肝异常</strong>
+        <span>来源：${liverAnomaly.source}</span>
+      </button>
+    `;
+    return;
+  }
   portraitMarkerLayer.innerHTML = "";
   return;
   if (regionName === "root") {
