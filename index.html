@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260708-organ-risk-highlight">
+  <link rel="stylesheet" href="styles.css?v=20260708-revert-organ-split">
 </head>
 <body>
   <main class="app-shell">
@@ -615,7 +615,15 @@
               </div>
             </article>
             <article class="portrait-focus-card">
-              <div class="portrait-card-title"><i class="icon-bell"></i><span>重点关注</span><b>3项</b></div>
+              <div class="portrait-card-title"><i class="icon-bell"></i><span>重点关注指标</span><b>3项</b></div>
+              <div class="portrait-focus-lines">
+                <p><span>血压</span><strong>近7天血压波动偏高</strong></p>
+                <p><span>血糖</span><strong>餐后血糖需持续观察</strong></p>
+                <p><span>BMI</span><strong>当前处于正常范围</strong></p>
+              </div>
+            </article>
+            <article class="portrait-organ-abnormal-card">
+              <div class="portrait-card-title"><i class="icon-bell"></i><span>器官异常</span><b>3项</b></div>
               <button class="portrait-problem-card" type="button" data-portrait-organ="heart">
                 <span class="portrait-problem-title">心血管</span>
                 <span class="portrait-problem-arrow" aria-hidden="true"></span>
@@ -1854,6 +1862,6 @@
   <script src="scripts/40-checkin-forms.js?v=20260706-online-refresh"></script>
   <script src="scripts/50-reports-services.js?v=20260706-online-refresh"></script>
   <script src="scripts/60-metrics.js?v=20260706-online-refresh"></script>
-  <script src="scripts/70-events-init.js?v=20260708-organ-risk-highlight"></script>
+  <script src="scripts/70-events-init.js?v=20260708-revert-organ-split"></script>
 </body>
 </html>
