@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260708-portrait-body-only">
+  <link rel="stylesheet" href="styles.css?v=20260708-risk-label-center">
 </head>
 <body>
   <main class="app-shell">
@@ -778,6 +778,20 @@
             <div class="portrait-organ-list" id="portraitOrganList"></div>
           </section>
         </main>
+      </section>
+
+      <section class="sub-page portrait-biomarker-detail-page" id="portraitBiomarkerDetailPage" aria-label="健康画像指标详情">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1 id="portraitBiomarkerTitle">指标详情</h1></header>
+        <section class="portrait-biomarker-content">
+          <article class="portrait-biomarker-card">
+            <h2><i aria-hidden="true"></i>关键生物标志物 · 数据来源标注</h2>
+            <div class="portrait-biomarker-list" id="portraitBiomarkerList"></div>
+          </article>
+          <article class="portrait-ai-advice-card">
+            <h2><i aria-hidden="true"></i>AI 综合分析建议</h2>
+            <div id="portraitAiAdvice"></div>
+          </article>
+        </section>
       </section>
 
       <section class="sub-page period-detail-page" id="periodDetailPage" aria-label="经期管理详情">
@@ -1850,7 +1864,7 @@
   <script src="scripts/30-medicine.js?v=20260706-online-refresh"></script>
   <script src="scripts/40-checkin-forms.js?v=20260706-online-refresh"></script>
   <script src="scripts/50-reports-services.js?v=20260706-online-refresh"></script>
-  <script src="scripts/60-metrics.js?v=20260706-online-refresh"></script>
-  <script src="scripts/70-events-init.js?v=20260708-portrait-body-only"></script>
+  <script src="scripts/60-metrics.js?v=20260708-risk-label-center"></script>
+  <script src="scripts/70-events-init.js?v=20260708-risk-label-center"></script>
 </body>
 </html>

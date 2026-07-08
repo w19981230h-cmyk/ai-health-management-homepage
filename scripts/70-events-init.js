@@ -14,6 +14,11 @@ document.addEventListener("click", (event) => {
     setPortraitRegion(portraitRegionButton.dataset.portraitRegion);
     return;
   }
+  const portraitProblemButton = event.target.closest(".portrait-problem-card[data-portrait-organ]");
+  if (portraitProblemButton) {
+    openPortraitBiomarkerDetail(portraitProblemButton.dataset.portraitOrgan);
+    return;
+  }
   const portraitOrganButton = event.target.closest("[data-portrait-organ]");
   if (portraitOrganButton) {
     setPortraitOrgan(portraitOrganButton.dataset.portraitOrgan);
@@ -120,6 +125,85 @@ document.querySelector("[data-personal-phone]")?.addEventListener("click", () =>
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1500);
 });
+
+const portraitBiomarkerDetails = {
+  heart: {
+    title: "心血管详情",
+    rows: [
+      { name: "日均睡眠", value: "6 h", reference: "参考：7-8h", source: "健康问卷", status: "不足", level: "warn" },
+      { name: "入睡时间", value: ">30min", reference: "参考：<20min", source: "健康问卷", status: "关注", level: "focus" },
+      { name: "压力自评", value: "6/10", reference: "参考：<4/10", source: "健康问卷", status: "偏高", level: "warn" },
+      { name: "头痛频率", value: "1-2次/月", reference: "参考：无", source: "健康问卷", status: "关注", level: "focus" },
+      { name: "咖啡因", value: "2-3杯/d", reference: "参考：≤1杯/d", source: "健康问卷", status: "偏高", level: "warn" },
+      { name: "同型半胱氨酸", value: "15.6 μmol/L", reference: "参考：<15", source: "心脑血管筛查", status: "关注", level: "focus", sourceType: "blue" }
+    ],
+    advice: [
+      "神经系统评估核心问题是睡眠不足+慢性压力，主要源于生活方式。综合评估建议：",
+      "1. 建立规律作息（23:00前上床），目标7h+睡眠",
+      "2. 睡前1h停止屏幕，蓝光阻断+放松仪式（冥想/阅读）",
+      "3. 下午2点后禁咖啡因",
+      "4. 每周3-4次有氧运动促进内啡肽释放",
+      "5. 如持续>3个月，考虑CBT-I或睡眠科评估"
+    ]
+  },
+  lung: {
+    title: "肺部详情",
+    rows: [
+      { name: "慢性咳嗽频率", value: "每周3次", reference: "参考：偶发", source: "健康问卷", status: "关注", level: "focus" },
+      { name: "运动后气促", value: "中度", reference: "参考：无", source: "健康问卷", status: "偏高", level: "warn" },
+      { name: "肺功能FEV1/FVC", value: "68%", reference: "参考：≥70%", source: "体检报告", status: "偏低", level: "warn" },
+      { name: "胸部影像", value: "轻度纹理增多", reference: "参考：未见异常", source: "检查报告", status: "关注", level: "focus", sourceType: "blue" }
+    ],
+    advice: [
+      "肺部指标提示近期存在呼吸道负担，需要结合症状和检查结果持续观察。",
+      "1. 避免烟雾、粉尘和冷空气刺激",
+      "2. 保持规律有氧活动，优先选择低强度步行",
+      "3. 若咳嗽、气促持续加重，建议呼吸科复查肺功能",
+      "4. 按医生建议完成胸部影像随访"
+    ]
+  },
+  stomach: {
+    title: "消化系统详情",
+    rows: [
+      { name: "胃部不适频率", value: "每周2次", reference: "参考：无", source: "健康问卷", status: "关注", level: "focus" },
+      { name: "餐后腹胀", value: "偶发", reference: "参考：无", source: "健康问卷", status: "关注", level: "focus" },
+      { name: "幽门螺杆菌", value: "阴性", reference: "参考：阴性", source: "体检报告", status: "正常", level: "normal", sourceType: "blue" },
+      { name: "饮食规律性", value: "不规律", reference: "参考：规律", source: "健康问卷", status: "偏离", level: "warn" }
+    ],
+    advice: [
+      "消化系统主要风险来自饮食节律不稳定和胃部不适反复出现。",
+      "1. 固定三餐时间，避免长时间空腹后暴食",
+      "2. 减少辛辣、油炸和高糖饮品",
+      "3. 记录胃部不适出现时间和诱因",
+      "4. 若疼痛、反酸持续超过2周，建议消化科评估"
+    ]
+  }
+};
+
+function openPortraitBiomarkerDetail(organId) {
+  const detail = portraitBiomarkerDetails[organId] || portraitBiomarkerDetails.heart;
+  const title = document.querySelector("#portraitBiomarkerTitle");
+  const list = document.querySelector("#portraitBiomarkerList");
+  const advice = document.querySelector("#portraitAiAdvice");
+  if (title) title.textContent = detail.title;
+  if (list) {
+    list.innerHTML = detail.rows.map((row) => `
+      <article class="portrait-biomarker-row">
+        <i aria-hidden="true"></i>
+        <div>
+          <strong>${row.name}</strong>
+          <p>${row.value}<span>（${row.reference}）</span></p>
+        </div>
+        <em class="${row.sourceType === "blue" ? "source-blue" : ""}">${row.source}</em>
+        <b class="level-${row.level}">${row.status}</b>
+      </article>
+    `).join("");
+  }
+  if (advice) {
+    advice.innerHTML = detail.advice.map((line, index) => index === 0 ? `<p>${line}</p>` : `<p>${line}</p>`).join("");
+  }
+  openSubPage("portraitBiomarkerDetailPage");
+}
 
 const cycleRules = {
   none: {

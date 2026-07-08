@@ -3287,13 +3287,18 @@
 }
 
 .health-portrait-page .portrait-problem-item em {
-  display: grid;
+  display: inline-flex;
+  flex: 0 0 22px;
   width: 22px;
   height: 22px;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0;
   border-radius: 5px;
   font-size: 12px;
-  line-height: 1;
+  line-height: 22px;
+  text-align: center;
   font-style: normal;
   font-weight: 600;
 }
@@ -4025,6 +4030,160 @@
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateX(-50%) !important;
+}
+
+.portrait-biomarker-detail-page {
+  padding: 0 16px 28px;
+  background: #f5f8fc;
+}
+
+.portrait-biomarker-content {
+  display: grid;
+  gap: 18px;
+  padding-top: 10px;
+}
+
+.portrait-biomarker-card,
+.portrait-ai-advice-card {
+  border-radius: 12px;
+  background: #fff;
+}
+
+.portrait-biomarker-card {
+  padding: 12px 0;
+}
+
+.portrait-biomarker-card h2,
+.portrait-ai-advice-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: #03102e;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.portrait-biomarker-card h2 {
+  padding: 0 10px 10px;
+}
+
+.portrait-biomarker-card h2 i,
+.portrait-ai-advice-card h2 i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background:
+    linear-gradient(#3671ff 0 0) 1px 5px / 3px 7px no-repeat,
+    linear-gradient(#19bd7d 0 0) 6px 2px / 3px 10px no-repeat,
+    linear-gradient(#f6bf37 0 0) 11px 7px / 3px 5px no-repeat;
+}
+
+.portrait-biomarker-list {
+  display: grid;
+  gap: 2px;
+}
+
+.portrait-biomarker-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.portrait-biomarker-row > i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f5a313;
+}
+
+.portrait-biomarker-row strong {
+  display: block;
+  color: #122e84;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.portrait-biomarker-row p {
+  margin: 3px 0 0;
+  color: #122e84;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.portrait-biomarker-row p span {
+  color: rgba(18, 46, 132, 0.62);
+}
+
+.portrait-biomarker-row em,
+.portrait-biomarker-row b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.portrait-biomarker-row em {
+  color: #e7437f;
+  background: rgba(255, 109, 169, 0.15);
+}
+
+.portrait-biomarker-row em.source-blue {
+  color: #1b74cf;
+  background: rgba(54, 113, 255, 0.12);
+}
+
+.portrait-biomarker-row b {
+  min-width: 40px;
+  color: #f49529;
+  background: rgba(244, 149, 41, 0.13);
+}
+
+.portrait-biomarker-row b.level-normal {
+  color: #19a96d;
+  background: rgba(25, 169, 109, 0.12);
+}
+
+.portrait-ai-advice-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px 12px;
+  background: #ecfbf7;
+}
+
+.portrait-ai-advice-card h2 i {
+  background:
+    radial-gradient(circle at 50% 35%, #f6bf37 0 4px, transparent 5px),
+    linear-gradient(#f6bf37 0 0) 6px 10px / 2px 4px no-repeat;
+}
+
+.portrait-ai-advice-card div {
+  display: grid;
+  gap: 6px;
+}
+
+.portrait-ai-advice-card p {
+  margin: 0;
+  color: #03102e;
+  font-size: 13px;
+  line-height: 1.65;
+  font-weight: 500;
 }
 
 .archive-assistant-card {
