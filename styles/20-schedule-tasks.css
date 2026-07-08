@@ -3186,10 +3186,117 @@
 }
 
 .health-portrait-page .portrait-focus-card {
-  gap: 0;
+  display: grid;
+  gap: 10px;
 }
 
-.health-portrait-page .portrait-focus-card button,
+.health-portrait-page .portrait-focus-card .portrait-problem-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 18px;
+  gap: 9px 6px;
+  width: 100%;
+  min-height: 0;
+  padding: 0 0 10px;
+  color: #03102e;
+  text-align: left;
+  background: transparent;
+}
+
+.health-portrait-page .portrait-focus-card .portrait-problem-card.active {
+  border-radius: 10px;
+  background: rgba(54, 113, 255, 0.06);
+}
+
+.health-portrait-page .portrait-focus-card .portrait-problem-card + .portrait-problem-card {
+  padding-top: 10px;
+  border-top: 1px solid rgba(54, 113, 255, 0.1);
+}
+
+.health-portrait-page .portrait-problem-title {
+  color: #122e84;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.health-portrait-page .portrait-problem-title::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 15px;
+  margin-right: 7px;
+  border-radius: 999px;
+  background: #3671ff;
+  vertical-align: -2px;
+}
+
+.health-portrait-page .portrait-problem-arrow {
+  position: relative;
+  align-self: center;
+  justify-self: end;
+  width: 18px;
+  height: 18px;
+}
+
+.health-portrait-page .portrait-problem-arrow::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 3px;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid rgba(3, 16, 46, 0.72);
+  border-right: 2px solid rgba(3, 16, 46, 0.72);
+  transform: rotate(45deg);
+}
+
+.health-portrait-page .portrait-problem-item {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+}
+
+.health-portrait-page .portrait-problem-item em {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 5px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.health-portrait-page .portrait-problem-item .level-high {
+  color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.12);
+}
+
+.health-portrait-page .portrait-problem-item .level-mid {
+  color: #f49529;
+  background: rgba(244, 149, 41, 0.14);
+}
+
+.health-portrait-page .portrait-problem-item .level-low {
+  color: #19a96d;
+  background: rgba(25, 169, 109, 0.12);
+}
+
+.health-portrait-page .portrait-problem-item strong {
+  overflow: hidden;
+  color: #354460;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.health-portrait-page .portrait-focus-card button:not(.portrait-problem-card),
 .health-portrait-page .portrait-todo-card button {
   display: grid;
   grid-template-columns: 28px 1fr;
@@ -3209,12 +3316,12 @@
   gap: 7px;
 }
 
-.health-portrait-page .portrait-focus-card button + button,
+.health-portrait-page .portrait-focus-card button:not(.portrait-problem-card) + button,
 .health-portrait-page .portrait-todo-card button + button {
   border-top: 1px solid rgba(54, 113, 255, 0.09);
 }
 
-.health-portrait-page .portrait-focus-card button > i,
+.health-portrait-page .portrait-focus-card button:not(.portrait-problem-card) > i,
 .health-portrait-page .portrait-todo-card button > i {
   position: relative;
   width: 20px;
@@ -3228,8 +3335,8 @@
   height: 22px;
 }
 
-.health-portrait-page .portrait-focus-card button > i::before,
-.health-portrait-page .portrait-focus-card button > i::after,
+.health-portrait-page .portrait-focus-card button:not(.portrait-problem-card) > i::before,
+.health-portrait-page .portrait-focus-card button:not(.portrait-problem-card) > i::after,
 .health-portrait-page .portrait-todo-card button > i::before,
 .health-portrait-page .portrait-todo-card button > i::after {
   content: "";
@@ -3777,6 +3884,106 @@
 .health-portrait-page .marker-liver-anomaly {
   left: 39%;
   top: 306px;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-anatomy-body {
+  opacity: 0;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-svg {
+  opacity: 1;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .anatomy-layer {
+  opacity: 1;
+  visibility: visible;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .anatomy-base {
+  opacity: 0.52;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .organ {
+  opacity: 0.72;
+  transition: fill 180ms ease, stroke 180ms ease, opacity 180ms ease;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] .anatomy-head .organ,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] .anatomy-chest .organ,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] .anatomy-abdomen .organ,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"][data-portrait-view="root"] .anatomy-pelvis .organ,
+.health-portrait-page .portrait-figure.female-anomaly[data-portrait-mode="anatomy"][data-portrait-view="root"] .anatomy-abdomen .organ {
+  opacity: 0.72;
+  visibility: visible;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .bone,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .vessel {
+  opacity: 0.58;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .organ.risk-warning,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .bone.risk-warning,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .vessel.risk-warning {
+  opacity: 1;
+  fill: rgba(255, 198, 64, 0.78);
+  stroke: #f49529;
+  stroke-width: 1.8;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .organ.risk-danger,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .bone.risk-danger,
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .vessel.risk-danger {
+  opacity: 1;
+  fill: rgba(255, 77, 79, 0.72);
+  stroke: #ff4d4f;
+  stroke-width: 1.8;
+}
+
+.health-portrait-page .portrait-problem-marker {
+  position: absolute;
+  z-index: 8;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #f6bf37;
+  box-shadow:
+    0 0 0 5px rgba(246, 191, 55, 0.24),
+    0 8px 18px rgba(244, 149, 41, 0.22);
+  transform: translate(-50%, -50%) scale(var(--portrait-marker-scale, 1));
+  transform-origin: 50% 50%;
+}
+
+.health-portrait-page .portrait-problem-marker.active {
+  background: #f49529;
+  box-shadow:
+    0 0 0 7px rgba(244, 149, 41, 0.28),
+    0 10px 22px rgba(244, 149, 41, 0.28);
+}
+
+.health-portrait-page .marker-heart-problem {
+  left: 50%;
+  top: 257px;
+}
+
+.health-portrait-page .marker-lung-problem {
+  left: 61%;
+  top: 252px;
+}
+
+.health-portrait-page .marker-stomach-problem {
+  left: 58%;
+  top: 322px;
+}
+
+.health-portrait-page .portrait-figure[data-portrait-organ="heart"] .heart,
+.health-portrait-page .portrait-figure[data-portrait-organ="lung"] .lung,
+.health-portrait-page .portrait-figure[data-portrait-organ="stomach"] .stomach {
+  fill: rgba(255, 198, 64, 0.82);
+  stroke: #f49529;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 10px rgba(244, 149, 41, 0.34));
 }
 
 .archive-assistant-card {

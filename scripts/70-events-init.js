@@ -185,6 +185,7 @@ function updatePatientPortraitAssets() {
   }
   portraitFigure?.setAttribute("data-patient-sex", currentPatient.sex || "unknown");
   portraitFigure?.classList.toggle("female-anomaly", portraitFemaleAnomaly);
+  applyPortraitOrganRiskStates();
   if (portraitProfileAvatar) {
     portraitProfileAvatar.classList.toggle("female", portraitFemaleAnomaly);
   }
@@ -682,6 +683,9 @@ function setPortraitRegion(regionName) {
   portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => {
     button.classList.toggle("active", button.dataset.portraitRegion === regionName);
   });
+  document.querySelectorAll(".portrait-problem-card[data-portrait-organ]").forEach((button) => {
+    button.classList.remove("active");
+  });
   portraitOrganList.innerHTML = region.organs.length ? region.organs.map((organ) => `
     <button type="button" data-portrait-organ="${organ.id}" data-parent-region="${regionName}">
       <i>${organ.icon}</i>
@@ -728,6 +732,9 @@ function activatePortraitOrgan(organ, regionName) {
     button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
   });
   portraitMarkerLayer?.querySelectorAll("[data-portrait-organ]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
+  });
+  document.querySelectorAll(".portrait-problem-card[data-portrait-organ]").forEach((button) => {
     button.classList.toggle("active", button.dataset.portraitOrgan === organ.id);
   });
 }
@@ -892,6 +899,22 @@ function getPortraitAnomaly(organId) {
   return portraitPatientAnomalies[currentPatient.id]?.[organId] || null;
 }
 
+function applyPortraitOrganRiskStates() {
+  if (!portraitFigure) return;
+  portraitFigure.querySelectorAll(".organ, .bone, .vessel").forEach((node) => {
+    node.classList.remove("risk-warning", "risk-danger");
+  });
+
+  const anomalies = portraitPatientAnomalies[currentPatient.id] || {};
+  Object.keys(anomalies).forEach((organId) => {
+    (portraitOrganTargets[organId] || []).forEach((selector) => {
+      portraitFigure.querySelectorAll(selector).forEach((node) => {
+        node.classList.add(anomalies[organId].level === "danger" ? "risk-danger" : "risk-warning");
+      });
+    });
+  });
+}
+
 function portraitIconSvg(type) {
   const paths = {
     brain: '<path d="M8 13c-2.5-1-2.5-5 0-6 1-3 5-3.5 6-1 2-1.5 5 .2 5 3 2 .6 2.7 3.8.5 5-.6 2.6-4 3-5.5 1.3-1.7 1.5-4.6 1.3-6-.3Z"/><path d="M12 6v10M15 7v8"/>',
@@ -945,15 +968,16 @@ function setPortraitRegion(regionName) {
   const region = portraitRegionsV2[regionName] || portraitRegionsV2.root;
   currentPortraitRegion = regionName;
   portraitFigure?.setAttribute("data-portrait-mode", "anatomy");
-  portraitFigure?.setAttribute("data-portrait-view", regionName);
+  portraitFigure?.setAttribute("data-portrait-view", "root");
   portraitFigure?.removeAttribute("data-portrait-organ");
-  applyPortraitCamera(region.camera);
+  applyPortraitCamera(portraitRegionsV2.root.camera);
+  applyPortraitOrganRiskStates();
   clearPortraitOrganSelection();
   portraitCurrentIcon.innerHTML = regionName === "root" ? "身" : portraitIconSvg(region.markers[0] || "thymus");
   if (portraitOrganInfo) portraitOrganInfo.hidden = true;
   if (portraitOrganPanelTitle) portraitOrganPanelTitle.textContent = regionName === "root" ? "一级部位" : region.title;
   if (portraitOrganPanelHint) portraitOrganPanelHint.textContent = region.hint;
-  renderPortraitMarkers(regionName);
+  renderPortraitMarkers("root");
   portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => {
     button.classList.toggle("active", button.dataset.portraitRegion === regionName);
   });
@@ -992,6 +1016,7 @@ function setPortraitOrgan(organId) {
   if (currentPortraitRegion !== regionName) {
     setPortraitRegion(regionName);
   }
+  applyPortraitCamera(portraitRegionsV2.root.camera);
   activatePortraitOrgan(organ, regionName, { keepCamera: true });
 }
 
@@ -1000,7 +1025,7 @@ function activatePortraitOrgan(organ, regionName, options = {}) {
   const anomaly = getPortraitAnomaly(organ.id);
   const hasRisk = Boolean(anomaly || organ.risk || ["heart", "gallbladder", "vessel"].includes(organ.id));
   portraitFigure?.setAttribute("data-portrait-organ", organ.id);
-  if (!options.keepCamera) applyPortraitCamera(organ.camera || region.camera);
+  if (!options.keepCamera) applyPortraitCamera(portraitRegionsV2.root.camera);
   clearPortraitOrganSelection();
   (portraitOrganTargets[organ.id] || []).forEach((selector) => {
     portraitFigure?.querySelectorAll(selector).forEach((node) => node.classList.add("organ-selected"));
@@ -1035,14 +1060,28 @@ function getPortraitOrgan(organId) {
 
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
+  const problemMarkers = {
+    root: ["heart", "lung", "stomach"],
+    chest: ["heart", "lung"],
+    abdomen: ["stomach"]
+  };
+  const markerOrgans = problemMarkers[regionName] || [];
   const liverAnomaly = getPortraitAnomaly("liver");
+  const markers = markerOrgans.map((organId) => {
+    const organ = getPortraitOrgan(organId);
+    if (!organ) return "";
+    return `<button class="portrait-problem-marker marker-${organId}-problem" type="button" data-portrait-organ="${organId}" aria-label="${organ.name}存在问题"></button>`;
+  });
   if (liverAnomaly && ["root", "abdomen"].includes(regionName)) {
-    portraitMarkerLayer.innerHTML = `
+    markers.push(`
       <button class="portrait-anomaly-marker marker-liver-anomaly" type="button" data-portrait-organ="liver" aria-label="肝异常">
         <strong>肝异常</strong>
         <span>来源：${liverAnomaly.source}</span>
       </button>
-    `;
+    `);
+  }
+  if (markers.length) {
+    portraitMarkerLayer.innerHTML = markers.join("");
     return;
   }
   portraitMarkerLayer.innerHTML = "";
