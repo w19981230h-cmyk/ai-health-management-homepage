@@ -714,7 +714,7 @@ function activatePortraitOrgan(organ, regionName) {
   portraitFigure?.setAttribute("data-portrait-organ", organ.id);
   portraitCurrentIcon.textContent = organ.icon;
   if (portraitOrganInfo) {
-    portraitOrganInfo.hidden = false;
+    portraitOrganInfo.hidden = true;
     portraitInfoIcon.textContent = organ.icon;
     portraitInfoTitle.textContent = organ.name;
     portraitInfoRisk.textContent = hasRisk ? (organ.risk || "1 项需关注") : "暂无异常";
@@ -981,11 +981,7 @@ function setPortraitRegion(regionName) {
   portraitRegionList?.querySelectorAll("[data-portrait-region]").forEach((button) => {
     button.classList.toggle("active", button.dataset.portraitRegion === regionName);
   });
-  portraitOrganList.innerHTML = region.organs.length ? region.organs.map((organ) => `
-    <button type="button" data-portrait-organ="${organ.id}" data-parent-region="${regionName}">
-      <span>${organ.name}</span>
-    </button>
-  `).join("") : "";
+  if (portraitOrganList) portraitOrganList.innerHTML = "";
 }
 
 function setPortraitBodyView() {
@@ -1060,6 +1056,8 @@ function getPortraitOrgan(organId) {
 
 function renderPortraitMarkers(regionName) {
   if (!portraitMarkerLayer) return;
+  portraitMarkerLayer.innerHTML = "";
+  return;
   const problemMarkers = {
     root: ["heart", "lung", "stomach"],
     chest: ["heart", "lung"],

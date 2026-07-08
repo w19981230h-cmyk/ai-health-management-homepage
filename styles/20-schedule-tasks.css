@@ -2376,6 +2376,12 @@
   display: none;
 }
 
+.health-portrait-page .portrait-organ-list,
+.health-portrait-page .portrait-organ-info,
+.health-portrait-page .portrait-marker-layer {
+  display: none !important;
+}
+
 .portrait-organ-list::-webkit-scrollbar {
   display: none;
 }
@@ -2910,6 +2916,7 @@
 .health-portrait-page .portrait-analysis-card,
 .health-portrait-page .portrait-core-card,
 .health-portrait-page .portrait-focus-card,
+.health-portrait-page .portrait-organ-risk-card,
 .health-portrait-page .portrait-todo-card {
   font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
   border: 1px solid rgba(255, 255, 255, 0.86);
@@ -2920,7 +2927,7 @@
 }
 
 .health-portrait-page .portrait-profile-card {
-  min-height: 132px;
+  min-height: 0;
   padding: 12px 10px;
 }
 
@@ -3056,7 +3063,7 @@
 }
 
 .health-portrait-page .portrait-profile-card dl {
-  display: grid;
+  display: none;
   gap: 4px;
   margin-top: 7px;
 }
@@ -3080,6 +3087,7 @@
 .health-portrait-page .portrait-analysis-card,
 .health-portrait-page .portrait-core-card,
 .health-portrait-page .portrait-focus-card,
+.health-portrait-page .portrait-organ-risk-card,
 .health-portrait-page .portrait-todo-card {
   padding: 12px 10px;
 }
@@ -3090,6 +3098,10 @@
 }
 
 .health-portrait-page .portrait-analysis-lines p {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
   margin: 0;
   color: rgba(3, 16, 46, 0.72);
   font-size: 12px;
@@ -3110,6 +3122,7 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 6px;
+  padding-top: 2px;
   color: #03102e;
 }
 
@@ -3181,13 +3194,21 @@
 
 .health-portrait-page .portrait-core-metrics strong {
   color: #03102e;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .health-portrait-page .portrait-focus-card {
   display: grid;
-  gap: 10px;
+  gap: 8px;
+}
+
+.health-portrait-page .portrait-organ-risk-card {
+  padding: 10px;
+}
+
+.health-portrait-page .portrait-organ-risk-card .portrait-problem-card {
+  padding: 0;
 }
 
 .health-portrait-page .portrait-focus-card .portrait-problem-card {
@@ -3197,7 +3218,7 @@
   gap: 9px 6px;
   width: 100%;
   min-height: 0;
-  padding: 0 0 10px;
+  padding: 0;
   color: #03102e;
   text-align: left;
   background: transparent;
