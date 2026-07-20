@@ -1393,6 +1393,255 @@ function renderDietDetailPage() {
   }
 }
 
+const WATER_DEFAULT_GOAL = 1600;
+const WATER_GOAL_OPTIONS = Array.from({ length: 21 }, (_, index) => 800 + index * 100);
+const waterGoalByPatient = {};
+let selectedWaterType = "白水";
+let pendingWaterGoal = WATER_DEFAULT_GOAL;
+let waterGoalScrollTimer = 0;
+
+function currentWaterItem() {
+  return scheduleDataFor().checkins.find((item) => item.type === "water");
+}
+
+function mutableWaterItem() {
+  const data = mutableScheduleDataForSelected();
+  let item = data.checkins.find((checkin) => checkin.type === "water");
+  if (!item) {
+    item = defaultCheckinItem("water");
+    item.records = [];
+    data.checkins.push(item);
+  }
+  if (!Array.isArray(item.records)) item.records = [];
+  return item;
+}
+
+function waterGoal() {
+  return Number(waterGoalByPatient[schedulePatientId] || WATER_DEFAULT_GOAL);
+}
+
+function normalizedWaterGoal(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return WATER_DEFAULT_GOAL;
+  return Math.max(800, Math.min(2800, Math.round(numeric / 100) * 100));
+}
+
+function waterRecords() {
+  return (currentWaterItem()?.records || [])
+    .slice()
+    .sort((a, b) => allCheckinTimeValue(b.time) - allCheckinTimeValue(a.time));
+}
+
+function waterTotal(records = waterRecords()) {
+  return records.reduce((sum, record) => sum + Number(record.amount || 0), 0);
+}
+
+function updateWaterItemSummary(item) {
+  const records = Array.isArray(item.records) ? item.records : [];
+  const total = waterTotal(records);
+  const latest = records.slice().sort((a, b) => allCheckinTimeValue(b.time) - allCheckinTimeValue(a.time))[0];
+  Object.assign(item, {
+    type: "water",
+    title: "饮水打卡",
+    desc: `今日饮水 ${Math.round(total)} ml`,
+    count: `已记录 ${records.length} 次`,
+    value: `${Math.round(total)} ml`,
+    totalWater: Math.round(total),
+    latestRecordTime: latest ? checkinTimeText(latest.time) : ""
+  });
+}
+
+function renderWaterTypeOptions() {
+  const isOther = selectedWaterType === "其他";
+  const typedOther = waterOtherTypeInput?.value?.trim() || "";
+  if (waterTypeValue) waterTypeValue.value = isOther ? typedOther : selectedWaterType;
+  if (waterOtherTypeInput) {
+    waterOtherTypeInput.hidden = !isOther;
+    waterOtherTypeInput.disabled = !isOther;
+  }
+  waterTypeGrid?.querySelectorAll("[data-water-type]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.waterType === selectedWaterType);
+  });
+}
+
+function openWaterCheckinSheet() {
+  closeOverlays();
+  if (waterAmountInput) waterAmountInput.value = "400";
+  selectedWaterType = "白水";
+  if (waterOtherTypeInput) waterOtherTypeInput.value = "";
+  renderWaterTypeOptions();
+  if (waterTimeInput) waterTimeInput.value = localDateTimeValue(new Date());
+  if (waterNoteInput) waterNoteInput.value = "";
+  sheetMask.classList.add("active");
+  waterCheckinSheet?.classList.add("active");
+}
+
+function submitWaterCheckin() {
+  const amount = Math.round(Number(waterAmountInput?.value || 0));
+  if (!Number.isFinite(amount) || amount <= 0) {
+    showToast("请输入饮水量");
+    waterAmountInput?.focus();
+    return;
+  }
+  const time = waterTimeInput?.value || localDateTimeValue(new Date());
+  const resolvedWaterType = selectedWaterType === "其他"
+    ? waterOtherTypeInput?.value?.trim()
+    : selectedWaterType;
+  if (!resolvedWaterType) {
+    showToast("请输入其他饮水类型");
+    waterOtherTypeInput?.focus();
+    return;
+  }
+  const item = mutableWaterItem();
+  item.records.push({
+    id: `water-${Date.now()}`,
+    type: resolvedWaterType || waterTypeValue?.value || "白水",
+    amount,
+    time,
+    note: waterNoteInput?.value?.trim() || ""
+  });
+  updateWaterItemSummary(item);
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
+  closeOverlays();
+  renderSchedule();
+  if (document.querySelector("#waterDetailPage")?.classList.contains("active")) renderWaterDetailPage();
+  showUnifiedCheckinSuccess([
+    { label: "今日饮水", value: `${Math.round(item.totalWater || amount)}`, unit: "ml" }
+  ]);
+}
+
+function renderWaterDetailPage() {
+  const records = waterRecords();
+  const total = waterTotal(records);
+  const goal = waterGoal();
+  const remain = Math.max(goal - total, 0);
+  if (waterDetailOverview) {
+    waterDetailOverview.innerHTML = `
+      <article>
+        <span>当日饮水总量</span>
+        <strong>${Math.round(total)}<em>ml</em></strong>
+      </article>
+      <article>
+        <span>当日饮水总次数</span>
+        <strong>${records.length}<em>次</em></strong>
+      </article>
+    `;
+  }
+  if (waterGoalValue) waterGoalValue.innerHTML = `${Math.round(goal)}<em>ml</em>`;
+  if (waterRemainValue) waterRemainValue.textContent = `剩余 ${Math.round(remain)} ml 达成今日目标`;
+  if (waterDetailRecords) {
+    waterDetailRecords.innerHTML = records.length ? records.map((record) => `
+      <article class="water-record-row" data-water-record="${escapeAttr(record.id)}" role="button" tabindex="0">
+        <i aria-hidden="true">水</i>
+        <div>
+          <strong>${escapeAttr(record.type || "白水")}</strong>
+          <span>${Math.round(Number(record.amount || 0))} ml · ${escapeAttr(checkinTimeText(record.time) || "--:--")}</span>
+          ${record.note ? `<p>${escapeAttr(record.note)}</p>` : ""}
+        </div>
+        <b aria-hidden="true"></b>
+      </article>
+    `).join("") : `
+      <div class="diet-detail-empty">
+        <strong>暂无饮水记录</strong>
+        <span>点击添加饮水，记录今日饮水量。</span>
+      </div>
+    `;
+  }
+}
+
+function openWaterRecordDetail(recordId) {
+  const record = waterRecords().find((item) => item.id === recordId);
+  if (!record || !waterRecordDetailBody) return;
+  waterRecordDetailBody.innerHTML = `
+    <section class="water-detail-field">
+      <span>饮水量</span>
+      <strong>${Math.round(Number(record.amount || 0))}<em>ml</em></strong>
+    </section>
+    <section class="water-detail-field">
+      <span>饮水类型</span>
+      <strong>${escapeAttr(record.type || "白水")}</strong>
+    </section>
+    <section class="water-detail-field">
+      <span>饮水时间</span>
+      <strong>${escapeAttr(formatCheckinTimeDisplay(record.time, "--:--") || checkinTimeText(record.time) || "--:--")}</strong>
+    </section>
+    <section class="water-detail-field">
+      <span>备注</span>
+      <p>${escapeAttr(record.note || "暂无备注")}</p>
+    </section>
+  `;
+  sheetMask.classList.add("active");
+  waterRecordDetailSheet?.classList.add("active");
+}
+
+function openWaterDetailPage() {
+  renderWaterDetailPage();
+  openSubPage("waterDetailPage");
+}
+
+function renderWaterGoalPicker(selected = waterGoal()) {
+  if (!waterGoalPickerList) return;
+  const current = normalizedWaterGoal(selected);
+  waterGoalPickerList.innerHTML = WATER_GOAL_OPTIONS.map((value) => `
+    <button class="${value === current ? "active" : ""}" type="button" data-water-goal="${value}">
+      <strong>${value}</strong><span>ml</span>
+    </button>
+  `).join("");
+}
+
+function selectWaterGoal(value) {
+  pendingWaterGoal = normalizedWaterGoal(value);
+  waterGoalPickerList?.querySelectorAll("[data-water-goal]").forEach((button) => {
+    button.classList.toggle("active", Number(button.dataset.waterGoal) === pendingWaterGoal);
+  });
+}
+
+function syncWaterGoalFromScroll() {
+  if (!waterGoalPickerList) return;
+  const listRect = waterGoalPickerList.getBoundingClientRect();
+  const centerY = listRect.top + listRect.height / 2;
+  let nearestButton = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+  waterGoalPickerList.querySelectorAll("[data-water-goal]").forEach((button) => {
+    const rect = button.getBoundingClientRect();
+    const distance = Math.abs(rect.top + rect.height / 2 - centerY);
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestButton = button;
+    }
+  });
+  if (nearestButton) selectWaterGoal(nearestButton.dataset.waterGoal);
+}
+
+function closeWaterGoalPicker() {
+  waterGoalPickerSheet?.classList.remove("active");
+  if (!document.querySelector(".water-checkin-sheet.active, .water-record-detail-sheet.active")) {
+    sheetMask?.classList.remove("active");
+  }
+}
+
+function openWaterGoalPicker() {
+  pendingWaterGoal = normalizedWaterGoal(waterGoal());
+  renderWaterGoalPicker(pendingWaterGoal);
+  sheetMask?.classList.add("active");
+  waterGoalPickerSheet?.classList.add("active");
+  window.setTimeout(() => {
+    const activeButton = waterGoalPickerList?.querySelector(".active");
+    activeButton?.scrollIntoView({ block: "center" });
+  }, 30);
+}
+
+function confirmWaterGoalPicker() {
+  waterGoalByPatient[schedulePatientId] = pendingWaterGoal;
+  closeWaterGoalPicker();
+  renderWaterDetailPage();
+  showToast("饮水目标已更新");
+}
+
+function setWaterGoal() {
+  openWaterGoalPicker();
+}
+
 function medicinePatientKey() {
   return schedulePatientId || currentPatient.id || "zhang";
 }

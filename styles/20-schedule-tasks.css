@@ -272,6 +272,7 @@
 .checkin-card[data-type="waist"] .checkin-symbol { color: #f49529; background: rgba(244, 149, 41, 0.12); }
 
 .checkin-card[data-type="sport"] .checkin-symbol { color: #16a36b; background: rgba(22, 183, 119, 0.12); }
+.checkin-card[data-type="water"] .checkin-symbol { color: #3671ff; background: rgba(54, 113, 255, 0.12); }
 .checkin-card[data-type="medicine"] .checkin-symbol,
 .checkin-card[data-type="uric"] .checkin-symbol { color: #7a5bd6; background: rgba(122, 91, 214, 0.12); }
 .checkin-card[data-type="pressure"] .checkin-symbol,

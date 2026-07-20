@@ -566,6 +566,11 @@ taskPanel?.addEventListener("click", (event) => {
     openDietUploadSheet();
     return;
   }
+  if (button.classList.contains("checkin-water") || button.dataset.quickCheckin.includes("饮水")) {
+    setTaskPanelOpen(false);
+    openWaterCheckinSheet();
+    return;
+  }
   if (button.classList.contains("checkin-medicine") || button.dataset.quickCheckin.includes("用药")) {
     setTaskPanelOpen(false);
     openMedicineCheckinSheet();
@@ -722,6 +727,14 @@ scheduleContent?.addEventListener("click", (event) => {
       pendingDietTaskBinding = false;
       openDietCameraPage(true);
     }
+    return;
+  }
+  if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "water") {
+    openWaterCheckinSheet();
+    return;
+  }
+  if (target.dataset.scheduleAction === "records" && target.dataset.type === "water") {
+    openWaterDetailPage();
     return;
   }
   if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "sport") {

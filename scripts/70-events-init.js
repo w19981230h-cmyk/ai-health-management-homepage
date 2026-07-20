@@ -1261,6 +1261,9 @@ function closeOverlays() {
   dietTimePicker?.classList.remove("active");
   dietTaskBindSheet?.classList.remove("active");
   dietGramSheet?.classList.remove("active");
+  waterCheckinSheet?.classList.remove("active");
+  waterRecordDetailSheet?.classList.remove("active");
+  waterGoalPickerSheet?.classList.remove("active");
   medicineCheckinSheet?.classList.remove("active");
   medicineItemDetailSheet?.classList.remove("active");
   medicineTimePicker?.classList.remove("active");
@@ -1992,6 +1995,50 @@ document.querySelector(".sugar-picker-confirm")?.addEventListener("click", confi
 sugarClose?.addEventListener("click", closeOverlays);
 sugarNoteInput?.addEventListener("input", updateSugarNoteCount);
 sugarSubmit?.addEventListener("click", submitSugarCheckin);
+waterClose?.addEventListener("click", closeOverlays);
+waterSubmit?.addEventListener("click", submitWaterCheckin);
+waterCheckinSheet?.addEventListener("click", (event) => {
+  const step = event.target.closest("[data-water-step]");
+  if (step && waterAmountInput) {
+    const next = Math.max(1, Math.min(5000, Math.round(Number(waterAmountInput.value || 0) + Number(step.dataset.waterStep || 0))));
+    waterAmountInput.value = String(next);
+    return;
+  }
+  const typeButton = event.target.closest("[data-water-type]");
+  if (!typeButton) return;
+  selectedWaterType = typeButton.dataset.waterType || "白水";
+  renderWaterTypeOptions();
+  if (selectedWaterType === "其他") waterOtherTypeInput?.focus();
+});
+waterOtherTypeInput?.addEventListener("input", renderWaterTypeOptions);
+waterGoalSet?.addEventListener("click", setWaterGoal);
+waterGoalPickerCancel?.addEventListener("click", closeWaterGoalPicker);
+waterGoalPickerConfirm?.addEventListener("click", confirmWaterGoalPicker);
+waterGoalPickerList?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-water-goal]");
+  if (!button) return;
+  selectWaterGoal(button.dataset.waterGoal);
+  button.scrollIntoView({ block: "center", behavior: "smooth" });
+});
+waterGoalPickerList?.addEventListener("scroll", () => {
+  window.clearTimeout(waterGoalScrollTimer);
+  waterGoalScrollTimer = window.setTimeout(syncWaterGoalFromScroll, 80);
+});
+waterDetailAdd?.addEventListener("click", openWaterCheckinSheet);
+waterDetailRecords?.addEventListener("click", (event) => {
+  const row = event.target.closest("[data-water-record]");
+  if (!row) return;
+  openWaterRecordDetail(row.dataset.waterRecord);
+});
+waterDetailRecords?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const row = event.target.closest("[data-water-record]");
+  if (!row) return;
+  event.preventDefault();
+  openWaterRecordDetail(row.dataset.waterRecord);
+});
+waterRecordDetailClose?.addEventListener("click", closeOverlays);
+waterRecordDetailDone?.addEventListener("click", closeOverlays);
 unifiedCheckinSuccessDone?.addEventListener("click", closeOverlays);
 checkinSuccessDone?.addEventListener("click", closeOverlays);
 

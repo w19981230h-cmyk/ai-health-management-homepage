@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260708-risk-label-center">
+  <link rel="stylesheet" href="styles.css?v=20260720-water-goal-picker">
 </head>
 <body>
   <main class="app-shell">
@@ -1083,6 +1083,28 @@
         </footer>
       </section>
 
+      <section class="sub-page water-detail-page" id="waterDetailPage" aria-label="饮水详情">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>饮水详情</h1></header>
+        <section class="water-overview-card" id="waterDetailOverview"></section>
+        <section class="water-goal-card" id="waterGoalCard">
+          <div>
+            <span>喝水目标</span>
+            <strong id="waterGoalValue">1600<em>ml</em></strong>
+            <p id="waterRemainValue">剩余 1200 ml</p>
+          </div>
+          <button id="waterGoalSet" type="button">设置目标</button>
+        </section>
+        <section class="water-record-card">
+          <div class="water-record-head">
+            <h2>饮水记录</h2>
+          </div>
+          <div class="water-record-list" id="waterDetailRecords"></div>
+        </section>
+        <footer class="water-detail-action-bar">
+          <button id="waterDetailAdd" type="button">添加饮水</button>
+        </footer>
+      </section>
+
       <section class="sub-page sport-detail-page" id="sportDetailPage" aria-label="运动详情">
         <header class="sub-nav sport-detail-nav"><button class="back-page" type="button"></button><h1>运动详情</h1></header>
         <section class="sport-detail-summary" id="sportDetailSummary"></section>
@@ -1501,6 +1523,77 @@
         </footer>
       </section>
       <input id="dietImagePicker" type="file" accept="image/*" multiple hidden>
+      <section class="water-checkin-sheet" id="waterCheckinSheet" aria-label="饮水打卡">
+        <header class="water-sheet-nav">
+          <button id="waterClose" type="button" aria-label="关闭"></button>
+          <h3>饮水打卡</h3>
+          <span aria-hidden="true"></span>
+        </header>
+        <div class="water-sheet-body">
+          <section class="water-form-card">
+            <label>
+              <span>饮水量 <b>*</b></span>
+              <div class="water-amount-control">
+                <button type="button" data-water-step="-50" aria-label="减少饮水量">−</button>
+                <input id="waterAmountInput" type="number" inputmode="numeric" min="1" max="5000" step="10" value="400">
+                <em>ml</em>
+                <button type="button" data-water-step="50" aria-label="增加饮水量">+</button>
+              </div>
+            </label>
+            <label>
+              <span>饮水类型 <b>*</b></span>
+              <input id="waterTypeValue" type="hidden" value="白水">
+              <div class="water-type-grid" id="waterTypeGrid">
+                <button class="active" type="button" data-water-type="白水"><i>水</i><span>白水</span></button>
+                <button type="button" data-water-type="淡茶"><i>茶</i><span>淡茶</span></button>
+                <button type="button" data-water-type="无糖饮品"><i>0</i><span>无糖饮品</span></button>
+                <button type="button" data-water-type="含糖饮料"><i>糖</i><span>含糖饮料</span></button>
+                <button type="button" data-water-type="咖啡"><i>咖</i><span>咖啡</span></button>
+                <button type="button" data-water-type="奶类"><i>奶</i><span>奶类</span></button>
+                <button type="button" data-water-type="汤类"><i>汤</i><span>汤类</span></button>
+                <button type="button" data-water-type="其他"><i>...</i><span>其他</span></button>
+              </div>
+              <input class="water-other-type-input" id="waterOtherTypeInput" type="text" maxlength="12" placeholder="请输入其他饮水类型" hidden>
+            </label>
+          </section>
+          <section class="water-form-card">
+            <label>
+              <span>记录时间 <b>*</b></span>
+              <input id="waterTimeInput" type="datetime-local">
+            </label>
+            <label>
+              <span>备注</span>
+              <textarea id="waterNoteInput" maxlength="100" placeholder="请输入备注"></textarea>
+            </label>
+          </section>
+        </div>
+        <footer class="water-actions">
+          <button id="waterSubmit" type="button">打卡</button>
+        </footer>
+      </section>
+      <section class="water-record-detail-sheet" id="waterRecordDetailSheet" aria-label="饮水记录详情">
+        <header class="water-sheet-nav">
+          <button id="waterRecordDetailClose" type="button" aria-label="关闭"></button>
+          <h3>饮水记录详情</h3>
+          <span aria-hidden="true"></span>
+        </header>
+        <div class="water-record-detail-body" id="waterRecordDetailBody"></div>
+        <footer class="water-actions">
+          <button id="waterRecordDetailDone" type="button">知道了</button>
+        </footer>
+      </section>
+      <section class="water-goal-picker-sheet" id="waterGoalPickerSheet" aria-label="设置饮水目标">
+        <header class="water-goal-picker-head">
+          <button id="waterGoalPickerCancel" type="button">取消</button>
+          <h3>设置饮水目标</h3>
+          <button id="waterGoalPickerConfirm" type="button">确定</button>
+        </header>
+        <div class="water-goal-picker-body">
+          <p>上下拖动选择每日饮水目标</p>
+          <div class="water-goal-picker-frame" aria-hidden="true"></div>
+          <div class="water-goal-picker-list" id="waterGoalPickerList"></div>
+        </div>
+      </section>
       <section class="medicine-checkin-sheet" id="medicineCheckinSheet" aria-label="用药打卡">
         <div class="medicine-sheet-head">
           <span aria-hidden="true"></span>
@@ -1822,6 +1915,7 @@
       <div class="task-panel-mask home-only" id="taskPanelMask"></div>
       <aside class="task-panel home-only" id="taskPanel" aria-label="快捷打卡">
         <button class="checkin-diet" type="button" data-quick-checkin="饮食打卡"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M11 4v16M7 11h4"/><path d="M17 4v7a3 3 0 0 1-3 3V4"/><path d="M14 14v6"/></svg></i>饮食打卡</button>
+        <button class="checkin-water" type="button" data-quick-checkin="饮水打卡"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4s5 5.3 5 9.2a5 5 0 1 1-10 0C7 9.3 12 4 12 4Z"/><path d="M9.5 15.5c1.2 1 3.8 1 5 0"/></svg></i>饮水打卡</button>
         <button class="checkin-medicine" type="button" data-quick-checkin="用药/补充记录"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 13.5 13.5 8.5a4 4 0 0 1 5.7 5.7l-5 5a4 4 0 0 1-5.7-5.7Z"/><path d="m10.8 11.2 4 4"/></svg></i>用药/补充记录</button>
         <button class="checkin-sport" type="button" data-quick-checkin="运动打卡"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18.5h10.5c1.9 0 3-1.1 3.3-2.8l-4.2-1.1-2.8-4.8-3.1 2.9-2.9-.9-2.6 4.5c-.6 1 .2 2.2 1.8 2.2Z"/><path d="M10.8 12.7 9.4 16M14.2 13.8l-2.2 2.4"/></svg></i>运动打卡</button>
         <button class="checkin-weight" type="button" data-quick-checkin="体重打卡"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="4"/><path d="M9 10.5a4 4 0 0 1 6 0"/><path d="M12 11.5v-3"/></svg></i>体重打卡</button>
@@ -1857,14 +1951,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260706-online-refresh"></script>
+  <script src="scripts/00-dom-state.js?v=20260720-water-goal-picker"></script>
   <script src="scripts/01-data-store.js?v=20260706-online-refresh"></script>
-  <script src="scripts/10-schedule.js?v=20260706-online-refresh"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260706-online-refresh"></script>
+  <script src="scripts/10-schedule.js?v=20260720-water-v3"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260720-water-goal-picker"></script>
   <script src="scripts/30-medicine.js?v=20260706-online-refresh"></script>
   <script src="scripts/40-checkin-forms.js?v=20260706-online-refresh"></script>
-  <script src="scripts/50-reports-services.js?v=20260706-online-refresh"></script>
-  <script src="scripts/60-metrics.js?v=20260708-risk-label-center"></script>
-  <script src="scripts/70-events-init.js?v=20260708-risk-label-center"></script>
+  <script src="scripts/50-reports-services.js?v=20260720-water-v3"></script>
+  <script src="scripts/60-metrics.js?v=20260720-water-v3"></script>
+  <script src="scripts/70-events-init.js?v=20260720-water-goal-picker"></script>
 </body>
 </html>

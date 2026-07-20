@@ -399,6 +399,7 @@ function groupRecordsByDate(records, timeGetter) {
 const allCheckinFilterOptions = [
   { type: "all", label: "全部" },
   { type: "diet", label: "饮食" },
+  { type: "water", label: "饮水" },
   { type: "sport", label: "运动" },
   { type: "medicine", label: "用药/补充" },
   { type: "weight", label: "体重" },
@@ -429,6 +430,7 @@ const allCheckinTypeMeta = {
 
 const allCheckinDemoRecords = {
   diet: { title: "饮食记录", value: "摄入 430 kcal", time: "08:10", sort: 810 },
+  water: { title: "饮水", value: "饮水 400 ml", time: "10:30", sort: 1030 },
   sport: { title: "运动", value: "快走 · 45分钟 · 180 kcal", time: "19:20", sort: 1920 },
   medicine: { title: "用药/补充", value: "药品 1次 · 营养素 1次", time: "22:00", sort: 2200 },
   weight: { title: "体重", value: "68.5 kg", time: "10:18", sort: 1018 },
@@ -526,6 +528,21 @@ function allCheckinRecordCards() {
   const cards = [];
   (data.checkins || []).forEach((item) => {
     if (!hasCheckinRecord(item)) return;
+    if (item.type === "water" && Array.isArray(item.records) && item.records.length) {
+      item.records.forEach((record, index) => {
+        const rawTime = allCheckinRawTime(item, record);
+        cards.push({
+          id: record.id || `${item.type}-${index}`,
+          type: item.type,
+          title: record.type || "饮水",
+          value: `${Math.round(Number(record.amount || 0))} ml`,
+          time: allCheckinDisplayTime(item, record),
+          rawTime,
+          sort: allCheckinTimeValue(rawTime)
+        });
+      });
+      return;
+    }
     if (item.type === "sport" && Array.isArray(item.records) && item.records.length) {
       item.records.forEach((record, index) => {
         const rawTime = allCheckinRawTime(item, record);
@@ -654,6 +671,10 @@ function renderAllCheckinRecords(filter = "all") {
 function openAllCheckinRecordDetail(type, recordId) {
   if (type === "diet") {
     openDietDetailPage();
+    return;
+  }
+  if (type === "water") {
+    openWaterDetailPage();
     return;
   }
   if (type === "sport") {
@@ -2823,7 +2844,7 @@ function openSubPage(pageId) {
   pageStack.push(currentPageId());
   document.body.classList.toggle(
     "detail-page-open",
-    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "sportDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
+    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "waterDetailPage" || pageId === "sportDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
   );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
@@ -2846,7 +2867,7 @@ function goBackPage() {
     previousSubPage.classList.add("active");
     document.body.classList.toggle(
       "detail-page-open",
-      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "sportDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
+      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "waterDetailPage" || previous === "sportDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
     );
   } else if (previous === "minePage") {
     minePage.classList.add("active");

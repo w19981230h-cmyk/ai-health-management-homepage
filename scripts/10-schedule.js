@@ -192,7 +192,7 @@ function renderAssessmentSection(assessments) {
 function renderCheckinSection(checkins) {
   const checkinMap = new Map();
   (checkins || []).forEach((item) => checkinMap.set(item.type, item));
-  const wallItems = ["diet", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "period"]
+  const wallItems = ["diet", "water", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "period"]
     .map((type) => checkinMap.get(type) || defaultCheckinItem(type));
   const body = `<div class="checkin-wall">${wallItems.map(renderCheckinCard).join("")}</div>`;
   return renderSection("健康打卡", body, `<button type="button" data-schedule-records>全部打卡 〉</button>`);
@@ -201,6 +201,7 @@ function renderCheckinSection(checkins) {
 function defaultCheckinItem(type) {
   const defaults = {
     diet: { type: "diet", title: "饮食打卡", count: "暂无记录", desc: "" },
+    water: { type: "water", title: "饮水打卡", count: "暂无记录", desc: "" },
     sport: { type: "sport", title: "运动打卡", count: "暂无记录", desc: "" },
     medicine: { type: "medicine", title: "用药/补充记录", count: "暂无记录", desc: "" },
     weight: { type: "weight", title: "体重打卡", count: "暂无记录", desc: "" },
@@ -405,6 +406,13 @@ function renderCheckinCard(item) {
       art: "pill",
       icon: "药"
     },
+    water: {
+      title: "饮水",
+      main: display.main,
+      meta: display.meta,
+      art: "drop",
+      icon: "水"
+    },
     weight: {
       title: "体重",
       main: display.main,
@@ -506,6 +514,7 @@ function renderScheduleCheckinSheet() {
   if (!scheduleCheckinSheet) return;
   const options = [
     ["diet", "饮食打卡", "记录每日饮食"],
+    ["water", "饮水打卡", "记录每日饮水"],
     ["sport", "运动打卡", "记录每日运动"],
     ["medicine", "用药打卡", "记录每日用药"],
     ["period", "经期打卡", "记录经期状态"]
