@@ -563,6 +563,7 @@ let sportTimeValue = "";
 let editingSportRecordId = "";
 let editingSportRecordIntensity = "medium";
 let expandedSportReviewIds = new Set();
+let expandedWaterReviewIds = new Set();
 let weightCheckinTimeValue = "";
 let waistCheckinTimeValue = "";
 let editingWaistRecordId = "";

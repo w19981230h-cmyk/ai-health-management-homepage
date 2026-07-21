@@ -1448,6 +1448,17 @@ function waterTotal(records = waterRecords()) {
   return records.reduce((sum, record) => sum + Number(record.amount || 0), 0);
 }
 
+function defaultWaterReview(record) {
+  const amount = Math.round(Number(record?.amount || 0));
+  const type = record?.type || "白水";
+  return {
+    label: "AI建议",
+    meta: "AI生成，仅供参考",
+    content: `本次饮水记录为${type} ${amount || 0}ml，建议全天分次饮水，避免一次性大量饮水；如正在控制血压或肾功能相关指标，请结合医生建议调整饮水目标。`,
+    time: "2021/01/10 17:20"
+  };
+}
+
 function findMutableWaterRecord(recordId) {
   const item = mutableWaterItem();
   const index = item.records.findIndex((record) => record.id === recordId);
@@ -1517,7 +1528,8 @@ function submitWaterCheckin() {
     type: resolvedWaterType || waterTypeValue?.value || "白水",
     amount,
     time,
-    note: waterNoteInput?.value?.trim() || ""
+    note: waterNoteInput?.value?.trim() || "",
+    review: defaultWaterReview({ type: resolvedWaterType || waterTypeValue?.value || "白水", amount })
   });
   updateWaterItemSummary(item);
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
@@ -1527,6 +1539,92 @@ function submitWaterCheckin() {
   showUnifiedCheckinSuccess([
     { label: "今日饮水", value: `${Math.round(item.totalWater || amount)}`, unit: "ml" }
   ]);
+}
+
+function waterReviewEntries(review) {
+  if (Array.isArray(review)) return review.filter(Boolean);
+  return review ? [review] : [];
+}
+
+function renderWaterRecordReview(record, fallbackReview) {
+  const review = waterReviewEntries(record?.review)[0] || fallbackReview;
+  if (!review) return "";
+  const expanded = expandedWaterReviewIds.has(record.id);
+  if (!expanded) {
+    return `
+      <button class="sport-record-review-toggle water-record-review-toggle" type="button" data-water-review-toggle="${escapeAttr(record.id)}">
+        <span>您有一条新评价</span>
+        <em>展开</em>
+      </button>
+    `;
+  }
+  return `
+    <section class="sport-record-review-panel water-record-review-panel">
+      <h3>饮水评价与建议</h3>
+      <div class="sport-review-list">
+        <article class="sport-review-record">
+          <div class="sport-review-head">
+            <span class="sport-review-title"><i aria-hidden="true">AI</i><strong>${escapeAttr(review.label || "AI建议")}</strong></span>
+            ${review.meta ? `<em>${escapeAttr(review.meta)}</em>` : ""}
+          </div>
+          <p>${escapeAttr(review.content || "")}</p>
+          ${review.time ? `<time>${escapeAttr(review.time)}</time>` : ""}
+        </article>
+      </div>
+      <button type="button" data-water-review-toggle="${escapeAttr(record.id)}">收起</button>
+    </section>
+  `;
+}
+
+function toggleWaterRecordReview(recordId) {
+  if (!recordId) return;
+  if (expandedWaterReviewIds.has(recordId)) expandedWaterReviewIds.delete(recordId);
+  else expandedWaterReviewIds.add(recordId);
+  renderWaterDetailPage();
+}
+
+function renderWaterRecordDetailReview(record) {
+  const review = waterReviewEntries(record?.review)[0] || defaultWaterReview(record);
+  if (!review) return "";
+  return `
+    <section class="sport-record-review-panel water-record-detail-review">
+      <h3>饮水评价与建议</h3>
+      <div class="sport-review-list">
+        <article class="sport-review-record">
+          <div class="sport-review-head">
+            <span class="sport-review-title"><i aria-hidden="true">AI</i><strong>${escapeAttr(review.label || "AI建议")}</strong></span>
+            ${review.meta ? `<em>${escapeAttr(review.meta)}</em>` : ""}
+          </div>
+          <p>${escapeAttr(review.content || "")}</p>
+          ${review.time ? `<time>${escapeAttr(review.time)}</time>` : ""}
+        </article>
+      </div>
+    </section>
+  `;
+}
+
+function waterRecordHasReview(record) {
+  return waterReviewEntries(record?.review).length > 0;
+}
+
+function renderWaterRecordReadonlyDetail(record) {
+  return `
+    <section class="water-record-readonly-card">
+      <div class="water-readonly-head">
+        <span>饮水量</span>
+        <strong>${Math.round(Number(record.amount || 0))}<em>ml</em></strong>
+      </div>
+      <div class="water-readonly-grid">
+        <div><span>饮水类型</span><strong>${escapeAttr(record.type || "白水")}</strong></div>
+        <div><span>记录时间</span><strong>${escapeAttr(checkinTimeText(record.time) || "--:--")}</strong></div>
+      </div>
+      <div class="water-readonly-note">
+        <span>备注</span>
+        <p>${escapeAttr(record.note || "暂无备注")}</p>
+      </div>
+    </section>
+    ${renderWaterRecordDetailReview(record)}
+  `;
 }
 
 function renderWaterDetailPage() {
@@ -1549,7 +1647,8 @@ function renderWaterDetailPage() {
   if (waterGoalValue) waterGoalValue.innerHTML = `${Math.round(goal)}<em>ml</em>`;
   if (waterRemainValue) waterRemainValue.textContent = `剩余 ${Math.round(remain)} ml 达成今日目标`;
   if (waterDetailRecords) {
-    waterDetailRecords.innerHTML = records.length ? records.map((record) => `
+    waterDetailRecords.innerHTML = records.length ? records.map((record) => {
+      return `
       <article class="water-record-row" data-water-record="${escapeAttr(record.id)}" role="button" tabindex="0">
         <i aria-hidden="true">水</i>
         <div>
@@ -1559,7 +1658,8 @@ function renderWaterDetailPage() {
         </div>
         <b aria-hidden="true"></b>
       </article>
-    `).join("") : `
+    `;
+    }).join("") : `
       <div class="diet-detail-empty">
         <strong>暂无饮水记录</strong>
         <span>点击添加饮水，记录今日饮水量。</span>
@@ -1572,6 +1672,10 @@ function openWaterRecordDetail(recordId) {
   const record = waterRecords().find((item) => item.id === recordId);
   if (!record || !waterRecordDetailBody) return;
   activeWaterRecordId = recordId;
+  waterRecordDetailPage?.classList.add("review-locked");
+  waterRecordDetailBody.innerHTML = renderWaterRecordReadonlyDetail(record);
+  openSubPage("waterRecordDetailPage");
+  return;
   const isKnownType = WATER_TYPE_OPTIONS.some((item) => item.value === record.type);
   const selectedType = isKnownType ? record.type : "其他";
   const otherValue = selectedType === "其他" ? record.type || "" : "";
@@ -1604,6 +1708,7 @@ function openWaterRecordDetail(recordId) {
         <textarea id="waterRecordNoteInput" maxlength="100" placeholder="请输入备注">${escapeAttr(record.note || "")}</textarea>
       </label>
     </section>
+    ${renderWaterRecordDetailReview(record)}
   `;
   openSubPage("waterRecordDetailPage");
 }
@@ -1621,6 +1726,7 @@ function returnToWaterDetailPage() {
   if (pageStack[pageStack.length - 1] === "waterDetailPage") pageStack.pop();
   document.querySelectorAll(".sub-page").forEach((page) => page.classList.remove("active"));
   document.querySelector("#waterDetailPage")?.classList.add("active");
+  waterRecordDetailPage?.classList.remove("review-locked");
   document.body.classList.add("detail-page-open");
   closeOverlays();
 }
@@ -1628,6 +1734,10 @@ function returnToWaterDetailPage() {
 function saveWaterRecordDetail() {
   const target = findMutableWaterRecord(activeWaterRecordId);
   if (!target) return;
+  if (waterRecordHasReview(target.record)) {
+    showToast("存在评价的记录仅支持查看");
+    return;
+  }
   const amountInput = document.querySelector("#waterRecordAmountInput");
   const typeInput = document.querySelector("#waterRecordTypeInput");
   const otherInput = document.querySelector("#waterRecordOtherTypeInput");
@@ -1662,6 +1772,10 @@ function saveWaterRecordDetail() {
 function deleteWaterRecordDetail() {
   const target = findMutableWaterRecord(activeWaterRecordId);
   if (!target) return;
+  if (waterRecordHasReview(target.record)) {
+    showToast("存在评价的记录不能删除");
+    return;
+  }
   target.item.records.splice(target.index, 1);
   updateWaterItemSummary(target.item);
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();

@@ -4011,6 +4011,14 @@
   background: linear-gradient(180deg, rgba(243, 247, 255, 0), #f3f7ff 22%);
 }
 
+.water-record-detail-page.review-locked {
+  padding-bottom: 32px;
+}
+
+.water-record-detail-page.review-locked .water-record-detail-actions {
+  display: none;
+}
+
 .water-record-detail-actions button {
   height: 48px;
   border: 0;
@@ -4198,6 +4206,15 @@
   transform: rotate(45deg);
 }
 
+.water-record-review-toggle,
+.water-record-review-panel {
+  grid-column: 1 / -1;
+}
+
+.water-record-review-toggle {
+  margin-top: -2px;
+}
+
 .water-detail-action-bar {
   position: fixed;
   left: 50%;
@@ -4237,6 +4254,82 @@
     calc(100% - 12px) 50%;
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
+}
+
+.water-record-readonly-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(54, 113, 255, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(199, 204, 219, 0.18);
+}
+
+.water-readonly-head {
+  display: grid;
+  gap: 6px;
+}
+
+.water-readonly-head span,
+.water-readonly-grid span,
+.water-readonly-note span {
+  color: #122e84;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.water-readonly-head strong {
+  color: #03102e;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+.water-readonly-head em {
+  margin-left: 6px;
+  color: #5f7192;
+  font-size: 13px;
+  font-style: normal;
+}
+
+.water-readonly-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.water-readonly-grid div {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f6f9ff;
+}
+
+.water-readonly-grid strong {
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.water-readonly-note {
+  display: grid;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.water-readonly-note p {
+  margin: 0;
+  min-height: 42px;
+  padding: 12px;
+  border: 1px solid #d7e4ff;
+  border-radius: 12px;
+  color: #5f7192;
+  background: #fbfdff;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 700;
 }
 
 .water-detail-field {
