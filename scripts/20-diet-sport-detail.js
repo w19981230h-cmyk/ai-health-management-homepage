@@ -1399,6 +1399,18 @@ const waterGoalByPatient = {};
 let selectedWaterType = "白水";
 let pendingWaterGoal = WATER_DEFAULT_GOAL;
 let waterGoalScrollTimer = 0;
+let activeWaterRecordId = "";
+
+const WATER_TYPE_OPTIONS = [
+  { value: "白水", icon: "水" },
+  { value: "淡茶", icon: "茶" },
+  { value: "无糖饮品", icon: "0" },
+  { value: "含糖饮料", icon: "糖" },
+  { value: "咖啡", icon: "咖" },
+  { value: "奶类", icon: "奶" },
+  { value: "汤类", icon: "汤" },
+  { value: "其他", icon: "..." }
+];
 
 function currentWaterItem() {
   return scheduleDataFor().checkins.find((item) => item.type === "water");
@@ -1434,6 +1446,13 @@ function waterRecords() {
 
 function waterTotal(records = waterRecords()) {
   return records.reduce((sum, record) => sum + Number(record.amount || 0), 0);
+}
+
+function findMutableWaterRecord(recordId) {
+  const item = mutableWaterItem();
+  const index = item.records.findIndex((record) => record.id === recordId);
+  if (index < 0) return null;
+  return { item, record: item.records[index], index };
 }
 
 function updateWaterItemSummary(item) {
@@ -1552,26 +1571,98 @@ function renderWaterDetailPage() {
 function openWaterRecordDetail(recordId) {
   const record = waterRecords().find((item) => item.id === recordId);
   if (!record || !waterRecordDetailBody) return;
+  activeWaterRecordId = recordId;
+  const isKnownType = WATER_TYPE_OPTIONS.some((item) => item.value === record.type);
+  const selectedType = isKnownType ? record.type : "其他";
+  const otherValue = selectedType === "其他" ? record.type || "" : "";
   waterRecordDetailBody.innerHTML = `
-    <section class="water-detail-field">
-      <span>饮水量</span>
-      <strong>${Math.round(Number(record.amount || 0))}<em>ml</em></strong>
+    <section class="water-form-card water-record-edit-card">
+      <label>
+        <span>饮水量 <b>*</b></span>
+        <div class="water-amount-control">
+          <button type="button" data-water-detail-step="-50" aria-label="减少饮水量">−</button>
+          <input id="waterRecordAmountInput" type="number" inputmode="numeric" min="1" max="5000" step="10" value="${Math.round(Number(record.amount || 0))}">
+          <em>ml</em>
+          <button type="button" data-water-detail-step="50" aria-label="增加饮水量">+</button>
+        </div>
+      </label>
+      <label>
+        <span>饮水类型 <b>*</b></span>
+        <select id="waterRecordTypeInput">
+          ${WATER_TYPE_OPTIONS.map((item) => `<option value="${escapeAttr(item.value)}"${item.value === selectedType ? " selected" : ""}>${escapeAttr(item.value)}</option>`).join("")}
+        </select>
+        <input class="water-other-type-input" id="waterRecordOtherTypeInput" type="text" maxlength="12" placeholder="请输入其他饮水类型" value="${escapeAttr(otherValue)}"${selectedType === "其他" ? "" : " hidden"}>
+      </label>
     </section>
-    <section class="water-detail-field">
-      <span>饮水类型</span>
-      <strong>${escapeAttr(record.type || "白水")}</strong>
-    </section>
-    <section class="water-detail-field">
-      <span>饮水时间</span>
-      <strong>${escapeAttr(formatCheckinTimeDisplay(record.time, "--:--") || checkinTimeText(record.time) || "--:--")}</strong>
-    </section>
-    <section class="water-detail-field">
-      <span>备注</span>
-      <p>${escapeAttr(record.note || "暂无备注")}</p>
+    <section class="water-form-card water-record-edit-card">
+      <label>
+        <span>记录时间 <b>*</b></span>
+        <input id="waterRecordTimeInput" type="datetime-local" value="${escapeAttr(record.time || localDateTimeValue(new Date()))}">
+      </label>
+      <label>
+        <span>备注</span>
+        <textarea id="waterRecordNoteInput" maxlength="100" placeholder="请输入备注">${escapeAttr(record.note || "")}</textarea>
+      </label>
     </section>
   `;
   sheetMask.classList.add("active");
   waterRecordDetailSheet?.classList.add("active");
+}
+
+function updateWaterRecordOtherInput() {
+  const typeInput = document.querySelector("#waterRecordTypeInput");
+  const otherInput = document.querySelector("#waterRecordOtherTypeInput");
+  if (!typeInput || !otherInput) return;
+  const isOther = typeInput.value === "其他";
+  otherInput.hidden = !isOther;
+  otherInput.disabled = !isOther;
+}
+
+function saveWaterRecordDetail() {
+  const target = findMutableWaterRecord(activeWaterRecordId);
+  if (!target) return;
+  const amountInput = document.querySelector("#waterRecordAmountInput");
+  const typeInput = document.querySelector("#waterRecordTypeInput");
+  const otherInput = document.querySelector("#waterRecordOtherTypeInput");
+  const timeInput = document.querySelector("#waterRecordTimeInput");
+  const noteInput = document.querySelector("#waterRecordNoteInput");
+  const amount = Math.round(Number(amountInput?.value || 0));
+  if (!Number.isFinite(amount) || amount <= 0) {
+    showToast("请输入饮水量");
+    amountInput?.focus();
+    return;
+  }
+  const resolvedType = typeInput?.value === "其他" ? otherInput?.value?.trim() : typeInput?.value;
+  if (!resolvedType) {
+    showToast("请输入其他饮水类型");
+    otherInput?.focus();
+    return;
+  }
+  Object.assign(target.record, {
+    amount,
+    type: resolvedType,
+    time: timeInput?.value || localDateTimeValue(new Date()),
+    note: noteInput?.value?.trim() || ""
+  });
+  updateWaterItemSummary(target.item);
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
+  closeOverlays();
+  renderSchedule();
+  renderWaterDetailPage();
+  showToast("饮水记录已保存");
+}
+
+function deleteWaterRecordDetail() {
+  const target = findMutableWaterRecord(activeWaterRecordId);
+  if (!target) return;
+  target.item.records.splice(target.index, 1);
+  updateWaterItemSummary(target.item);
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
+  activeWaterRecordId = "";
+  closeOverlays();
+  renderSchedule();
+  renderWaterDetailPage();
+  showToast("饮水记录已删除");
 }
 
 function openWaterDetailPage() {

@@ -2038,7 +2038,19 @@ waterDetailRecords?.addEventListener("keydown", (event) => {
   openWaterRecordDetail(row.dataset.waterRecord);
 });
 waterRecordDetailClose?.addEventListener("click", closeOverlays);
-waterRecordDetailDone?.addEventListener("click", closeOverlays);
+waterRecordDetailBody?.addEventListener("click", (event) => {
+  const step = event.target.closest("[data-water-detail-step]");
+  const amountInput = document.querySelector("#waterRecordAmountInput");
+  if (!step || !amountInput) return;
+  const next = Math.max(1, Math.min(5000, Math.round(Number(amountInput.value || 0) + Number(step.dataset.waterDetailStep || 0))));
+  amountInput.value = String(next);
+});
+waterRecordDetailBody?.addEventListener("change", (event) => {
+  if (!event.target.closest("#waterRecordTypeInput")) return;
+  updateWaterRecordOtherInput();
+});
+waterRecordDetailDelete?.addEventListener("click", deleteWaterRecordDetail);
+waterRecordDetailSave?.addEventListener("click", saveWaterRecordDetail);
 unifiedCheckinSuccessDone?.addEventListener("click", closeOverlays);
 checkinSuccessDone?.addEventListener("click", closeOverlays);
 
