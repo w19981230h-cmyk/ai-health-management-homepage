@@ -1262,7 +1262,6 @@ function closeOverlays() {
   dietTaskBindSheet?.classList.remove("active");
   dietGramSheet?.classList.remove("active");
   waterCheckinSheet?.classList.remove("active");
-  waterRecordDetailSheet?.classList.remove("active");
   waterGoalPickerSheet?.classList.remove("active");
   medicineCheckinSheet?.classList.remove("active");
   medicineItemDetailSheet?.classList.remove("active");
@@ -2037,7 +2036,6 @@ waterDetailRecords?.addEventListener("keydown", (event) => {
   event.preventDefault();
   openWaterRecordDetail(row.dataset.waterRecord);
 });
-waterRecordDetailClose?.addEventListener("click", closeOverlays);
 waterRecordDetailBody?.addEventListener("click", (event) => {
   const step = event.target.closest("[data-water-detail-step]");
   const amountInput = document.querySelector("#waterRecordAmountInput");

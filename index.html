@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260721-water-record-editor">
+  <link rel="stylesheet" href="styles.css?v=20260721-water-review">
 </head>
 <body>
   <main class="app-shell">
@@ -1105,6 +1105,15 @@
         </footer>
       </section>
 
+      <section class="sub-page water-record-detail-page" id="waterRecordDetailPage" aria-label="饮水记录详情">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>饮水记录详情</h1></header>
+        <div class="water-record-detail-body" id="waterRecordDetailBody"></div>
+        <footer class="water-record-detail-actions">
+          <button class="water-record-delete" id="waterRecordDetailDelete" type="button">删除</button>
+          <button class="water-record-save" id="waterRecordDetailSave" type="button">保存</button>
+        </footer>
+      </section>
+
       <section class="sub-page sport-detail-page" id="sportDetailPage" aria-label="运动详情">
         <header class="sub-nav sport-detail-nav"><button class="back-page" type="button"></button><h1>运动详情</h1></header>
         <section class="sport-detail-summary" id="sportDetailSummary"></section>
@@ -1571,18 +1580,6 @@
           <button id="waterSubmit" type="button">打卡</button>
         </footer>
       </section>
-      <section class="water-record-detail-sheet" id="waterRecordDetailSheet" aria-label="饮水记录详情">
-        <header class="water-sheet-nav">
-          <button id="waterRecordDetailClose" type="button" aria-label="关闭"></button>
-          <h3>饮水记录详情</h3>
-          <span aria-hidden="true"></span>
-        </header>
-        <div class="water-record-detail-body" id="waterRecordDetailBody"></div>
-        <footer class="water-record-detail-actions">
-          <button class="water-record-delete" id="waterRecordDetailDelete" type="button">删除</button>
-          <button class="water-record-save" id="waterRecordDetailSave" type="button">保存</button>
-        </footer>
-      </section>
       <section class="water-goal-picker-sheet" id="waterGoalPickerSheet" aria-label="设置饮水目标">
         <header class="water-goal-picker-head">
           <button id="waterGoalPickerCancel" type="button">取消</button>
@@ -1952,14 +1949,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260721-water-record-editor"></script>
+  <script src="scripts/00-dom-state.js?v=20260721-water-review"></script>
   <script src="scripts/01-data-store.js?v=20260706-online-refresh"></script>
   <script src="scripts/10-schedule.js?v=20260720-water-v3"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260721-water-record-editor"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260721-water-review"></script>
   <script src="scripts/30-medicine.js?v=20260706-online-refresh"></script>
   <script src="scripts/40-checkin-forms.js?v=20260706-online-refresh"></script>
   <script src="scripts/50-reports-services.js?v=20260720-water-v3"></script>
-  <script src="scripts/60-metrics.js?v=20260720-water-v3"></script>
-  <script src="scripts/70-events-init.js?v=20260721-water-record-editor"></script>
+  <script src="scripts/60-metrics.js?v=20260721-water-record-page"></script>
+  <script src="scripts/70-events-init.js?v=20260721-water-review"></script>
 </body>
 </html>

@@ -1605,8 +1605,7 @@ function openWaterRecordDetail(recordId) {
       </label>
     </section>
   `;
-  sheetMask.classList.add("active");
-  waterRecordDetailSheet?.classList.add("active");
+  openSubPage("waterRecordDetailPage");
 }
 
 function updateWaterRecordOtherInput() {
@@ -1616,6 +1615,14 @@ function updateWaterRecordOtherInput() {
   const isOther = typeInput.value === "其他";
   otherInput.hidden = !isOther;
   otherInput.disabled = !isOther;
+}
+
+function returnToWaterDetailPage() {
+  if (pageStack[pageStack.length - 1] === "waterDetailPage") pageStack.pop();
+  document.querySelectorAll(".sub-page").forEach((page) => page.classList.remove("active"));
+  document.querySelector("#waterDetailPage")?.classList.add("active");
+  document.body.classList.add("detail-page-open");
+  closeOverlays();
 }
 
 function saveWaterRecordDetail() {
@@ -1646,9 +1653,9 @@ function saveWaterRecordDetail() {
   });
   updateWaterItemSummary(target.item);
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
-  closeOverlays();
   renderSchedule();
   renderWaterDetailPage();
+  returnToWaterDetailPage();
   showToast("饮水记录已保存");
 }
 
@@ -1659,9 +1666,9 @@ function deleteWaterRecordDetail() {
   updateWaterItemSummary(target.item);
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
   activeWaterRecordId = "";
-  closeOverlays();
   renderSchedule();
   renderWaterDetailPage();
+  returnToWaterDetailPage();
   showToast("饮水记录已删除");
 }
 
@@ -1706,7 +1713,7 @@ function syncWaterGoalFromScroll() {
 
 function closeWaterGoalPicker() {
   waterGoalPickerSheet?.classList.remove("active");
-  if (!document.querySelector(".water-checkin-sheet.active, .water-record-detail-sheet.active")) {
+  if (!document.querySelector(".water-checkin-sheet.active")) {
     sheetMask?.classList.remove("active");
   }
 }

@@ -3625,7 +3625,6 @@
 }
 
 .water-checkin-sheet,
-.water-record-detail-sheet,
 .water-goal-picker-sheet {
   position: fixed;
   left: 50%;
@@ -3644,7 +3643,6 @@
 }
 
 .water-checkin-sheet.active,
-.water-record-detail-sheet.active,
 .water-goal-picker-sheet.active {
   transform: translate(-50%, 0);
 }
@@ -3991,6 +3989,26 @@
   gap: 12px;
   padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(247, 251, 255, 0), #f7fbff 18%);
+}
+
+.water-record-detail-page {
+  min-height: 100vh;
+  padding: 84px 20px 112px;
+  background: #f3f7ff;
+}
+
+.water-record-detail-page .water-record-detail-body {
+  padding: 0;
+}
+
+.water-record-detail-page .water-record-detail-actions {
+  position: fixed;
+  left: 50%;
+  right: auto;
+  width: min(375px, 100vw);
+  transform: translateX(-50%);
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(243, 247, 255, 0), #f3f7ff 22%);
 }
 
 .water-record-detail-actions button {
