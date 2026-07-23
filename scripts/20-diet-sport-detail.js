@@ -1632,6 +1632,7 @@ function renderWaterDetailPage() {
   const total = waterTotal(records);
   const goal = waterGoal();
   const remain = Math.max(goal - total, 0);
+  const overAmount = Math.max(total - goal, 0);
   if (waterDetailOverview) {
     waterDetailOverview.innerHTML = `
       <article>
@@ -1645,7 +1646,11 @@ function renderWaterDetailPage() {
     `;
   }
   if (waterGoalValue) waterGoalValue.innerHTML = `${Math.round(goal)}<em>ml</em>`;
-  if (waterRemainValue) waterRemainValue.textContent = `剩余 ${Math.round(remain)} ml 达成今日目标`;
+  if (waterRemainValue) {
+    waterRemainValue.textContent = overAmount > 0
+      ? `超过 ${Math.round(overAmount)} ml`
+      : `剩余 ${Math.round(remain)} ml 达成今日目标`;
+  }
   if (waterDetailRecords) {
     waterDetailRecords.innerHTML = records.length ? records.map((record) => {
       return `
