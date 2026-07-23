@@ -1127,7 +1127,7 @@
   outline: 0;
   color: #03102e;
   background: transparent;
-  font-size: clamp(32px, 9vw, 40px);
+  font-size: 16px;
   font-weight: 900;
   text-align: right;
 }
@@ -1201,7 +1201,7 @@
   outline: 0;
   color: #03102e;
   background: transparent;
-  font-size: clamp(32px, 9vw, 40px);
+  font-size: 16px;
   font-weight: 900;
   text-align: right;
 }
@@ -1240,7 +1240,7 @@
 
 .sport-duration-control strong span {
   color: #03102e;
-  font-size: clamp(32px, 9vw, 40px);
+  font-size: 16px;
   font-weight: 900;
 }
 
@@ -1402,7 +1402,7 @@
 
 .metric-record-sheet-lipid .metric-value-number-field input {
   width: 100%;
-  font-size: 22px;
+  font-size: 16px;
   line-height: 1.1;
   font-weight: 800;
   text-align: left;
@@ -3948,7 +3948,7 @@
 
 .water-amount-control input {
   text-align: center;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 950;
 }
 

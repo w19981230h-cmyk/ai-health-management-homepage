@@ -179,8 +179,8 @@ let scheduleMonthOpen = false;
 let schedulePatientId = "zhang";
 
 const schedulePatients = [
-  { id: "zhang", name: "张患者", sex: "男", age: "24", relation: "本人", state: "improving", avatar: "man" },
-  { id: "li", name: "李先生", sex: "男", age: "68", relation: "父亲", state: "risk", avatar: "elder" },
+  { id: "zhang", name: "张*海", sex: "男", age: "24", relation: "本人", state: "improving", avatar: "man" },
+  { id: "li", name: "张*虾", sex: "男", age: "24", relation: "家属", state: "stable", avatar: "man" },
   { id: "wang", name: "王女士", sex: "女", age: "35", relation: "本人", state: "improving", avatar: "woman" }
 ];
 
