@@ -458,6 +458,21 @@
   border-width: 2px !important;
 }
 
+.schedule-avatar,
+.member-avatar {
+  color: transparent !important;
+  overflow: hidden;
+  background:
+    url("../assets/patient-switch-avatar.png?v=20260723-patient-avatar-v1") center 18% / 118% auto no-repeat,
+    #edf4ff !important;
+}
+
+.schedule-patient-row::before {
+  background:
+    url("../assets/patient-switch-avatar.png?v=20260723-patient-avatar-v1") 3px 50% / 25px auto no-repeat,
+    rgba(255,255,255,0.86) !important;
+}
+
 .schedule-patient strong {
   font-size: 13px !important;
   font-weight: 900 !important;
@@ -824,7 +839,7 @@
 
 .checkin-main {
   color: #21304d !important;
-  font-size: 24px !important;
+  font-size: 14px !important;
   font-weight: 900 !important;
   text-decoration: underline;
   text-decoration-color: rgba(54,113,255,0.22);
@@ -833,7 +848,8 @@
 
 .checkin-main.empty {
   color: #21304d !important;
-  font-size: 22px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
 }
 
 .checkin-card::after {
