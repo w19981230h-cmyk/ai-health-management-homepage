@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260723-weight-manual-v1">
+  <link rel="stylesheet" href="styles.css?v=20260723-weight-manual-v3">
 </head>
 <body>
   <main class="app-shell">
@@ -1148,7 +1148,7 @@
             </div>
             <div class="weight-divider"></div>
             <div class="weight-value-row" data-weight-field="fat">
-              <h3>体脂率 <span>（选填）</span></h3>
+              <h3>体脂率</h3>
               <div class="weight-stepper">
                 <button class="weight-step-btn" type="button" data-weight-step="fat" data-delta="-0.1" aria-label="减少体脂率">−</button>
                 <label class="weight-number-field">
@@ -1171,7 +1171,7 @@
           </section>
 
           <section class="weight-card weight-note-card">
-            <div class="weight-note-head"><h3>备注 <span>（选填）</span></h3><em id="weightNoteCount">0/100</em></div>
+            <div class="weight-note-head"><h3>备注</h3><em id="weightNoteCount">0/100</em></div>
             <textarea id="weightNoteInput" maxlength="100" placeholder="例如：晨起空腹、饭后、运动后等"></textarea>
           </section>
         </div>
@@ -1224,7 +1224,7 @@
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="systolic" data-delta="-1" aria-label="减少收缩压">−</button>
                 <label class="pressure-number-field">
-                  <input id="pressureSystolicInput" type="number" inputmode="numeric" min="60" max="250" step="1" value="120">
+                  <input id="pressureSystolicInput" type="number" inputmode="numeric" min="60" max="250" step="1" value="120" placeholder="请输入">
                   <span>mmHg</span>
                 </label>
                 <button class="pressure-step-btn" type="button" data-pressure-step="systolic" data-delta="1" aria-label="增加收缩压">+</button>
@@ -1237,7 +1237,7 @@
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="diastolic" data-delta="-1" aria-label="减少舒张压">−</button>
                 <label class="pressure-number-field">
-                  <input id="pressureDiastolicInput" type="number" inputmode="numeric" min="40" max="150" step="1" value="80">
+                  <input id="pressureDiastolicInput" type="number" inputmode="numeric" min="40" max="150" step="1" value="80" placeholder="请输入">
                   <span>mmHg</span>
                 </label>
                 <button class="pressure-step-btn" type="button" data-pressure-step="diastolic" data-delta="1" aria-label="增加舒张压">+</button>
@@ -1250,7 +1250,7 @@
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="pulse" data-delta="-1" aria-label="减少脉搏">−</button>
                 <label class="pressure-number-field">
-                  <input id="pressurePulseInput" type="number" inputmode="numeric" min="40" max="200" step="1" value="72">
+                  <input id="pressurePulseInput" type="number" inputmode="numeric" min="40" max="200" step="1" value="72" placeholder="请输入">
                   <span>次/分</span>
                 </label>
                 <button class="pressure-step-btn" type="button" data-pressure-step="pulse" data-delta="1" aria-label="增加脉搏">+</button>
@@ -1949,14 +1949,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/01-data-store.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/10-schedule.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/30-medicine.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/60-metrics.js?v=20260723-weight-manual-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260723-weight-manual-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/01-data-store.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/10-schedule.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/30-medicine.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/50-reports-services.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/60-metrics.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/70-events-init.js?v=20260723-weight-manual-v3"></script>
 </body>
 </html>
