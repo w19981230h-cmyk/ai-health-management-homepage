@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260723-weight-manual-v3">
+  <link rel="stylesheet" href="styles.css?v=20260724-weight-photo-v2">
 </head>
 <body>
   <main class="app-shell">
@@ -1174,8 +1174,15 @@
             <div class="weight-note-head"><h3>备注</h3><em id="weightNoteCount">0/100</em></div>
             <textarea id="weightNoteInput" maxlength="100" placeholder="例如：晨起空腹、饭后、运动后等"></textarea>
           </section>
+
+          <div class="weight-photo-preview-row" id="weightPhotoPreviewRow" hidden>
+            <span>上传图片</span>
+            <div class="weight-photo-list" id="weightPhotoList"></div>
+          </div>
         </div>
         <footer class="weight-submit-bar">
+          <button class="weight-photo-action" id="weightPhotoButton" type="button">拍照识别</button>
+          <input id="weightPhotoInput" type="file" accept="image/*" capture="environment" hidden>
           <button id="weightSubmit" type="button">打卡</button>
         </footer>
       </section>

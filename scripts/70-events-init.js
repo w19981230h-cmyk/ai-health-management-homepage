@@ -1950,6 +1950,8 @@ document.querySelector(".weight-picker-cancel")?.addEventListener("click", close
 document.querySelector(".weight-picker-confirm")?.addEventListener("click", confirmWeightTimePicker);
 document.querySelector(".weight-sheet-close")?.addEventListener("click", closeOverlays);
 weightNoteInput?.addEventListener("input", updateWeightNoteCount);
+weightPhotoButton?.addEventListener("click", openWeightPhotoPicker);
+weightPhotoInput?.addEventListener("change", recognizeWeightFromPhoto);
 weightSubmit?.addEventListener("click", submitWeightCheckin);
 waistValueInput?.addEventListener("input", () => {
   if (waistError) waistError.textContent = "";

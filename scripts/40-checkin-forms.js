@@ -134,6 +134,40 @@ function updateWeightNoteCount() {
   weightNoteCount.textContent = `${weightNoteInput.value.length}/100`;
 }
 
+function resetWeightPhotoRecognition() {
+  if (weightPhotoPreviewUrl) URL.revokeObjectURL(weightPhotoPreviewUrl);
+  weightPhotoPreviewUrl = "";
+  if (weightPhotoInput) weightPhotoInput.value = "";
+  if (weightPhotoStatus) weightPhotoStatus.textContent = "可拍摄体重秤照片或选择图片，系统会自动识别体重。";
+  if (weightPhotoPreviewRow) weightPhotoPreviewRow.hidden = true;
+  if (weightPhotoList) weightPhotoList.innerHTML = "";
+}
+
+function openWeightPhotoPicker() {
+  weightPhotoInput?.click();
+}
+
+function recognizeWeightFromPhoto() {
+  const file = weightPhotoInput?.files?.[0];
+  if (!file) return;
+  if (weightPhotoPreviewUrl) URL.revokeObjectURL(weightPhotoPreviewUrl);
+  weightPhotoPreviewUrl = URL.createObjectURL(file);
+  if (weightPhotoList) {
+    weightPhotoList.innerHTML = `
+      <figure class="weight-photo-thumb">
+        <img src="${weightPhotoPreviewUrl}" alt="上传的体重照片">
+        <figcaption>已上传</figcaption>
+      </figure>
+    `;
+  }
+  if (weightPhotoPreviewRow) weightPhotoPreviewRow.hidden = false;
+  if (weightValueInput) weightValueInput.value = "68.5";
+  if (weightFatInput) weightFatInput.value = "24.5";
+  if (weightPhotoStatus) weightPhotoStatus.textContent = "已识别出体重 68.5 kg、体脂率 24.5%，请确认后打卡。";
+  validateWeightInputs(false);
+  showToast("已识别体重 68.5 kg，体脂率 24.5%");
+}
+
 function normalizeDecimal(value, fallback) {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
@@ -189,6 +223,7 @@ function openWeightCheckinPage() {
   if (weightValueInput) weightValueInput.value = "68.5";
   if (weightFatInput) weightFatInput.value = "24.5";
   if (weightNoteInput) weightNoteInput.value = "";
+  resetWeightPhotoRecognition();
   updateWeightTimeText();
   updateWeightNoteCount();
   validateWeightInputs(false);

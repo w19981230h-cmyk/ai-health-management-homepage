@@ -2559,6 +2559,29 @@
 
 .weight-submit-bar {
   margin: 0;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.weight-submit-bar .weight-photo-action {
+  width: 100%;
+  min-width: 0;
+  height: 52px;
+  padding: 0 10px;
+  border: 1px solid #dbe7ff;
+  border-radius: 10px;
+  color: #3671ff;
+  font-size: 15px;
+  font-weight: 900;
+  background: #eef5ff;
+  box-shadow: none;
+}
+
+.weight-submit-bar #weightSubmit {
+  width: 100%;
+  min-width: 0;
 }
 
 .metric-record-sheet {
@@ -4471,4 +4494,373 @@
   margin: 0;
   height: 1px;
   background: #edf1f7;
+}
+
+.weight-photo-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.weight-photo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.weight-photo-head h3 {
+  margin: 0;
+  color: #263654;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.weight-photo-action {
+  min-width: 86px;
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3671ff 0%, #1d9be8 100%);
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.2);
+}
+
+.weight-photo-card p {
+  margin: 0;
+  color: #7c8aa3;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.weight-photo-preview-row {
+  display: grid;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.weight-photo-preview-row[hidden] {
+  display: none;
+}
+
+.weight-photo-preview-row > span {
+  color: #263654;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.weight-photo-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.weight-photo-thumb {
+  width: 72px;
+  flex: 0 0 72px;
+  margin: 0;
+}
+
+.weight-photo-thumb img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border: 1px solid #dbe7ff;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #f4f8ff;
+}
+
+.weight-photo-thumb figcaption {
+  margin-top: 5px;
+  color: #7c8aa3;
+  font-size: 11px;
+  line-height: 1;
+  text-align: center;
+}
+
+.weight-checkin-content > .weight-photo-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 2px;
+}
+
+.weight-checkin-content > .weight-photo-preview-row[hidden] {
+  display: none;
+}
+
+.weight-checkin-content > .weight-photo-preview-row > span {
+  flex: 0 0 auto;
+  color: #5f7192;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.weight-checkin-content .weight-photo-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.weight-checkin-content .weight-photo-thumb {
+  width: 46px;
+  flex-basis: 46px;
+}
+
+.weight-checkin-content .weight-photo-thumb img {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+}
+
+.weight-checkin-content .weight-photo-thumb figcaption {
+  display: none;
+}
+
+/* Manual-entry visual style for blood pressure check-in. */
+.pressure-checkin-sheet {
+  background: #f6f9ff;
+}
+
+.pressure-checkin-sheet .pressure-sheet-nav {
+  position: relative;
+  min-height: 58px;
+  padding: 0 54px 0 54px;
+  border-bottom: 1px solid #e8eef8;
+  background: #fff;
+}
+
+.pressure-checkin-sheet .pressure-sheet-nav > span {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background:
+    linear-gradient(#fff 0 0) 16px 8px / 3px 12px no-repeat,
+    radial-gradient(circle at 17px 23px, #fff 0 4px, transparent 5px),
+    linear-gradient(135deg, #38d6e8, #4ba8ff);
+  transform: translateY(-50%);
+}
+
+.pressure-checkin-sheet .pressure-sheet-nav h3 {
+  justify-self: start;
+  position: relative;
+  color: #03102e;
+  font-size: 20px;
+  line-height: 58px;
+  font-weight: 950;
+}
+
+.pressure-checkin-sheet .pressure-sheet-nav h3::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(44, 203, 194, 0.46);
+  z-index: -1;
+}
+
+.pressure-checkin-sheet .pressure-close {
+  position: absolute;
+  right: 14px;
+  top: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f4f7fb;
+}
+
+.pressure-checkin-sheet .pressure-sheet-body {
+  gap: 14px;
+  padding: 18px 14px 88px;
+  background: #f6f9ff;
+}
+
+.pressure-checkin-sheet .pressure-value-card,
+.pressure-checkin-sheet .pressure-time-card,
+.pressure-checkin-sheet .pressure-note-card {
+  border: 1px solid #dfe8f7;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(140, 157, 199, 0.08);
+}
+
+.pressure-checkin-sheet .pressure-value-card {
+  display: grid;
+  gap: 0;
+  padding: 0 16px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.pressure-checkin-sheet .pressure-value-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0;
+}
+
+.pressure-checkin-sheet .pressure-value-row h4 {
+  margin: 0;
+  color: #263654;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 900;
+}
+
+.pressure-checkin-sheet .pressure-value-row h4 em {
+  margin-left: 3px;
+  color: #ff4d4f;
+}
+
+.pressure-checkin-sheet .pressure-value-row h4 span {
+  display: none;
+}
+
+.pressure-checkin-sheet .pressure-stepper {
+  grid-column: 2 / 4;
+  display: contents;
+  min-height: auto;
+}
+
+.pressure-checkin-sheet .pressure-step-btn {
+  display: none;
+}
+
+.pressure-checkin-sheet .pressure-number-field {
+  grid-column: 2 / 4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+}
+
+.pressure-checkin-sheet .pressure-number-field input {
+  width: 100%;
+  height: 64px;
+  min-height: 64px;
+  padding: 0;
+  border: 0;
+  color: #03102e;
+  background: transparent;
+  font-size: 15px;
+  line-height: 64px;
+  font-weight: 900;
+  text-align: left;
+}
+
+.pressure-checkin-sheet .pressure-number-field input::placeholder {
+  color: #a7b1c1;
+  font-weight: 700;
+}
+
+.pressure-checkin-sheet .pressure-number-field span {
+  color: #5f6d83;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pressure-checkin-sheet .pressure-value-row p {
+  display: none;
+}
+
+.pressure-checkin-sheet .pressure-divider {
+  height: 1px;
+  margin: 0;
+  background: #edf1f7;
+}
+
+.pressure-checkin-sheet .pressure-time-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 0 16px;
+  border-radius: 16px;
+}
+
+.pressure-checkin-sheet .pressure-time-card h4 {
+  margin: 0;
+  color: #263654;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 900;
+}
+
+.pressure-checkin-sheet .pressure-time-card h4 em {
+  margin-left: 3px;
+  color: #ff4d4f;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger {
+  min-height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger::before {
+  display: none;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger span {
+  color: #03102e;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger::after {
+  width: 8px;
+  height: 8px;
+  border-width: 2px;
+  border-color: #66758c;
+}
+
+.pressure-checkin-sheet .pressure-note-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.pressure-checkin-sheet .pressure-note-head {
+  justify-content: flex-start;
+}
+
+.pressure-checkin-sheet .pressure-note-head h4 {
+  color: #263654;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.pressure-checkin-sheet .pressure-note-head h4 span,
+.pressure-checkin-sheet .pressure-note-head em {
+  display: none;
+}
+
+.pressure-checkin-sheet .pressure-note-card textarea {
+  height: 108px;
+  border: 1px solid #dce6f6;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fbfdff;
+  font-size: 14px;
+  line-height: 1.55;
 }
