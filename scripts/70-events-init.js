@@ -1980,6 +1980,7 @@ document.querySelector(".pressure-picker-cancel")?.addEventListener("click", clo
 document.querySelector(".pressure-picker-confirm")?.addEventListener("click", confirmPressureTimePicker);
 pressureClose?.addEventListener("click", closeOverlays);
 pressureNoteInput?.addEventListener("input", updatePressureNoteCount);
+pressurePhotoButton?.addEventListener("click", recognizePressureFromPhoto);
 pressureSubmit?.addEventListener("click", submitPressureCheckin);
 pressureSuccessDone?.addEventListener("click", closeOverlays);
 sugarCheckinSheet?.addEventListener("click", (event) => {

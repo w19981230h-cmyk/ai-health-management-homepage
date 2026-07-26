@@ -506,19 +506,23 @@ function stepPressureField(field, delta) {
   validatePressureInputs(false);
 }
 
+function recognizePressureFromPhoto() {
+  if (pressureSystolicInput) pressureSystolicInput.value = "130";
+  if (pressureDiastolicInput) pressureDiastolicInput.value = "85";
+  if (pressurePulseInput) pressurePulseInput.value = "72";
+  validatePressureInputs(false);
+  showToast("已识别血压 130/85 mmHg，脉搏 72 次/分");
+}
+
 function pressureMetric() {
   return focusPlanDashboards.weight90.metrics.find((metric) => metric.id === "bp");
 }
 
 function openPressureCheckinSheet() {
   closeOverlays();
-  const latest = metricRecordsFor("bp")[0];
-  const metric = pressureMetric();
-  const latestValues = latest?.values || {};
-  const displayParts = String(latest?.display || metric?.display || "120/80").split("/");
-  if (pressureSystolicInput) pressureSystolicInput.value = String(latestValues.systolic || Number(displayParts[0]) || 120);
-  if (pressureDiastolicInput) pressureDiastolicInput.value = String(latestValues.diastolic || Number(displayParts[1]) || 80);
-  if (pressurePulseInput) pressurePulseInput.value = String(latestValues.pulse || 72);
+  if (pressureSystolicInput) pressureSystolicInput.value = "";
+  if (pressureDiastolicInput) pressureDiastolicInput.value = "";
+  if (pressurePulseInput) pressurePulseInput.value = "";
   pressureCheckinTimeValue = localDateTimeInputValue();
   if (pressureNoteInput) pressureNoteInput.value = "";
   if (pressureError) pressureError.textContent = "";

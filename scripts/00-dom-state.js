@@ -472,6 +472,7 @@ const pressurePickerMinute = document.querySelector("#pressurePickerMinute");
 const pressureNoteInput = document.querySelector("#pressureNoteInput");
 const pressureNoteCount = document.querySelector("#pressureNoteCount");
 const pressureError = document.querySelector("#pressureError");
+const pressurePhotoButton = document.querySelector("#pressurePhotoButton");
 const pressureSubmit = document.querySelector("#pressureSubmit");
 const pressureSuccessDialog = document.querySelector("#pressureSuccessDialog");
 const pressureSuccessBp = document.querySelector("#pressureSuccessBp");
