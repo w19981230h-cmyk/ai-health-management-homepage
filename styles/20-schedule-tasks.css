@@ -970,6 +970,505 @@
   padding-bottom: 0;
 }
 
+/* 2026-07-26 schedule visual refresh: match the provided daily-plan reference without changing interactions. */
+.plan-page {
+  background:
+    radial-gradient(circle at 86% 5%, rgba(196, 210, 245, 0.72) 0 70px, transparent 71px),
+    radial-gradient(circle at 12% -2%, rgba(255, 255, 255, 0.9) 0 72px, transparent 73px),
+    linear-gradient(180deg, #edf1f8 0%, #f6f6f4 48%, #eef3fb 100%) !important;
+}
+
+.schedule-hero {
+  padding: 0 18px 12px !important;
+  background: transparent !important;
+}
+
+.schedule-status {
+  height: 44px !important;
+  padding: 0 0 7px !important;
+  color: #07142f !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+
+.schedule-status .plan-icons {
+  width: 72px !important;
+  height: 18px !important;
+  background:
+    linear-gradient(#14213d 0 0) 4px 11px / 3px 5px no-repeat,
+    linear-gradient(#14213d 0 0) 10px 8px / 3px 8px no-repeat,
+    linear-gradient(#14213d 0 0) 16px 5px / 3px 11px no-repeat,
+    radial-gradient(circle at 36px 9px, transparent 0 4px, #14213d 4.7px 6px, transparent 6.5px),
+    linear-gradient(#14213d 0 0) 50px 5px / 18px 10px no-repeat !important;
+}
+
+.schedule-patient-row {
+  align-items: center !important;
+  gap: 7px !important;
+  min-height: 32px !important;
+}
+
+.schedule-patient {
+  order: 1;
+  height: 28px !important;
+  min-width: 78px !important;
+  padding: 2px 10px 2px 2px !important;
+  gap: 4px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: #3671ff !important;
+  box-shadow: 0 7px 16px rgba(54, 113, 255, 0.22) !important;
+}
+
+.schedule-patient::after {
+  left: 50% !important;
+  bottom: -7px !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin-left: -6px !important;
+  border-radius: 2px !important;
+  background: #3671ff !important;
+  transform: rotate(45deg) !important;
+}
+
+.schedule-avatar {
+  width: 24px !important;
+  height: 24px !important;
+  border: 2px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: none !important;
+}
+
+.schedule-patient strong {
+  color: inherit !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+.schedule-patient-row::before {
+  content: "张患者" !important;
+  order: 2;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 28px !important;
+  max-width: 86px !important;
+  padding: 0 12px 0 31px !important;
+  border-radius: 999px !important;
+  color: #1b2944 !important;
+  background:
+    url("../assets/patient-switch-avatar.png?v=20260723-patient-avatar-v1") 3px 50% / 24px auto no-repeat,
+    rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 4px 14px rgba(67, 83, 124, 0.08) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+}
+
+.schedule-patient-row::after {
+  content: "+" !important;
+  order: 3;
+  display: grid !important;
+  place-items: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  color: #1d2942 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 4px 14px rgba(67, 83, 124, 0.08) !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+}
+
+.schedule-notice {
+  order: 4;
+  margin-left: auto !important;
+  width: 32px !important;
+  height: 32px !important;
+  border: 0 !important;
+  border-radius: 12px !important;
+  color: #3671ff !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.08) !important;
+}
+
+.schedule-notice em {
+  right: -10px !important;
+  top: -6px !important;
+  width: 25px !important;
+  height: 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #ff4d5b !important;
+  font-size: 0 !important;
+}
+
+.schedule-month-row {
+  margin-top: 18px !important;
+  gap: 6px !important;
+}
+
+.schedule-month-row strong {
+  color: #21304d !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+.schedule-month-row button {
+  height: 28px !important;
+  padding: 0 4px !important;
+  color: #1e5dcb !important;
+  background: transparent !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+
+#scheduleToday {
+  min-width: 45px !important;
+  margin-left: auto !important;
+  border: 1px solid rgba(54, 113, 255, 0.16) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 5px 12px rgba(54, 113, 255, 0.08) !important;
+}
+
+.schedule-week {
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+}
+
+.schedule-day {
+  height: 55px !important;
+  border-radius: 8px !important;
+  gap: 8px !important;
+  color: #1d2942 !important;
+  background: transparent !important;
+}
+
+.schedule-day span {
+  color: #929aaa !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.schedule-day strong {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+
+.schedule-day.selected {
+  color: #fff !important;
+  background: #3671ff !important;
+  box-shadow: none !important;
+}
+
+.schedule-day.selected span,
+.schedule-day.selected strong {
+  color: #fff !important;
+}
+
+.schedule-day.has-task::after {
+  bottom: -4px !important;
+  width: 5px !important;
+  height: 5px !important;
+  background: #3671ff !important;
+}
+
+.schedule-body {
+  margin-top: 10px !important;
+  padding: 16px 12px 92px !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  border-radius: 18px 18px 0 0 !important;
+  background:
+    radial-gradient(circle at 89% 42%, rgba(244, 149, 41, 0.08) 0 84px, transparent 85px),
+    linear-gradient(180deg, rgba(247, 248, 250, 0.94) 0%, #f7f7f6 100%) !important;
+}
+
+.schedule-content {
+  gap: 15px !important;
+  padding-top: 0 !important;
+}
+
+.schedule-section {
+  gap: 10px !important;
+}
+
+.schedule-section-head {
+  min-height: 23px !important;
+}
+
+.schedule-section-head h3 {
+  color: #13213d !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+}
+
+.schedule-section-head h3::before {
+  width: 3px !important;
+  height: 17px !important;
+  margin-right: 6px !important;
+  border-radius: 3px !important;
+  background: #3671ff !important;
+}
+
+.schedule-section-head button {
+  color: #687487 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.schedule-section:has(.checkin-wall) .schedule-section-head h3 {
+  font-size: 0 !important;
+}
+
+.schedule-section:has(.checkin-wall) .schedule-section-head h3::after {
+  content: "日常打卡" !important;
+  color: #13213d;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.schedule-section:has(.checkin-wall) .schedule-section-head button {
+  font-size: 0 !important;
+}
+
+.schedule-section:has(.checkin-wall) .schedule-section-head button::after {
+  content: "全部记录 ›" !important;
+  font-size: 13px;
+}
+
+.registration-reminder,
+.assessment-card,
+.follow-card,
+.checkin-card,
+.empty-card {
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: none !important;
+}
+
+.registration-reminder,
+.assessment-card,
+.follow-card {
+  position: relative !important;
+  min-height: 78px !important;
+  padding: 14px 12px 14px 24px !important;
+}
+
+.registration-reminder::before,
+.assessment-card::before,
+.follow-card::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 10px !important;
+  top: 12px !important;
+  bottom: 12px !important;
+  width: 3px !important;
+  border-radius: 4px !important;
+  background: #3671ff !important;
+}
+
+.registration-reminder i,
+.assessment-icon,
+.task-tag-small,
+.follow-head {
+  display: none !important;
+}
+
+.registration-reminder strong,
+.follow-copy > strong,
+.assessment-card strong {
+  color: #13213d !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+.registration-reminder em,
+.follow-card p,
+.assessment-card p {
+  color: #8d97a8 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.assessment-card {
+  grid-template-columns: 1fr auto !important;
+  gap: 6px 10px !important;
+}
+
+.assessment-card button,
+.task-primary {
+  min-width: 48px !important;
+  height: 28px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: #3671ff !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.task-primary.done {
+  color: #9aa3b3 !important;
+  background: #f0f2f5 !important;
+}
+
+.checkin-wall {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+}
+
+.checkin-card {
+  min-height: 128px !important;
+  padding: 13px 12px !important;
+  overflow: hidden !important;
+}
+
+.checkin-card.large {
+  grid-column: 1 / -1 !important;
+  min-height: 128px !important;
+}
+
+.checkin-card-head {
+  align-items: flex-start !important;
+  gap: 7px !important;
+}
+
+.checkin-symbol {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  flex: 0 0 22px !important;
+  border-radius: 8px !important;
+  color: transparent !important;
+  background: #3671ff !important;
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.24) !important;
+  font-size: 0 !important;
+}
+
+.checkin-symbol::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.checkin-symbol::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 7px !important;
+  top: 7px !important;
+  width: 7px !important;
+  height: 4px !important;
+  border-left: 2px solid #3671ff !important;
+  border-bottom: 2px solid #3671ff !important;
+  transform: rotate(-45deg) !important;
+}
+
+.checkin-card-head strong {
+  color: #3671ff !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+.checkin-card-head em {
+  color: #8d97a8 !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+
+.checkin-plus {
+  width: 28px !important;
+  height: 28px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  color: #13213d !important;
+  background: #f4f7fc !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+}
+
+.checkin-card[data-type="diet"] .checkin-plus {
+  width: auto !important;
+  min-width: 98px !important;
+  padding: 0 9px !important;
+  border-radius: 10px !important;
+  color: #31405c !important;
+  font-size: 0 !important;
+}
+
+.checkin-card[data-type="diet"] .checkin-plus::before {
+  content: "拍照打卡" !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.checkin-card[data-type="diet"] .checkin-plus::after {
+  content: "" !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin-left: 6px !important;
+  border: 1.5px solid #31405c !important;
+  border-radius: 5px !important;
+  background:
+    radial-gradient(circle at 50% 54%, transparent 0 4px, #31405c 4.5px 5.6px, transparent 6px),
+    linear-gradient(#31405c 0 0) 13px 2px / 5px 3px no-repeat !important;
+}
+
+.checkin-card-body {
+  padding-top: 18px !important;
+}
+
+.checkin-main,
+.checkin-main.empty {
+  color: #21304d !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1.35 !important;
+  text-decoration: none !important;
+}
+
+.checkin-card::after {
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 8px !important;
+  color: rgba(54, 113, 255, 0.08) !important;
+  font-size: 46px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  pointer-events: none !important;
+}
+
+.checkin-card[data-type="diet"]::after { content: "☕" !important; }
+.checkin-card[data-type="water"]::after,
+.checkin-card[data-type="lipid"]::after { content: "◖" !important; }
+.checkin-card[data-type="sport"]::after { content: "◌" !important; }
+.checkin-card[data-type="medicine"]::after { content: "●" !important; }
+.checkin-card[data-type="weight"]::after { content: "□" !important; }
+.checkin-card[data-type="pressure"]::after,
+.checkin-card[data-type="heart"]::after { content: "♡" !important; }
+.checkin-card[data-type="sugar"]::after { content: "Glu" !important; font-size: 24px !important; bottom: 14px !important; }
+.checkin-card[data-type="uric"]::after { content: "⚗" !important; }
+.checkin-card[data-type="waist"]::after { content: "◐" !important; }
+.checkin-card[data-type="period"]::after { content: "✤" !important; }
+
+.tabbar {
+  height: 62px !important;
+  border-top: 1px solid rgba(206, 214, 228, 0.72) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
 .service-detail-page.active ~ .tabbar {
   display: none;
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260724-weight-photo-v2">
+  <link rel="stylesheet" href="styles.css?v=20260726-pressure-sheet-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -1128,9 +1128,11 @@
 
       <section class="weight-checkin-page" id="weightCheckinPage" aria-label="体重打卡">
         <header class="weight-checkin-nav">
+          <div class="weight-checkin-title">
+            <i aria-hidden="true"></i>
+            <h1>体重打卡</h1>
+          </div>
           <button class="weight-sheet-close" type="button" aria-label="关闭"></button>
-          <h1>体重打卡</h1>
-          <span aria-hidden="true"></span>
         </header>
         <div class="weight-checkin-content">
           <section class="weight-input-card">
@@ -1139,8 +1141,8 @@
               <div class="weight-stepper">
                 <button class="weight-step-btn" type="button" data-weight-step="weight" data-delta="-0.1" aria-label="减少体重">−</button>
                 <label class="weight-number-field">
-                  <input id="weightValueInput" type="number" inputmode="decimal" min="20" max="300" step="0.1" value="68.5" placeholder="请输入">
-                  <span>kg</span>
+                  <input id="weightValueInput" type="number" inputmode="decimal" min="20" max="300" step="0.1" placeholder="请输入" required>
+                  <span>Kg</span>
                 </label>
                 <button class="weight-step-btn" type="button" data-weight-step="weight" data-delta="0.1" aria-label="增加体重">+</button>
               </div>
@@ -1152,22 +1154,21 @@
               <div class="weight-stepper">
                 <button class="weight-step-btn" type="button" data-weight-step="fat" data-delta="-0.1" aria-label="减少体脂率">−</button>
                 <label class="weight-number-field">
-                  <input id="weightFatInput" type="number" inputmode="decimal" min="3" max="70" step="0.1" value="24.5" placeholder="请输入">
+                  <input id="weightFatInput" type="number" inputmode="decimal" min="3" max="70" step="0.1" placeholder="请输入">
                   <span>%</span>
                 </label>
                 <button class="weight-step-btn" type="button" data-weight-step="fat" data-delta="0.1" aria-label="增加体脂率">+</button>
               </div>
               <p id="weightFatHint"></p>
             </div>
-          </section>
-
-          <section class="weight-card weight-time-card">
-            <h3>称重时间 <em>*</em></h3>
-            <button class="weight-time-trigger" id="weightTimeTrigger" type="button">
-              <i aria-hidden="true"></i>
-              <span id="weightTimeText">今天 2025-05-19 15:50</span>
-              <b aria-hidden="true"></b>
-            </button>
+            <div class="weight-divider"></div>
+            <div class="weight-value-row weight-time-card">
+              <h3>记录时间 <em>*</em></h3>
+              <button class="weight-time-trigger" id="weightTimeTrigger" type="button">
+                <span id="weightTimeText">2025-05-19 15:50</span>
+                <b aria-hidden="true"></b>
+              </button>
+            </div>
           </section>
 
           <section class="weight-card weight-note-card">
@@ -1264,20 +1265,20 @@
               </div>
               <p id="pressurePulseHint">可录入范围：40 ~ 200 次/分</p>
             </div>
-          </section>
-
-          <section class="pressure-card pressure-time-card">
-            <h4>血压测量时间 <em>*</em></h4>
-            <button class="pressure-time-trigger" id="pressureTimeTrigger" type="button">
-              <i aria-hidden="true"></i>
-              <span id="pressureTimeText">2026-06-18 14:23</span>
-              <b aria-hidden="true"></b>
-            </button>
+            <div class="pressure-divider"></div>
+            <section class="pressure-card pressure-time-card">
+              <h4>记录时间 <em>*</em></h4>
+              <button class="pressure-time-trigger" id="pressureTimeTrigger" type="button">
+                <i aria-hidden="true"></i>
+                <span id="pressureTimeText">2026-06-18 14:23</span>
+                <b aria-hidden="true"></b>
+              </button>
+            </section>
           </section>
 
           <section class="pressure-card pressure-note-card">
             <div class="pressure-note-head"><h4>备注 <span>（选填）</span></h4><em id="pressureNoteCount">0/100</em></div>
-            <textarea id="pressureNoteInput" maxlength="100" placeholder="如：晨起测量、刚运动后、头晕、复测第二次等"></textarea>
+            <textarea id="pressureNoteInput" maxlength="100" placeholder="请输入"></textarea>
           </section>
           <p class="pressure-error" id="pressureError"></p>
         </div>
@@ -1956,14 +1957,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/01-data-store.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/10-schedule.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/30-medicine.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/50-reports-services.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/60-metrics.js?v=20260723-weight-manual-v3"></script>
-  <script src="scripts/70-events-init.js?v=20260723-weight-manual-v3"></script>
+  <script src="scripts/00-dom-state.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/01-data-store.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/10-schedule.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/30-medicine.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/50-reports-services.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/60-metrics.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260726-pressure-sheet-v1"></script>
 </body>
 </html>

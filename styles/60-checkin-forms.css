@@ -4626,27 +4626,29 @@
 /* Manual-entry visual style for blood pressure check-in. */
 .pressure-checkin-sheet {
   background: #f6f9ff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -14px 34px rgba(18, 46, 132, 0.16);
 }
 
 .pressure-checkin-sheet .pressure-sheet-nav {
   position: relative;
-  min-height: 58px;
-  padding: 0 54px 0 54px;
+  min-height: 54px;
+  padding: 0 52px 0 48px;
   border-bottom: 1px solid #e8eef8;
   background: #fff;
 }
 
 .pressure-checkin-sheet .pressure-sheet-nav > span {
   position: absolute;
-  left: 20px;
+  left: 14px;
   top: 50%;
   display: block;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   background:
-    linear-gradient(#fff 0 0) 16px 8px / 3px 12px no-repeat,
-    radial-gradient(circle at 17px 23px, #fff 0 4px, transparent 5px),
+    linear-gradient(#fff 0 0) 11px 5px / 2px 9px no-repeat,
+    radial-gradient(circle at 12px 16px, #fff 0 3px, transparent 4px),
     linear-gradient(135deg, #38d6e8, #4ba8ff);
   transform: translateY(-50%);
 }
@@ -4655,8 +4657,8 @@
   justify-self: start;
   position: relative;
   color: #03102e;
-  font-size: 20px;
-  line-height: 58px;
+  font-size: 18px;
+  line-height: 54px;
   font-weight: 950;
 }
 
@@ -4665,8 +4667,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 8px;
-  height: 7px;
+  bottom: 9px;
+  height: 6px;
   border-radius: 999px;
   background: rgba(44, 203, 194, 0.46);
   z-index: -1;
@@ -4674,55 +4676,65 @@
 
 .pressure-checkin-sheet .pressure-close {
   position: absolute;
-  right: 14px;
-  top: 12px;
-  width: 36px;
-  height: 36px;
+  right: 12px;
+  top: 11px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #f4f7fb;
 }
 
 .pressure-checkin-sheet .pressure-sheet-body {
-  gap: 14px;
-  padding: 18px 14px 88px;
+  gap: 12px;
+  padding: 14px 12px 86px;
   background: #f6f9ff;
 }
 
 .pressure-checkin-sheet .pressure-value-card,
-.pressure-checkin-sheet .pressure-time-card,
 .pressure-checkin-sheet .pressure-note-card {
   border: 1px solid #dfe8f7;
   background: #fff;
-  box-shadow: 0 8px 24px rgba(140, 157, 199, 0.08);
+  box-shadow: none;
 }
 
 .pressure-checkin-sheet .pressure-value-card {
   display: grid;
   gap: 0;
-  padding: 0 16px;
-  border-radius: 16px;
+  padding: 0 14px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.pressure-checkin-sheet .pressure-value-row {
+.pressure-checkin-sheet .pressure-value-row,
+.pressure-checkin-sheet .pressure-time-card {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  min-height: 64px;
+  gap: 8px;
+  min-height: 52px;
   padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.pressure-checkin-sheet .pressure-value-row h4 {
+.pressure-checkin-sheet .pressure-value-row h4,
+.pressure-checkin-sheet .pressure-time-card h4 {
+  display: flex;
+  align-items: center;
   margin: 0;
   color: #263654;
-  font-size: 15px;
-  line-height: 22px;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 900;
+  white-space: nowrap;
 }
 
-.pressure-checkin-sheet .pressure-value-row h4 em {
-  margin-left: 3px;
+.pressure-checkin-sheet .pressure-value-row h4 em,
+.pressure-checkin-sheet .pressure-time-card h4 em {
+  order: -1;
+  margin: 0 1px 0 0;
   color: #ff4d4f;
 }
 
@@ -4745,21 +4757,21 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  min-height: 64px;
+  gap: 10px;
+  min-height: 52px;
 }
 
 .pressure-checkin-sheet .pressure-number-field input {
   width: 100%;
-  height: 64px;
-  min-height: 64px;
+  height: 52px;
+  min-height: 52px;
   padding: 0;
   border: 0;
   color: #03102e;
   background: transparent;
-  font-size: 15px;
-  line-height: 64px;
-  font-weight: 900;
+  font-size: 14px;
+  line-height: 52px;
+  font-weight: 800;
   text-align: left;
 }
 
@@ -4770,8 +4782,8 @@
 
 .pressure-checkin-sheet .pressure-number-field span {
   color: #5f6d83;
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -4785,35 +4797,16 @@
   background: #edf1f7;
 }
 
-.pressure-checkin-sheet .pressure-time-card {
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-  min-height: 64px;
-  padding: 0 16px;
-  border-radius: 16px;
-}
-
-.pressure-checkin-sheet .pressure-time-card h4 {
-  margin: 0;
-  color: #263654;
-  font-size: 15px;
-  line-height: 22px;
-  font-weight: 900;
-}
-
-.pressure-checkin-sheet .pressure-time-card h4 em {
-  margin-left: 3px;
-  color: #ff4d4f;
-}
-
 .pressure-checkin-sheet .pressure-time-trigger {
-  min-height: 64px;
+  grid-column: 2 / 4;
+  min-height: 52px;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 10px;
+  align-items: center;
 }
 
 .pressure-checkin-sheet .pressure-time-trigger::before {
@@ -4822,8 +4815,8 @@
 
 .pressure-checkin-sheet .pressure-time-trigger span {
   color: #03102e;
-  font-size: 15px;
-  font-weight: 900;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .pressure-checkin-sheet .pressure-time-trigger::after {
@@ -4836,8 +4829,8 @@
 .pressure-checkin-sheet .pressure-note-card {
   display: grid;
   gap: 12px;
-  padding: 16px;
-  border-radius: 16px;
+  padding: 16px 12px;
+  border-radius: 10px;
 }
 
 .pressure-checkin-sheet .pressure-note-head {
@@ -4846,7 +4839,7 @@
 
 .pressure-checkin-sheet .pressure-note-head h4 {
   color: #263654;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 900;
 }
 
@@ -4856,11 +4849,23 @@
 }
 
 .pressure-checkin-sheet .pressure-note-card textarea {
-  height: 108px;
+  height: 82px;
   border: 1px solid #dce6f6;
-  border-radius: 14px;
-  padding: 14px 16px;
+  border-radius: 10px;
+  padding: 12px;
   background: #fbfdff;
   font-size: 14px;
   line-height: 1.55;
+}
+
+.pressure-checkin-sheet .pressure-submit-bar {
+  padding: 10px 20px max(18px, env(safe-area-inset-bottom));
+  background: #fff;
+}
+
+.pressure-checkin-sheet .pressure-submit-bar button {
+  height: 40px;
+  border-radius: 7px;
+  background: #3671ff;
+  font-size: 15px;
 }
