@@ -220,8 +220,8 @@ function validateWeightInputs(showError = true) {
 function openWeightCheckinPage() {
   closeOverlays();
   weightCheckinTimeValue = localDateTimeInputValue();
-  if (weightValueInput) weightValueInput.value = "68.5";
-  if (weightFatInput) weightFatInput.value = "24.5";
+  if (weightValueInput) weightValueInput.value = "";
+  if (weightFatInput) weightFatInput.value = "";
   if (weightNoteInput) weightNoteInput.value = "";
   resetWeightPhotoRecognition();
   updateWeightTimeText();
