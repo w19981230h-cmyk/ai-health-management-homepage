@@ -4623,6 +4623,362 @@
   display: none;
 }
 
+/* Screenshot-matched light form for weight check-in. */
+.weight-checkin-page {
+  padding: 0;
+  background: #f6f9ff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -18px 42px rgba(18, 46, 132, 0.16);
+}
+
+.weight-checkin-page .weight-checkin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 54px;
+  min-height: 54px;
+  padding: 0 14px;
+  border-bottom: 1px solid #e6edf8;
+  background: #f8fbff;
+}
+
+.weight-checkin-title {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+}
+
+.weight-checkin-title i {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #8d86ff 0%, #b8a4ff 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+}
+
+.weight-checkin-title i::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  width: 9px;
+  height: 11px;
+  border: 1.6px solid #fff;
+  border-radius: 2px;
+}
+
+.weight-checkin-title i::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.weight-checkin-page .weight-checkin-nav h1 {
+  margin: 0;
+  color: #03102e;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 24px;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: #6fdccf;
+  text-decoration-thickness: 7px;
+  text-underline-offset: -3px;
+  text-decoration-skip-ink: none;
+}
+
+.weight-checkin-page .weight-sheet-close {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 0;
+  border-radius: 50%;
+  background: #f0f4f9;
+}
+
+.weight-checkin-page .weight-sheet-close::before,
+.weight-checkin-page .weight-sheet-close::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 14px;
+  width: 12px;
+  height: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: #4b5567;
+  transform-origin: center;
+}
+
+.weight-checkin-page .weight-sheet-close::before {
+  transform: rotate(45deg);
+}
+
+.weight-checkin-page .weight-sheet-close::after {
+  transform: rotate(-45deg);
+}
+
+.weight-checkin-page .weight-checkin-content {
+  display: grid;
+  gap: 14px;
+  padding: 14px 12px 18px;
+  background: #f6f9ff;
+}
+
+.weight-checkin-page .weight-input-card {
+  display: grid;
+  padding: 0 14px;
+  overflow: hidden;
+  border: 1px solid #dfe8f7;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.weight-checkin-page .weight-value-row {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 51px;
+  padding: 0;
+}
+
+.weight-checkin-page .weight-value-row h3,
+.weight-checkin-page .weight-time-card h3 {
+  margin: 0;
+  color: #0c1f42;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 20px;
+}
+
+.weight-checkin-page .weight-value-row h3 em,
+.weight-checkin-page .weight-time-card h3 em {
+  margin-right: 1px;
+  color: #ff4d4f;
+  font-style: normal;
+}
+
+.weight-checkin-page .weight-divider {
+  height: 1px;
+  margin: 0;
+  background: #edf1f7;
+}
+
+.weight-checkin-page .weight-stepper {
+  display: flex;
+  align-items: center;
+  min-height: 51px;
+  border: 0;
+}
+
+.weight-checkin-page .weight-step-btn {
+  display: none;
+}
+
+.weight-checkin-page .weight-number-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 51px;
+  gap: 10px;
+}
+
+.weight-checkin-page .weight-number-field input {
+  width: 100%;
+  height: 51px;
+  min-height: 51px;
+  padding: 0;
+  border: 0;
+  color: #0c1f42;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 51px;
+  text-align: left;
+  outline: 0;
+}
+
+.weight-checkin-page .weight-number-field input::placeholder {
+  color: #b2bdcc;
+  font-weight: 600;
+}
+
+.weight-checkin-page .weight-number-field span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 51px;
+  color: #5f6d83;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.weight-checkin-page .weight-value-row p {
+  grid-column: 2 / -1;
+  margin: -7px 0 6px;
+  color: #ff4d4f;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.weight-checkin-page .weight-value-row p:empty {
+  display: none;
+}
+
+.weight-checkin-page .weight-time-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 51px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #0c1f42;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: left;
+}
+
+.weight-checkin-page .weight-time-trigger i {
+  display: none;
+}
+
+.weight-checkin-page .weight-time-trigger b {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #5f6d83;
+  border-right: 2px solid #5f6d83;
+  transform: rotate(45deg);
+}
+
+.weight-checkin-page .weight-note-card {
+  display: grid;
+  gap: 12px;
+  padding: 17px 14px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.weight-checkin-page .weight-note-head h3 {
+  margin: 0;
+  color: #0c1f42;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 20px;
+}
+
+.weight-checkin-page .weight-note-head em {
+  display: none;
+}
+
+.weight-checkin-page .weight-note-card textarea {
+  height: 84px;
+  padding: 11px 12px;
+  border: 1px solid #dbe7ff;
+  border-radius: 10px;
+  color: #0c1f42;
+  background: #fbfdff;
+  font-size: 14px;
+  line-height: 20px;
+  resize: none;
+  outline: 0;
+}
+
+.weight-checkin-page .weight-note-card textarea::placeholder {
+  color: #b2bdcc;
+}
+
+.weight-checkin-page .weight-submit-bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+  padding: 10px 20px 38px;
+  background: #fff;
+}
+
+.weight-checkin-page .weight-submit-bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 134px;
+  height: 5px;
+  border-radius: 999px;
+  background: #0f172a;
+  transform: translateX(-50%);
+}
+
+.weight-checkin-page .weight-submit-bar .weight-photo-action {
+  position: relative;
+  width: 46px;
+  min-width: 0;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #dbe7ff;
+  border-radius: 10px;
+  color: transparent;
+  font-size: 0;
+  background: #f4f8ff;
+  box-shadow: none;
+}
+
+.weight-checkin-page .weight-submit-bar .weight-photo-action::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 20px;
+  height: 15px;
+  border: 2px solid #3671ff;
+  border-radius: 5px;
+}
+
+.weight-checkin-page .weight-submit-bar .weight-photo-action::after {
+  content: "";
+  position: absolute;
+  left: 19px;
+  top: 16px;
+  width: 6px;
+  height: 6px;
+  border: 2px solid #3671ff;
+  border-radius: 50%;
+}
+
+.weight-checkin-page .weight-submit-bar #weightSubmit {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  margin: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: #3671ff;
+  box-shadow: none;
+  font-size: 15px;
+  font-weight: 800;
+}
+
 /* Manual-entry visual style for blood pressure check-in. */
 .pressure-checkin-sheet {
   background: #f6f9ff;
