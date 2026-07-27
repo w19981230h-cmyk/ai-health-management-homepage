@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260727-pressure-delete-v1">
+  <link rel="stylesheet" href="styles.css?v=20260727-archive-service-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -325,7 +325,8 @@
           <header class="mini-status"><span>9:41</span><span></span></header>
           <header class="archive-nav">
             <button class="back-page" type="button" aria-label="返回"></button>
-            <h1>健康档案</h1>
+            <h1>健康服务</h1>
+            <button class="archive-settings-btn" type="button" data-open-page="settingsPage" aria-label="设置">设置</button>
             <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单">
               <span class="capsule-more" aria-hidden="true"></span>
               <span class="capsule-close" aria-hidden="true"></span>
@@ -344,7 +345,6 @@
               <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
             </section>
             <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
-            <button class="archive-settings-btn" type="button" data-open-page="settingsPage" aria-label="设置"></button>
           </section>
           <section class="archive-progress-card" aria-label="健康评分">
             <div class="archive-score-card">
@@ -359,7 +359,7 @@
             <div class="assistant-bot" aria-hidden="true"></div>
             <div>
               <strong>医护助理</strong>
-              <p>最近血压偏高哦 最近血压偏高哦 最近血压你好</p>
+              <p>建议控制饮食，规律运动，3个月后重新评估</p>
             </div>
             <i aria-hidden="true"></i>
           </section>
@@ -375,7 +375,7 @@
             <i class="shortcut-icon shortcut-metric">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19V9M12 19V5M18 19v-7"/><path d="M4 19h16"/></svg>
             </i>
-            健康数据
+            健康指标
           </button>
           <button type="button" role="tab" aria-selected="false" data-profile-tab="assessment">
             <i class="shortcut-icon shortcut-eval">
@@ -387,19 +387,13 @@
             <i class="shortcut-icon shortcut-service service-count-badge" data-count="3">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h10l1 11H6l1-11Z"/><path d="M9.5 8.5a2.5 2.5 0 0 1 5 0"/><path d="M12 12v4M10 14h4"/></svg>
             </i>
-            我的订单
-          </button>
-          <button type="button" role="tab" aria-selected="false" data-profile-tab="devices">
-            <i class="shortcut-icon shortcut-device">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="3"/><path d="M9 8h6M9 12h6M9 16h3"/><circle cx="16" cy="16" r="1"/></svg>
-            </i>
-            我的设备
+            我的服务
           </button>
         </section>
         <section class="profile-content" aria-live="polite">
           <section class="medical-card profile-panel active" data-profile-panel="medical">
             <div class="medical-section-header">
-              <h2>病历夹</h2>
+              <h2>健康档案</h2>
               <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
             </div>
             <div class="medical-toolbar">
