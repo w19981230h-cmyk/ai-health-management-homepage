@@ -122,7 +122,9 @@ function closeSportSuccessDialog() {
 }
 
 function formatWeightTimeText(value) {
-  return formatCheckinTimeDisplay(value);
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "请选择记录时间";
+  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
 }
 
 function updateWeightTimeText() {
@@ -506,7 +508,32 @@ function stepPressureField(field, delta) {
   validatePressureInputs(false);
 }
 
+function resetPressurePhotoRecognition() {
+  if (pressurePhotoPreviewUrl) URL.revokeObjectURL(pressurePhotoPreviewUrl);
+  pressurePhotoPreviewUrl = "";
+  if (pressurePhotoInput) pressurePhotoInput.value = "";
+  if (pressurePhotoPreviewRow) pressurePhotoPreviewRow.hidden = true;
+  if (pressurePhotoList) pressurePhotoList.innerHTML = "";
+}
+
+function openPressurePhotoPicker() {
+  pressurePhotoInput?.click();
+}
+
 function recognizePressureFromPhoto() {
+  const file = pressurePhotoInput?.files?.[0];
+  if (!file) return;
+  if (pressurePhotoPreviewUrl) URL.revokeObjectURL(pressurePhotoPreviewUrl);
+  pressurePhotoPreviewUrl = URL.createObjectURL(file);
+  if (pressurePhotoList) {
+    pressurePhotoList.innerHTML = `
+      <figure class="pressure-photo-thumb">
+        <img src="${pressurePhotoPreviewUrl}" alt="上传的血压照片">
+        <figcaption>已上传</figcaption>
+      </figure>
+    `;
+  }
+  if (pressurePhotoPreviewRow) pressurePhotoPreviewRow.hidden = false;
   if (pressureSystolicInput) pressureSystolicInput.value = "130";
   if (pressureDiastolicInput) pressureDiastolicInput.value = "85";
   if (pressurePulseInput) pressurePulseInput.value = "72";
@@ -526,6 +553,7 @@ function openPressureCheckinSheet() {
   pressureCheckinTimeValue = localDateTimeInputValue();
   if (pressureNoteInput) pressureNoteInput.value = "";
   if (pressureError) pressureError.textContent = "";
+  resetPressurePhotoRecognition();
   updatePressureTimeText();
   updatePressureNoteCount();
   validatePressureInputs(false);

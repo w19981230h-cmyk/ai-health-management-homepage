@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260727-archive-service-v1">
+  <link rel="stylesheet" href="styles.css?v=20260727-portrait-parse-v2">
 </head>
 <body>
   <main class="app-shell">
@@ -572,57 +572,50 @@
             <span class="capsule-close" aria-hidden="true"></span>
           </button>
         </header>
+        <section class="portrait-patient-switch" aria-label="健康画像就诊人">
+          <button class="active" type="button" data-archive-patient-id="portraitZhangChao" data-name="张*超" data-sex="male" data-age="24"><i></i><span>张*超</span></button>
+          <button type="button" data-archive-patient-id="portraitLiQiang" data-name="李*强" data-sex="male" data-age="24"><i></i><span>李*强</span></button>
+          <button class="portrait-add-patient" type="button" data-open-page="addFamilyPage" aria-label="添加就诊人">+</button>
+        </section>
         <main class="portrait-body">
           <section class="portrait-summary-side" aria-label="健康画像概要">
-            <article class="portrait-profile-card">
-              <div class="portrait-profile-main">
-                <i class="portrait-profile-avatar" aria-hidden="true"></i>
-                <div>
-                  <strong>张患者</strong>
-                  <em class="portrait-profile-meta">♂ 24岁</em>
-                </div>
-              </div>
-            </article>
-            <article class="portrait-analysis-card">
-              <div class="portrait-card-title"><i class="icon-analysis"></i><span>综合分析</span></div>
-              <div class="portrait-analysis-lines">
-                <p><span>待关注指标：</span><strong>7项</strong></p>
-                <p><span>重点异常指标：</span><strong>3项</strong></p>
-              </div>
-            </article>
-            <article class="portrait-core-card">
-              <div class="portrait-bmi-line">
-                <span>BMI</span>
-                <strong>21.5</strong>
-                <em>正常</em>
-              </div>
-              <div class="portrait-bmi-scale"><i></i></div>
-              <div class="portrait-core-metrics">
-                <div><span>身高</span><strong>178cm</strong></div>
-                <div><span>体重</span><strong>68kg</strong></div>
-              </div>
-            </article>
             <article class="portrait-focus-card portrait-organ-risk-card">
-              <button class="portrait-problem-card" type="button" data-portrait-organ="heart">
-                <span class="portrait-problem-title">心血管</span>
+              <button class="portrait-problem-card portrait-system-card" type="button" data-portrait-organ="throat">
+                <span class="portrait-problem-title">耳鼻喉口腔</span>
                 <span class="portrait-problem-arrow" aria-hidden="true"></span>
-                <span class="portrait-problem-item"><em class="level-high">高</em><strong>心血管病</strong></span>
-                <span class="portrait-problem-item"><em class="level-mid">中</em><strong>高血压</strong></span>
+                <span class="portrait-system-count"><em>4 项</em><strong>需关注</strong></span>
               </button>
             </article>
             <article class="portrait-focus-card portrait-organ-risk-card">
-              <button class="portrait-problem-card" type="button" data-portrait-organ="lung">
-                <span class="portrait-problem-title">肺部</span>
+              <button class="portrait-problem-card portrait-system-card" type="button" data-portrait-organ="lung">
+                <span class="portrait-problem-title">呼吸系统</span>
                 <span class="portrait-problem-arrow" aria-hidden="true"></span>
-                <span class="portrait-problem-item"><em class="level-high">高</em><strong>慢性阻塞性肺病</strong></span>
-                <span class="portrait-problem-item"><em class="level-mid">中</em><strong>肺癌</strong></span>
+                <span class="portrait-system-count"><em>2 项</em><strong>需关注</strong></span>
               </button>
             </article>
             <article class="portrait-focus-card portrait-organ-risk-card">
-              <button class="portrait-problem-card" type="button" data-portrait-organ="stomach">
+              <button class="portrait-problem-card portrait-system-card" type="button" data-portrait-organ="heart">
+                <span class="portrait-problem-title">心血管系统</span>
+                <span class="portrait-problem-arrow" aria-hidden="true"></span>
+                <span class="portrait-system-count"><em>1 项</em><strong>需关注</strong></span>
+              </button>
+            </article>
+            <article class="portrait-focus-card portrait-organ-risk-card">
+              <button class="portrait-problem-card portrait-system-card compact" type="button" data-portrait-organ="stomach">
                 <span class="portrait-problem-title">消化系统</span>
                 <span class="portrait-problem-arrow" aria-hidden="true"></span>
-                <span class="portrait-problem-item"><em class="level-low">低</em><strong>胃癌</strong></span>
+              </button>
+            </article>
+            <article class="portrait-focus-card portrait-organ-risk-card">
+              <button class="portrait-problem-card portrait-system-card compact" type="button" data-portrait-organ="breast">
+                <span class="portrait-problem-title">生殖乳腺</span>
+                <span class="portrait-problem-arrow" aria-hidden="true"></span>
+              </button>
+            </article>
+            <article class="portrait-focus-card portrait-organ-risk-card">
+              <button class="portrait-problem-card portrait-system-card compact" type="button" data-portrait-organ="kidney">
+                <span class="portrait-problem-title">肾脏泌尿</span>
+                <span class="portrait-problem-arrow" aria-hidden="true"></span>
               </button>
             </article>
           </section>
@@ -747,6 +740,7 @@
               <div class="portrait-marker-layer" id="portraitMarkerLayer" aria-label="器官标注"></div>
             </div>
             <button class="portrait-reset" type="button" data-portrait-region="root" aria-label="返回全览">返回全览</button>
+            <button class="portrait-report-status" type="button" aria-label="报告解析中">报告解析中 <em>0</em></button>
             <article class="portrait-organ-info" id="portraitOrganInfo" hidden>
               <i id="portraitInfoIcon">脑</i>
               <strong id="portraitInfoTitle">头颅</strong>
@@ -755,6 +749,15 @@
               <button id="portraitInfoAction" type="button">新增报告</button>
             </article>
             <div class="portrait-focus-icon" id="portraitCurrentIcon" aria-hidden="true">身</div>
+          </section>
+          <button class="portrait-upload-report" type="button">上传报告 ＋</button>
+          <section class="portrait-assistant-card" aria-label="医护助理">
+            <div class="assistant-bot" aria-hidden="true"></div>
+            <div>
+              <strong>医护助理</strong>
+              <h2>有 7 项健康内容值得关注</h2>
+              <p>我已经帮你整理好了，一起来看看吧～</p>
+            </div>
           </section>
           <section class="portrait-organ-panel" aria-label="部位器官选择">
             <div>
@@ -1275,10 +1278,15 @@
             <div class="pressure-note-head"><h4>备注 <span>（选填）</span></h4><em id="pressureNoteCount">0/100</em></div>
             <textarea id="pressureNoteInput" maxlength="100" placeholder="请输入"></textarea>
           </section>
+          <div class="pressure-photo-preview-row" id="pressurePhotoPreviewRow" hidden>
+            <span>上传图片</span>
+            <div class="pressure-photo-list" id="pressurePhotoList"></div>
+          </div>
           <p class="pressure-error" id="pressureError"></p>
         </div>
         <footer class="pressure-submit-bar">
           <button class="pressure-photo-action" id="pressurePhotoButton" type="button">拍照识别</button>
+          <input id="pressurePhotoInput" type="file" accept="image/*" capture="environment" hidden>
           <button id="pressureSubmit" type="button">打卡</button>
         </footer>
       </section>
@@ -1953,14 +1961,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260726-pressure-photo-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260727-pressure-photo-upload-v1"></script>
   <script src="scripts/01-data-store.js?v=20260726-pressure-sheet-v1"></script>
-  <script src="scripts/10-schedule.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/10-schedule.js?v=20260727-schedule-patient-mask-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260726-pressure-sheet-v1"></script>
   <script src="scripts/30-medicine.js?v=20260726-pressure-sheet-v1"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260726-pressure-photo-v1"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260727-weight-time-full-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260726-pressure-sheet-v1"></script>
   <script src="scripts/60-metrics.js?v=20260727-pressure-delete-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260727-pressure-delete-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260727-portrait-parse-v1"></script>
 </body>
 </html>

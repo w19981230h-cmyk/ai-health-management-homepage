@@ -37,11 +37,21 @@ function renderMainCard(stateKey) {
   `;
 }
 
+function maskSchedulePatientName(name) {
+  const value = String(name || "").trim();
+  if (value.length <= 1) return value;
+  if (value.length === 2) return `${value[0]}*`;
+  return `${value[0]}*${value[value.length - 1]}`;
+}
+
 function renderSchedule() {
   if (!scheduleWeek || !scheduleContent) return;
   const patient = schedulePatient();
   const selected = parseDate(scheduleSelectedDate);
-  schedulePatientName.textContent = patient.name;
+  const patientRow = schedulePatientButton?.closest(".schedule-patient-row");
+  const nextPatient = schedulePatients.find((item) => item.id !== schedulePatientId) || schedulePatients[0];
+  schedulePatientName.textContent = maskSchedulePatientName(patient.name);
+  patientRow?.setAttribute("data-alt-patient-name", maskSchedulePatientName(nextPatient.name));
   scheduleAvatar.className = `schedule-avatar ${patient.avatar}`;
   scheduleMonthLabel.textContent = `${selected.getFullYear()}年${String(selected.getMonth() + 1).padStart(2, "0")}月`;
   renderScheduleWeek();

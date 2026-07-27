@@ -41,6 +41,7 @@ document.addEventListener("click", (event) => {
   if (opener) {
     openSubPage(opener.dataset.openPage);
     if (opener.dataset.openPage === "healthPortraitPage") {
+      syncPortraitSelectedPatient();
       updatePatientPortraitAssets();
       setPortraitAnatomyView();
     }
@@ -240,6 +241,22 @@ const portraitPatientAssets = {
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
     anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
     portraitAlt: "张患者健康画像"
+  },
+  portraitZhangChao: {
+    name: "张*超",
+    meta: "♂ 24岁",
+    archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
+    portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
+    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
+    portraitAlt: "张*超健康画像"
+  },
+  portraitLiQiang: {
+    name: "李*强",
+    meta: "♂ 24岁",
+    archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
+    portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
+    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
+    portraitAlt: "李*强健康画像"
   }
 };
 
@@ -280,6 +297,23 @@ function updatePatientPortraitAssets() {
   if (portraitProfileMeta) portraitProfileMeta.textContent = currentPatient.sex === "female" ? `♀ ${currentPatient.age || "32"}岁` : `♂ ${currentPatient.age || "24"}岁`;
 }
 
+function maskPatientSwitcherName(name) {
+  const value = String(name || "").trim();
+  if (value.length <= 1) return value;
+  if (value.length === 2) return `${value[0]}*`;
+  return `${value[0]}*${value[value.length - 1]}`;
+}
+
+function syncArchivePatientSwitcherLabels() {
+  document.querySelectorAll(".archive-member-switcher [data-archive-patient-id]").forEach((item) => {
+    const chipName = item.querySelector(".patient-chip-name");
+    const rawName = item.dataset.name || chipName?.textContent || "";
+    const displayName = maskPatientSwitcherName(rawName);
+    if (chipName) chipName.textContent = displayName;
+    item.setAttribute("aria-label", displayName);
+  });
+}
+
 function updateCurrentPatientView() {
   if (profileNameButton) {
     const archiveSwitcher = profileNameButton.closest(".archive-member-switcher");
@@ -291,6 +325,7 @@ function updateCurrentPatientView() {
         item.classList.toggle("active", active);
         item.setAttribute("aria-checked", String(active));
       });
+      syncArchivePatientSwitcherLabels();
     } else {
       const profileChipName = profileNameButton.querySelector(".patient-chip-name");
       if (profileChipName) profileChipName.textContent = currentPatient.name;
@@ -309,10 +344,10 @@ function updateCurrentPatientView() {
 }
 
 function switchArchivePatient(button) {
-  const switcher = button.closest(".archive-member-switcher");
+  const switcher = button.closest(".archive-member-switcher, .portrait-patient-switch");
   switcher?.querySelectorAll("[data-archive-patient-id]").forEach((item) => {
-    item.classList.remove("active");
-    item.setAttribute("aria-checked", "false");
+      item.classList.remove("active");
+      item.setAttribute("aria-checked", "false");
   });
   button.classList.add("active");
   button.setAttribute("aria-checked", "true");
@@ -323,6 +358,17 @@ function switchArchivePatient(button) {
     age: button.dataset.age || ""
   };
   updateCurrentPatientView();
+}
+
+function syncPortraitSelectedPatient() {
+  const activePortraitPatient = document.querySelector(".portrait-patient-switch [data-archive-patient-id].active");
+  if (!activePortraitPatient) return;
+  currentPatient = {
+    id: activePortraitPatient.dataset.archivePatientId || activePortraitPatient.dataset.name || "unknown",
+    name: activePortraitPatient.dataset.name || "就诊人",
+    sex: activePortraitPatient.dataset.sex || "unknown",
+    age: activePortraitPatient.dataset.age || ""
+  };
 }
 
 function updateCycleReminderVisibility() {
@@ -1307,6 +1353,7 @@ if (serviceFab) {
 if (uploadFab) {
   uploadFab.addEventListener("click", () => openSheet(uploadSheet));
 }
+document.querySelector(".portrait-upload-report")?.addEventListener("click", () => openSheet(uploadSheet));
 document.querySelector(".archive-detail-btn")?.addEventListener("click", () => {
   setProfileTab("medical");
   toast.textContent = "已切换到健康档案详情";
@@ -1988,7 +2035,8 @@ document.querySelector(".pressure-picker-cancel")?.addEventListener("click", clo
 document.querySelector(".pressure-picker-confirm")?.addEventListener("click", confirmPressureTimePicker);
 pressureClose?.addEventListener("click", closeOverlays);
 pressureNoteInput?.addEventListener("input", updatePressureNoteCount);
-pressurePhotoButton?.addEventListener("click", recognizePressureFromPhoto);
+pressurePhotoButton?.addEventListener("click", openPressurePhotoPicker);
+pressurePhotoInput?.addEventListener("change", recognizePressureFromPhoto);
 pressureSubmit?.addEventListener("click", submitPressureCheckin);
 pressureSuccessDone?.addEventListener("click", closeOverlays);
 sugarCheckinSheet?.addEventListener("click", (event) => {
