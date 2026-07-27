@@ -1521,6 +1521,14 @@ metricRecordsGroups?.addEventListener("click", (event) => {
     openMetricDeleteDialog(deleteButton.dataset.deleteMetricRecord);
     return;
   }
+  const checkinDeleteButton = event.target.closest("[data-delete-checkin-record]");
+  if (checkinDeleteButton) {
+    event.stopPropagation();
+    if (checkinDeleteButton.dataset.deleteCheckinType === "pressure") {
+      deleteAllCheckinPressureRecord(checkinDeleteButton.dataset.deleteCheckinRecord);
+    }
+    return;
+  }
   const checkinCard = event.target.closest("[data-checkin-record-type]");
   if (checkinCard) openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
 });

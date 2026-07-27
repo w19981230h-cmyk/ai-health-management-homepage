@@ -626,15 +626,18 @@ function renderAllCheckinRecords(filter = "all") {
       <div>
         ${group.records.map(({ record, parts }) => {
           const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };
+          const canDeletePressure = record.type === "pressure" && !record.demo;
           return `
-            <article class="all-checkin-record-card" data-checkin-record-type="${escapeAttr(record.type)}" data-checkin-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="鏌ョ湅${escapeAttr(record.title)}璇︽儏">
+            <article class="all-checkin-record-card ${canDeletePressure ? "has-delete" : ""}" data-checkin-record-type="${escapeAttr(record.type)}" data-checkin-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="鏌ョ湅${escapeAttr(record.title)}璇︽儏">
               <i class="checkin-symbol ${escapeAttr(meta.tone || "blue")}" aria-hidden="true">${escapeAttr(meta.icon)}</i>
               <div>
                 <span>${escapeAttr(record.title || meta.label)}</span>
                 <strong>${escapeAttr(record.value)}</strong>
               </div>
               <time>${escapeAttr(parts.time)}</time>
-              <b aria-hidden="true"></b>
+              ${canDeletePressure
+                ? `<button class="all-checkin-record-delete" type="button" data-delete-checkin-record="${escapeAttr(record.id)}" data-delete-checkin-type="pressure" aria-label="删除血压记录"></button>`
+                : `<b aria-hidden="true"></b>`}
             </article>
           `;
         }).join("")}
@@ -666,6 +669,32 @@ function renderAllCheckinRecords(filter = "all") {
       <span>切换类型或点击卡片右上角新增打卡。</span>
     </div>
   `;
+}
+
+function deleteAllCheckinPressureRecord(recordId) {
+  const data = scheduleDataFor();
+  const checkins = Array.isArray(data.checkins) ? data.checkins : [];
+  const pressureIndex = checkins.findIndex((item) => item.type === "pressure" && (!recordId || recordId === "pressure" || recordId === item.id));
+  if (pressureIndex < 0) return;
+  const [pressureItem] = checkins.splice(pressureIndex, 1);
+  const targetDate = scheduleSelectedDate;
+  const targetTime = checkinTimeText(allCheckinRecordTime(pressureItem));
+  const pressureRecords = metricRecordsByPatient[currentPatient.id]?.bp;
+  if (Array.isArray(pressureRecords)) {
+    const matchIndex = pressureRecords.findIndex((record) => {
+      const parts = metricRecordDateParts(record.time);
+      return parts.key === targetDate && (!targetTime || parts.time === targetTime);
+    });
+    if (matchIndex >= 0) pressureRecords.splice(matchIndex, 1);
+  }
+  if (!scheduleTasks[schedulePatientId]) scheduleTasks[schedulePatientId] = {};
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
+  saveMetricRecords();
+  renderAllCheckinRecords(allCheckinFilter);
+  renderFocusPlans();
+  renderSchedule();
+  if (selectedFocusMetric === "bp" && metricDetailPage?.classList.contains("active")) renderMetricDetail();
+  showToast("已删除血压记录");
 }
 
 function openAllCheckinRecordDetail(type, recordId) {
