@@ -5265,6 +5265,7 @@
 }
 
 .weight-checkin-page .weight-input-card > .weight-value-row.weight-time-card .weight-time-trigger span {
+  grid-column: 1;
   overflow: hidden;
   color: #0c1f42;
   font-size: 14px;
@@ -5682,4 +5683,74 @@
 
 .pressure-checkin-sheet .pressure-error {
   display: none !important;
+}
+
+/* 2026-07-27 pressure recognition stable fill layout */
+.pressure-checkin-sheet .pressure-value-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pressure-checkin-sheet .pressure-value-row,
+.pressure-checkin-sheet .pressure-time-card {
+  grid-template-columns: 82px minmax(0, 1fr);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pressure-checkin-sheet .pressure-number-field,
+.pressure-checkin-sheet .pressure-time-trigger {
+  min-width: 0;
+}
+
+.pressure-checkin-sheet .pressure-number-field input {
+  min-width: 0;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.pressure-checkin-sheet .pressure-number-field input::-webkit-outer-spin-button,
+.pressure-checkin-sheet .pressure-number-field input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger span {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.pressure-checkin-sheet .pressure-photo-preview-row {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0 12px;
+}
+
+.pressure-checkin-sheet .pressure-photo-list {
+  max-width: 100%;
+}
+
+/* 2026-07-27 keep photo recognition fill visually stable */
+.weight-checkin-page .weight-photo-preview-row,
+.pressure-checkin-sheet .pressure-photo-preview-row {
+  overflow: hidden;
+}
+
+.weight-checkin-page .weight-photo-list,
+.pressure-checkin-sheet .pressure-photo-list {
+  align-items: center;
+  min-height: 46px;
+}
+
+.weight-checkin-page .weight-photo-thumb,
+.pressure-checkin-sheet .pressure-photo-thumb {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.weight-checkin-page .weight-number-field input,
+.pressure-checkin-sheet .pressure-number-field input {
+  height: 28px;
+  line-height: 28px;
+  box-sizing: border-box;
 }

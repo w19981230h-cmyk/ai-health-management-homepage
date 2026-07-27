@@ -124,7 +124,7 @@ function closeSportSuccessDialog() {
 function formatWeightTimeText(value) {
   const date = value ? new Date(value) : new Date();
   if (Number.isNaN(date.getTime())) return "请选择记录时间";
-  return `${dateInputValue(date)} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
+  return `${dateInputValue(date).replaceAll("-", "/")} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
 }
 
 function updateWeightTimeText() {
@@ -460,7 +460,9 @@ function saveWaistCheckin() {
 }
 
 function formatPressureTimeText(value) {
-  return formatCheckinTimeDisplay(value);
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "";
+  return `${dateInputValue(date).replaceAll("-", "/")} ${padDateNumber(date.getHours())}:${padDateNumber(date.getMinutes())}`;
 }
 
 function updatePressureTimeText() {
@@ -537,6 +539,10 @@ function recognizePressureFromPhoto() {
   if (pressureSystolicInput) pressureSystolicInput.value = "130";
   if (pressureDiastolicInput) pressureDiastolicInput.value = "85";
   if (pressurePulseInput) pressurePulseInput.value = "72";
+  pressureCheckinTimeValue = localDateTimeInputValue();
+  updatePressureTimeText();
+  [pressureSystolicInput, pressureDiastolicInput, pressurePulseInput].forEach((input) => input?.blur());
+  document.getSelection?.()?.removeAllRanges?.();
   validatePressureInputs(false);
   showToast("已识别血压 130/85 mmHg，脉搏 72 次/分");
 }
@@ -559,7 +565,6 @@ function openPressureCheckinSheet() {
   validatePressureInputs(false);
   sheetMask.classList.add("active");
   pressureCheckinSheet?.classList.add("active");
-  window.setTimeout(() => pressureSystolicInput?.select(), 80);
 }
 
 function populatePressureTimePicker() {

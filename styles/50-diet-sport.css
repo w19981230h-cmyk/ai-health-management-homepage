@@ -1579,59 +1579,67 @@
   width: 154px;
   min-height: 194px;
   margin: 0;
-  padding: 22px 13px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.45);
+  padding: 17px 11px 14px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 6px 18px rgba(21, 72, 152, 0.08);
+  text-align: center;
 }
 
 .mine-page .archive-score-ring {
-  width: 96px;
-  height: 54px;
-  margin-bottom: 2px;
+  width: 103px;
+  height: 61px;
+  margin: 0 auto 0;
 }
 
 .mine-page .archive-score-ring::before {
-  width: 108px;
-  height: 108px;
+  width: 112px;
+  height: 112px;
   background:
-    radial-gradient(circle at 50% 50%, rgba(248, 251, 255, 0.95) 0 38px, transparent 39px),
-    conic-gradient(from 270deg, #7097ff 0 86deg, rgba(211, 226, 255, 0.84) 86deg 180deg, transparent 180deg 360deg);
+    radial-gradient(circle at 50% 50%, rgba(248, 251, 255, 0.96) 0 34px, transparent 35px),
+    conic-gradient(from 270deg, #5f83ff 0 92deg, rgba(207, 222, 255, 0.9) 92deg 180deg, transparent 180deg 360deg);
 }
 
 .mine-page .archive-score-ring::after {
-  left: 45px;
-  bottom: 0;
-  width: 2px;
-  height: 27px;
-  transform: rotate(-38deg);
+  left: 46px;
+  top: 0;
+  width: 19px;
+  height: 19px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #5f83ff;
+  box-shadow: 0 5px 12px rgba(95, 131, 255, 0.35);
+  transform: none;
 }
 
 .mine-page .archive-score-card strong {
   margin-top: -18px;
-  font-size: 23px;
+  font-size: 24px;
+  line-height: 29px;
   color: #3671ff;
 }
 
 .mine-page .archive-score-card em {
-  margin-top: 4px;
+  margin-top: 3px;
   color: rgba(18, 46, 132, 0.56);
   font-size: 12px;
+  line-height: 16px;
 }
 
 .mine-page .archive-score-card::after {
   content: "超过了 62% 的同龄人";
   display: block;
-  margin-top: 20px;
+  margin-top: 17px;
   color: rgba(3, 16, 46, 0.68);
   font-size: 13px;
+  line-height: 18px;
   font-weight: 700;
 }
 
 .mine-page .archive-detail-btn {
   height: 28px;
-  margin-top: 16px;
+  margin-top: 13px;
   padding: 0 15px;
   border-color: rgba(54, 113, 255, 0.24);
   background: rgba(255, 255, 255, 0.76);
@@ -1656,7 +1664,7 @@
   z-index: 2;
   display: block;
   min-height: 56px;
-  margin: -18px 0 0 2px;
+  margin: 5px 0 0 2px;
   padding: 8px 34px 9px 55px;
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 10px;
@@ -1690,45 +1698,23 @@
 
 .mine-page .assistant-bot {
   position: absolute;
-  left: -4px;
-  top: -10px;
+  left: -2px;
+  top: -8px;
   width: 46px;
   height: 46px;
-  border: 3px solid rgba(255, 255, 255, 0.95);
+  border: 0;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 31% 31%, #e7f7ff 0 8px, transparent 9px),
-    radial-gradient(circle at 69% 31%, #e7f7ff 0 8px, transparent 9px),
-    linear-gradient(180deg, #d8f4ff 0%, #79b6ff 100%);
-  box-shadow: 0 8px 16px rgba(54, 113, 255, 0.24);
+  background: url("../assets/portrait-assistant-bot.png?v=20260727-mine-bot-v1") center / cover no-repeat;
+  box-shadow: 0 8px 16px rgba(54, 113, 255, 0.16);
   transform: none;
 }
 
 .mine-page .assistant-bot::before {
-  content: "";
-  position: absolute;
-  left: 9px;
-  top: 12px;
-  width: 25px;
-  height: 18px;
-  border: 0;
-  border-radius: 9px;
-  background: #153156;
-  box-shadow: inset 0 -3px 0 rgba(88, 180, 255, 0.25);
+  content: none;
 }
 
 .mine-page .assistant-bot::after {
-  content: "";
-  position: absolute;
-  left: 16px;
-  top: 18px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #63d9ff;
-  box-shadow:
-    9px 0 0 #63d9ff,
-    4px 9px 0 2px #fff;
+  content: none;
 }
 
 .mine-page .archive-assistant-card > i {

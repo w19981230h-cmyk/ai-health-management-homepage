@@ -1,4 +1,4 @@
-document.addEventListener("click", (event) => {
+﻿document.addEventListener("click", (event) => {
   const archivePatientButton = event.target.closest("[data-archive-patient-id]");
   if (archivePatientButton) {
     switchArchivePatient(archivePatientButton);
@@ -231,7 +231,7 @@ const portraitPatientAssets = {
     meta: "♀ 32岁",
     archiveImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
     portraitImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
-    anatomyImage: "assets/health-anatomy-female-clean.png?v=20260707-anatomy-pair",
+    anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
     portraitAlt: "张女士健康画像"
   },
   zhang: {
@@ -239,7 +239,7 @@ const portraitPatientAssets = {
     meta: "♂ 24岁",
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
-    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
+    anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
     portraitAlt: "张患者健康画像"
   },
   portraitZhangChao: {
@@ -247,7 +247,7 @@ const portraitPatientAssets = {
     meta: "♂ 24岁",
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
-    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
+    anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
     portraitAlt: "张*超健康画像"
   },
   portraitLiQiang: {
@@ -255,7 +255,7 @@ const portraitPatientAssets = {
     meta: "♂ 24岁",
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
-    anatomyImage: "assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair",
+    anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
     portraitAlt: "李*强健康画像"
   }
 };

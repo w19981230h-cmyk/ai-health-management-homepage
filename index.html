@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260727-portrait-parse-v2">
+  <link rel="stylesheet" href="styles.css?v=20260727-mine-score-bot-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -351,7 +351,7 @@
               <span class="archive-score-ring" aria-hidden="true"></span>
               <strong>良好</strong>
               <em>健康评级</em>
-              <button class="archive-detail-btn" type="button">查看详情</button>
+              <button class="archive-detail-btn" type="button">查看结果</button>
             </div>
             <button class="archive-doctor" type="button" data-open-page="healthPortraitPage" aria-label="查看健康画像"></button>
           </section>
@@ -618,6 +618,7 @@
                 <span class="portrait-problem-arrow" aria-hidden="true"></span>
               </button>
             </article>
+            <button class="portrait-upload-report" type="button">上传报告 ＋</button>
           </section>
           <section class="portrait-side">
             <article class="portrait-bmi-card">
@@ -641,7 +642,7 @@
           </section>
           <section class="portrait-figure" id="portraitFigure" data-portrait-mode="anatomy" data-portrait-view="root" aria-label="人体风险可视化">
             <img class="portrait-full-body" src="assets/health-portrait-fullbody.png?v=20260706-portrait-assets" alt="张患者全身像">
-            <img class="portrait-anatomy-body" src="assets/health-anatomy-male-clean.png?v=20260707-anatomy-pair" alt="男性健康可视化人体">
+            <img class="portrait-anatomy-body" src="assets/health-portrait-body-20260727.png?v=20260727-body-image-v2" alt="健康画像人体图">
             <img class="portrait-brain-overlay" src="assets/health-portrait-brain.png?v=20260706-portrait-assets" alt="头颅">
             <div class="portrait-stage" id="portraitStage" aria-hidden="true">
               <svg class="portrait-svg" viewBox="0 0 256 573" role="img" aria-label="分层人体健康画像">
@@ -750,7 +751,6 @@
             </article>
             <div class="portrait-focus-icon" id="portraitCurrentIcon" aria-hidden="true">身</div>
           </section>
-          <button class="portrait-upload-report" type="button">上传报告 ＋</button>
           <section class="portrait-assistant-card" aria-label="医护助理">
             <div class="assistant-bot" aria-hidden="true"></div>
             <div>
@@ -1966,9 +1966,9 @@
   <script src="scripts/10-schedule.js?v=20260727-schedule-patient-mask-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260726-pressure-sheet-v1"></script>
   <script src="scripts/30-medicine.js?v=20260726-pressure-sheet-v1"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260727-weight-time-full-v1"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260727-time-photo-fill-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260726-pressure-sheet-v1"></script>
   <script src="scripts/60-metrics.js?v=20260727-pressure-delete-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260727-portrait-parse-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260727-body-image-v2"></script>
 </body>
 </html>

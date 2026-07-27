@@ -5073,6 +5073,36 @@
   padding-top: 6px;
 }
 
+.health-portrait-page .portrait-nav .archive-capsule {
+  width: 88px;
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(3, 16, 46, 0.08);
+  box-shadow: 0 6px 16px rgba(18, 46, 132, 0.08);
+}
+
+.health-portrait-page .portrait-nav .archive-capsule::after {
+  left: 44px;
+  top: 7px;
+  height: 18px;
+  background: rgba(3, 16, 46, 0.18);
+}
+
+.health-portrait-page .portrait-nav .archive-capsule .capsule-more {
+  width: 25px;
+  height: 24px;
+}
+
+.health-portrait-page .portrait-nav .archive-capsule .capsule-close {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+  background:
+    radial-gradient(circle at center, rgba(3, 16, 46, 0.86) 0 4px, transparent 4.5px);
+}
+
 .health-portrait-page .portrait-nav h1 {
   font-size: 18px;
   font-weight: 900;
@@ -5142,8 +5172,9 @@
 }
 
 .health-portrait-page .portrait-body {
-  min-height: calc(100vh - 136px);
-  padding-bottom: 210px;
+  position: relative;
+  min-height: calc(100vh - 106px);
+  padding-bottom: 154px;
   overflow: visible;
 }
 
@@ -5153,7 +5184,7 @@
   display: grid;
   width: 145px;
   gap: 12px;
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   pointer-events: auto;
 }
 
@@ -5240,10 +5271,10 @@
 
 .health-portrait-page .portrait-figure {
   position: absolute;
-  left: 136px;
-  right: -4px;
-  top: 72px;
-  min-height: 548px;
+  left: 126px;
+  right: -12px;
+  top: -8px;
+  min-height: 690px;
   overflow: visible;
   pointer-events: auto;
 }
@@ -5275,23 +5306,27 @@
 
 .health-portrait-page .portrait-full-body {
   left: 51%;
-  top: -2px;
+  top: -72px;
   z-index: 2;
-  height: 530px;
+  height: 684px;
   opacity: 0.8 !important;
   transform: translateX(-50%) !important;
   filter: drop-shadow(0 14px 24px rgba(60, 108, 183, 0.16));
 }
 
+.health-portrait-page .portrait-figure[data-portrait-mode="anatomy"] .portrait-full-body {
+  display: none;
+}
+
 .health-portrait-page .portrait-anatomy-body {
   left: 51%;
-  top: 34px;
+  top: -72px;
   z-index: 3;
-  height: 356px;
-  opacity: 0.78 !important;
-  mix-blend-mode: multiply;
+  height: 684px;
+  opacity: 1 !important;
+  mix-blend-mode: normal;
   transform: translateX(-50%) !important;
-  filter: saturate(1.05);
+  filter: drop-shadow(0 14px 24px rgba(60, 108, 183, 0.14));
 }
 
 .health-portrait-page .portrait-brain-overlay,
@@ -5349,35 +5384,40 @@
 }
 
 .health-portrait-page .portrait-upload-report {
-  position: absolute;
-  left: 40px;
-  bottom: 150px;
+  position: relative;
   z-index: 9;
-  width: 118px;
-  height: 32px;
+  justify-self: stretch;
+  width: 100%;
+  height: 34px;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 10px;
   color: #3671ff;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 7px 17px rgba(36, 84, 170, 0.08);
   font-size: 13px;
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 5px;
+  font-weight: 900;
+  text-decoration: none;
 }
 
 .health-portrait-page .portrait-assistant-card {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 26px;
+  position: fixed;
+  left: 50%;
+  right: auto;
+  top: auto;
+  bottom: 72px;
   z-index: 10;
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
   align-items: start;
   gap: 9px;
+  width: min(347px, calc(100vw - 28px));
   min-height: 98px;
   padding: 0 13px 13px 0;
   border-radius: 0 14px 14px 14px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 8px 20px rgba(22, 42, 93, 0.08);
+  transform: translateX(-50%);
 }
 
 .health-portrait-page .portrait-assistant-card::before {
@@ -5396,6 +5436,13 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
+  background: url("../assets/portrait-assistant-bot.png?v=20260727-mine-bot-v1") center / cover no-repeat;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.16);
+}
+
+.health-portrait-page .portrait-assistant-card .assistant-bot::before,
+.health-portrait-page .portrait-assistant-card .assistant-bot::after {
+  content: none;
 }
 
 .health-portrait-page .portrait-assistant-card strong {
