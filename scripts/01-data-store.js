@@ -573,6 +573,40 @@ const defaultMedicalReports = [
       advice: "暂无明显异常时可继续观察；异常项建议咨询医生。",
       next: "建议加入对应健康管理计划，持续跟踪关键指标。"
     }
+  },
+  {
+    id: "r6",
+    name: "高血压复诊门诊病历",
+    type: "门诊病历",
+    org: "南宁市第一人民医院心血管内科",
+    reportTime: "2025-07-07T10:30",
+    uploadTime: "2025-07-07T11:05",
+    thumb: "medical",
+    ai: {
+      summary: "本次复诊记录提示血压仍需规律监测，医生建议继续执行当前生活方式干预。",
+      conclusion: "建议按随访计划复诊，若出现头晕、胸闷等不适及时就医。",
+      focus: "关注家庭血压记录、用药依从性和盐摄入控制。",
+      notice: "门诊病历仅作为随访信息参考，治疗方案以医生医嘱为准。",
+      advice: "建议保持每日早晚血压记录。",
+      next: "下次复诊时携带近期血压记录。"
+    }
+  },
+  {
+    id: "r7",
+    name: "降压药处方记录",
+    type: "门诊处方",
+    org: "南宁市第一人民医院",
+    reportTime: "2025-07-07T10:45",
+    uploadTime: "2025-07-07T11:08",
+    thumb: "prescription",
+    ai: {
+      summary: "处方记录显示继续使用降压相关药物，请按医嘱服用。",
+      conclusion: "药品调整需咨询医生，不建议自行停药或改量。",
+      focus: "关注服药时间、漏服情况和血压波动。",
+      notice: "如服药后出现明显不适，请及时联系医生。",
+      advice: "建议设置用药提醒。",
+      next: "下次复诊时反馈服药后的血压变化。"
+    }
   }
 ];
 
@@ -611,17 +645,34 @@ function saveMedicalStores() {
   window.localStorage?.setItem("parseTasks", JSON.stringify(parseTasks));
 }
 
+function ensureDefaultMedicalReports() {
+  const existingIds = new Set(medicalReports.map((report) => report.id));
+  const additions = defaultMedicalReports.filter((report) => !existingIds.has(report.id));
+  if (!additions.length) return;
+  medicalReports = [...additions, ...medicalReports];
+  saveMedicalStores();
+}
+
 function normalizeReportType(type) {
   if (type === "报告单") return "检验报告";
+  if (type === "处方记录") return "门诊处方";
+  if (type === "就诊记录") return "门诊病历";
   return type;
 }
 
 function thumbForType(type, fallback = "doc") {
   if (type === "检查报告") return "ct";
-  if (type === "门诊病历" || type === "门诊处方" || type === "住院记录") return "medical";
+  if (type === "门诊处方" || type === "处方记录") return "prescription";
+  if (type === "门诊病历" || type === "就诊记录" || type === "住院记录") return "medical";
   if (type === "体检报告") return "exam";
   if (type === "检验报告" || type === "报告单") return "doc";
   return fallback;
+}
+
+function reportCategory(report) {
+  if (report.type === "门诊病历" || report.type === "住院记录") return "就诊记录";
+  if (report.type === "门诊处方" || report.type === "处方记录") return "处方记录";
+  return "报告单";
 }
 
 function reportDateValue(report) {
@@ -663,5 +714,9 @@ function formatYearMonth(value) {
 
 function reportCardTypeLabel(report) {
   if (report.type === "门诊病历") return "门(急)诊病历";
+  if (report.type === "住院记录") return "就诊记录";
+  if (report.type === "门诊处方" || report.type === "处方记录") return "处方记录";
   return "报告单";
 }
+
+ensureDefaultMedicalReports();

@@ -797,20 +797,33 @@
 }
 
 .medical-fab .upload-fab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
   color: #fff;
   background: linear-gradient(145deg, var(--color-primary), #6fa4ff);
-  box-shadow: 0 5px 12px rgba(54, 113, 255, 0.24);
+  box-shadow: 0 10px 20px rgba(54, 113, 255, 0.28), 0 0 0 8px rgba(54, 113, 255, 0.08);
+  font-size: 11px;
+  line-height: 13px;
 }
 
 .medical-fab .upload-fab::before {
-  content: "";
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-right: 5px;
-  border-left: 2px solid currentColor;
-  border-top: 2px solid currentColor;
-  transform: translateY(1px) rotate(45deg);
+  content: "+";
+  display: block;
+  width: auto;
+  height: 16px;
+  margin: 0;
+  border: 0;
+  font-size: 22px;
+  line-height: 16px;
+  font-weight: 500;
+  transform: none;
 }
 
 .mine-page.active .medical-fab.active {
@@ -1111,6 +1124,33 @@
     linear-gradient(#edf2f7 0 0) 10px 23px / 38px 1px no-repeat,
     linear-gradient(#edf2f7 0 0) 10px 32px / 34px 1px no-repeat,
     radial-gradient(circle at 42px 13px, #4b86ff 0 5px, transparent 6px),
+    #fff;
+}
+
+.report-thumb.prescription {
+  background:
+    linear-gradient(#36c27e 0 0) 11px 12px / 20px 3px no-repeat,
+    linear-gradient(#36c27e 0 0) 19px 4px / 3px 20px no-repeat,
+    linear-gradient(#dce8fb 0 0) 10px 30px / 36px 2px no-repeat,
+    linear-gradient(#dce8fb 0 0) 10px 39px / 30px 2px no-repeat,
+    linear-gradient(#fff7e8 0 0) 0 0 / 100% 100% no-repeat;
+}
+
+.report-thumb.prescription::before {
+  right: 9px;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffad42;
+}
+
+.report-thumb.visit {
+  background:
+    linear-gradient(#dce6f4 0 0) 10px 12px / 34px 2px no-repeat,
+    linear-gradient(#edf2f7 0 0) 10px 23px / 38px 1px no-repeat,
+    linear-gradient(#edf2f7 0 0) 10px 32px / 34px 1px no-repeat,
+    linear-gradient(135deg, #eef5ff 0 48%, #d9e9ff 49%),
     #fff;
 }
 
@@ -1467,8 +1507,8 @@
 
 .mine-page .archive-capsule {
   width: 88px;
-  height: 30px;
-  border-radius: 16px;
+  height: 32px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
   box-shadow: 0 6px 16px rgba(33, 76, 154, 0.08);
 }
@@ -1577,77 +1617,114 @@
 
 .mine-page .archive-score-card {
   width: 154px;
+  height: 194px;
   min-height: 194px;
   margin: 0;
-  padding: 17px 11px 14px;
+  padding: 13px 10px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.82);
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 6px 18px rgba(21, 72, 152, 0.08);
+  background:
+    radial-gradient(circle at 50% 43px, rgba(255, 255, 255, 0.62) 0 17px, transparent 18px),
+    linear-gradient(180deg, #dce8ff 0%, #edf4ff 100%);
+  box-shadow: none;
   text-align: center;
 }
 
 .mine-page .archive-score-ring {
-  width: 103px;
-  height: 61px;
-  margin: 0 auto 0;
+  position: relative;
+  width: 128px;
+  height: 78px;
+  margin: 0 auto -22px;
+  overflow: hidden;
+  background: transparent;
 }
 
 .mine-page .archive-score-ring::before {
-  width: 112px;
-  height: 112px;
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(248, 251, 255, 0.96) 0 34px, transparent 35px),
-    conic-gradient(from 270deg, #5f83ff 0 92deg, rgba(207, 222, 255, 0.9) 92deg 180deg, transparent 180deg 360deg);
+    linear-gradient(72deg, transparent 0 42%, rgba(255, 255, 255, 0.94) 43% 56%, transparent 57%) 16px 40px / 12px 4px no-repeat,
+    linear-gradient(108deg, transparent 0 42%, rgba(255, 255, 255, 0.94) 43% 56%, transparent 57%) 100px 40px / 12px 4px no-repeat,
+    conic-gradient(from 270deg, #5f82ff 0 82deg, rgba(190, 211, 255, 0.88) 82deg 180deg, transparent 180deg 360deg);
+  transform: translateX(-50%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 0 39px, #000 40px 64px, transparent 65px);
+  mask: radial-gradient(circle at 50% 50%, transparent 0 39px, #000 40px 64px, transparent 65px);
 }
 
 .mine-page .archive-score-ring::after {
-  left: 46px;
+  content: "";
+  position: absolute;
+  left: 31px;
   top: 0;
-  width: 19px;
-  height: 19px;
+  width: 24px;
+  height: 24px;
   border: 4px solid #fff;
   border-radius: 50%;
   background: #5f83ff;
-  box-shadow: 0 5px 12px rgba(95, 131, 255, 0.35);
+  box-shadow:
+    0 5px 12px rgba(95, 131, 255, 0.32),
+    0 0 0 1px rgba(95, 131, 255, 0.05);
   transform: none;
 }
 
 .mine-page .archive-score-card strong {
-  margin-top: -18px;
-  font-size: 24px;
-  line-height: 29px;
+  margin-top: 0;
+  font-size: 23px;
+  line-height: 28px;
   color: #3671ff;
+  letter-spacing: 0;
 }
 
 .mine-page .archive-score-card em {
-  margin-top: 3px;
-  color: rgba(18, 46, 132, 0.56);
+  margin-top: 2px;
+  color: rgba(18, 46, 132, 0.48);
   font-size: 12px;
   line-height: 16px;
-}
-
-.mine-page .archive-score-card::after {
-  content: "超过了 62% 的同龄人";
-  display: block;
-  margin-top: 17px;
-  color: rgba(3, 16, 46, 0.68);
-  font-size: 13px;
-  line-height: 18px;
   font-weight: 700;
 }
 
+.mine-page .archive-score-card::after {
+  content: none;
+}
+
+.mine-page .archive-score-rank {
+  margin: 11px 0 0;
+  color: rgba(3, 16, 46, 0.66);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.mine-page .archive-score-rank b {
+  color: #03102e;
+  font-weight: 900;
+}
+
 .mine-page .archive-detail-btn {
-  height: 28px;
-  margin-top: 13px;
-  padding: 0 15px;
-  border-color: rgba(54, 113, 255, 0.24);
-  background: rgba(255, 255, 255, 0.76);
-  font-size: 12px;
+  height: 20px;
+  margin-top: 11px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #3671ff;
+  background: transparent;
+  box-shadow: none;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 700;
 }
 
 .mine-page .archive-detail-btn::after {
-  content: " 〉";
+  content: "  ›";
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: -1px;
 }
 
 .mine-page .archive-doctor {
@@ -1664,8 +1741,8 @@
   z-index: 2;
   display: block;
   min-height: 56px;
-  margin: 10px 0 0 2px;
-  padding: 8px 34px 9px 55px;
+  margin: 4px 0 0 2px;
+  padding: 8px 14px 9px 55px;
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.96);
@@ -1718,21 +1795,13 @@
 }
 
 .mine-page .archive-assistant-card > i {
-  position: absolute;
-  right: 13px;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  background:
-    linear-gradient(45deg, transparent 39%, #3671ff 40% 58%, transparent 59%) center / 10px 10px no-repeat,
-    #edf4ff;
-  transform: translateY(-50%);
+  display: none;
 }
 
 .mine-page .mine-shortcuts {
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  margin-top: 12px;
+  margin-top: 4px;
   padding: 13px 7px 10px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.88);
@@ -1802,16 +1871,17 @@
 }
 
 .mine-page .history-entry {
-  height: 26px;
+  height: auto;
   padding: 0;
   color: rgba(3, 16, 46, 0.58);
   background: transparent;
   font-size: 13px;
   font-weight: 800;
+  line-height: 18px;
 }
 
 .mine-page .history-entry::after {
-  content: " 〉";
+  content: none;
 }
 
 .mine-page .medical-toolbar {
@@ -1948,7 +2018,9 @@
 }
 
 .mine-page .medical-fab .upload-fab {
-  width: 78px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   color: #fff;
   background: linear-gradient(145deg, #3671ff, #6a99ff);
 }
@@ -1956,6 +2028,127 @@
 .mine-page .medical-fab .parse-task-entry[data-count]::after {
   right: 6px;
   top: -5px;
+}
+
+/* Health archive report cards: compact document style */
+.mine-page .medical-toolbar {
+  margin: 7px 0 0;
+}
+
+.mine-page .profile-content .pill-tabs {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mine-page .profile-content .pill-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.mine-page #medicalReportList.report-list {
+  gap: 14px;
+}
+
+.mine-page #medicalReportList .report-month-section {
+  gap: 10px;
+}
+
+.mine-page #medicalReportList button.report-card.report-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px;
+  align-items: center;
+  min-height: 104px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 18px rgba(22, 42, 93, 0.045);
+}
+
+.mine-page #medicalReportList .report-card-main {
+  min-width: 0;
+  align-self: stretch;
+  display: grid;
+  grid-template-rows: 22px 1fr 20px;
+  gap: 5px;
+}
+
+.mine-page #medicalReportList .report-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid rgba(219, 229, 243, 0.8);
+}
+
+.mine-page #medicalReportList .report-card-meta strong,
+.mine-page #medicalReportList .report-card-meta em {
+  min-width: 0;
+  color: #8a95a8;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.mine-page #medicalReportList .report-card-meta em {
+  text-align: right;
+}
+
+.mine-page #medicalReportList .report-card-title {
+  margin: 0;
+  align-self: center;
+  color: #10213f;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 900;
+}
+
+.mine-page #medicalReportList .report-card-source {
+  color: #8a95a8;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.mine-page #medicalReportList .report-thumb {
+  justify-self: end;
+  width: 54px;
+  height: 54px;
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 1px rgba(218, 228, 244, 0.95);
+}
+
+.mine-page #medicalReportList .report-thumb.doc,
+.mine-page #medicalReportList .report-thumb.exam {
+  background:
+    linear-gradient(#333 0 0) 8px 7px / 28px 2px no-repeat,
+    linear-gradient(#b8c1cc 0 0) 8px 13px / 38px 1px no-repeat,
+    linear-gradient(#d5dce6 0 0) 8px 18px / 34px 1px no-repeat,
+    linear-gradient(#d5dce6 0 0) 8px 24px / 38px 1px no-repeat,
+    linear-gradient(#d5dce6 0 0) 8px 30px / 30px 1px no-repeat,
+    linear-gradient(90deg, transparent 0 9px, #edf2f8 9px 10px, transparent 10px 27px, #edf2f8 27px 28px, transparent 28px 45px, #edf2f8 45px 46px, transparent 46px),
+    repeating-linear-gradient(#fff 0 8px, #f4f7fb 8px 9px);
+}
+
+.mine-page #medicalReportList .report-thumb.medical,
+.mine-page #medicalReportList .report-thumb.visit {
+  background:
+    radial-gradient(circle at 15px 16px, #4b86ff 0 5px, transparent 6px),
+    linear-gradient(#b9c9e3 0 0) 25px 13px / 20px 2px no-repeat,
+    linear-gradient(#d8e1ee 0 0) 9px 28px / 36px 1px no-repeat,
+    linear-gradient(#d8e1ee 0 0) 9px 35px / 32px 1px no-repeat,
+    linear-gradient(135deg, #fafdff 0 50%, #eef5ff 51%),
+    #fff;
+}
+
+.mine-page #medicalReportList .report-thumb.prescription {
+  background:
+    linear-gradient(#31bf7b 0 0) 10px 12px / 20px 3px no-repeat,
+    linear-gradient(#31bf7b 0 0) 18px 5px / 3px 19px no-repeat,
+    linear-gradient(#d9e3f2 0 0) 10px 31px / 35px 1px no-repeat,
+    linear-gradient(#d9e3f2 0 0) 10px 38px / 29px 1px no-repeat,
+    #fffaf1;
 }
 
 .common-card > div {

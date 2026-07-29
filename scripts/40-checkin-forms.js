@@ -466,6 +466,18 @@ function formatPressureTimeText(value) {
 }
 
 function updatePressureTimeText() {
+  const currentDate = pressureCheckinTimeValue ? new Date(pressureCheckinTimeValue) : null;
+  if (!pressureCheckinTimeValue || Number.isNaN(currentDate?.getTime())) {
+    pressureCheckinTimeValue = localDateTimeInputValue();
+  }
+  if (pressureTimeCard) {
+    pressureTimeCard.hidden = false;
+    pressureTimeCard.removeAttribute("hidden");
+    pressureTimeCard.style.display = "grid";
+    if (pressureNoteCard && pressureTimeCard.nextElementSibling !== pressureNoteCard) {
+      pressureNoteCard.parentElement?.insertBefore(pressureTimeCard, pressureNoteCard);
+    }
+  }
   if (pressureTimeText) pressureTimeText.textContent = formatPressureTimeText(pressureCheckinTimeValue);
 }
 
@@ -525,6 +537,9 @@ function openPressurePhotoPicker() {
 function recognizePressureFromPhoto() {
   const file = pressurePhotoInput?.files?.[0];
   if (!file) return;
+  const preservedTimeValue = pressureCheckinTimeValue && !Number.isNaN(new Date(pressureCheckinTimeValue).getTime())
+    ? pressureCheckinTimeValue
+    : localDateTimeInputValue();
   if (pressurePhotoPreviewUrl) URL.revokeObjectURL(pressurePhotoPreviewUrl);
   pressurePhotoPreviewUrl = URL.createObjectURL(file);
   if (pressurePhotoList) {
@@ -539,7 +554,7 @@ function recognizePressureFromPhoto() {
   if (pressureSystolicInput) pressureSystolicInput.value = "130";
   if (pressureDiastolicInput) pressureDiastolicInput.value = "85";
   if (pressurePulseInput) pressurePulseInput.value = "72";
-  pressureCheckinTimeValue = localDateTimeInputValue();
+  pressureCheckinTimeValue = preservedTimeValue;
   updatePressureTimeText();
   [pressureSystolicInput, pressureDiastolicInput, pressurePulseInput].forEach((input) => input?.blur());
   document.getSelection?.()?.removeAllRanges?.();
@@ -850,7 +865,7 @@ function submitSugarCheckin() {
 
 function sortedMedicalReports() {
   return [...medicalReports]
-    .filter((report) => selectedMedicalCategory === "全部" || report.type === selectedMedicalCategory)
+    .filter((report) => selectedMedicalCategory === "全部" || reportCategory(report) === selectedMedicalCategory)
     .sort((a, b) => {
       const dateDiff = parseDateTime(reportDateValue(b)) - parseDateTime(reportDateValue(a));
       if (dateDiff !== 0) return dateDiff;

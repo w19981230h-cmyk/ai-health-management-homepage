@@ -5341,6 +5341,7 @@
 }
 
 .pressure-checkin-sheet .pressure-value-card,
+.pressure-checkin-sheet .pressure-time-card,
 .pressure-checkin-sheet .pressure-note-card {
   border: 1px solid #dfe8f7;
   border-radius: 10px;
@@ -5753,4 +5754,361 @@
   height: 28px;
   line-height: 28px;
   box-sizing: border-box;
+}
+
+/* 2026-07-27 unified camera button and stable blood-pressure time display */
+.weight-checkin-page .weight-submit-bar .weight-photo-action,
+.pressure-checkin-sheet .pressure-submit-bar .pressure-photo-action {
+  position: relative;
+  display: block;
+  width: 46px;
+  min-width: 46px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(54, 113, 255, 0.28);
+  border-radius: 10px;
+  color: transparent;
+  background: #f7faff;
+  box-shadow: none;
+  font-size: 0;
+}
+
+.weight-checkin-page .weight-submit-bar .weight-photo-action::before,
+.pressure-checkin-sheet .pressure-submit-bar .pressure-photo-action::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 16px;
+  border: 2px solid #3671ff;
+  border-radius: 5px;
+  background:
+    linear-gradient(#3671ff, #3671ff) 6px -5px / 10px 7px no-repeat,
+    #f7faff;
+  transform: translate(-50%, -44%);
+}
+
+.weight-checkin-page .weight-submit-bar .weight-photo-action::after,
+.pressure-checkin-sheet .pressure-submit-bar .pressure-photo-action::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: 2px solid #3671ff;
+  border-radius: 50%;
+  background: #f7faff;
+  transform: translate(-50%, -38%);
+}
+
+.pressure-checkin-sheet .pressure-time-trigger {
+  grid-template-columns: minmax(0, 1fr) 10px;
+  column-gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger span {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+/* 2026-07-27 pressure required mark after label and persistent time row */
+.pressure-checkin-sheet .pressure-value-row h4 em,
+.pressure-checkin-sheet .pressure-time-card h4 em {
+  order: initial;
+  margin: 0 0 0 4px;
+}
+
+.pressure-checkin-sheet .pressure-time-card {
+  display: grid !important;
+  min-height: 51px !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card {
+  overflow: hidden;
+}
+
+/* 2026-07-27 keep blood-pressure time inside the same value column */
+.pressure-checkin-sheet .pressure-time-card {
+  grid-template-columns: 82px minmax(0, 1fr) !important;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger {
+  grid-column: 2;
+  justify-self: stretch;
+}
+
+/* 2026-07-27 final pressure datetime row: keep full value visible in the cell */
+.pressure-checkin-sheet .pressure-time-card {
+  grid-template-columns: 82px minmax(188px, 1fr) !important;
+  align-items: center !important;
+  column-gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  padding: 0 14px !important;
+  border: 1px solid #dfe8f7 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger {
+  grid-column: 2 !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 51px !important;
+  min-height: 51px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger span {
+  flex: 1 1 auto !important;
+  display: block !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  color: #03102e !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 20px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.pressure-checkin-sheet .pressure-time-trigger::after {
+  flex: 0 0 8px !important;
+  margin-left: auto !important;
+}
+
+/* 2026-07-27 pressure upload must not push datetime outside the drawer */
+.pressure-checkin-sheet,
+.pressure-checkin-sheet .pressure-sheet-body,
+.pressure-checkin-sheet .pressure-value-card,
+.pressure-checkin-sheet .pressure-note-card,
+.pressure-checkin-sheet .pressure-photo-preview-row {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.pressure-checkin-sheet .pressure-time-card {
+  display: grid !important;
+}
+
+/* 2026-07-27 restore pulse row in blood-pressure check-in */
+.pressure-checkin-sheet .pressure-value-row[data-pressure-field="pulse"] {
+  display: grid !important;
+  grid-template-columns: 82px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 51px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.pressure-checkin-sheet .pressure-value-row[data-pressure-field="pulse"] h4 {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #263654 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 20px !important;
+  white-space: nowrap !important;
+}
+
+.pressure-checkin-sheet .pressure-value-row[data-pressure-field="pulse"] .pressure-stepper {
+  display: contents !important;
+}
+
+.pressure-checkin-sheet .pressure-value-row[data-pressure-field="pulse"] .pressure-number-field {
+  grid-column: 2 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 51px !important;
+}
+
+.pressure-checkin-sheet .pressure-value-row[data-pressure-field="pulse"] .pressure-number-field input {
+  display: block !important;
+  height: 51px !important;
+  min-height: 51px !important;
+  color: #03102e !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 51px !important;
+  text-align: left !important;
+}
+
+/* 2026-07-28 keep blood-pressure values in one stable card */
+.pressure-checkin-sheet .pressure-value-card {
+  display: grid !important;
+  grid-template-rows: auto 1px auto 1px auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 14px !important;
+  border: 1px solid #dfe8f7 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row {
+  display: grid !important;
+  grid-template-columns: 82px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 51px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row h4 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  margin: 0 !important;
+  color: #263654 !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 20px !important;
+  white-space: nowrap !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row h4 em {
+  color: #ff4d4f !important;
+  font-style: normal !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-stepper {
+  display: contents !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-step-btn,
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row p {
+  display: none !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-number-field {
+  grid-column: 2 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 51px !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-number-field input {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 51px !important;
+  min-height: 51px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #03102e !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 51px !important;
+  text-align: left !important;
+  outline: none !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-number-field span {
+  color: #657590 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-divider {
+  display: block !important;
+  height: 1px !important;
+  min-height: 1px !important;
+  margin: 0 !important;
+  background: #edf1f7 !important;
+}
+
+/* 2026-07-28 pressure upload must keep all value fields visible */
+.pressure-checkin-sheet .pressure-sheet-body {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  align-content: start !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card {
+  display: grid !important;
+  grid-template-rows: 51px 1px 51px 1px 51px !important;
+  min-height: 155px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="systolic"],
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="diastolic"],
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="pulse"] {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 51px !important;
+  height: 51px !important;
+  max-height: none !important;
+  transform: none !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="pulse"] {
+  grid-row: 5 !important;
+}
+
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="pulse"] .pressure-number-field,
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="pulse"] input,
+.pressure-checkin-sheet .pressure-value-card .pressure-value-row[data-pressure-field="pulse"] span {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }

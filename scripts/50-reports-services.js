@@ -15,10 +15,10 @@ function renderMedicalReports() {
           <span class="report-card-main">
             <span class="report-card-meta">
               <strong>${reportCardTypeLabel(report)}${isNewReport(report) ? '<em class="new-badge">新增</em>' : ""}</strong>
-              <em>检查时间：${formatDateTime(report.reportTime).slice(0, 10).replaceAll("-", ".")}</em>
+              <em>报告时间:${reportCardDateText(report.reportTime)}</em>
             </span>
             <span class="report-card-title">${report.name}</span>
-            <span class="report-card-source">来源：自动上传</span>
+            <span class="report-card-source">来源：${report.source || report.org || "自动上传"}</span>
           </span>
           <i class="report-thumb ${thumbForType(report.type, report.thumb || "doc")}"></i>
         </button>
@@ -26,6 +26,11 @@ function renderMedicalReports() {
     </section>
   `).join("") : `<p class="period-empty">暂无就医资料</p>`;
   updateParseTaskEntry();
+}
+
+function reportCardDateText(value) {
+  if (!value) return "待补充";
+  return formatDateTime(value).slice(0, 10).replaceAll("-", ".");
 }
 
 function updateParseTaskEntry() {

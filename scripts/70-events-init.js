@@ -16,6 +16,10 @@
   }
   const portraitProblemButton = event.target.closest(".portrait-problem-card[data-portrait-organ]");
   if (portraitProblemButton) {
+    if (portraitProblemButton.dataset.portraitOrgan === "heart") {
+      openPortraitReportSheet();
+      return;
+    }
     openPortraitBiomarkerDetail(portraitProblemButton.dataset.portraitOrgan);
     return;
   }
@@ -206,6 +210,12 @@ function openPortraitBiomarkerDetail(organId) {
   openSubPage("portraitBiomarkerDetailPage");
 }
 
+function openPortraitReportSheet() {
+  closeOverlays();
+  sheetMask.classList.add("active");
+  document.querySelector("#portraitReportSheet")?.classList.add("active");
+}
+
 const cycleRules = {
   none: {
     text: "记录经期后，可预测周期",
@@ -340,6 +350,7 @@ function updateCurrentPatientView() {
   renderPeriodCard();
   renderPeriodDetail();
   updateCycleReminderVisibility();
+  syncPortraitSelectedPatient();
   updatePatientPortraitAssets();
 }
 
@@ -361,14 +372,27 @@ function switchArchivePatient(button) {
 }
 
 function syncPortraitSelectedPatient() {
-  const activePortraitPatient = document.querySelector(".portrait-patient-switch [data-archive-patient-id].active");
-  if (!activePortraitPatient) return;
-  currentPatient = {
-    id: activePortraitPatient.dataset.archivePatientId || activePortraitPatient.dataset.name || "unknown",
-    name: activePortraitPatient.dataset.name || "就诊人",
-    sex: activePortraitPatient.dataset.sex || "unknown",
-    age: activePortraitPatient.dataset.age || ""
-  };
+  const portraitButtons = [...document.querySelectorAll(".portrait-patient-switch [data-archive-patient-id]")];
+  if (!portraitButtons.length) return;
+  const sourceButtons = [...document.querySelectorAll(".archive-member-switcher [data-archive-patient-id]")];
+  sourceButtons.forEach((source, index) => {
+    const target = portraitButtons[index];
+    if (!target) return;
+    target.dataset.archivePatientId = source.dataset.archivePatientId || "";
+    target.dataset.name = source.dataset.name || "";
+    target.dataset.sex = source.dataset.sex || "";
+    target.dataset.age = source.dataset.age || "";
+    const displayName = maskPatientSwitcherName(source.dataset.name || "");
+    const label = target.querySelector("span");
+    if (label) label.textContent = displayName;
+    target.setAttribute("aria-label", displayName || "就诊人");
+  });
+  const activeButton = portraitButtons.find((item) => item.dataset.archivePatientId === currentPatient.id) || portraitButtons[0];
+  portraitButtons.forEach((item) => {
+    const active = item === activeButton;
+    item.classList.toggle("active", active);
+    item.setAttribute("aria-checked", String(active));
+  });
 }
 
 function updateCycleReminderVisibility() {
@@ -1297,6 +1321,7 @@ function closeOverlays() {
   metricDeleteDialog?.classList.remove("active");
   weightRecordDetailDialog?.classList.remove("active");
   heartRecordDetailDialog?.classList.remove("active");
+  document.querySelector("#portraitReportSheet")?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");
   taskDeleteDialog.classList.remove("active");

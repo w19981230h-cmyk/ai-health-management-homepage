@@ -5060,11 +5060,12 @@
 .health-portrait-page {
   padding: 0 13px 28px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 76% 28%, rgba(255, 255, 255, 0.72) 0 116px, transparent 117px),
-    radial-gradient(circle at 61% 44%, rgba(255, 255, 255, 0.5) 0 176px, transparent 177px),
-    radial-gradient(circle at 48% 40%, rgba(78, 139, 255, 0.08) 0 1px, transparent 2px) 0 0 / 16px 16px,
-    linear-gradient(160deg, #f3f8ff 0%, #e5f1ff 58%, #f2f8ff 100%);
+  background: #eaf6ff;
+}
+
+.health-portrait-page::before,
+.health-portrait-page::after {
+  content: none !important;
 }
 
 .health-portrait-page .portrait-nav {
@@ -5076,7 +5077,7 @@
 .health-portrait-page .portrait-nav .archive-capsule {
   width: 88px;
   height: 32px;
-  padding: 0 11px;
+  padding: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(3, 16, 46, 0.08);
@@ -5084,23 +5085,21 @@
 }
 
 .health-portrait-page .portrait-nav .archive-capsule::after {
-  left: 44px;
+  left: 50%;
   top: 7px;
   height: 18px;
   background: rgba(3, 16, 46, 0.18);
 }
 
 .health-portrait-page .portrait-nav .archive-capsule .capsule-more {
-  width: 25px;
-  height: 24px;
+  width: 44px;
+  height: 30px;
 }
 
 .health-portrait-page .portrait-nav .archive-capsule .capsule-close {
-  width: 18px;
-  height: 18px;
-  border-width: 2px;
-  background:
-    radial-gradient(circle at center, rgba(3, 16, 46, 0.86) 0 4px, transparent 4.5px);
+  width: 44px;
+  height: 30px;
+  background: none;
 }
 
 .health-portrait-page .portrait-nav h1 {
@@ -5238,9 +5237,11 @@
 
 .health-portrait-page .portrait-system-count {
   grid-column: 1 / -1;
-  display: flex;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  column-gap: 8px;
+  min-height: 24px;
 }
 
 .health-portrait-page .portrait-system-count em {
@@ -5248,7 +5249,8 @@
   align-items: center;
   justify-content: center;
   height: 21px;
-  min-width: 48px;
+  min-width: 0;
+  width: 48px;
   padding: 0 7px;
   border-radius: 4px;
   color: #ff4d4f;
@@ -5256,11 +5258,16 @@
   font-size: 12px;
   font-style: normal;
   font-weight: 900;
+  line-height: 21px;
 }
 
 .health-portrait-page .portrait-system-count strong {
+  display: inline-flex;
+  align-items: center;
+  height: 21px;
   color: rgba(3, 16, 46, 0.72);
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
 }
 
@@ -5306,7 +5313,7 @@
 
 .health-portrait-page .portrait-full-body {
   left: 51%;
-  top: -67px;
+  top: -57px;
   z-index: 2;
   height: 684px;
   opacity: 0.8 !important;
@@ -5320,7 +5327,7 @@
 
 .health-portrait-page .portrait-anatomy-body {
   left: 51%;
-  top: -67px;
+  top: -57px;
   z-index: 3;
   height: 684px;
   opacity: 1 !important;
@@ -5412,8 +5419,8 @@
   align-items: start;
   gap: 9px;
   width: auto;
-  min-height: 98px;
-  padding: 0 13px 13px 0;
+  min-height: 88px;
+  padding: 0 13px 8px 0;
   border-radius: 0 14px 14px 14px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 8px 20px rgba(22, 42, 93, 0.08);
@@ -5632,6 +5639,540 @@
   color: #03102e;
   font-size: 13px;
   line-height: 1.65;
+  font-weight: 500;
+}
+
+.portrait-report-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 33;
+  display: none;
+  height: 67vh;
+  max-height: 67vh;
+  padding: 8px 13px 24px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(180deg, #eef5ff 0%, #f8fbff 16%, #fff 100%);
+  box-shadow: 0 -12px 36px rgba(17, 42, 102, 0.16);
+  overflow: hidden;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.portrait-report-sheet.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.portrait-report-handle {
+  width: 109px;
+  height: 4px;
+  margin: 0 auto 9px;
+  border-radius: 999px;
+  background: #d8e5ff;
+}
+
+.portrait-report-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 -1px 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.portrait-report-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.portrait-report-tabs button {
+  position: relative;
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  color: #49607f;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(43, 79, 148, 0.05);
+}
+
+.portrait-report-tabs button i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  vertical-align: 2px;
+}
+
+.portrait-report-tabs button:nth-child(3) i {
+  background: #45c878;
+}
+
+.portrait-report-tabs button:nth-child(4) i {
+  background: #56a1ff;
+}
+
+.portrait-report-tabs button.active {
+  color: #fff;
+  background: #3671ff;
+}
+
+.portrait-report-tabs button.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #3671ff;
+}
+
+.portrait-report-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.portrait-report-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.portrait-report-summary {
+  position: relative;
+  padding: 28px 11px 26px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, #f7fbff 100%);
+  overflow: hidden;
+}
+
+.portrait-report-summary::before {
+  content: "";
+  position: absolute;
+  left: 38px;
+  top: 14px;
+  right: 38px;
+  height: 3px;
+  border-radius: 999px;
+  background: #ecf3ff;
+}
+
+.portrait-report-corner {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 0 0 0 22px;
+  background: linear-gradient(225deg, #dfe9ff 0%, #eef4ff 54%, transparent 55%);
+}
+
+.portrait-report-summary header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.portrait-report-bot {
+  flex: 0 0 auto;
+  width: 51px;
+  height: 51px;
+  border-radius: 50%;
+  background:
+    url("../assets/portrait-assistant-bot.png?v=20260727-mine-bot-v1") center / cover no-repeat,
+    #eaf4ff;
+  box-shadow: 0 6px 14px rgba(54, 113, 255, 0.13);
+}
+
+.portrait-report-summary em {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 3px;
+  color: #fff;
+  background: #3671ff;
+  font-size: 11px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.portrait-report-summary h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 3px 0 0;
+  color: #1f52b8;
+  font-size: 27px;
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+}
+
+.portrait-report-summary h3 > span {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.portrait-report-summary h3 b {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 3px;
+  color: #ff5d5f;
+  background: #fff1f1;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.portrait-report-summary p {
+  position: relative;
+  z-index: 1;
+  margin: 11px 0 0 0;
+  padding: 13px 14px;
+  border-radius: 7px;
+  color: #53647a;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.08);
+  font-size: 13px;
+  line-height: 1.46;
+  font-weight: 500;
+}
+
+.portrait-report-summary p::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: -8px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  transform: rotate(45deg);
+}
+
+.portrait-report-ai-note {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 22px;
+  color: #b4bfd0;
+  text-align: right;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.portrait-report-ai-note::before {
+  content: "";
+  flex: 1 1 auto;
+  max-width: 150px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, #d9e1ec 0 4px, transparent 4px 7px);
+}
+
+.portrait-report-section {
+  margin-top: 19px;
+}
+
+/* 2026-07-28 portrait report spacing polish */
+.portrait-report-sheet .portrait-report-tabs {
+  position: relative;
+  z-index: 2;
+  min-height: 34px;
+  margin: 0 -1px 10px;
+  padding-bottom: 2px;
+}
+
+.portrait-report-sheet .portrait-report-summary {
+  margin-top: 0;
+  padding-top: 32px;
+}
+
+.portrait-report-sheet .portrait-report-summary header {
+  align-items: flex-start;
+}
+
+.portrait-report-sheet .portrait-report-summary header > div {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.portrait-report-sheet .portrait-report-summary h3 {
+  flex-wrap: wrap;
+  gap: 5px 8px;
+  max-width: 240px;
+}
+
+.portrait-report-sheet .portrait-report-summary h3 b {
+  margin-top: 2px;
+}
+
+.portrait-report-sheet .portrait-report-summary + .portrait-report-section {
+  margin-top: 5px;
+}
+
+.portrait-report-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 11px;
+}
+
+.portrait-report-section h4,
+.portrait-report-title-row h4 {
+  margin: 0;
+  color: #1152c6;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #aef5e5;
+  text-decoration-thickness: 6px;
+  text-underline-offset: -3px;
+}
+
+.portrait-report-title-row span {
+  color: #b1bbca;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.portrait-report-data-list {
+  display: grid;
+  gap: 11px;
+}
+
+.portrait-report-data-card {
+  padding: 12px 12px 11px;
+  border-radius: 10px;
+  background: #f8fbff;
+  box-shadow: 0 0 0 1px rgba(220, 229, 244, 0.58);
+}
+
+.portrait-report-pressure-card {
+  padding: 14px 14px 24px;
+  border-radius: 0 0 10px 10px;
+  background: #f7faff;
+}
+
+.portrait-report-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(218, 228, 244, 0.78);
+  color: #8e9bb0;
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: 500;
+}
+
+.portrait-report-data-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 58px;
+  align-items: center;
+  gap: 11px;
+  padding-top: 9px;
+}
+
+.portrait-report-pressure-card .portrait-report-data-main {
+  display: block;
+  padding-top: 12px;
+}
+
+.portrait-report-data-main strong {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: #ff4d4f;
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portrait-report-data-main strong em {
+  flex: 0 0 auto;
+  height: 21px;
+  padding: 0 6px;
+  border-radius: 3px;
+  color: #ff4d4f;
+  background: #fff0f0;
+  font-size: 12px;
+  line-height: 21px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.portrait-report-data-main p {
+  margin: 7px 0 0;
+  color: #22334e;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.portrait-report-pressure-card .portrait-report-data-main p {
+  margin-top: 8px;
+  color: #2b3651;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.portrait-report-data-main p span {
+  color: #8d98ab;
+  font-size: 12px;
+}
+
+.portrait-report-thumb,
+.portrait-report-doc {
+  position: relative;
+  justify-self: end;
+  width: 50px;
+  height: 61px;
+  border: 0;
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px) 0 0 / 7px 7px,
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px) 0 0 / 100% 9px,
+    #fff;
+  box-shadow: 0 6px 12px rgba(66, 91, 143, 0.11);
+}
+
+.portrait-report-thumb::before,
+.portrait-report-doc::before {
+  content: "";
+  position: absolute;
+  right: -4px;
+  bottom: 7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:
+    linear-gradient(#7e8ea8 0 0) center / 9px 2px no-repeat,
+    linear-gradient(90deg, #7e8ea8 0 2px, transparent 2px 5px, #7e8ea8 5px 7px) center / 9px 9px no-repeat,
+    rgba(255,255,255,0.9);
+  box-shadow: 0 3px 8px rgba(54, 113, 255, 0.2);
+}
+
+.portrait-report-doc {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background:
+    linear-gradient(#fff 0 0) 11px 12px / 17px 3px no-repeat,
+    linear-gradient(#fff 0 0) 11px 20px / 12px 3px no-repeat,
+    linear-gradient(135deg, transparent 0 72%, rgba(255,255,255,0.82) 73% 100%),
+    #3f8cff;
+}
+
+.portrait-report-doc::before {
+  right: -7px;
+  bottom: -4px;
+}
+
+.portrait-report-expand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 38px;
+  margin-top: 8px;
+  border: 0;
+  color: #3671ff;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.portrait-report-expand i {
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.portrait-report-advice-section {
+  margin-top: 3px;
+}
+
+.portrait-report-advice-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 11px;
+}
+
+.portrait-report-advice-list article {
+  position: relative;
+  min-height: 68px;
+  padding: 12px 14px 10px 14px;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(60, 82, 128, 0.08);
+}
+
+.portrait-report-advice-list article::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 14px;
+  bottom: 13px;
+  width: 3px;
+  border-radius: 999px;
+  background: #ff4d4f;
+}
+
+.portrait-report-advice-list article:nth-child(2)::before,
+.portrait-report-advice-list article:nth-child(3)::before {
+  background: #f6aa38;
+}
+
+.portrait-report-advice-list strong {
+  display: block;
+  padding-left: 10px;
+  color: #283653;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.portrait-report-advice-list p {
+  margin: 5px 0 0;
+  padding-left: 10px;
+  color: #7d889b;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.portrait-report-disclaimer {
+  margin: 15px 0 0;
+  color: #b6bfcc;
+  font-size: 11px;
+  line-height: 1.4;
   font-weight: 500;
 }
 

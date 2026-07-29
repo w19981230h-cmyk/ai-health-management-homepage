@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260727-assistant-gap-10-v1">
+  <link rel="stylesheet" href="styles.css?v=20260728-health-data-manual-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -351,6 +351,7 @@
               <span class="archive-score-ring" aria-hidden="true"></span>
               <strong>良好</strong>
               <em>健康评级</em>
+              <p class="archive-score-rank">超过了 <b>62%</b> 的同龄人</p>
               <button class="archive-detail-btn" type="button">查看结果</button>
             </div>
             <button class="archive-doctor" type="button" data-open-page="healthPortraitPage" aria-label="查看健康画像"></button>
@@ -361,7 +362,6 @@
               <strong>医护助理</strong>
               <p>建议控制饮食，规律运动，3个月后重新评估</p>
             </div>
-            <i aria-hidden="true"></i>
           </section>
         </section>
         <section class="mine-shortcuts" role="tablist" aria-label="档案内容切换">
@@ -398,7 +398,7 @@
             </div>
             <div class="medical-toolbar">
               <div class="pill-tabs" id="medicalCategoryTabs">
-                <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="门诊病历">门诊病历</button><button type="button" data-category="检查报告">检查报告</button><button type="button" data-category="检验报告">检验报告</button><button type="button" data-category="出院记录">出院记录</button>
+                <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="就诊记录">就诊记录</button><button type="button" data-category="处方记录">处方记录</button><button type="button" data-category="报告单">报告单</button>
               </div>
             </div>
             <div class="report-list" id="medicalReportList"></div>
@@ -496,8 +496,8 @@
           </section>
         </section>
         <section class="medical-fab active" id="medicalFab" aria-label="就医资料操作">
-          <button class="parse-task-entry" id="parseTaskEntry" type="button">解析任务</button>
-          <button class="upload-fab" id="uploadFab" type="button">上传资料</button>
+          <button class="parse-task-entry" id="parseTaskEntry" type="button">解析</button>
+          <button class="upload-fab" id="uploadFab" type="button" aria-label="上传资料">上传</button>
         </section>
       </section>
 
@@ -1252,7 +1252,7 @@
             </div>
             <div class="pressure-divider"></div>
             <div class="pressure-value-row" data-pressure-field="pulse">
-              <h4>脉搏 <span>（选填）</span></h4>
+              <h4>脉搏</h4>
               <div class="pressure-stepper">
                 <button class="pressure-step-btn" type="button" data-pressure-step="pulse" data-delta="-1" aria-label="减少脉搏">−</button>
                 <label class="pressure-number-field">
@@ -1263,15 +1263,15 @@
               </div>
               <p id="pressurePulseHint">可录入范围：40 ~ 200 次/分</p>
             </div>
-            <div class="pressure-divider"></div>
-            <section class="pressure-card pressure-time-card">
-              <h4>记录时间 <em>*</em></h4>
-              <button class="pressure-time-trigger" id="pressureTimeTrigger" type="button">
-                <i aria-hidden="true"></i>
-                <span id="pressureTimeText">2026-06-18 14:23</span>
-                <b aria-hidden="true"></b>
-              </button>
-            </section>
+          </section>
+
+          <section class="pressure-card pressure-time-card">
+            <h4>记录时间 <em>*</em></h4>
+            <button class="pressure-time-trigger" id="pressureTimeTrigger" type="button">
+              <i aria-hidden="true"></i>
+              <span id="pressureTimeText">2026-06-18 14:23</span>
+              <b aria-hidden="true"></b>
+            </button>
           </section>
 
           <section class="pressure-card pressure-note-card">
@@ -1450,6 +1450,66 @@
       </section>
 
       <div class="sheet-mask" id="sheetMask"></div>
+      <section class="portrait-report-sheet" id="portraitReportSheet" aria-label="健康画像系统报告详情">
+        <div class="portrait-report-handle" aria-hidden="true"></div>
+        <nav class="portrait-report-tabs" aria-label="健康画像分类">
+          <button class="active" type="button"><i></i>血压循环</button>
+        </nav>
+        <div class="portrait-report-scroll">
+          <section class="portrait-report-summary">
+            <div class="portrait-report-corner" aria-hidden="true"></div>
+            <header>
+              <span class="portrait-report-bot" aria-hidden="true"></span>
+              <div>
+                <em>AI智能总结</em>
+                <h3><span>血压循环</span><b>需关注</b></h3>
+              </div>
+            </header>
+            <p>血压偏高，建议低盐饮食并规律监测复查。</p>
+            <span class="portrait-report-ai-note">◆ 内容由AI辅助生成，请注意辨别 ◆</span>
+          </section>
+
+          <section class="portrait-report-section">
+            <div class="portrait-report-title-row">
+              <h4>健康数据</h4>
+              <span>共计 22 条数据</span>
+            </div>
+            <div class="portrait-report-data-list">
+              <article class="portrait-report-data-card portrait-report-pressure-card">
+                <div class="portrait-report-meta">
+                  <span>健康数据（手动记录）</span>
+                  <span>记录时间：2026/01/01</span>
+                </div>
+                <div class="portrait-report-data-main">
+                  <div>
+                    <strong>血压 <em>需关注</em></strong>
+                    <p>188/92mmHg</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="portrait-report-section portrait-report-advice-section">
+            <h4>健康建议</h4>
+            <div class="portrait-report-advice-list">
+              <article>
+                <strong>低盐饮食</strong>
+                <p>减少腌制、高钠食物，建议每日盐摄入控制在5g以内</p>
+              </article>
+              <article>
+                <strong>规律监测</strong>
+                <p>早晚固定时间测量血压，连续记录便于复诊判断</p>
+              </article>
+              <article>
+                <strong>及时复诊</strong>
+                <p>如多次高于140/90mmHg，建议咨询医生评估用药方案</p>
+              </article>
+            </div>
+          </section>
+          <p class="portrait-report-disclaimer">*该结果仅供参考，如遇身体不适请及时就医</p>
+        </div>
+      </section>
       <section class="bottom-sheet" id="serviceActionSheet" aria-label="服务操作面板">
         <button type="button">新增服务咨询</button>
         <button type="button">预约健康顾问</button>
@@ -1961,14 +2021,14 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260727-pressure-photo-upload-v1"></script>
-  <script src="scripts/01-data-store.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260728-pressure-unified-values-v1"></script>
+  <script src="scripts/01-data-store.js?v=20260727-archive-upload-v1"></script>
   <script src="scripts/10-schedule.js?v=20260727-schedule-patient-mask-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260726-pressure-sheet-v1"></script>
   <script src="scripts/30-medicine.js?v=20260726-pressure-sheet-v1"></script>
-  <script src="scripts/40-checkin-forms.js?v=20260727-time-photo-fill-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
+  <script src="scripts/50-reports-services.js?v=20260727-report-card-v1"></script>
   <script src="scripts/60-metrics.js?v=20260727-pressure-delete-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260727-body-image-v2"></script>
+  <script src="scripts/70-events-init.js?v=20260728-portrait-report-sheet-v1"></script>
 </body>
 </html>

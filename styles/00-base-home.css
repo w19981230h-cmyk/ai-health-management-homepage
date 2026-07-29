@@ -244,45 +244,55 @@ body.detail-page-open #reportDetailPage .report-actions {
   justify-self: end;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex: 0 0 auto;
-  width: 86px;
+  width: 88px;
   height: 32px;
-  padding: 0 12px;
+  padding: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.64);
   border: 1px solid rgba(3, 16, 46, 0.08);
   box-shadow: none;
+  box-sizing: border-box;
 }
 
 .mini-program-capsule::after {
   content: "";
   position: absolute;
-  left: 43px;
+  left: 50%;
   top: 7px;
   width: 1px;
   height: 18px;
   background: rgba(3, 16, 46, 0.14);
+  transform: translateX(-0.5px);
 }
 
 .capsule-more {
-  width: 24px;
-  height: 24px;
+  display: block;
+  width: 44px;
+  height: 30px;
   background:
-    radial-gradient(circle, #03102e 0 2px, transparent 2.7px) 2px 50% / 7px 7px no-repeat,
-    radial-gradient(circle, #03102e 0 2px, transparent 2.7px) 50% 50% / 7px 7px no-repeat,
-    radial-gradient(circle, #03102e 0 2px, transparent 2.7px) 15px 50% / 7px 7px no-repeat;
-  opacity: 0.88;
+    radial-gradient(circle, rgba(3, 16, 46, 0.9) 0 2px, transparent 2.6px) 13px 50% / 5px 5px no-repeat,
+    radial-gradient(circle, rgba(3, 16, 46, 0.9) 0 2px, transparent 2.6px) 20px 50% / 5px 5px no-repeat,
+    radial-gradient(circle, rgba(3, 16, 46, 0.9) 0 2px, transparent 2.6px) 27px 50% / 5px 5px no-repeat;
 }
 
 .capsule-close {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 30px;
+}
+
+.capsule-close::before {
+  content: "";
   width: 18px;
   height: 18px;
+  box-sizing: border-box;
   border-radius: 50%;
-  border: 1.8px solid rgba(3, 16, 46, 0.86);
-  background:
-    linear-gradient(45deg, transparent 44%, rgba(3, 16, 46, 0.86) 45% 55%, transparent 56%),
-    linear-gradient(-45deg, transparent 44%, rgba(3, 16, 46, 0.86) 45% 55%, transparent 56%);
+  border: 2px solid rgba(3, 16, 46, 0.9);
+  background: radial-gradient(circle at center, rgba(3, 16, 46, 0.9) 0 3.5px, transparent 4px);
 }
 
 .status-section {
