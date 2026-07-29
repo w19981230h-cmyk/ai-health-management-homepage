@@ -1677,10 +1677,7 @@ function openWaterRecordDetail(recordId) {
   const record = waterRecords().find((item) => item.id === recordId);
   if (!record || !waterRecordDetailBody) return;
   activeWaterRecordId = recordId;
-  waterRecordDetailPage?.classList.add("review-locked");
-  waterRecordDetailBody.innerHTML = renderWaterRecordReadonlyDetail(record);
-  openSubPage("waterRecordDetailPage");
-  return;
+  waterRecordDetailPage?.classList.remove("review-locked");
   const isKnownType = WATER_TYPE_OPTIONS.some((item) => item.value === record.type);
   const selectedType = isKnownType ? record.type : "其他";
   const otherValue = selectedType === "其他" ? record.type || "" : "";
@@ -1739,10 +1736,6 @@ function returnToWaterDetailPage() {
 function saveWaterRecordDetail() {
   const target = findMutableWaterRecord(activeWaterRecordId);
   if (!target) return;
-  if (waterRecordHasReview(target.record)) {
-    showToast("存在评价的记录仅支持查看");
-    return;
-  }
   const amountInput = document.querySelector("#waterRecordAmountInput");
   const typeInput = document.querySelector("#waterRecordTypeInput");
   const otherInput = document.querySelector("#waterRecordOtherTypeInput");
@@ -1770,25 +1763,21 @@ function saveWaterRecordDetail() {
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
   renderSchedule();
   renderWaterDetailPage();
-  returnToWaterDetailPage();
   showToast("饮水记录已保存");
+  returnToWaterDetailPage();
 }
 
 function deleteWaterRecordDetail() {
   const target = findMutableWaterRecord(activeWaterRecordId);
   if (!target) return;
-  if (waterRecordHasReview(target.record)) {
-    showToast("存在评价的记录不能删除");
-    return;
-  }
   target.item.records.splice(target.index, 1);
   updateWaterItemSummary(target.item);
   scheduleTasks[schedulePatientId][scheduleSelectedDate] = mutableScheduleDataForSelected();
   activeWaterRecordId = "";
   renderSchedule();
   renderWaterDetailPage();
-  returnToWaterDetailPage();
   showToast("饮水记录已删除");
+  returnToWaterDetailPage();
 }
 
 function openWaterDetailPage() {
