@@ -783,6 +783,13 @@
   align-self: auto;
 }
 
+.archive-service-actions:has(.order-use-button) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: stretch;
+}
+
 .archive-service-actions .order-use-button {
   width: 62px;
   height: 28px;
@@ -794,6 +801,7 @@
   font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
+  margin-top: auto;
 }
 
 .archive-service-actions .order-use-button:active {

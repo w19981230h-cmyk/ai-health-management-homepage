@@ -19,7 +19,9 @@ The Node preview service provides full note editing and persistence. A static de
 
 ## Interface notes
 
-- The floating toolbar is available on every interactive page.
+- The floating toolbar is available on every C-end page, detail view, sheet, and dialog.
+- Notes are hidden by default whenever the user enters a different interface; users can reveal them explicitly or enter placement mode through “添加备注”.
+- Active overlays are detected independently of their mask implementation, so newly added sheets and dialogs should use the existing `active` visibility convention.
 - Notes are isolated by `projectId` and `pageId`.
 - Create, edit, drag, and delete operations write through `/api/ui-notes`.
 - Data is stored in the server-side SQLite database at `data/ui-notes.sqlite`.

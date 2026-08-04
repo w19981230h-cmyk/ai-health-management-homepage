@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "exportedAt": "2026-08-04T08:28:24.824Z",
+  "exportedAt": "2026-08-04T08:49:58.854Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -30,6 +30,36 @@
       "createdAt": "2026-08-03T12:24:21.441Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-03T12:24:21.441Z",
+      "status": "active"
+    },
+    {
+      "noteId": "a1379651-18b4-4360-b1ad-9df1888cde67",
+      "projectId": "ai-health-management",
+      "pageId": "mine:medical",
+      "noteNumber": 1,
+      "title": "我的订单",
+      "content": "1、存在待使用的服务包显示数量",
+      "x": 0.9266666666666666,
+      "y": 0.2793857058476078,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-04T08:48:49.224Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-04T08:48:49.224Z",
+      "status": "active"
+    },
+    {
+      "noteId": "8a3aeb6a-4822-4bfc-befd-0f2f3b94472f",
+      "projectId": "ai-health-management",
+      "pageId": "mine:orders:all",
+      "noteNumber": 1,
+      "title": "我的订单",
+      "content": "1、显示待使用的数量\n2、超过99显示99+",
+      "x": 0.9346666666666666,
+      "y": 0.20781980450488738,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-04T08:49:28.337Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-04T08:49:58.851Z",
       "status": "active"
     },
     {

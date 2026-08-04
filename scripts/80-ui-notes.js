@@ -95,7 +95,10 @@
   }
 
   function activeBaseFrame() {
-    return document.querySelector(".sub-page.active")
+    const activeContentPage = [...document.querySelectorAll(".sub-page.active")].find((element) => (
+      !element.matches('[role="dialog"], [aria-modal="true"], [class*="-sheet"], [class*="-dialog"]')
+    ));
+    return activeContentPage
       || document.querySelector("#serviceDetailPage.active")
       || document.querySelector("#servicePurchaseSuccessPage.active")
       || document.querySelector("#servicePage.active")
@@ -106,10 +109,14 @@
   }
 
   function activeOverlayFrame() {
-    const mask = document.querySelector("#sheetMask.active");
-    if (!mask) return null;
+    const baseFrame = activeBaseFrame();
     const candidates = [...document.querySelectorAll(".active")].filter((element) => {
-      if (element === mask || element.closest("[data-ui-note-ui]")) return false;
+      if (
+        element === baseFrame
+        || element.matches('[class*="mask"]')
+        || element.closest("[data-ui-note-ui]")
+        || (baseFrame !== homePage && baseFrame.contains(element))
+      ) return false;
       const rect = element.getBoundingClientRect();
       const style = getComputedStyle(element);
       return /fixed|absolute/.test(style.position)
@@ -486,7 +493,11 @@
     });
   }
 
-  addButton.addEventListener("click", () => setAddMode(!addMode));
+  addButton.addEventListener("click", () => {
+    const nextAddMode = !addMode;
+    if (nextAddMode) notesVisible = true;
+    setAddMode(nextAddMode);
+  });
   toggleButton.addEventListener("click", () => {
     notesVisible = !notesVisible;
     setAddMode(false);
@@ -525,6 +536,7 @@
     const nextPageId = activePageId();
     if (nextPageId === currentPageId) return;
     currentPageId = nextPageId;
+    notesVisible = false;
     setAddMode(false);
     closeEditor();
     notes = [];
