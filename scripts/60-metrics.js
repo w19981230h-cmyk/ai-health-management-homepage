@@ -3153,6 +3153,7 @@ function openMetricDetail(metricId) {
 function currentPageId() {
   const activeSub = [...subPages].find((page) => page.classList.contains("active"));
   if (activeSub) return activeSub.id;
+  if (serviceDetailPage.classList.contains("active")) return "serviceDetailPage";
   if (minePage.classList.contains("active")) return "minePage";
   if (servicePage.classList.contains("active")) return "servicePage";
   if (planPage.classList.contains("active")) return "planPage";
@@ -3195,6 +3196,8 @@ function goBackPage() {
     setProfileTab([...profileTabs].find((tab) => tab.classList.contains("active"))?.dataset.profileTab || "medical");
   } else if (previous === "servicePage") {
     servicePage.classList.add("active");
+  } else if (previous === "serviceDetailPage") {
+    serviceDetailPage.classList.add("active");
   } else if (previous === "planPage") {
     planPage.classList.add("active");
   } else {

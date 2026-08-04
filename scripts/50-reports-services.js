@@ -134,6 +134,161 @@ function aiFallback(report) {
   };
 }
 
+function keyResultsForReport(report) {
+  if (Array.isArray(report.keyResults) && report.keyResults.length) return report.keyResults;
+  const date = (report.reportTime || "2026-08-04").slice(0, 10);
+  const name = report.name || "";
+  const type = normalizeReportType(report.type || "检验报告", name);
+  const category = type.includes("处方") ? "处方记录" : type.includes("病历") ? "就诊记录" : "报告单";
+
+  if (type.includes("处方") || name.includes("处方")) {
+    return [
+      { category, type: "门诊处方", name: "厄贝沙坦片", result: "150 mg", status: "正常", extra: "每日1次，每次1片", date },
+      { category, type: "门诊处方", name: "苯磺酸氨氯地平片", result: "5 mg", status: "正常", extra: "每日1次，每次1片", date },
+      { category, type: "门诊处方", name: "用药疗程", result: "30天", status: "正常", extra: "按医嘱规律服用", date },
+      { category, type: "门诊处方", name: "用药调整", result: "维持原方案", status: "需关注", extra: "不可自行停药或改量", date },
+      { category, type: "门诊处方", name: "复诊安排", result: "4周后", status: "待确认", extra: "携家庭血压记录复诊", date }
+    ];
+  }
+
+  if (type.includes("病历") || type.includes("住院") || /病历|出院记录|入院记录/.test(name)) {
+    const recordType = type.includes("住院") || /出院|入院/.test(name) ? "出院记录" : "门诊记录";
+    return [
+      { category: "就诊记录", type: recordType, name: "就诊原因", result: "血压复诊", status: "正常", extra: "近期偶有头晕，无胸痛、气促", date },
+      { category: "就诊记录", type: recordType, name: "诊室血压", result: "146/92 mmHg", status: "异常", extra: "高于诊室血压参考目标", date },
+      { category: "就诊记录", type: recordType, name: "临床诊断", result: "原发性高血压", status: "需关注", extra: "继续结合家庭血压评估", date },
+      { category: "就诊记录", type: recordType, name: "处置方案", result: "维持原治疗", status: "正常", extra: "低盐饮食并规律监测血压", date },
+      { category: "就诊记录", type: recordType, name: "复诊计划", result: "4周后复诊", status: "待确认", extra: "携带早晚家庭血压记录", date }
+    ];
+  }
+
+  if (type.includes("检查") || /CT|超声|彩超|心电图|磁共振|MRI|影像|放射|X线/i.test(name)) {
+    const inspectionType = name.includes("CT") ? "CT报告" : /心电图/.test(name) ? "心电图报告" : /超声|彩超/.test(name) ? "超声报告" : "检查报告";
+    if (/腹部|超声|彩超/.test(name) && !name.includes("CT")) {
+      return [
+        { category: "报告单", type: inspectionType, name: "肝脏", result: "形态大小正常", status: "正常", extra: "实质回声均匀，肝内管道清晰", date },
+        { category: "报告单", type: inspectionType, name: "胆囊", result: "息肉样回声约4 mm", status: "需关注", extra: "胆囊壁不厚，建议定期超声随访", date },
+        { category: "报告单", type: inspectionType, name: "胰腺", result: "未见明显异常", status: "正常", extra: "形态及内部回声未见异常", date },
+        { category: "报告单", type: inspectionType, name: "双肾", result: "未见异常", status: "正常", extra: "集合系统未见明显分离", date },
+        { category: "报告单", type: inspectionType, name: "腹腔积液", result: "未见", status: "正常", extra: "腹腔内未探及游离液性暗区", date }
+      ];
+    }
+    if (/心电图/.test(name)) {
+      return [
+        { category: "报告单", type: inspectionType, name: "心律", result: "窦性心律", status: "正常", extra: "心律规则", date },
+        { category: "报告单", type: inspectionType, name: "心率", result: "78 次/分", status: "正常", extra: "参考范围 60–100 次/分", date },
+        { category: "报告单", type: inspectionType, name: "PR间期", result: "160 ms", status: "正常", extra: "参考范围 120–200 ms", date },
+        { category: "报告单", type: inspectionType, name: "ST-T改变", result: "轻度改变", status: "需关注", extra: "建议结合症状和既往心电图", date },
+        { category: "报告单", type: inspectionType, name: "检查结论", result: "大致正常心电图", status: "正常", extra: "以临床医生判断为准", date }
+      ];
+    }
+    return [
+      { category: "报告单", type: inspectionType, name: "肺结节", result: "约6 mm", status: "需关注", extra: "右肺上叶，建议结合既往影像", date },
+      { category: "报告单", type: inspectionType, name: "肺部纹理", result: "轻度增多", status: "异常", extra: "双肺，结合呼吸道症状判断", date },
+      { category: "报告单", type: inspectionType, name: "胸腔积液", result: "未见", status: "正常", extra: "双侧胸腔", date },
+      { category: "报告单", type: inspectionType, name: "纵隔淋巴结", result: "未见肿大", status: "正常", extra: "纵隔区", date },
+      { category: "报告单", type: inspectionType, name: "复查周期", result: "6–12个月", status: "待确认", extra: "由临床医生结合风险评估", date }
+    ];
+  }
+
+  if (type.includes("检验") || /血常规|肝功能|血糖|尿常规/.test(name)) {
+    if (name.includes("血常规")) {
+      return [
+        { category: "报告单", type: "检验报告", name: "白细胞计数", result: "10.8 ×10⁹/L", status: "异常", extra: "参考范围 3.5–9.5 ×10⁹/L", date },
+        { category: "报告单", type: "检验报告", name: "中性粒细胞百分比", result: "76.2%", status: "需关注", extra: "参考范围 40%–75%", date },
+        { category: "报告单", type: "检验报告", name: "血红蛋白", result: "132 g/L", status: "正常", extra: "参考范围 115–150 g/L", date },
+        { category: "报告单", type: "检验报告", name: "血小板计数", result: "228 ×10⁹/L", status: "正常", extra: "参考范围 125–350 ×10⁹/L", date },
+        { category: "报告单", type: "检验报告", name: "红细胞计数", result: "4.46 ×10¹²/L", status: "正常", extra: "参考范围 3.8–5.1 ×10¹²/L", date }
+      ];
+    }
+    if (name.includes("肝功能")) {
+      return [
+        { category: "报告单", type: "检验报告", name: "丙氨酸氨基转移酶", result: "68 U/L", status: "异常", extra: "参考范围 7–40 U/L", date },
+        { category: "报告单", type: "检验报告", name: "天门冬氨酸氨基转移酶", result: "42 U/L", status: "需关注", extra: "参考范围 13–35 U/L", date },
+        { category: "报告单", type: "检验报告", name: "γ-谷氨酰转移酶", result: "58 U/L", status: "需关注", extra: "参考范围 7–45 U/L", date },
+        { category: "报告单", type: "检验报告", name: "总胆红素", result: "16.8 μmol/L", status: "正常", extra: "参考范围 5–21 μmol/L", date },
+        { category: "报告单", type: "检验报告", name: "白蛋白", result: "44.2 g/L", status: "正常", extra: "参考范围 40–55 g/L", date }
+      ];
+    }
+    if (name.includes("血糖")) {
+      return [
+        { category: "报告单", type: "检验报告", name: "空腹血糖", result: "7.2 mmol/L", status: "异常", extra: "参考范围 3.9–6.1 mmol/L", date },
+        { category: "报告单", type: "检验报告", name: "糖化血红蛋白", result: "6.4%", status: "需关注", extra: "参考范围 4.0%–6.0%", date },
+        { category: "报告单", type: "检验报告", name: "尿糖", result: "阴性", status: "正常", extra: "参考结果：阴性", date },
+        { category: "报告单", type: "检验报告", name: "尿酮体", result: "阴性", status: "正常", extra: "参考结果：阴性", date },
+        { category: "报告单", type: "检验报告", name: "餐后2小时血糖", result: "待补充", status: "待确认", extra: "建议补充同日餐后检测", date }
+      ];
+    }
+    return [
+      { category: "报告单", type: "检验报告", name: "尿蛋白", result: "阴性", status: "正常", extra: "参考结果：阴性", date },
+      { category: "报告单", type: "检验报告", name: "尿潜血", result: "±", status: "需关注", extra: "建议结合症状复查尿常规", date },
+      { category: "报告单", type: "检验报告", name: "尿白细胞", result: "6 个/HP", status: "需关注", extra: "参考范围 0–5 个/HP", date },
+      { category: "报告单", type: "检验报告", name: "尿糖", result: "阴性", status: "正常", extra: "参考结果：阴性", date },
+      { category: "报告单", type: "检验报告", name: "尿酮体", result: "阴性", status: "正常", extra: "参考结果：阴性", date }
+    ];
+  }
+
+  return [
+    { category: "报告单", type, name: "血压", result: "138/88 mmHg", status: "需关注", extra: "建议结合家庭血压连续观察", date },
+    { category: "报告单", type, name: "体重指数", result: "23.6 kg/m²", status: "正常", extra: "参考范围 18.5–23.9 kg/m²", date },
+    { category: "报告单", type, name: "空腹血糖", result: "5.6 mmol/L", status: "正常", extra: "参考范围 3.9–6.1 mmol/L", date },
+    { category: "报告单", type, name: "总胆固醇", result: "5.3 mmol/L", status: "需关注", extra: "参考范围 <5.2 mmol/L", date },
+    { category: "报告单", type, name: "肾功能", result: "未见异常", status: "正常", extra: "肌酐、尿素氮在参考范围", date }
+  ];
+}
+
+function keyResultStatusClass(status) {
+  if (status === "正常") return "is-normal";
+  if (status === "异常") return "is-abnormal";
+  if (status === "需关注") return "is-attention";
+  return "is-pending";
+}
+
+function keyDataCategory(item) {
+  const type = item.type || "";
+  if (type.includes("检验")) return "检验报告";
+  if (/CT|超声|心电图|检查/.test(type)) return "检查报告";
+  if (type.includes("处方") || item.category === "处方记录") return "处方记录";
+  if (/门诊记录|出院记录|病历/.test(type) || item.category === "就诊记录") return "病历";
+  return item.category || "报告数据";
+}
+
+function keyDataReference(item) {
+  if (!(item.type || "").includes("检验")) return "";
+  const extra = String(item.extra || "").trim();
+  if (extra.startsWith("参考范围")) return extra;
+  if (/^参考结果[：:]/.test(extra)) return extra.replace(/^参考结果[：:]\s*/, "参考范围 ");
+  return "";
+}
+
+function renderKeyResultItem(item) {
+  const reference = keyDataReference(item);
+  const statusClass = keyResultStatusClass(item.status);
+  return `
+    <article class="ai-key-result-item ${statusClass}">
+      <div class="ai-key-result-top"><span>${keyDataCategory(item)}</span><b class="${statusClass}">${item.status}</b></div>
+      <div class="ai-key-result-main">
+        <div class="ai-key-data-field"><small>名称</small><strong>${item.name}</strong></div>
+        <div class="ai-key-data-field is-value"><small>结果</small><p>${item.result}</p></div>
+      </div>
+      <div class="ai-key-result-meta ${reference ? "has-reference" : "only-time"}">${reference ? `<span class="ai-key-reference">${reference}</span>` : ""}<time datetime="${item.date}"><small>报告时间</small>${item.date}</time></div>
+    </article>
+  `;
+}
+
+function renderKeyResults(report) {
+  const results = keyResultsForReport(report);
+  const statusPriority = { "异常": 0, "需关注": 1, "待确认": 2, "正常": 3 };
+  const sortedResults = [...results].sort((left, right) => (statusPriority[left.status] ?? 4) - (statusPriority[right.status] ?? 4));
+  const abnormalCount = results.filter((item) => item.status !== "正常").length;
+  const stats = `共 ${results.length} 条数据${abnormalCount ? ` · ${abnormalCount} 条异常/需关注` : ""}`;
+  document.querySelector("#aiSummary").innerHTML = sortedResults.slice(0, 3).map(renderKeyResultItem).join("");
+  if (aiKeyResultStats) aiKeyResultStats.textContent = stats;
+  if (aiKeyResultsSheetStats) aiKeyResultsSheetStats.textContent = stats;
+  if (aiKeyResultsAll) aiKeyResultsAll.innerHTML = sortedResults.map(renderKeyResultItem).join("");
+  if (aiKeyResultMore) aiKeyResultMore.hidden = results.length <= 3;
+}
+
 function openReportDetail(reportId) {
   const report = medicalReports.find((item) => item.id === reportId);
   if (!report) return;
@@ -151,22 +306,12 @@ function openReportDetail(reportId) {
   detailDateText.textContent = formatDateTime(report.reportTime).slice(0, 10).replaceAll("-", ".");
   detailUploadText.textContent = formatDateTime(report.uploadTime).slice(0, 10).replaceAll("-", ".");
   const ai = aiFallback(report);
-  document.querySelector("#aiSummary").innerHTML = `
-    <table>
-      <thead><tr><th>项目</th><th>结果</th><th>参考 / 说明</th></tr></thead>
-      <tbody>
-        <tr><td>子宫内膜厚度</td><td>5.8mm</td><td>需结合月经周期判断</td></tr>
-        <tr><td>子宫大小</td><td>49×41×48mm</td><td>正常范围</td></tr>
-        <tr><td>子宫肌层回声</td><td>欠均匀</td><td>轻度改变，可随访</td></tr>
-        <tr><td>双侧卵巢</td><td>未见异常</td><td>正常</td></tr>
-        <tr><td>盆腔积液</td><td>未见</td><td>正常</td></tr>
-      </tbody>
-    </table>
-  `;
+  renderKeyResults(report);
   document.querySelector("#aiConclusion").textContent = ai.conclusion;
-  document.querySelector("#aiFocus").innerHTML = "• 如果是月经刚结束，5.8mm 偏厚，建议进一步排查。<br>• 如果是排卵期或分泌期，这个厚度可以正常。<br>• 需要结合你的临床诊断、月经周期和症状综合判断。";
+  document.querySelector("#aiFocus").textContent = ai.focus;
   document.querySelector("#aiNotice").textContent = ai.notice;
-  document.querySelector("#aiAdvice").innerHTML = "1. 确认检查时所处的月经周期阶段。<br>2. 如伴随异常出血或腹痛，建议携报告就医复核。<br>3. 建议保留后续检查报告，便于连续对比。";
+  const adviceItems = [ai.notice, ai.advice, ai.next].filter((item, index, items) => item && items.indexOf(item) === index);
+  document.querySelector("#aiAdvice").innerHTML = adviceItems.map((item, index) => `<li><i>${index + 1}</i><span>${item}</span></li>`).join("");
   document.querySelector("#aiNext").textContent = ai.next;
   openSubPage("reportDetailPage");
 }
@@ -377,7 +522,7 @@ function createParseTasks(status = "parsing") {
       } else {
         completeTask(current, {
           name: "腹部超声检查报告单",
-          type: normalizeReportType(current.type),
+          type: normalizeReportType(current.type, "腹部超声检查报告单"),
           org: "南宁市第一人民医院",
           reportTime: now
         });
@@ -393,7 +538,7 @@ function completeTask(task, overrides = {}) {
   const report = {
     id: `report-${Date.now()}`,
     name: overrides.name || task.name || "新上传 报告单",
-    type: normalizeReportType(overrides.type || task.type || "报告单"),
+    type: normalizeReportType(overrides.type || task.type || "报告单", overrides.name || task.name || task.fileName || ""),
     org: overrides.org || task.org || "检测机构待补充",
     reportTime: overrides.reportTime || task.reportTime,
     uploadTime: new Date().toISOString().slice(0, 16),
@@ -425,7 +570,7 @@ function openCompletedTaskReport(taskId) {
   const fallbackReport = {
     id: `report-${Date.now()}`,
     name: task.name || "腹部超声检查报告单",
-    type: normalizeReportType(task.type || "报告单"),
+    type: normalizeReportType(task.type || "报告单", task.name || "腹部超声检查报告单"),
     org: task.org || "就诊医院待补充",
     reportTime: task.reportTime || new Date().toISOString().slice(0, 16),
     uploadTime: task.createdAt || new Date().toISOString().slice(0, 16),

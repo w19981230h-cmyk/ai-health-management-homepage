@@ -126,11 +126,14 @@ body.ui-note-placement-mode .home-page {
   z-index: 330;
   display: none;
   width: min(335px, calc(100vw - 28px));
+  max-height: min(82vh, 680px);
   padding: 18px;
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 22px 58px rgba(15, 31, 63, 0.24);
   transform: translate(-50%, -50%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .ui-note-editor.active {
@@ -209,10 +212,12 @@ body.ui-note-placement-mode .home-page {
 }
 
 .ui-note-editor textarea {
-  min-height: 108px;
+  min-height: 80px;
+  max-height: 38vh;
   padding: 10px 11px;
   line-height: 1.55;
-  resize: vertical;
+  resize: none;
+  overflow-y: hidden;
 }
 
 .ui-note-editor input:focus,

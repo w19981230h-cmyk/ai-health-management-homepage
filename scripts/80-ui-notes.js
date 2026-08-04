@@ -2,6 +2,7 @@
   const PROJECT_ID = "ai-health-management";
   const ACTOR = "在线访客";
   const API_PATH = "/api/ui-notes";
+  const LOCAL_STORE_KEY = `ui-notes:${PROJECT_ID}`;
   const toolbar = document.querySelector("#uiNoteToolbar");
   const addButton = document.querySelector("#uiNoteAdd");
   const toggleButton = document.querySelector("#uiNoteToggle");
@@ -28,13 +29,70 @@
   let currentPageId = "";
   let editingPageId = "";
   let notes = [];
-  let notesVisible = true;
+  let notesVisible = false;
   let addMode = false;
   let pendingPosition = null;
   let editingNoteId = "";
   let loadSequence = 0;
   let draggingNoteId = "";
   let noteSurface = null;
+  let localMode = window.location.protocol === "file:";
+
+  function readLocalNotes() {
+    try {
+      const stored = JSON.parse(window.localStorage?.getItem(LOCAL_STORE_KEY) || "[]");
+      return Array.isArray(stored) ? stored : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeLocalNotes(nextNotes) {
+    window.localStorage?.setItem(LOCAL_STORE_KEY, JSON.stringify(nextNotes));
+  }
+
+  function localNoteRequest(url, options = {}) {
+    const method = String(options.method || "GET").toUpperCase();
+    const noteId = decodeURIComponent(url.split("/").at(-1) || "");
+    const body = options.body ? JSON.parse(options.body) : {};
+    const storedNotes = readLocalNotes();
+
+    if (method === "GET") {
+      const query = new URL(url, window.location.href).searchParams;
+      const pageId = query.get("pageId") || "";
+      return { notes: storedNotes.filter((note) => note.projectId === PROJECT_ID && note.pageId === pageId) };
+    }
+
+    if (method === "POST") {
+      const now = new Date().toISOString();
+      const note = {
+        ...body,
+        noteId: `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        createdAt: now,
+        updatedAt: now
+      };
+      writeLocalNotes([...storedNotes, note]);
+      return { note };
+    }
+
+    const existingIndex = storedNotes.findIndex((note) => note.noteId === noteId);
+    if (existingIndex < 0) throw new Error("未找到这条备注，请刷新后重试");
+
+    if (method === "DELETE") {
+      writeLocalNotes(storedNotes.filter((note) => note.noteId !== noteId));
+      return { ok: true };
+    }
+
+    if (method === "PATCH") {
+      const note = { ...storedNotes[existingIndex], ...body, updatedAt: new Date().toISOString() };
+      const nextNotes = [...storedNotes];
+      nextNotes[existingIndex] = note;
+      writeLocalNotes(nextNotes);
+      return { note };
+    }
+
+    throw new Error("当前备注操作不受支持");
+  }
 
   function activeBaseFrame() {
     return document.querySelector(".sub-page.active")
@@ -152,6 +210,7 @@
   }
 
   async function apiRequest(url, options = {}) {
+    if (localMode) return localNoteRequest(url, options);
     const response = await fetch(url, {
       headers: { "Content-Type": "application/json", ...(options.headers || {}) },
       ...options
@@ -164,6 +223,11 @@
 
   async function fetchPageNotes(pageId) {
     const query = new URLSearchParams({ projectId: PROJECT_ID, pageId });
+    if (localMode) {
+      toolbar.dataset.local = "true";
+      toolbar.title = "备注保存在当前浏览器";
+      return localNoteRequest(API_PATH + "?" + query.toString()).notes;
+    }
     try {
       const payload = await apiRequest(API_PATH + "?" + query.toString());
       if (!Array.isArray(payload.notes)) throw new Error("备注数据格式不正确");
@@ -242,6 +306,14 @@
     updateToolbar();
   }
 
+  function resizeContentInput() {
+    const maxHeight = Math.max(120, Math.min(360, window.innerHeight * 0.38));
+    contentInput.style.height = "auto";
+    const nextHeight = Math.min(maxHeight, Math.max(80, contentInput.scrollHeight));
+    contentInput.style.height = nextHeight + "px";
+    contentInput.style.overflowY = contentInput.scrollHeight > maxHeight ? "auto" : "hidden";
+  }
+
   function openEditor(note = null) {
     editingNoteId = note?.noteId || "";
     editingPageId = currentPageId;
@@ -255,7 +327,10 @@
     deleteButton.hidden = !note;
     editorMask.classList.add("active");
     editor.classList.add("active");
-    window.setTimeout(() => titleInput.focus(), 30);
+    window.setTimeout(() => {
+      resizeContentInput();
+      titleInput.focus();
+    }, 30);
   }
 
   function closeEditor() {
@@ -439,6 +514,7 @@
     event.preventDefault();
     saveNote();
   });
+  contentInput.addEventListener("input", resizeContentInput);
   deleteButton.addEventListener("click", removeNote);
   cancelButton.addEventListener("click", closeEditor);
   editorClose.addEventListener("click", closeEditor);
@@ -456,9 +532,16 @@
     loadNotes();
   }
 
-  window.addEventListener("resize", syncOverlayBounds);
+  window.addEventListener("resize", () => {
+    syncOverlayBounds();
+    if (editor.classList.contains("active")) resizeContentInput();
+  });
   window.addEventListener("scroll", syncOverlayBounds, true);
   currentPageId = activePageId();
+  if (localMode) {
+    toolbar.dataset.local = "true";
+    toolbar.title = "备注保存在当前浏览器";
+  }
   syncOverlayBounds();
   renderNotes();
   loadNotes();

@@ -110,6 +110,12 @@ document.querySelector("#shareReport")?.addEventListener("click", () => {
     document.body.classList.add("detail-page-open");
   }, 1600);
 });
+
+aiKeyResultMore?.addEventListener("click", () => {
+  openSheet(aiKeyResultsSheet);
+  window.setTimeout(() => aiKeyResultsClose?.focus(), 0);
+});
+aiKeyResultsClose?.addEventListener("click", closeOverlays);
 logoutBtn.addEventListener("click", () => {
   closeOverlays();
   sheetMask.classList.add("active");
@@ -833,6 +839,8 @@ function openRefundOrderDetail(order) {
   const service = packages.find((item) => item.id === order.serviceId) || packages[0];
   activeServiceOrder = order;
   const isRefunded = order.status === "refunded";
+  const requestedAmount = order.refundRequest?.amount;
+  const refundPrice = Number.isFinite(requestedAmount) ? `¥${formatRefundAmount(requestedAmount)}` : service.price;
   const cover = isRefunded ? refundSuccessCover : refundProgressCover;
   const title = isRefunded ? refundSuccessTitle : refundProgressTitle;
   const amount = isRefunded ? refundSuccessAmount : refundProgressAmount;
@@ -841,10 +849,15 @@ function openRefundOrderDetail(order) {
   const orderTime = isRefunded ? refundSuccessOrderTime : refundProgressOrderTime;
   if (cover) cover.className = `refund-product-cover service-img ${service.img}`;
   if (title) title.textContent = service.title;
-  if (amount) amount.textContent = service.price;
-  if (money) money.textContent = service.price;
+  if (amount) amount.textContent = refundPrice;
+  if (money) money.textContent = refundPrice;
   if (orderNo) orderNo.textContent = order.id.toUpperCase();
   if (orderTime) orderTime.textContent = order.orderTime;
+  if (!isRefunded) {
+    if (refundProgressReason) refundProgressReason.textContent = order.refundRequest?.reason || "暂时不需要该服务";
+    if (refundProgressSubmittedAt) refundProgressSubmittedAt.textContent = order.refundRequest?.submittedAt || order.orderTime;
+    if (refundProgressPhone) refundProgressPhone.textContent = order.refundRequest?.phone || "138****8888";
+  }
   const homePage = document.querySelector(".home-page");
   if (homePage) {
     const shellRect = homePage.getBoundingClientRect();
@@ -854,6 +867,74 @@ function openRefundOrderDetail(order) {
   }
   openSubPage(isRefunded ? "refundSuccessPage" : "refundProgressPage");
   (isRefunded ? refundSuccessPage : refundProgressPage)?.scrollTo?.(0, 0);
+}
+
+let refundEvidenceFiles = [];
+
+function servicePriceNumber(service) {
+  return Number(String(service?.price || "0").replace(/[^\d.]/g, "")) || 0;
+}
+
+function formatRefundAmount(value) {
+  const amount = Math.max(0, Number(value) || 0);
+  return Number.isInteger(amount) ? String(amount) : amount.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+}
+
+function refundSubmittedAtText() {
+  const now = new Date();
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+}
+
+function clearRefundEvidenceFiles() {
+  refundEvidenceFiles.forEach((item) => URL.revokeObjectURL(item.url));
+  refundEvidenceFiles = [];
+  if (refundEvidenceInput) refundEvidenceInput.value = "";
+  renderRefundEvidenceFiles();
+}
+
+function renderRefundEvidenceFiles() {
+  if (!refundUploadList) return;
+  refundUploadList.innerHTML = refundEvidenceFiles.map((item, index) => {
+    const preview = item.file.type.startsWith("image/")
+      ? `<img src="${item.url}" alt="退款凭证${index + 1}">`
+      : `<video src="${item.url}" muted aria-label="退款视频凭证${index + 1}"></video><i class="refund-video-mark">▶</i>`;
+    return `<figure class="refund-upload-item">${preview}<button type="button" data-refund-file-remove="${index}" aria-label="删除${item.file.name}">×</button><figcaption>${item.file.name}</figcaption></figure>`;
+  }).join("");
+}
+
+function syncRefundAmountDisplay() {
+  const maxAmount = servicePriceNumber(activePurchaseService);
+  const entered = Number(refundAmountInput?.value || 0);
+  const displayAmount = entered > 0 ? Math.min(entered, maxAmount) : 0;
+  if (refundSubmitAmount) refundSubmitAmount.textContent = `¥${formatRefundAmount(displayAmount)}`;
+  if (refundAmountError) refundAmountError.textContent = "";
+}
+
+function openRefundApplication() {
+  if (!activeServiceOrder || activeServiceOrder.status !== "pending" || !activePurchaseService) return;
+  const maxAmount = servicePriceNumber(activePurchaseService);
+  if (refundApplicationCover) refundApplicationCover.className = `refund-apply-cover service-img ${activePurchaseService.img}`;
+  if (refundApplicationTitle) refundApplicationTitle.textContent = activePurchaseService.title;
+  if (refundApplicationTags) refundApplicationTags.textContent = activePurchaseService.tags;
+  if (refundApplicationPrice) refundApplicationPrice.textContent = activePurchaseService.price;
+  if (refundApplicationQuantity) refundApplicationQuantity.textContent = `数量：${activeServiceOrder.quantity || 1}`;
+  if (refundReasonSelect) refundReasonSelect.value = "";
+  if (refundAmountInput) {
+    refundAmountInput.max = String(maxAmount);
+    refundAmountInput.value = formatRefundAmount(maxAmount);
+  }
+  if (refundAmountHint) refundAmountHint.textContent = `最多可退 ¥${formatRefundAmount(maxAmount)}`;
+  if (refundDescriptionInput) refundDescriptionInput.value = "";
+  if (refundDescriptionCount) refundDescriptionCount.textContent = "0";
+  if (refundPhoneInput) refundPhoneInput.value = "";
+  [refundReasonError, refundAmountError, refundPhoneError, refundUploadError].forEach((item) => {
+    if (item) item.textContent = "";
+  });
+  clearRefundEvidenceFiles();
+  syncRefundAmountDisplay();
+  openSubPage("refundApplicationPage");
+  refundApplicationPage?.scrollTo?.(0, 0);
 }
 
 function openOrderCard(card) {
@@ -1516,6 +1597,7 @@ function closeOverlays() {
   periodDeleteDialog.classList.remove("active");
   metricDeleteDialog?.classList.remove("active");
   document.querySelector("#portraitReportSheet")?.classList.remove("active");
+  aiKeyResultsSheet?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");
   taskDeleteDialog.classList.remove("active");
@@ -2575,7 +2657,92 @@ function openServiceUserSheet() {
 bindServiceUserButton?.addEventListener("click", openServiceUserSheet);
 
 refundAfterSalesButton?.addEventListener("click", () => {
-  toast.textContent = "退款或售后请联系客服申请";
+  openRefundApplication();
+});
+
+refundAmountInput?.addEventListener("input", syncRefundAmountDisplay);
+refundAmountInput?.addEventListener("blur", () => {
+  const maxAmount = servicePriceNumber(activePurchaseService);
+  const amount = Number(refundAmountInput.value);
+  if (Number.isFinite(amount) && amount > maxAmount) refundAmountInput.value = formatRefundAmount(maxAmount);
+  syncRefundAmountDisplay();
+});
+
+refundDescriptionInput?.addEventListener("input", () => {
+  if (refundDescriptionCount) refundDescriptionCount.textContent = String(refundDescriptionInput.value.length);
+});
+
+refundPhoneInput?.addEventListener("input", () => {
+  refundPhoneInput.value = refundPhoneInput.value.replace(/\D/g, "").slice(0, 11);
+  if (refundPhoneError) refundPhoneError.textContent = "";
+});
+
+refundReasonSelect?.addEventListener("change", () => {
+  if (refundReasonError) refundReasonError.textContent = "";
+});
+
+refundEvidenceInput?.addEventListener("change", () => {
+  const incomingFiles = [...(refundEvidenceInput.files || [])];
+  if (!incomingFiles.length) return;
+  const available = Math.max(0, 6 - refundEvidenceFiles.length);
+  incomingFiles.slice(0, available).forEach((file) => {
+    refundEvidenceFiles.push({ file, url: URL.createObjectURL(file) });
+  });
+  if (refundUploadError) refundUploadError.textContent = incomingFiles.length > available ? "最多上传6个图片或视频" : "";
+  refundEvidenceInput.value = "";
+  renderRefundEvidenceFiles();
+});
+
+refundUploadList?.addEventListener("click", (event) => {
+  const removeButton = event.target.closest("[data-refund-file-remove]");
+  if (!removeButton) return;
+  const index = Number(removeButton.dataset.refundFileRemove);
+  const removed = refundEvidenceFiles.splice(index, 1)[0];
+  if (removed) URL.revokeObjectURL(removed.url);
+  if (refundUploadError) refundUploadError.textContent = "";
+  renderRefundEvidenceFiles();
+});
+
+refundApplicationForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
+  const maxAmount = servicePriceNumber(activePurchaseService);
+  const amount = Number(refundAmountInput?.value || 0);
+  const phone = refundPhoneInput?.value || "";
+  let firstInvalid = null;
+  if (!refundReasonSelect?.value) {
+    if (refundReasonError) refundReasonError.textContent = "请选择退款原因";
+    firstInvalid = refundReasonSelect;
+  }
+  if (!Number.isFinite(amount) || amount <= 0 || amount > maxAmount) {
+    if (refundAmountError) refundAmountError.textContent = `退款金额需大于0且不超过¥${formatRefundAmount(maxAmount)}`;
+    firstInvalid ||= refundAmountInput;
+  }
+  if (!/^1[3-9]\d{9}$/.test(phone)) {
+    if (refundPhoneError) refundPhoneError.textContent = "请输入有效的11位手机号码";
+    firstInvalid ||= refundPhoneInput;
+  }
+  if (firstInvalid) {
+    firstInvalid.focus();
+    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  activeServiceOrder.refundRequest = {
+    reason: refundReasonSelect.value,
+    amount,
+    description: refundDescriptionInput?.value.trim() || "",
+    phone,
+    attachments: refundEvidenceFiles.map((item) => ({ name: item.file.name, type: item.file.type })),
+    submittedAt: refundSubmittedAtText()
+  };
+  activeServiceOrder.status = "refunding";
+  const activeOrderTab = orderStatusTabs?.querySelector("[data-order-tab].active")?.dataset.orderTab || "all";
+  renderServiceOrders(activeOrderTab);
+  pageStack = [];
+  openRefundOrderDetail(activeServiceOrder);
+  if (pageStack.length) pageStack[pageStack.length - 1] = "minePage";
+  clearRefundEvidenceFiles();
+  toast.textContent = "退款申请已提交";
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1800);
 });

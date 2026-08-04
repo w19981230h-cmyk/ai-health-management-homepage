@@ -653,11 +653,24 @@ function ensureDefaultMedicalReports() {
   saveMedicalStores();
 }
 
-function normalizeReportType(type) {
-  if (type === "报告单") return "检验报告";
+function normalizeReportType(type, reportName = "") {
+  const isInspectionName = /CT|超声|彩超|心电图|磁共振|MRI|影像|放射|X线/i.test(reportName);
+  if (type === "报告单") return isInspectionName ? "检查报告" : "检验报告";
+  if (type === "检验报告" && isInspectionName) return "检查报告";
   if (type === "处方记录") return "门诊处方";
   if (type === "就诊记录") return "门诊病历";
   return type;
+}
+
+function ensureConsistentReportTypes() {
+  let changed = false;
+  medicalReports.forEach((report) => {
+    const normalizedType = normalizeReportType(report.type, report.name);
+    if (normalizedType === report.type) return;
+    report.type = normalizedType;
+    changed = true;
+  });
+  if (changed) saveMedicalStores();
 }
 
 function thumbForType(type, fallback = "doc") {
@@ -720,3 +733,4 @@ function reportCardTypeLabel(report) {
 }
 
 ensureDefaultMedicalReports();
+ensureConsistentReportTypes();

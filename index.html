@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260804-ui-notes-project-seed-v1">
+  <link rel="stylesheet" href="styles.css?v=20260804-refund-quantity-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -289,6 +289,82 @@
         </footer>
       </section>
 
+      <section class="sub-page refund-application-page" id="refundApplicationPage" aria-label="申请退款">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="refund-page-nav">
+          <button class="back-page" type="button" aria-label="返回服务详情"></button>
+          <h1>申请退款</h1>
+          <span aria-hidden="true"></span>
+        </header>
+        <main class="refund-application-content">
+          <section class="refund-apply-card refund-apply-product">
+            <h2>商品信息</h2>
+            <article class="refund-apply-product-row">
+              <i class="refund-apply-cover service-img img-weight" id="refundApplicationCover" aria-hidden="true"></i>
+              <div>
+                <strong id="refundApplicationTitle">90天减重管理服务包</strong>
+                <p id="refundApplicationTags">科学减重｜饮食管理｜运动指导</p>
+                <div class="refund-apply-meta"><em id="refundApplicationPrice">¥299</em><span id="refundApplicationQuantity">数量：1</span></div>
+              </div>
+            </article>
+          </section>
+
+          <form class="refund-application-form" id="refundApplicationForm" novalidate>
+            <section class="refund-apply-card refund-form-card">
+              <label class="refund-form-row refund-reason-row">
+                <span><strong>申请原因</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
+                <select id="refundReasonSelect" aria-describedby="refundReasonError">
+                  <option value="">请选择退款原因</option>
+                  <option value="暂时不需要该服务">暂时不需要该服务</option>
+                  <option value="重复购买服务包">重复购买服务包</option>
+                  <option value="无法在有效期内使用">无法在有效期内使用</option>
+                  <option value="就诊人或服务信息选择有误">就诊人或服务信息选择有误</option>
+                  <option value="服务内容与预期不符">服务内容与预期不符</option>
+                  <option value="其他原因">其他原因</option>
+                </select>
+              </label>
+              <p class="refund-field-error" id="refundReasonError"></p>
+
+              <label class="refund-form-row refund-amount-row">
+                <span><strong>申请金额</strong></span>
+                <span class="refund-amount-input"><b>¥</b><input id="refundAmountInput" type="number" min="0.01" step="0.01" inputmode="decimal" value="299" aria-describedby="refundAmountHint refundAmountError"></span>
+              </label>
+              <p class="refund-field-hint" id="refundAmountHint">最多可退 ¥299</p>
+              <p class="refund-field-error" id="refundAmountError"></p>
+            </section>
+
+            <section class="refund-apply-card refund-form-card">
+              <label class="refund-textarea-field">
+                <span><strong>申请说明</strong><i>选填</i></span>
+                <textarea id="refundDescriptionInput" maxlength="300" placeholder="请补充说明退款原因，便于我们更快处理"></textarea>
+              </label>
+              <p class="refund-text-count"><span id="refundDescriptionCount">0</span>/300</p>
+
+              <div class="refund-upload-field">
+                <div class="refund-upload-heading"><strong>上传图片或视频</strong><i>选填，最多6个</i></div>
+                <label class="refund-upload-button" for="refundEvidenceInput"><b>＋</b><span>上传凭证</span></label>
+                <input id="refundEvidenceInput" type="file" accept="image/*,video/*" multiple hidden>
+                <div class="refund-upload-list" id="refundUploadList" aria-live="polite"></div>
+                <p class="refund-field-error" id="refundUploadError"></p>
+              </div>
+            </section>
+
+            <section class="refund-apply-card refund-form-card">
+              <label class="refund-phone-field">
+                <span><strong>联系电话</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
+                <input id="refundPhoneInput" type="tel" maxlength="11" inputmode="numeric" placeholder="请输入11位手机号码" aria-describedby="refundPhoneError">
+              </label>
+              <p class="refund-field-hint">用于接收退款进度通知及必要的售后沟通</p>
+              <p class="refund-field-error" id="refundPhoneError"></p>
+            </section>
+          </form>
+        </main>
+        <footer class="refund-submit-bar">
+          <div><span>退款金额</span><strong id="refundSubmitAmount">¥299</strong></div>
+          <button id="refundSubmitButton" type="submit" form="refundApplicationForm">提交申请</button>
+        </footer>
+      </section>
+
       <section class="sub-page refund-order-page" id="refundProgressPage" aria-label="退款进度">
         <header class="mini-status"><span>9:41</span><span></span></header>
         <header class="refund-page-nav">
@@ -316,6 +392,9 @@
             <dl class="refund-order-info">
               <div><dt>退款状态</dt><dd class="refund-state-text">退款中</dd></div>
               <div><dt>退款金额</dt><dd id="refundProgressMoney">¥299</dd></div>
+              <div><dt>退款原因</dt><dd id="refundProgressReason">暂时不需要该服务</dd></div>
+              <div><dt>申请时间</dt><dd id="refundProgressSubmittedAt">2026-08-04 10:00</dd></div>
+              <div><dt>联系电话</dt><dd id="refundProgressPhone">138****8888</dd></div>
               <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
               <div><dt>订单编号</dt><dd id="refundProgressOrderNo">O3001</dd></div>
               <div><dt>下单时间</dt><dd id="refundProgressOrderTime">2026-07-22 15:19</dd></div>
@@ -1043,14 +1122,17 @@
           <button class="save-report-info" id="saveReportInfo" type="button" hidden>保存修改</button>
         </section>
         <section class="ai-interpretation" id="aiInterpretation">
-          <h3>AI解读</h3>
           <div class="ai-result-card">
-            <h4>解读结果</h4>
-            <p class="ai-risk-tip">AI 解读仅供参考，不能替代医生诊断。</p>
-            <article><strong>整体结论</strong><p id="aiConclusion"></p></article>
-            <article><strong>需要关注的指标</strong><div id="aiSummary" class="ai-metric-table"></div></article>
-            <article><strong>关于“子宫内膜 5.8mm”的解读</strong><p id="aiFocus"></p></article>
-            <article><strong>建议下一步</strong><p id="aiAdvice"></p></article>
+            <h3>AI智能解读</h3>
+            <article class="ai-conclusion"><strong>结果</strong><div class="ai-conclusion-panel"><p id="aiConclusion"></p></div></article>
+            <article class="ai-key-results">
+              <div class="ai-article-heading"><strong>关键数据</strong><span id="aiKeyResultStats"></span></div>
+              <div id="aiSummary" class="ai-key-result-list"></div>
+              <button class="ai-key-result-more" id="aiKeyResultMore" type="button" aria-haspopup="dialog" aria-controls="aiKeyResultsSheet">查看全部关键数据</button>
+            </article>
+            <article class="ai-analysis-section"><strong>智能分析</strong><div class="ai-analysis-panel"><p id="aiFocus"></p></div></article>
+            <article class="ai-advice-section"><strong>健康建议</strong><ol class="ai-advice-list" id="aiAdvice"></ol></article>
+            <p class="ai-generated-note">内容由AI生成，仅供参考</p>
           </div>
           <p id="aiNotice" hidden></p><p id="aiNext" hidden></p>
         </section>
@@ -1587,6 +1669,14 @@
       </section>
 
       <div class="sheet-mask" id="sheetMask"></div>
+      <section class="ai-key-results-sheet" id="aiKeyResultsSheet" role="dialog" aria-modal="true" aria-labelledby="aiKeyResultsTitle">
+        <div class="ai-sheet-handle" aria-hidden="true"></div>
+        <header>
+          <div><h2 id="aiKeyResultsTitle">全部关键数据</h2><p id="aiKeyResultsSheetStats"></p></div>
+          <button class="ai-key-results-close" id="aiKeyResultsClose" type="button" aria-label="关闭关键数据"></button>
+        </header>
+        <div class="ai-key-results-scroll" id="aiKeyResultsAll"></div>
+      </section>
       <section class="portrait-report-sheet" id="portraitReportSheet" aria-label="健康画像系统报告详情">
         <div class="portrait-report-handle" aria-hidden="true"></div>
         <nav class="portrait-report-tabs" aria-label="健康画像分类">
@@ -2235,7 +2325,7 @@
 
   <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面备注工具">
     <button id="uiNoteAdd" type="button">添加备注</button>
-    <button id="uiNoteToggle" type="button">隐藏备注</button>
+    <button id="uiNoteToggle" type="button">显示备注</button>
     <em id="uiNoteCount" title="当前页面备注数量">0</em>
   </aside>
   <div class="ui-note-layer" id="uiNoteLayer" aria-label="当前页面备注点"></div>
@@ -2267,15 +2357,15 @@
     </form>
   </section>
 
-  <script src="scripts/00-dom-state.js?v=20260803-order-refund-v1"></script>
-  <script src="scripts/01-data-store.js?v=20260727-archive-upload-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260804-refund-quantity-v1"></script>
+  <script src="scripts/01-data-store.js?v=20260804-report-type-data-v1"></script>
   <script src="scripts/10-schedule.js?v=20260731-diet-meal-night-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260731-record-detail-page-v1"></script>
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260731-assessment-language-default-v1"></script>
-  <script src="scripts/60-metrics.js?v=20260731-assessment-language-default-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260803-order-count-v1"></script>
-  <script src="scripts/80-ui-notes.js?v=20260804-ui-notes-project-seed-v1"></script>
+  <script src="scripts/50-reports-services.js?v=20260804-report-status-summary-v1"></script>
+  <script src="scripts/60-metrics.js?v=20260804-refund-application-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260804-refund-quantity-v1"></script>
+  <script src="scripts/80-ui-notes.js?v=20260804-notes-hidden-by-default-v2"></script>
 </body>
 </html>
