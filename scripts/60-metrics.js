@@ -396,6 +396,8 @@ function groupRecordsByDate(records, timeGetter) {
     }));
 }
 
+const canDeletePressure = false;
+
 const allCheckinFilterOptions = [
   { type: "all", label: "全部" },
   { type: "diet", label: "饮食" },
@@ -626,7 +628,6 @@ function renderAllCheckinRecords(filter = "all") {
       <div>
         ${group.records.map(({ record, parts }) => {
           const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };
-          const canDeletePressure = record.type === "pressure" && !record.demo;
           return `
             <article class="all-checkin-record-card ${canDeletePressure ? "has-delete" : ""}" data-checkin-record-type="${escapeAttr(record.type)}" data-checkin-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="鏌ョ湅${escapeAttr(record.title)}璇︽儏">
               <i class="checkin-symbol ${escapeAttr(meta.tone || "blue")}" aria-hidden="true">${escapeAttr(meta.icon)}</i>
@@ -671,6 +672,298 @@ function renderAllCheckinRecords(filter = "all") {
   `;
 }
 
+function allCheckinDetailField(label, value) {
+  return `
+    <div class="all-checkin-detail-field">
+      <span>${escapeAttr(label)}</span>
+      <strong>${escapeAttr(value || "--")}</strong>
+    </div>
+  `;
+}
+
+function allCheckinDetailMetric(label, value, unit = "") {
+  return `
+    <div>
+      <span>${escapeAttr(label)}</span>
+      <strong>${escapeAttr(value || "--")}</strong>
+      ${unit ? `<em>${escapeAttr(unit)}</em>` : ""}
+    </div>
+  `;
+}
+
+function allCheckinDetailSource(type, recordId) {
+  const card = allCheckinRecordCards().find((entry) => entry.type === type && String(entry.id) === String(recordId))
+    || allCheckinRecordCards().find((entry) => entry.type === type);
+  const data = scheduleDataFor();
+  const item = (data.checkins || []).find((entry) => entry.type === type);
+  let record = null;
+  if (item?.records?.length) {
+    record = item.records.find((entry, index) => String(entry.id || `${type}-${index}`) === String(recordId)) || item.records[0];
+  }
+  if (type === "medicine" && typeof sortedMedicineRecords === "function") {
+    record = sortedMedicineRecords().find((entry) => String(entry.id) === String(recordId)) || record;
+  }
+  return { card, item, record };
+}
+
+function allCheckinDetailItems(type, card, item, record) {
+  const time = card?.time || allCheckinDisplayTime(item, record) || "--:--";
+  const value = card?.value || allCheckinValueText(item, record);
+  const base = [
+    ["记录类型", allCheckinTypeMeta[type]?.label || card?.title || "打卡记录"],
+    ["记录时间", time]
+  ];
+  if (type === "diet") return [
+    ["总热量", item?.totalCalories ? `${Math.round(Number(item.totalCalories))} kcal` : value],
+    ["餐次", card?.title || "饮食"],
+    ["记录时间", time],
+    ["AI识别", "已完成食物热量与营养估算"]
+  ];
+  if (type === "water") return [
+    ["饮水类型", record?.type || card?.title || "饮水"],
+    ["饮水量", record?.amount ? `${Math.round(Number(record.amount))} ml` : value],
+    ["记录时间", time],
+    ["今日目标", `${waterGoal?.() || 2000} ml`]
+  ];
+  if (type === "sport") return [
+    ["运动类型", record?.name || card?.title || "运动"],
+    ["运动时长", record?.duration ? `${Math.round(Number(record.duration))} 分钟` : "45 分钟"],
+    ["消耗热量", record?.calories ? `${Math.round(Number(record.calories))} kcal` : value],
+    ["记录时间", time]
+  ];
+  if (type === "medicine") {
+    const items = Array.isArray(record?.items) ? record.items : [];
+    const medicineCount = items.filter((entry) => entry.type !== "nutrition").length;
+    const nutritionCount = items.filter((entry) => entry.type === "nutrition").length;
+    return [
+      ["用药时间", time],
+      ["药品类型", `${medicineCount || 1} 次`],
+      ["营养素类型", `${nutritionCount || 0} 次`],
+      ["记录摘要", value]
+    ];
+  }
+  if (type === "pressure") return [
+    ["收缩压", value.match(/(\d{2,3})\/(\d{2,3})/)?.[1] ? `${value.match(/(\d{2,3})\/(\d{2,3})/)?.[1]} mmHg` : "128 mmHg"],
+    ["舒张压", value.match(/(\d{2,3})\/(\d{2,3})/)?.[2] ? `${value.match(/(\d{2,3})\/(\d{2,3})/)?.[2]} mmHg` : "82 mmHg"],
+    ["脉搏", "72 次/分"],
+    ["记录时间", time]
+  ];
+  if (type === "sugar") return [
+    ["血糖值", value.replace(/^血糖\s*/u, "")],
+    ["测量时段", value.includes("午餐后") ? "午餐后2h" : "餐后"],
+    ["单位", "mmol/L"],
+    ["记录时间", time]
+  ];
+  if (type === "lipid") return [
+    ["TC 总胆固醇", "4.8 mmol/L"],
+    ["TG 甘油三酯", "1.6 mmol/L"],
+    ["HDL-C", "1.3 mmol/L"],
+    ["LDL-C", value.replace(/^低密度脂蛋白LDL-C：?/u, "") || "3.1 mmol/L"],
+    ["sdLDL-C", "0.85 mmol/L"],
+    ["oxLDL-C", "0.45 ng/ml"]
+  ];
+  if (type === "uric") return [
+    ["尿酸值", value.replace(/^尿酸\s*/u, "")],
+    ["单位", "μmol/L"],
+    ["检查时间", time],
+    ["备注", "空腹检测"]
+  ];
+  if (type === "waist") return [
+    ["腰围值", value.replace(/^腰围\s*/u, "")],
+    ["单位", "cm"],
+    ["测量时间", time],
+    ["备注", "暂无备注"]
+  ];
+  if (type === "heart") return [
+    ["心率值", value.replace(/^心率\s*/u, "")],
+    ["状态", "正常"],
+    ["测量时间", time],
+    ["备注", "暂无备注"]
+  ];
+  if (type === "weight") return [
+    ["体重", value],
+    ["体脂率", "24.5%"],
+    ["记录时间", time],
+    ["备注", "暂无备注"]
+  ];
+  if (type === "period") return [
+    ["经期天数", value.replace(/^经期第\s*/u, "")],
+    ["流量", "正常"],
+    ["记录时间", time],
+    ["备注", "暂无备注"]
+  ];
+  return base;
+}
+
+function allCheckinDetailRecordList(type, record) {
+  if (type !== "medicine" || !Array.isArray(record?.items) || !record.items.length) return "";
+  return `
+    <section class="all-checkin-detail-card">
+      <h2>本次明细</h2>
+      <div class="all-checkin-detail-list">
+        ${record.items.map((entry) => `
+          <article>
+            <i class="medicine-mini-thumb ${escapeAttr(entry.image || "pill")}" aria-hidden="true"></i>
+            <div>
+              <strong>${escapeAttr(entry.name || "药品记录")}</strong>
+              <span>${escapeAttr(entry.dose || entry.amount || "1次")}</span>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function openAllCheckinRecordDetail(type, recordId) {
+  const page = document.querySelector("#allCheckinDetailPage");
+  const title = document.querySelector("#allCheckinDetailTitle");
+  const body = document.querySelector("#allCheckinDetailBody");
+  if (!page || !body) return;
+  const { card, item, record } = allCheckinDetailSource(type, recordId);
+  const meta = allCheckinTypeMeta[type] || { label: card?.title || "打卡记录", icon: "记", tone: "blue" };
+  const fields = allCheckinDetailItems(type, card, item, record);
+  const mainValue = card?.value || fields[0]?.[1] || "--";
+  if (title) title.textContent = `${meta.label || card?.title || "打卡"}详情`;
+  page.className = `sub-page all-checkin-detail-page checkin-detail-${type}`;
+  body.innerHTML = `
+    <section class="all-checkin-detail-hero">
+      <i class="checkin-symbol ${escapeAttr(meta.tone || "blue")}" aria-hidden="true">${escapeAttr(meta.icon || "记")}</i>
+      <div>
+        <span>${escapeAttr(card?.time || allCheckinDisplayTime(item, record) || "--:--")} 记录</span>
+        <h2>${escapeAttr(card?.title || meta.label || "打卡记录")}</h2>
+        <strong>${escapeAttr(mainValue)}</strong>
+      </div>
+    </section>
+    <section class="all-checkin-detail-card">
+      <h2>记录信息</h2>
+      <div class="all-checkin-detail-grid">
+        ${fields.map(([label, fieldValue]) => allCheckinDetailField(label, fieldValue)).join("")}
+      </div>
+    </section>
+    ${type === "lipid" ? `
+      <section class="all-checkin-detail-card">
+        <h2>血脂六项</h2>
+        <div class="all-checkin-lipid-grid">
+          ${fields.map(([label, fieldValue]) => allCheckinDetailMetric(label, String(fieldValue).split(" ")[0], String(fieldValue).split(" ").slice(1).join(" "))).join("")}
+        </div>
+      </section>
+    ` : ""}
+    ${allCheckinDetailRecordList(type, record)}
+  `;
+  openSubPage("allCheckinDetailPage");
+}
+
+function openAllCheckinRecordDetail(type, recordId) {
+  const { card, record } = allCheckinDetailSource(type, recordId);
+  const resolvedId = record?.id || (String(recordId || "").startsWith("demo-") ? "" : recordId);
+  const findMetricRecord = (metricId) => {
+    const directRecord = metricRecordById(metricId, resolvedId);
+    if (directRecord) return directRecord;
+    const metric = metricById(metricId);
+    if (!metric || !card) return null;
+    const target = metricRecordDateParts(card.rawTime || card.recordTime || card.time);
+    return allMetricRecords(metric).find((entry) => {
+      const parts = metricRecordDateParts(entry.time);
+      return parts.key === target.key && parts.time === target.time;
+    }) || null;
+  };
+  const matchesCardTime = (time) => {
+    if (!card || !time) return false;
+    const target = metricRecordDateParts(card.rawTime || card.recordTime || card.time);
+    const parts = metricRecordDateParts(time);
+    return parts.key === target.key && parts.time === target.time;
+  };
+  const openMetricRecord = (metricId) => {
+    const editingRecord = findMetricRecord(metricId);
+    selectedFocusMetric = metricId;
+    openMetricDetail(metricId);
+    openMetricRecordSheet(editingRecord?.id || "");
+  };
+
+  if (type === "diet") {
+    openDietDetailPage();
+    return;
+  }
+  if (type === "water") {
+    if (resolvedId && typeof openWaterRecordDetail === "function") openWaterRecordDetail(resolvedId);
+    else openWaterDetailPage();
+    return;
+  }
+  if (type === "sport") {
+    openSportDetailPage();
+    if (resolvedId && typeof openSportRecordEditor === "function") openSportRecordEditor(resolvedId);
+    return;
+  }
+  if (type === "medicine") {
+    if (resolvedId && typeof openMedicineDetailPage === "function") openMedicineDetailPage(resolvedId);
+    else openMedicineRecordsPage();
+    return;
+  }
+  if (type === "pressure") {
+    selectedFocusMetric = "bp";
+    openMetricDetail("bp");
+    const recordToOpen = findMetricRecord("bp")?.id || "";
+    if (recordToOpen) openMetricRecordSheet(recordToOpen);
+    else if (typeof openPressureCheckinSheet === "function") openPressureCheckinSheet();
+    return;
+  }
+  if (type === "sugar") {
+    openMetricRecord("sugar");
+    return;
+  }
+  if (type === "lipid") {
+    selectedFocusMetric = "lipid";
+    const recordToOpen = findMetricRecord("lipid")?.id
+      || lipidDetailRecords(getSelectedMetric()).find((entry) => entry.id)?.id
+      || "";
+    openMetricDetail("lipid");
+    openMetricRecordSheet(recordToOpen);
+    return;
+  }
+  if (type === "weight") {
+    openMetricDetail("weight");
+    const weightKey = (resolvedId && typeof weightDetailRecordByKey === "function" && weightDetailRecordByKey(resolvedId))
+      ? resolvedId
+      : combinedWeightRecords().find((entry) => matchesCardTime(entry.time))?.key;
+    if (weightKey) openWeightRecordDetail(weightKey);
+    return;
+  }
+  if (type === "heart") {
+    selectedFocusMetric = "heart";
+    openMetricDetail("heart");
+    const heartMetric = metricById("heart");
+    const heartId = (resolvedId && typeof heartRecordById === "function" && heartRecordById(resolvedId))
+      ? resolvedId
+      : heartMetric ? heartDayRecords(heartMetric).find((entry) => matchesCardTime(entry.time))?.id : "";
+    if (heartId) openHeartRecordDetail(heartId);
+    return;
+  }
+  if (type === "waist") {
+    selectedFocusMetric = "waist";
+    openMetricDetail("waist");
+    const waistId = (resolvedId && typeof waistRecordById === "function" && waistRecordById(resolvedId))
+      ? resolvedId
+      : waistRecordEntries().find((entry) => matchesCardTime(entry.time))?.id;
+    if (waistId) openMetricRecordSheet(waistId);
+    return;
+  }
+  if (type === "uric") {
+    selectedFocusMetric = "uric";
+    openMetricDetail("uric");
+    const uricId = (resolvedId && typeof uricRecordById === "function" && uricRecordById(resolvedId))
+      ? resolvedId
+      : uricRecordEntries().find((entry) => matchesCardTime(entry.time))?.id;
+    if (uricId) openUricRecordDetail(uricId);
+    return;
+  }
+  if (type === "period") {
+    if (typeof renderPeriodDetail === "function") renderPeriodDetail();
+    openSubPage("periodDetailPage");
+    return;
+  }
+}
+
 function deleteAllCheckinPressureRecord(recordId) {
   const data = scheduleDataFor();
   const checkins = Array.isArray(data.checkins) ? data.checkins : [];
@@ -697,37 +990,6 @@ function deleteAllCheckinPressureRecord(recordId) {
   showToast("已删除血压记录");
 }
 
-function openAllCheckinRecordDetail(type, recordId) {
-  if (type === "diet") {
-    openDietDetailPage();
-    return;
-  }
-  if (type === "water") {
-    openWaterDetailPage();
-    return;
-  }
-  if (type === "sport") {
-    openSportDetailPage();
-    if (recordId) openSportRecordEditor(recordId);
-    return;
-  }
-  if (type === "medicine") {
-    if (recordId && typeof openMedicineDetailPage === "function") openMedicineDetailPage(recordId);
-    else openMedicineRecordsPage();
-    return;
-  }
-  if (type === "period") {
-    openSubPage("periodDetailPage");
-    renderPeriodDetail();
-    return;
-  }
-  const metricMap = { pressure: "bp", sugar: "sugar", weight: "weight", waist: "waist", heart: "heart", lipid: "lipid", uric: "uric" };
-  if (metricMap[type]) {
-    openMetricDetail(metricMap[type]);
-    return;
-  }
-  showToast("已进入打卡记录");
-}
 
 function renderAllMetricRecords() {
   setMetricRecordsPageMode("metric");
@@ -739,7 +1001,7 @@ function renderAllMetricRecords() {
       <h2>${escapeAttr(group.label)}</h2>
       <div>
         ${group.records.map(({ record, parts }) => `
-          <article class="metric-record-item">
+          <article class="metric-record-item" data-metric-record-id="${escapeAttr(record.id)}" role="button" tabindex="0" aria-label="查看${group.label}${parts.time}的${escapeAttr(metric.name)}记录详情">
             <div class="metric-record-date"><strong>${parts.time}</strong><span>${escapeAttr(metric.name)}</span></div>
             <div class="metric-record-value"><strong>${record.display}</strong><em>${record.unit}</em></div>
             <button class="metric-record-delete" type="button" data-delete-metric-record="${record.id}" aria-label="鍒犻櫎${group.label}${parts.time}鐨?{metric.name}璁板綍"></button>
@@ -811,6 +1073,7 @@ function metricRecordById(metricId, recordId) {
   const saved = metricRecordsFor(metricId).find((record) => record.id === recordId);
   if (saved) return saved;
   if (metricId === "lipid") return lipidSampleRecords().find((record) => record.id === recordId) || null;
+  if (metricId === "waist") return waistRecordEntries().find((record) => record.id === recordId) || null;
   return null;
 }
 
@@ -875,13 +1138,14 @@ function openMetricRecordSheet(recordId = "") {
     return;
   }
   editingMetricRecordId = recordId || "";
+  const isRecordDetailPage = Boolean(editingMetricRecordId);
   const editingRecord = metricRecordById(metric.id, editingMetricRecordId);
   const fields = metricRecordFieldsFor(metric);
   const configId = metricRecordConfigId(metric.id);
   const isUric = configId === "uric";
   metricRecordSheet.classList.toggle("metric-record-sheet-lipid", configId === "lipid");
   metricRecordSheet.classList.toggle("metric-record-sheet-combined-note", ["heart", "uric"].includes(configId));
-  metricRecordSheetTitle.textContent = editingMetricRecordId ? `编辑${metric.name}记录` : `记录${metric.name}`;
+  metricRecordSheetTitle.textContent = editingMetricRecordId ? `${metric.name}记录详情` : `记录${metric.name}`;
   metricRecordFields.innerHTML = configId === "heart" ? `
     <section class="metric-heart-field">
       <span>心率值 <b class="metric-required">*</b></span>
@@ -1002,7 +1266,7 @@ function openMetricRecordSheet(recordId = "") {
   metricRecordTime.value = editingRecord?.time || localDateTimeInputValue();
   if (metricRecordTimeLabel) metricRecordTimeLabel.textContent = metricRecordTimeLabelFor(metric.id);
   updateMetricRecordTimeText();
-  metricRecordNoteField.hidden = !["heart", "uric", "lipid"].includes(configId);
+  metricRecordNoteField.hidden = !["heart", "uric", "lipid", "waist"].includes(configId);
   metricRecordNoteField.querySelector("span").textContent = configId === "lipid" ? "备注（全局）" : "备注";
   metricRecordNote.placeholder = configId === "heart" ? "记录运动后、静息、心慌、服药后等情况" : isUric ? "可记录饮酒、饮食、痛风发作、用药变化等" : "请输入备注";
   if (configId === "lipid") {
@@ -1016,10 +1280,15 @@ function openMetricRecordSheet(recordId = "") {
   metricRecordNote.value = editingRecord?.note || "";
   updateMetricRecordNoteCount();
   metricRecordError.textContent = "";
-  if (metricRecordConfirm) metricRecordConfirm.textContent = editingMetricRecordId ? "确定" : "打卡";
+  if (metricRecordConfirm) metricRecordConfirm.textContent = editingMetricRecordId ? "保存" : "打卡";
   ensureMetricRecordInlineDelete(metric);
-  sheetMask.classList.add("active");
-  metricRecordSheet.classList.add("active");
+  metricRecordSheet.classList.toggle("metric-record-detail-page", isRecordDetailPage);
+  if (isRecordDetailPage) {
+    openSubPage("metricRecordSheet");
+  } else {
+    sheetMask.classList.add("active");
+    metricRecordSheet.classList.add("active");
+  }
   metricRecordFields.querySelector("input")?.focus();
 }
 
@@ -1105,6 +1374,7 @@ function saveMetricRecord() {
   const metric = getSelectedMetric();
   const config = metricRecordFieldsFor(metric);
   const configId = metricRecordConfigId(metric.id);
+  const wasRecordDetailPage = metricRecordSheet?.classList.contains("metric-record-detail-page");
   const values = {};
   for (const field of config) {
     const input = metricRecordFields.querySelector(`[data-metric-input="${field.key}"]`);
@@ -1164,8 +1434,15 @@ function saveMetricRecord() {
     status: status.text,
     attention: status.attention,
     values,
-    note: ["heart", "uric", "lipid"].includes(configId) ? metricRecordNote.value.trim() : ""
+    note: ["heart", "uric", "lipid", "waist"].includes(configId) ? metricRecordNote.value.trim() : ""
   };
+  const editingWaistSample = metric.id === "waist" && editingMetricRecordId?.startsWith("waist-sample");
+  if (editingWaistSample) {
+    record.id = `metric-${Date.now()}`;
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id]) deletedMetricRecordIdsByPatient[currentPatient.id] = {};
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id].waist) deletedMetricRecordIdsByPatient[currentPatient.id].waist = [];
+    deletedMetricRecordIdsByPatient[currentPatient.id].waist.push(editingMetricRecordId);
+  }
   if (!metricRecordsByPatient[currentPatient.id]) metricRecordsByPatient[currentPatient.id] = {};
   if (!metricRecordsByPatient[currentPatient.id][metric.id]) metricRecordsByPatient[currentPatient.id][metric.id] = [];
   const records = metricRecordsByPatient[currentPatient.id][metric.id];
@@ -1183,17 +1460,28 @@ function saveMetricRecord() {
   metric.attention = status.attention;
   metric.values = [...metric.values, chartValue].slice(-7);
   selectedMetricDate = new Date(metricRecordTime.value);
-  closeOverlays();
+  if (wasRecordDetailPage) {
+    metricRecordSheet?.classList.remove("metric-record-detail-page");
+    goBackPage();
+  } else {
+    closeOverlays();
+  }
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  showUnifiedCheckinSuccess(metricRecordSuccessLines(metric, record));
+  if (wasRecordDetailPage) showToast(`${metric.name}记录已更新`);
+  else showUnifiedCheckinSuccess(metricRecordSuccessLines(metric, record));
 }
 
 function deleteEditingMetricRecord() {
   const metric = getSelectedMetric();
   if (!editingMetricRecordId) return;
-  if (editingMetricRecordId.startsWith("lipid-sample-")) {
+  const wasRecordDetailPage = metricRecordSheet?.classList.contains("metric-record-detail-page");
+  if (metric.id === "waist" && editingMetricRecordId.startsWith("waist-sample")) {
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id]) deletedMetricRecordIdsByPatient[currentPatient.id] = {};
+    if (!deletedMetricRecordIdsByPatient[currentPatient.id].waist) deletedMetricRecordIdsByPatient[currentPatient.id].waist = [];
+    deletedMetricRecordIdsByPatient[currentPatient.id].waist.push(editingMetricRecordId);
+  } else if (editingMetricRecordId.startsWith("lipid-sample-")) {
     if (!deletedMetricRecordIdsByPatient[currentPatient.id]) deletedMetricRecordIdsByPatient[currentPatient.id] = {};
     if (!deletedMetricRecordIdsByPatient[currentPatient.id][metric.id]) deletedMetricRecordIdsByPatient[currentPatient.id][metric.id] = [];
     deletedMetricRecordIdsByPatient[currentPatient.id][metric.id].push(editingMetricRecordId);
@@ -1205,11 +1493,16 @@ function deleteEditingMetricRecord() {
   if (metricRecordConfirm) metricRecordConfirm.textContent = "打卡";
   document.querySelector("#metricRecordInlineDelete")?.remove();
   saveMetricRecords();
-  closeOverlays();
+  if (wasRecordDetailPage) {
+    metricRecordSheet?.classList.remove("metric-record-detail-page");
+    goBackPage();
+  } else {
+    closeOverlays();
+  }
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  showToast("血脂记录已删除");
+  showToast(`${metric.name}记录已删除`);
 }
 
 function getSelectedMetric() {
@@ -1423,9 +1716,9 @@ function openWeightRecordDetail(recordKey) {
   const record = weightDetailRecordByKey(recordKey);
   if (!record || !weightRecordDetailBody) return;
   selectedWeightRecordKey = record.key;
-  const title = weightRecordDetailDialog?.querySelector("header h3");
-  if (title) title.textContent = "记录详情";
-  if (weightRecordSaveAction) weightRecordSaveAction.textContent = "保存修改";
+  const title = weightRecordDetailDialog?.querySelector("header h1");
+  if (title) title.textContent = "体重记录详情";
+  if (weightRecordSaveAction) weightRecordSaveAction.textContent = "保存";
   const fat = record.fat?.display || "";
   weightRecordDetailBody.innerHTML = `
     <label>
@@ -1446,8 +1739,7 @@ function openWeightRecordDetail(recordKey) {
     </label>
     <p class="weight-record-edit-error" id="weightRecordEditError"></p>
   `;
-  sheetMask.classList.add("active");
-  weightRecordDetailDialog?.classList.add("active");
+  openSubPage("weightRecordDetailDialog");
 }
 
 function upsertMetricRecord(metricId, oldRecord, nextRecord) {
@@ -1535,7 +1827,7 @@ function saveSelectedWeightRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  closeOverlays();
+  goBackPage();
   showToast("体重记录已更新");
 }
 
@@ -1564,7 +1856,7 @@ function deleteSelectedWeightRecord() {
   removeMetricRecordById("fat", record.fat?.id);
   saveMetricRecords();
   selectedWeightRecordKey = "";
-  closeOverlays();
+  goBackPage();
   applyLatestMetricRecords(focusPlanDashboards[selectedFocusPlan]);
   renderFocusPlans();
   renderSchedule();
@@ -1657,6 +1949,8 @@ function openHeartRecordDetail(recordId) {
   const record = heartRecordById(recordId);
   if (!record || !heartRecordDetailBody) return;
   selectedHeartRecordId = record.id;
+  const title = heartRecordDetailDialog?.querySelector("header h1");
+  if (title) title.textContent = "心率记录详情";
   heartRecordDetailBody.innerHTML = `
     <label>
       <span>心率</span>
@@ -1672,8 +1966,7 @@ function openHeartRecordDetail(recordId) {
     </label>
     <p class="weight-record-edit-error" id="heartRecordEditError"></p>
   `;
-  sheetMask.classList.add("active");
-  heartRecordDetailDialog?.classList.add("active");
+  openSubPage("heartRecordDetailDialog");
 }
 
 function saveSelectedHeartRecord() {
@@ -1722,7 +2015,7 @@ function saveSelectedHeartRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  closeOverlays();
+  goBackPage();
   showToast("心率记录已更新");
 }
 
@@ -1739,7 +2032,7 @@ function deleteSelectedHeartRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  closeOverlays();
+  goBackPage();
   showToast("已删除该心率记录");
 }
 
@@ -2166,7 +2459,7 @@ function renderWaistListDetail(metric) {
   panel.querySelectorAll("[data-waist-record]").forEach((button) => {
     button.addEventListener("click", () => {
       selectedWaistRecordId = button.dataset.waistRecord;
-      openWaistCheckinSheet(selectedWaistRecordId);
+      openMetricRecordSheet(selectedWaistRecordId);
     });
   });
   panel.querySelector("#waistRecordAdd")?.addEventListener("click", () => openWaistCheckinSheet());
@@ -2200,7 +2493,7 @@ function renderWaistRecordDetail(metric) {
       <button class="waist-record-delete" type="button" id="waistRecordDelete">删除</button>
     </footer>
   `;
-  panel.querySelector("#waistRecordEdit")?.addEventListener("click", () => openWaistCheckinSheet(record.id));
+  panel.querySelector("#waistRecordEdit")?.addEventListener("click", () => openMetricRecordSheet(record.id));
   panel.querySelector("#waistRecordDelete")?.addEventListener("click", deleteSelectedWaistRecord);
 }
 
@@ -2586,9 +2879,9 @@ function openUricRecordDetail(recordId) {
   const record = uricRecordById(recordId);
   if (!record || !weightRecordDetailBody) return;
   selectedUricRecordId = record.id;
-  const title = weightRecordDetailDialog?.querySelector("header h3");
+  const title = weightRecordDetailDialog?.querySelector("header h1");
   if (title) title.textContent = "编辑尿酸记录";
-  if (weightRecordSaveAction) weightRecordSaveAction.textContent = "保存修改";
+  if (weightRecordSaveAction) weightRecordSaveAction.textContent = "保存";
   weightRecordDetailBody.innerHTML = `
     <label>
       <span>尿酸值 <b class="metric-required">*</b></span>
@@ -2608,8 +2901,7 @@ function openUricRecordDetail(recordId) {
   const uricField = metricRecordConfigs.uric?.[0];
   valueInput?.addEventListener("input", () => clampMetricValueInput(valueInput, uricField));
   valueInput?.addEventListener("change", () => clampMetricValueInput(valueInput, uricField, true));
-  sheetMask.classList.add("active");
-  weightRecordDetailDialog?.classList.add("active");
+  openSubPage("weightRecordDetailDialog");
 }
 
 function saveSelectedUricRecord() {
@@ -2657,7 +2949,7 @@ function saveSelectedUricRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  closeOverlays();
+  goBackPage();
   showToast("尿酸记录已更新");
 }
 
@@ -2677,7 +2969,7 @@ function deleteSelectedUricRecord() {
   renderFocusPlans();
   renderSchedule();
   renderMetricDetail();
-  closeOverlays();
+  goBackPage();
   showToast("尿酸记录已删除");
 }
 
@@ -2873,7 +3165,7 @@ function openSubPage(pageId) {
   pageStack.push(currentPageId());
   document.body.classList.toggle(
     "detail-page-open",
-    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "waterDetailPage" || pageId === "waterRecordDetailPage" || pageId === "sportDetailPage" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
+    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "assessmentStartPage" || pageId === "assessmentVoicePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "metricRecordSheet" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "waterDetailPage" || pageId === "waterRecordDetailPage" || pageId === "sportDetailPage" || pageId === "sportRecordEditor" || pageId === "weightRecordDetailDialog" || pageId === "heartRecordDetailDialog" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
   );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
@@ -2896,7 +3188,7 @@ function goBackPage() {
     previousSubPage.classList.add("active");
     document.body.classList.toggle(
       "detail-page-open",
-      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "waterDetailPage" || previous === "waterRecordDetailPage" || previous === "sportDetailPage" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
+      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "assessmentStartPage" || previous === "assessmentVoicePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "metricRecordSheet" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "waterDetailPage" || previous === "waterRecordDetailPage" || previous === "sportDetailPage" || previous === "sportRecordEditor" || previous === "weightRecordDetailDialog" || previous === "heartRecordDetailDialog" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
     );
   } else if (previous === "minePage") {
     minePage.classList.add("active");

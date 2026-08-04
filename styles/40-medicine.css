@@ -395,6 +395,185 @@
   line-height: 1.45;
 }
 
+.all-checkin-detail-page {
+  background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+}
+
+.all-checkin-detail-body {
+  display: grid;
+  gap: 12px;
+  padding: 12px 16px 28px;
+}
+
+.all-checkin-detail-hero,
+.all-checkin-detail-card {
+  border: 1px solid rgba(54, 113, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(140, 157, 199, 0.14);
+}
+
+.all-checkin-detail-hero {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 116px;
+  padding: 18px;
+}
+
+.all-checkin-detail-hero .checkin-symbol {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  font-size: 16px;
+}
+
+.all-checkin-detail-hero span {
+  color: rgba(3, 16, 46, 0.48);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.all-checkin-detail-hero h2 {
+  margin: 4px 0 8px;
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.all-checkin-detail-hero strong {
+  color: #3671ff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.all-checkin-detail-card {
+  padding: 16px;
+}
+
+.all-checkin-detail-card h2 {
+  margin: 0 0 12px;
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.all-checkin-detail-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.all-checkin-detail-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: rgba(54, 113, 255, 0.05);
+}
+
+.all-checkin-detail-field span {
+  color: rgba(3, 16, 46, 0.58);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.all-checkin-detail-field strong {
+  min-width: 0;
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.all-checkin-lipid-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.all-checkin-lipid-grid div {
+  min-height: 76px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(123, 97, 217, 0.08);
+}
+
+.all-checkin-lipid-grid span,
+.all-checkin-lipid-grid em {
+  display: block;
+  color: rgba(3, 16, 46, 0.52);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.all-checkin-lipid-grid strong {
+  display: block;
+  margin: 6px 0 2px;
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.all-checkin-detail-list {
+  display: grid;
+  gap: 10px;
+}
+
+.all-checkin-detail-list article {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 64px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(3, 16, 46, 0.04);
+}
+
+.all-checkin-detail-list strong,
+.all-checkin-detail-list span {
+  display: block;
+}
+
+.all-checkin-detail-list strong {
+  color: rgba(3, 16, 46, 0.9);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.all-checkin-detail-list span {
+  margin-top: 4px;
+  color: rgba(3, 16, 46, 0.52);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.checkin-detail-sport .all-checkin-detail-hero strong,
+.checkin-detail-medicine .all-checkin-detail-hero strong,
+.checkin-detail-waist .all-checkin-detail-hero strong {
+  color: #0aa879;
+}
+
+.checkin-detail-sugar .all-checkin-detail-hero strong,
+.checkin-detail-uric .all-checkin-detail-hero strong {
+  color: #8a4fff;
+}
+
+.checkin-detail-heart .all-checkin-detail-hero strong,
+.checkin-detail-period .all-checkin-detail-hero strong {
+  color: #ef6b9b;
+}
+
+.checkin-detail-weight .all-checkin-detail-hero strong {
+  color: #f49529;
+}
+
 .metric-record-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto 34px;
@@ -2036,21 +2215,17 @@
 }
 
 .medicine-detail-images {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 36px;
-  justify-content: start;
-  gap: 6px;
+  display: flex;
+  justify-content: flex-start;
   margin-top: 0;
-  overflow-x: auto;
 }
 
 .medicine-detail-images button,
 .medicine-detail-upload {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border: 1px solid #eef2fb;
-  border-radius: 7px;
+  border-radius: 8px;
   background-size: cover !important;
   background-position: center !important;
 }

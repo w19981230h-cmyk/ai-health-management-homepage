@@ -666,6 +666,7 @@ function mealByTime(date = new Date()) {
   if (hour >= 14 && hour < 17) return "午加餐";
   if (hour >= 17 && hour < 20) return "晚餐";
   if (hour >= 20 && hour < 23) return "晚加餐";
+  if (hour >= 23 || hour < 5) return "夜宵";
   return "早餐";
 }
 

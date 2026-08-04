@@ -724,6 +724,10 @@ scheduleContent?.addEventListener("click", (event) => {
     openSubPage("metricRecordsPage");
     return;
   }
+  if (target.dataset.scheduleAction === "assessment") {
+    openSubPage("assessmentStartPage");
+    return;
+  }
   if (target.dataset.scheduleAction === "checkin" && target.dataset.type === "diet") {
     if (target.dataset.taskId) startDietTaskCheckin(target.dataset.taskId);
     else {
@@ -813,3 +817,101 @@ scheduleContent?.addEventListener("click", (event) => {
   }[action] || "打开任务";
   showScheduleToast(text);
 });
+
+const assessmentVoiceLanguageCopies = {
+  mandarin: {
+    label: "普通话",
+    title: "健康评估",
+    agent: "AI智能小助手",
+    desc: "每完成一项，离健康更近一步。",
+    progress: "5%<br>进度",
+    intro: "你来啦~我是您的 AI 健康小助手～来跟我聊聊最近身体状况吧~",
+    question: "您提到肚子疼，能具体描述一下疼痛的位置和感觉吗?比如是集中在上腹部(像心窝附近)、下腹部(可能涉及肠道或泌尿)，或者像绞痛、胀痛、刀割样等不同性质",
+    interrupt: "点击打断",
+    micLabel: "开始语音采集",
+    agentLabel: "AI智能小助手"
+  },
+  english: {
+    label: "英语",
+    title: "Health Assessment",
+    agent: "AI Health Assistant",
+    desc: "Each answer brings you one step closer to better health.",
+    progress: "5%<br>Progress",
+    intro: "Hi, I'm your AI health assistant. Let's talk about how you've been feeling recently.",
+    question: "You mentioned abdominal pain. Could you describe where it hurts and what it feels like? For example, upper abdomen, lower abdomen, cramping, bloating, or sharp pain.",
+    interrupt: "Interrupt",
+    micLabel: "Start voice input",
+    agentLabel: "AI Health Assistant"
+  },
+  sichuan: {
+    label: "四川话",
+    title: "健康评估",
+    agent: "AI健康小助手",
+    desc: "每答完一项，离健康又近一步哈。",
+    progress: "5%<br>进度",
+    intro: "你来咯～我是你的 AI 健康小助手，来跟我摆哈最近身体咋个样嘛～",
+    question: "你说肚子痛，能不能具体说哈痛的位置和感觉喃？比如上腹部、下腹部，或者是绞起痛、胀痛、刀割样痛这些不同感觉。",
+    interrupt: "点我打断",
+    micLabel: "开始语音采集",
+    agentLabel: "AI健康小助手"
+  },
+  cantonese: {
+    label: "粤语",
+    title: "健康評估",
+    agent: "AI健康小助手",
+    desc: "每完成一項，就離健康近一步。",
+    progress: "5%<br>進度",
+    intro: "你嚟啦～我係你嘅 AI 健康小助手，嚟同我傾吓最近身體狀況啦。",
+    question: "你提到肚痛，可以具體講吓痛嘅位置同感覺嗎？例如上腹、下腹，或者係絞痛、脹痛、刀割咁痛等。",
+    interrupt: "點擊打斷",
+    micLabel: "開始語音採集",
+    agentLabel: "AI健康小助手"
+  }
+};
+
+function setAssessmentVoiceLanguage(language = "mandarin") {
+  const copy = assessmentVoiceLanguageCopies[language] || assessmentVoiceLanguageCopies.mandarin;
+  const title = document.querySelector("#assessmentVoiceTitle");
+  const agent = document.querySelector("#assessmentVoiceAgentName");
+  const desc = document.querySelector("#assessmentVoiceAgentDesc");
+  const progress = document.querySelector("#assessmentVoiceProgress");
+  const intro = document.querySelector("#assessmentVoiceBubbleIntro");
+  const question = document.querySelector("#assessmentVoiceBubbleQuestion");
+  const interrupt = document.querySelector("#assessmentInterrupt span");
+  const trigger = document.querySelector("#assessmentLanguageTrigger");
+  const menu = document.querySelector("#assessmentLanguageMenu");
+  const mic = document.querySelector(".assessment-mic-button");
+  const agentWrap = document.querySelector("#assessmentVoiceAgent");
+  if (title) title.textContent = copy.title;
+  if (agent) agent.textContent = copy.agent;
+  if (desc) desc.textContent = copy.desc;
+  if (progress) progress.innerHTML = copy.progress;
+  if (intro) intro.textContent = copy.intro;
+  if (question) question.innerHTML = `${copy.question} <i></i>`;
+  if (interrupt) interrupt.textContent = copy.interrupt;
+  if (trigger) trigger.textContent = copy.label;
+  mic?.setAttribute("aria-label", copy.micLabel);
+  agentWrap?.setAttribute("aria-label", copy.agentLabel);
+  menu?.querySelectorAll("[data-assessment-language]").forEach((button) => {
+    const active = button.dataset.assessmentLanguage === language;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+}
+
+const assessmentLanguageSwitch = document.querySelector("#assessmentLanguageSwitch");
+const assessmentLanguageTrigger = document.querySelector("#assessmentLanguageTrigger");
+const assessmentLanguageMenu = document.querySelector("#assessmentLanguageMenu");
+
+assessmentLanguageMenu?.addEventListener("click", (event) => {
+  const option = event.target.closest("[data-assessment-language]");
+  if (!option) return;
+  setAssessmentVoiceLanguage(option.dataset.assessmentLanguage);
+  assessmentLanguageSwitch?.classList.remove("open");
+});
+
+assessmentLanguageTrigger?.addEventListener("click", () => {
+  assessmentLanguageSwitch?.classList.toggle("open");
+});
+
+setAssessmentVoiceLanguage("mandarin");

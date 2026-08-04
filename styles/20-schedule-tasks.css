@@ -1551,18 +1551,18 @@
 }
 
 .img-banner {
-  background-image: url("assets/service-banner-real.png");
+  background-image: url("../assets/service-banner-real.png");
 }
 
 .img-weight {
-  background-image: url("assets/service-weight-real.png");
+  background-image: url("../assets/service-weight-real.png");
 }
 
 .img-sugar,
 .img-pressure,
 .img-nutrition,
 .img-comprehensive {
-  background-image: url("assets/service-other-real.png");
+  background-image: url("../assets/service-other-real.png");
   background-size: 200% 200%;
 }
 

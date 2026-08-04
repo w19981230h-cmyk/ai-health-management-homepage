@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260728-health-data-manual-v1">
+  <link rel="stylesheet" href="styles.css?v=20260804-ui-notes-project-seed-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -77,34 +77,9 @@
       <section class="service-section home-only">
         <div class="section-heading">
           <h2>健康服务</h2>
-          <a href="#">查看全部 〉</a>
+          <a href="#service" id="homeServiceViewAll">查看全部 〉</a>
         </div>
-        <div class="service-list">
-          <article class="service-card">
-            <div class="service-photo photo-sugar" aria-hidden="true"></div>
-            <div class="service-copy">
-              <h3>90天控糖管理服务包</h3>
-              <p>月销量 7,560+</p>
-            </div>
-            <button type="button">查看详情</button>
-          </article>
-          <article class="service-card">
-            <div class="service-photo photo-weight" aria-hidden="true"></div>
-            <div class="service-copy">
-              <h3>90天减重管理服务包</h3>
-              <p>月销量 9,860+</p>
-            </div>
-            <button type="button">查看详情</button>
-          </article>
-          <article class="service-card">
-            <div class="service-photo photo-care" aria-hidden="true"></div>
-            <div class="service-copy">
-              <h3>90天综合健康服务包</h3>
-              <p>月销量 6,230+</p>
-            </div>
-            <button type="button">查看详情</button>
-          </article>
-        </div>
+        <div class="service-list home-package-list" id="homeServiceList" aria-label="首页健康服务包"></div>
         <div class="service-empty" role="status">
           <i aria-hidden="true"></i>
           <strong>暂无健康服务</strong>
@@ -241,83 +216,178 @@
         <button class="service-fab" id="serviceFab" type="button" aria-label="服务操作">+</button>
       </section>
 
-      <section class="service-detail-page" id="serviceDetailPage" aria-label="服务详情">
-        <header class="detail-nav">
-          <button class="detail-back" id="detailBack" type="button" aria-label="返回"></button>
-          <h1>服务详情</h1>
-          <button class="detail-share" id="detailShare" type="button" aria-label="分享"></button>
-        </header>
-
+      <section class="service-detail-page reference-service-detail" id="serviceDetailPage" aria-label="服务详情">
         <main class="detail-scroll">
-          <section class="detail-patient-card" aria-label="服务使用人">
-            <span class="detail-patient-avatar" id="detailPatientAvatar" aria-hidden="true"></span>
-            <div>
-              <em>服务使用人</em>
-              <strong id="detailPatientName">张女士</strong>
-              <p id="detailPatientMeta">女｜32岁</p>
-            </div>
-          </section>
-
-          <section class="detail-hero">
+          <section class="detail-showcase">
             <div class="detail-product service-img img-weight" id="detailProductCover" aria-hidden="true"></div>
-          </section>
-
-          <section class="detail-title">
-            <h2 id="detailServiceTitle">90天减重管理服务包</h2>
-            <p id="detailServiceTags">科学减重｜饮食管理｜运动指导｜<span>专业营养师团队</span></p>
-            <div class="price-row">
-              <strong id="detailServicePrice">¥299</strong>
-              <del>¥599</del>
-              <em id="detailServiceSales">月销量 9,860+</em>
+            <div class="detail-showcase-status" aria-hidden="true"><strong>9:41</strong><span></span></div>
+            <div class="detail-showcase-nav">
+              <button class="detail-back" id="detailBack" type="button" aria-label="返回"></button>
+              <button class="detail-share" id="detailShare" type="button" aria-label="更多操作"></button>
             </div>
+            <div class="detail-showcase-copy" aria-hidden="true"><strong>专业解读</strong><span>健康指导</span></div>
+            <div class="detail-showcase-badges" aria-hidden="true"><i>♥</i><i>＋</i><i>●</i></div>
           </section>
 
-          <section class="guarantee-strip">
-            <span><i></i>服务未开始 可随时退款</span>
-            <span><i></i>已服务 3268 人成功减重</span>
-          </section>
-
-          <section class="detail-section intro-section">
-            <h3>服务简介</h3>
-            <p id="detailServiceDesc">通过个性化饮食和运动方案，结合科学管理方法，帮助您健康减重，改善体脂率，塑造理想体型，养成健康生活习惯。</p>
-            <div class="ability-grid">
-              <div><i class="line-icon icon-plan"></i><strong>个性化方案</strong><span>定制减重计划</span></div>
-              <div><i class="line-icon icon-service"></i><strong>专业指导</strong><span>营养师全程指导</span></div>
-              <div><i class="line-icon icon-track"></i><strong>数据跟踪</strong><span>记录健康变化</span></div>
-              <div><i class="line-icon icon-user"></i><strong>专属服务</strong><span>1对1专属服务</span></div>
+          <section class="detail-summary-card">
+            <h1 id="detailServiceTitle">90天减重管理服务包</h1>
+            <p class="detail-tags" id="detailServiceTags">科学减重｜饮食管理｜运动指导｜专业营养师团队</p>
+            <div class="detail-price-row">
+              <strong id="detailServicePrice">¥299</strong><span>/ 90天</span>
+              <em>已售：<b id="detailServiceSales">9,860+</b></em>
             </div>
+            <p class="detail-lead"><i></i><span id="detailServiceDesc">通过个性化饮食和运动方案，结合专业团队评估与持续跟踪，帮助您建立可执行的健康管理计划。</span></p>
+
+            <article class="detail-bound-patient" id="detailBoundPatient" hidden>
+              <span class="detail-patient-avatar female" id="detailPatientAvatar">张</span>
+              <div><em>已绑定服务用户</em><strong id="detailPatientName">张女士</strong><p id="detailPatientMeta">女 · 35岁</p></div>
+              <i aria-hidden="true"></i>
+            </article>
+
           </section>
 
-          <section class="detail-section content-section">
-            <h3>服务内容</h3>
-            <article><i class="line-icon icon-eval"></i><div><strong>健康评估</strong><p>体成分分析、生活习惯评估、健康风险评估</p></div></article>
-            <article><i class="line-icon icon-food"></i><div><strong>饮食管理</strong><p>个性化饮食方案、食谱推荐、饮食指导</p></div></article>
-            <article><i class="line-icon icon-sport"></i><div><strong>运动指导</strong><p>运动计划定制、动作指导、运动跟踪</p></div></article>
-            <article><i class="line-icon icon-track"></i><div><strong>数据跟踪</strong><p>体重、体脂等数据记录、阶段性分析报告</p></div></article>
-            <article><i class="line-icon icon-user"></i><div><strong>专属服务</strong><p>专业营养师1对1指导，在线答疑解惑</p></div></article>
+          <section class="reference-detail-section detail-introduction">
+            <h2>服务介绍</h2>
+            <p>服务结合专业医学评估方法与数字化健康管理工具，通过智能设备记录、健康档案整理和专家团队分析，形成连续、可追踪的健康管理过程。</p>
+            <p>服务期间将依据您的指标变化和执行情况，制定阶段管理计划，并指导记录饮食、运动及相关健康数据，让每次调整都有依据。</p>
           </section>
 
-          <section class="detail-section flow-section">
-            <h3>服务流程</h3>
-            <div class="flow-row">
-              <div><i class="line-icon icon-eval"></i><strong>健康评估</strong><span>全面评估身体健康状况</span></div>
-              <div><i class="line-icon icon-plan"></i><strong>方案制定</strong><span>定制专属减重计划</span></div>
-              <div><i class="line-icon icon-track"></i><strong>执行跟踪</strong><span>日常指导与调整</span></div>
-              <div><i class="line-icon icon-shield"></i><strong>效果评估</strong><span>阶段性评估与优化</span></div>
-            </div>
+          <section class="reference-detail-section detail-benefits">
+            <h2>服务权益</h2>
+            <table>
+              <thead><tr><th>服务项目</th><th>内容详情</th><th>服务频次</th></tr></thead>
+              <tbody>
+                <tr><td>健康档案</td><td>建立完整健康档案，整合就诊记录、检查结果和日常健康信息</td><td>1次</td></tr>
+                <tr><td rowspan="2">个性化健康管理</td><td>纳入管理后进行全面健康评估，并制定个性化管理计划</td><td>1次</td></tr>
+                <tr><td>根据管理周期回访情况，复诊结果等动态调整健康计划</td><td>12次</td></tr>
+                <tr><td rowspan="2">健康随访</td><td>定期线上健康回访服务，跟进计划执行情况</td><td>全程持续</td></tr>
+                <tr><td>定期推送复诊提醒，线上问诊前提供资料整理</td><td>1次</td></tr>
+              </tbody>
+            </table>
           </section>
 
-          <section class="detail-section audience-section">
-            <h3>适用人群</h3>
-            <p>体重超标、希望科学减重的人群</p>
-            <p>体脂率偏高、希望改善体型的人群</p>
-            <p>有减重需求、希望养成健康生活习惯的人群</p>
+          <section class="detail-rules">
+            <h2>服务规则</h2>
+            <ol>
+              <li>支付成功后，服务包状态为“待使用”，用户需在支付成功后30天内绑定就诊人。</li>
+              <li>服务包绑定就诊人后立即生效，服务周期自绑定成功之日起计算。</li>
+              <li>一个订单仅限绑定一名就诊人，绑定生效后暂不支持用户自行更换。</li>
+              <li>待使用且未绑定就诊人的订单支持申请全额原路退款；退款完成后该服务包不可继续使用。</li>
+              <li>服务生效后暂不支持自助退款，如有特殊情况请联系客服。</li>
+              <li>服务权益仅包含本页面明确列示的服务内容，不包含药品、检查、检验、线下诊疗及其他未列明费用。</li>
+              <li>实际服务时间及响应方式以服务页面说明为准。</li>
+            </ol>
           </section>
         </main>
 
         <footer class="buy-bar">
-          <button class="buy-button" id="buyButton" type="button">立即购买 ¥299</button>
+          <div class="detail-footer-price"><span id="detailFooterPrice">¥299</span><em>/ 90天</em></div>
+          <div class="detail-order-actions">
+            <button class="detail-refund-button" id="refundAfterSalesButton" type="button" hidden>退款/售后</button>
+            <button class="buy-button" id="buyButton" type="button">立即订阅</button>
+          </div>
         </footer>
+      </section>
+
+      <section class="sub-page refund-order-page" id="refundProgressPage" aria-label="退款进度">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="refund-page-nav">
+          <button class="back-page" type="button" aria-label="返回我的订单"></button>
+          <h1>退款进度</h1>
+          <span aria-hidden="true"></span>
+        </header>
+        <main class="refund-page-content">
+          <section class="refund-progress-card">
+            <h2>退款处理中</h2>
+            <p>退款申请已受理，请耐心等待平台完成审核</p>
+            <ol class="refund-stepper" aria-label="退款流程">
+              <li class="done"><i>✓</i><strong>提交申请</strong><em>已完成</em></li>
+              <li class="current"><i>2</i><strong>平台审核</strong><em>处理中</em></li>
+              <li><i>3</i><strong>原路退款</strong><em>待处理</em></li>
+            </ol>
+          </section>
+          <aside class="refund-note"><strong>退款说明</strong><p>平台预计在1–3个工作日内完成审核。审核通过后，退款将原路退回微信支付账户，实际到账时间以支付机构为准。</p></aside>
+          <section class="refund-service-card">
+            <h2>退款服务</h2>
+            <article class="refund-product-row">
+              <i class="refund-product-cover service-img img-weight" id="refundProgressCover" aria-hidden="true"></i>
+              <div><strong id="refundProgressTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundProgressAmount">¥299</em></div>
+            </article>
+            <dl class="refund-order-info">
+              <div><dt>退款状态</dt><dd class="refund-state-text">退款中</dd></div>
+              <div><dt>退款金额</dt><dd id="refundProgressMoney">¥299</dd></div>
+              <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
+              <div><dt>订单编号</dt><dd id="refundProgressOrderNo">O3001</dd></div>
+              <div><dt>下单时间</dt><dd id="refundProgressOrderTime">2026-07-22 15:19</dd></div>
+            </dl>
+          </section>
+        </main>
+      </section>
+
+      <section class="sub-page refund-order-page refunded-order-page" id="refundSuccessPage" aria-label="退款详情">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="refund-page-nav">
+          <button class="back-page" type="button" aria-label="返回我的订单"></button>
+          <h1>退款详情</h1>
+          <span aria-hidden="true"></span>
+        </header>
+        <main class="refund-page-content">
+          <section class="refund-success-card">
+            <i aria-hidden="true">✓</i>
+            <h2>退款成功</h2>
+            <p>退款已原路退回微信支付账户</p>
+          </section>
+          <aside class="refund-note"><strong>到账说明</strong><p>退款已由平台处理完成。因银行或支付机构处理时间不同，具体到账时间请以微信支付账单为准。</p></aside>
+          <section class="refund-service-card">
+            <h2>退款服务</h2>
+            <article class="refund-product-row">
+              <i class="refund-product-cover service-img img-weight" id="refundSuccessCover" aria-hidden="true"></i>
+              <div><strong id="refundSuccessTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundSuccessAmount">¥299</em></div>
+            </article>
+            <dl class="refund-order-info">
+              <div><dt>退款状态</dt><dd class="refund-success-text">已退款</dd></div>
+              <div><dt>退款金额</dt><dd id="refundSuccessMoney">¥299</dd></div>
+              <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
+              <div><dt>订单编号</dt><dd id="refundSuccessOrderNo">O4001</dd></div>
+              <div><dt>下单时间</dt><dd id="refundSuccessOrderTime">2026-07-18 09:32</dd></div>
+            </dl>
+          </section>
+        </main>
+      </section>
+
+      <section class="service-purchase-success" id="servicePurchaseSuccessPage" aria-label="订阅结果">
+        <header class="purchase-success-status" aria-hidden="true"><strong>9:41</strong><span></span></header>
+        <header class="purchase-success-nav">
+          <button id="purchaseSuccessBack" type="button" aria-label="返回服务详情"></button>
+          <h1>订阅结果</h1>
+          <button class="mini-program-capsule purchase-success-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span><span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <main class="purchase-success-content">
+          <section class="purchase-success-state" aria-label="订阅成功">
+            <div class="purchase-success-mark" aria-hidden="true"><i></i><b></b><em></em><span></span></div>
+            <h2>您已订阅成功!</h2>
+          </section>
+          <section class="purchase-success-benefit">
+            <header><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 19 8v8l-7 4.5L5 16V8l7-4.5Z"/><path d="m9 12 2 2 4-4"/></svg></i><strong>服务包权益已发放</strong></header>
+            <div class="purchase-success-slot" aria-hidden="true"></div>
+            <article class="purchase-success-order-card">
+              <div class="purchase-success-service">
+                <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.4-2.8 7.3-7 9-4.2-1.7-7-4.6-7-9V6l7-2.5Z"/><path d="M12 8v7M8.5 11.5h7"/></svg></i>
+                <div><strong id="purchaseSuccessServiceTitle">90天减重管理服务包</strong><p>价格透明 · 专业陪伴 · 每周反馈</p></div>
+              </div>
+              <dl class="purchase-success-summary">
+                <div><dt>服务周期：</dt><dd>90天</dd></div>
+                <div><dt>购买数量：</dt><dd>5</dd></div>
+                <div><dt>金额：</dt><dd><strong>¥897元</strong></dd></div>
+              </dl>
+              <button id="bindServiceUserButton" type="button">立即使用</button>
+              <p id="purchaseSuccessBindingHint">定制专属您的健康管理计划</p>
+            </article>
+          </section>
+          <button class="purchase-success-more" id="purchaseSuccessMore" type="button">查看更多服务</button>
+        </main>
       </section>
 
       <section class="mine-page app-view" id="minePage" aria-label="我的">
@@ -384,10 +454,10 @@
             健康评估
           </button>
           <button type="button" role="tab" aria-selected="false" data-profile-tab="orders">
-            <i class="shortcut-icon shortcut-service service-count-badge" data-count="3">
+            <i class="shortcut-icon shortcut-service service-count-badge" data-count="14">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h10l1 11H6l1-11Z"/><path d="M9.5 8.5a2.5 2.5 0 0 1 5 0"/><path d="M12 12v4M10 14h4"/></svg>
             </i>
-            我的服务
+            我的订单
           </button>
         </section>
         <section class="profile-content" aria-live="polite">
@@ -438,45 +508,20 @@
             </div>
             <div class="assessment-unlock-divider">您还可以解锁以下健康评估</div>
             <div class="assessment-group">
-              <article><div><strong>糖尿病风险评估</strong><p>约 3 分钟</p></div><button type="button">开始评估</button></article>
-              <article><div><strong>心血管风险评估</strong><p>约 5 分钟</p></div><button type="button">开始评估</button></article>
-              <article><div><strong>骨质疏松风险评估</strong><p>约 3 分钟</p></div><button type="button">开始评估</button></article>
+              <article><div><strong>糖尿病风险评估</strong><p>约 3 分钟</p></div><button type="button" data-open-page="assessmentStartPage">开始评估</button></article>
+              <article><div><strong>心血管风险评估</strong><p>约 5 分钟</p></div><button type="button" data-open-page="assessmentStartPage">开始评估</button></article>
+              <article><div><strong>骨质疏松风险评估</strong><p>约 3 分钟</p></div><button type="button" data-open-page="assessmentStartPage">开始评估</button></article>
             </div>
           </section>
           <section class="orders-panel profile-panel" data-profile-panel="orders">
             <div class="order-status-tabs" role="tablist" aria-label="订单状态">
-              <button class="active" type="button" data-order-tab="active">进行中 <em>3</em></button>
-              <button type="button" data-order-tab="ended">已结束</button>
+              <button class="active" type="button" data-order-tab="all">全部<em data-order-count="all">14</em></button>
+              <button type="button" data-order-tab="pending">待使用<em data-order-count="pending">4</em></button>
+              <button type="button" data-order-tab="effective">生效中<em data-order-count="effective">4</em></button>
+              <button type="button" data-order-tab="refunding">退款中<em data-order-count="refunding">3</em></button>
+              <button type="button" data-order-tab="refunded">已退款<em data-order-count="refunded">3</em></button>
             </div>
-            <section class="order-service-section active" data-order-panel="active">
-              <article class="archive-service-card" data-service-id="weight" role="button" tabindex="0">
-                <i class="owned-img img-weight"></i>
-                <span><strong>90天减重服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b>生效中</b></div>
-              </article>
-              <article class="archive-service-card" data-service-id="sugar" role="button" tabindex="0">
-                <i class="owned-img img-sugar"></i>
-                <span><strong>90天控糖服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b>生效中</b></div>
-              </article>
-              <article class="archive-service-card" data-service-id="comprehensive" role="button" tabindex="0">
-                <i class="owned-img img-comprehensive"></i>
-                <span><strong>术后质量管理服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b>生效中</b></div>
-              </article>
-            </section>
-            <section class="order-service-section ended" data-order-panel="ended">
-              <article class="archive-service-card" data-service-id="pressure" role="button" tabindex="0">
-                <i class="owned-img img-pressure"></i>
-                <span><strong>高血压管理服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b class="pending-status">待评价</b><button class="archive-service-record-btn" type="button" data-service-records="pressure">执行记录</button></div>
-              </article>
-              <article class="archive-service-card" data-service-id="nutrition" role="button" tabindex="0">
-                <i class="owned-img img-nutrition"></i>
-                <span><strong>营养检测服务</strong><em>服务周期至 2027/02/02</em></span>
-                <div class="archive-service-actions"><b class="pending-status">待评价</b><button class="archive-service-record-btn" type="button" data-service-records="nutrition">执行记录</button></div>
-              </article>
-            </section>
+            <section class="order-service-section active" id="orderServiceList" aria-label="订单列表"></section>
           </section>
           <section class="devices-panel profile-panel" data-profile-panel="devices">
             <div class="devices-head">
@@ -501,8 +546,93 @@
         </section>
       </section>
 
-      <section class="sub-page" id="myServicesPage" aria-label="我的服务">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>我的服务</h1></header>
+      <section class="sub-page assessment-start-page" id="assessmentStartPage" aria-label="糖尿病风险评估任务">
+        <button class="assessment-start-back back-page" type="button" aria-label="返回"></button>
+        <section class="assessment-hero" aria-hidden="true">
+          <span class="assessment-float one">科学评估</span>
+          <span class="assessment-float two">多维预判</span>
+          <span class="assessment-float three">精准分析</span>
+          <span class="assessment-float four">高效录入</span>
+          <div class="assessment-robot">
+            <i></i>
+            <b>Hi</b>
+          </div>
+        </section>
+        <section class="assessment-start-content">
+          <div class="assessment-title-row"><span>AI助手</span><span>专业级多维评测</span></div>
+          <h1>糖尿病风险评估任务</h1>
+          <p class="assessment-meta">共计：44题  预计用时：20分钟</p>
+          <div class="assessment-trust">
+            <span>科学评估</span>
+            <span>专业分析</span>
+            <span>权威认证</span>
+          </div>
+          <article class="assessment-audience">
+            <i aria-hidden="true"></i>
+            <div><strong>适用人群：</strong><p>45岁以上关注心血管健康的人群</p></div>
+          </article>
+          <section class="assessment-copy">
+            <h2>评估说明</h2>
+            <p>基于权威临床医学指南，5分钟全方位评估您的血糖健康风险。</p>
+            <ul>
+              <li>指南同步：严格对标最新《中国2型糖尿病防治指南》，确保评估科学有据。</li>
+              <li>多维评估：融合年龄、家族史、生活习惯及亚健康状态。</li>
+            </ul>
+          </section>
+          <section class="assessment-items">
+            <h2>评估项目</h2>
+            <article><i></i><span>生活饮食分析</span><em>共 34 题</em></article>
+            <article><i></i><span>生活饮食分析</span><em>共 34 题</em></article>
+          </section>
+        </section>
+        <footer class="assessment-start-actions">
+          <button type="button" data-open-page="assessmentVoicePage">AI采集</button>
+          <button type="button">表单填写</button>
+        </footer>
+      </section>
+
+      <section class="sub-page assessment-voice-page" id="assessmentVoicePage" aria-label="AI语音采集">
+        <header class="assessment-voice-status" aria-hidden="true">
+          <span>9:41</span>
+          <span></span>
+        </header>
+        <header class="assessment-voice-nav">
+          <button class="assessment-voice-back back-page" type="button" aria-label="返回"></button>
+          <h1 id="assessmentVoiceTitle">健康评估</h1>
+          <button class="mini-program-capsule assessment-voice-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span>
+            <span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <section class="assessment-voice-agent" id="assessmentVoiceAgent" aria-label="AI智能小助手">
+          <div class="assessment-voice-avatar" aria-hidden="true"><em>Hi</em></div>
+          <div>
+            <strong id="assessmentVoiceAgentName">AI智能小助手</strong>
+            <p id="assessmentVoiceAgentDesc">每完成一项，离健康更近一步。</p>
+          </div>
+          <span class="assessment-voice-progress" id="assessmentVoiceProgress">5%<br>进度</span>
+        </section>
+        <section class="assessment-voice-content">
+          <article class="assessment-voice-bubble" id="assessmentVoiceBubbleIntro">你来啦~我是您的 AI 健康小助手～来跟我聊聊最近身体状况吧~</article>
+          <article class="assessment-voice-bubble" id="assessmentVoiceBubbleQuestion">您提到肚子疼，能具体描述一下疼痛的位置和感觉吗?比如是集中在上腹部(像心窝附近)、下腹部(可能涉及肠道或泌尿)，或者像绞痛、胀痛、刀割样等不同性质 <i></i></article>
+        </section>
+        <footer class="assessment-voice-actions">
+          <div class="assessment-language-switch" id="assessmentLanguageSwitch">
+            <button class="assessment-language-trigger" id="assessmentLanguageTrigger" type="button">普通话</button>
+            <div class="assessment-language-menu" id="assessmentLanguageMenu" role="listbox" aria-label="选择语音语言">
+              <button class="active" type="button" role="option" aria-selected="true" data-assessment-language="mandarin">普通话</button>
+              <button type="button" role="option" aria-selected="false" data-assessment-language="english">英语</button>
+              <button type="button" role="option" aria-selected="false" data-assessment-language="sichuan">四川话</button>
+              <button type="button" role="option" aria-selected="false" data-assessment-language="cantonese">粤语</button>
+            </div>
+          </div>
+          <button class="assessment-interrupt" id="assessmentInterrupt" type="button"><i></i><span>点击打断</span></button>
+          <button class="assessment-mic-button" type="button" aria-label="开始语音采集"></button>
+        </footer>
+      </section>
+
+      <section class="sub-page" id="myServicesPage" aria-label="我的订单">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1>我的订单</h1></header>
         <div class="line-tabs"><button class="active" type="button">服务中</button><button type="button">已结束</button></div>
         <div class="sub-list">
           <button class="service-owned" type="button"><i class="owned-img img-weight"></i><span><strong>90天减重服务</strong><em>服务队：营养师团队</em><em>开始时间：2025-05-10</em><em>到期时间：2025-08-07</em></span><b>服务中</b></button>
@@ -849,6 +979,11 @@
         <div class="metric-records-groups" id="metricRecordsGroups"></div>
       </section>
 
+      <section class="sub-page all-checkin-detail-page" id="allCheckinDetailPage" aria-label="当次打卡详情">
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1 id="allCheckinDetailTitle">打卡详情</h1></header>
+        <div class="all-checkin-detail-body" id="allCheckinDetailBody"></div>
+      </section>
+
       <section class="sub-page medicine-records-page" id="medicineRecordsPage" aria-label="用药补充记录列表">
         <header class="sub-nav medicine-records-nav">
           <button class="back-page" type="button"></button>
@@ -1031,6 +1166,7 @@
               <option value="午加餐">午加餐</option>
               <option value="晚餐">晚餐</option>
               <option value="晚加餐">晚加餐</option>
+              <option value="夜宵">夜宵</option>
             </select>
           </label>
           <label class="diet-edit-food-row diet-detail-edit-only">
@@ -1047,7 +1183,7 @@
         </div>
         <footer>
           <button class="diet-food-sheet-delete" id="dietFoodSheetDelete" type="button">删除</button>
-          <button id="dietGramConfirm" type="button">确定</button>
+          <button id="dietGramConfirm" type="button">保存</button>
         </footer>
       </section>
 
@@ -1107,7 +1243,7 @@
         <div class="water-record-detail-body" id="waterRecordDetailBody"></div>
         <footer class="water-record-detail-actions">
           <button class="water-record-delete" id="waterRecordDetailDelete" type="button">删除</button>
-          <button class="water-record-save" id="waterRecordDetailSave" type="button">保存修改</button>
+          <button class="water-record-save" id="waterRecordDetailSave" type="button">保存</button>
         </footer>
       </section>
 
@@ -1399,8 +1535,9 @@
           <button class="cycle-confirm" type="button">确认记录</button>
         </div>
       </section>
-      <section class="metric-record-sheet" id="metricRecordSheet" aria-label="记录健康指标">
+      <section class="sub-page metric-record-sheet" id="metricRecordSheet" aria-label="记录健康指标">
         <div class="metric-record-sheet-head">
+          <button class="metric-record-back back-page" type="button" aria-label="返回"></button>
           <h3 id="metricRecordSheetTitle">记录指标</h3>
           <button class="metric-record-close" type="button" aria-label="关闭"></button>
         </div>
@@ -1432,20 +1569,20 @@
       <section class="purchase-dialog metric-delete-dialog" id="metricDeleteDialog" aria-label="删除指标记录">
         <h3>确认删除这条指标记录？</h3><p>删除后将无法恢复。</p><div><button class="dialog-cancel" type="button">取消</button><button class="metric-delete-confirm" type="button">删除</button></div>
       </section>
-      <section class="weight-record-detail-dialog" id="weightRecordDetailDialog" aria-label="体重记录详情">
-        <header><h3>记录详情</h3><button class="weight-record-dialog-close" type="button" aria-label="关闭"></button></header>
+      <section class="sub-page weight-record-detail-dialog weight-record-detail-page" id="weightRecordDetailDialog" aria-label="体重记录详情">
+        <header class="sub-nav weight-record-detail-nav"><button class="back-page" type="button" aria-label="返回"></button><h1>记录详情</h1></header>
         <div class="weight-record-detail-body" id="weightRecordDetailBody"></div>
         <div class="weight-record-detail-actions">
           <button class="weight-record-delete-action" id="weightRecordDeleteAction" type="button">删除</button>
-          <button class="weight-record-save-action" id="weightRecordSaveAction" type="button">保存修改</button>
+          <button class="weight-record-save-action" id="weightRecordSaveAction" type="button">保存</button>
         </div>
       </section>
-      <section class="heart-record-detail-dialog weight-record-detail-dialog" id="heartRecordDetailDialog" aria-label="心率记录详情">
-        <header><h3>编辑心率记录</h3><button class="heart-record-dialog-close weight-record-dialog-close" type="button" aria-label="关闭"></button></header>
+      <section class="sub-page heart-record-detail-dialog weight-record-detail-dialog weight-record-detail-page" id="heartRecordDetailDialog" aria-label="心率记录详情">
+        <header class="sub-nav weight-record-detail-nav"><button class="back-page" type="button" aria-label="返回"></button><h1>心率记录详情</h1></header>
         <div class="weight-record-detail-body" id="heartRecordDetailBody"></div>
         <div class="weight-record-detail-actions">
           <button class="weight-record-delete-action" id="heartRecordDeleteAction" type="button">删除</button>
-          <button class="weight-record-save-action" id="heartRecordSaveAction" type="button">保存修改</button>
+          <button class="weight-record-save-action" id="heartRecordSaveAction" type="button">保存</button>
         </div>
       </section>
 
@@ -1560,6 +1697,7 @@
               <button type="button" data-diet-meal="午加餐">午加餐</button>
               <button type="button" data-diet-meal="晚餐">晚餐</button>
               <button type="button" data-diet-meal="晚加餐">晚加餐</button>
+              <button type="button" data-diet-meal="夜宵">夜宵</button>
             </div>
           </section>
           <label class="diet-time-row"><span>饮食时间 <em>*</em></span>
@@ -1704,7 +1842,7 @@
         </header>
         <div class="medicine-item-detail-body" id="medicineItemDetailBody"></div>
         <footer>
-          <button id="medicineItemDelete" type="button">删除此记录</button>
+          <button id="medicineItemDelete" type="button">删除</button>
         </footer>
       </section>
       <section class="medicine-time-picker" id="medicineTimePicker" aria-label="选择用药时间">
@@ -1796,10 +1934,10 @@
           <label>分钟<select id="sportPickerMinute"></select></label>
         </div>
       </section>
-      <section class="sport-record-editor" id="sportRecordEditor" aria-label="运动记录详情">
-        <header>
-          <span aria-hidden="true"></span>
-          <button class="sport-record-close" id="sportRecordClose" type="button" aria-label="关闭">×</button>
+      <section class="sub-page sport-record-editor sport-record-detail-page" id="sportRecordEditor" aria-label="运动记录详情">
+        <header class="sub-nav sport-record-editor-nav">
+          <button class="back-page" type="button" aria-label="返回"></button>
+          <h1 id="sportRecordEditorTitle">运动记录详情</h1>
         </header>
         <div class="sport-record-editor-body">
           <article class="sport-record-editor-card">
@@ -1838,7 +1976,7 @@
         </div>
         <footer>
           <button class="sport-record-footer-delete" id="sportRecordDelete" type="button">删除</button>
-          <button id="sportRecordSave" type="button">确定</button>
+          <button id="sportRecordSave" type="button">保存修改</button>
         </footer>
       </section>
       <section class="sport-success-dialog" id="sportSuccessDialog" aria-label="打卡成功">
@@ -1970,15 +2108,89 @@
       <section class="purchase-dialog task-delete-dialog" id="taskDeleteDialog" aria-label="删除解析任务">
         <h3>确认删除该解析任务？</h3><p>删除后将无法恢复。</p><div><button class="dialog-cancel" type="button">取消</button><button class="task-delete-confirm" type="button">删除</button></div>
       </section>
-      <section class="purchase-dialog" id="purchaseDialog" aria-label="确认购买服务">
-        <h3>确认购买服务</h3>
-        <p><span>服务名称</span><strong>90天减重管理服务包</strong></p>
-        <p><span>服务周期</span><strong>90天</strong></p>
-        <p><span>支付金额</span><strong>¥299</strong></p>
-        <div>
-          <button class="dialog-cancel" type="button">取消</button>
-          <button class="dialog-confirm" type="button">确认支付</button>
+      <section class="purchase-dialog service-purchase-sheet" id="purchaseDialog" aria-label="购买服务包">
+        <i class="purchase-sheet-handle" aria-hidden="true"></i>
+        <header class="purchase-sheet-header">
+          <h3>购买服务包</h3>
+          <button class="purchase-sheet-close dialog-cancel" type="button" aria-label="关闭购买面板"></button>
+        </header>
+        <div class="purchase-sheet-scroll">
+          <article class="purchase-package-summary">
+            <div class="purchase-package-cover service-img img-weight" id="purchasePackageCover" aria-hidden="true"></div>
+            <div>
+              <h4 id="purchasePackageTitle">90天减重管理服务包</h4>
+              <p id="purchasePackageTags">科学减重｜饮食管理｜运动指导</p>
+              <strong id="purchasePackagePrice">¥299</strong>
+            </div>
+          </article>
+
+          <section class="purchase-form-section purchase-quantity-row">
+            <div><strong>购买数量</strong><span>最多购买100个</span></div>
+            <div class="purchase-stepper" aria-label="购买数量调整">
+              <button id="purchaseQuantityMinus" type="button" aria-label="减少购买数量">−</button>
+              <input id="purchaseQuantityInput" type="number" min="1" max="100" step="1" value="1" inputmode="numeric" aria-label="购买数量">
+              <button id="purchaseQuantityPlus" type="button" aria-label="增加购买数量">＋</button>
+            </div>
+          </section>
+
+          <label class="purchase-form-section purchase-phone-field" for="purchasePhoneInput">
+            <strong>短信接收手机号</strong>
+            <input id="purchasePhoneInput" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="请输入11位手机号">
+            <em id="purchasePhoneError" aria-live="polite"></em>
+            <small>购买成功后，将通过该手机号发送购买成功短信。</small>
+          </label>
+
+          <section class="purchase-form-section purchase-payment-row">
+            <div><strong>支付方式</strong><span>安全便捷支付</span></div>
+            <div class="wechat-pay">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#13BD68"/>
+                <path fill="#fff" d="M14.2 8.3c-5 0-9 3.2-9 7.2 0 2.3 1.3 4.3 3.5 5.7l-.8 2.6 3-1.5c1 .3 2.1.5 3.3.5h.5a7.4 7.4 0 0 1-.4-2.3c0-4 3.7-7.2 8.3-7.2h.3c-1.2-2.9-4.6-5-8.7-5Zm-3.1 4.4a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm6.1 0a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/>
+                <path fill="#fff" d="M26.8 20.5c0-3.3-3.2-6-7.1-6s-7.1 2.7-7.1 6 3.2 6 7.1 6c.9 0 1.8-.1 2.6-.4l2.5 1.3-.7-2.2c1.7-1.1 2.7-2.8 2.7-4.7Zm-9.5-1.9a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Zm4.8 0a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Z"/>
+              </svg>
+              <span>微信支付</span>
+            </div>
+          </section>
+
+          <label class="purchase-agreement-row">
+            <input id="purchaseAgreementCheck" type="checkbox">
+            <span>我已阅读并同意</span>
+            <button type="button" data-purchase-agreement="service">《用户协议》</button>
+            <span>和</span>
+            <button type="button" data-purchase-agreement="privacy">《用户隐私协议》</button>
+          </label>
+          <p class="purchase-agreement-error" id="purchaseAgreementError" aria-live="polite"></p>
         </div>
+
+        <footer class="purchase-sheet-footer">
+          <div><strong id="purchaseTotalAmount">¥299</strong><span>共 <b id="purchaseTotalQuantity">1</b> 件</span></div>
+          <button id="purchaseConfirmButton" type="button">确定</button>
+        </footer>
+      </section>
+
+      <div class="purchase-agreement-mask" id="purchaseAgreementMask" aria-hidden="true"></div>
+      <section class="bottom-sheet purchase-agreement-sheet" id="purchaseAgreementSheet" aria-label="协议内容">
+        <i class="purchase-sheet-handle" aria-hidden="true"></i>
+        <header><h3 id="purchaseAgreementTitle">用户协议</h3><button id="purchaseAgreementClose" type="button" aria-label="关闭协议"></button></header>
+        <div id="purchaseAgreementContent"></div>
+      </section>
+      <div class="service-user-mask" id="serviceUserMask" aria-hidden="true"></div>
+      <section class="service-user-sheet" id="serviceUserSheet" aria-label="选择服务用户">
+        <i class="service-user-handle" aria-hidden="true"></i>
+        <header><h3>选择服务用户</h3><button id="serviceUserClose" type="button" aria-label="关闭就诊人列表"></button></header>
+        <p class="service-user-tip">服务绑定后立即生效，请确认就诊人信息</p>
+        <div class="service-user-list" id="serviceUserList" role="radiogroup" aria-label="就诊人列表">
+          <label class="active" data-service-user-row><span class="service-user-avatar female">张</span><span><strong>张女士</strong><em>女 · 35岁 · 本人</em><small>身份证号：5101**********1234</small></span><input type="radio" name="serviceUser" value="张女士" data-sex="female" data-age="35" data-id-card="5101**********1234" checked><i aria-hidden="true"></i></label>
+          <label data-service-user-row><span class="service-user-avatar male">李</span><span><strong>李先生</strong><em>男 · 42岁 · 家人</em><small>身份证号：5101**********5678</small></span><input type="radio" name="serviceUser" value="李先生" data-sex="male" data-age="42" data-id-card="5101**********5678"><i aria-hidden="true"></i></label>
+          <label data-service-user-row><span class="service-user-avatar child">宝</span><span><strong>小宝</strong><em>男 · 8岁 · 儿童</em><small>身份证号：5101**********9012</small></span><input type="radio" name="serviceUser" value="小宝" data-sex="male" data-age="8" data-id-card="5101**********9012"><i aria-hidden="true"></i></label>
+        </div>
+        <button class="service-user-confirm" id="serviceUserConfirm" type="button">确认绑定</button>
+      </section>
+      <div class="binding-confirm-mask" id="bindingConfirmMask" aria-hidden="true"></div>
+      <section class="binding-confirm-dialog" id="bindingConfirmDialog" role="dialog" aria-modal="true" aria-label="确认绑定服务用户">
+        <h3>确认绑定服务用户</h3>
+        <p>服务包绑定后将立即生效，并为该就诊人生成健康计划。为保证健康数据准确，生效后暂不支持自行更换就诊人，请确认信息无误。</p>
+        <div><button id="bindingConfirmCancel" type="button">取消</button><button id="bindingConfirmSubmit" type="button">确定</button></div>
       </section>
       <div class="toast" id="toast">已加入收藏</div>
 
@@ -2021,14 +2233,49 @@
     </section>
   </main>
 
-  <script src="scripts/00-dom-state.js?v=20260728-pressure-unified-values-v1"></script>
+  <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面备注工具">
+    <button id="uiNoteAdd" type="button">添加备注</button>
+    <button id="uiNoteToggle" type="button">隐藏备注</button>
+    <em id="uiNoteCount" title="当前页面备注数量">0</em>
+  </aside>
+  <div class="ui-note-layer" id="uiNoteLayer" aria-label="当前页面备注点"></div>
+  <div class="ui-note-editor-mask" id="uiNoteEditorMask" data-ui-note-ui></div>
+  <section class="ui-note-editor" id="uiNoteEditor" role="dialog" aria-modal="true" aria-labelledby="uiNoteEditorHeading" data-ui-note-ui>
+    <header>
+      <h2 id="uiNoteEditorHeading">添加备注</h2>
+      <button id="uiNoteEditorClose" type="button" aria-label="关闭备注弹窗"></button>
+    </header>
+      <form id="uiNoteForm">
+      <label class="ui-note-number-field" id="uiNoteNumberField" hidden>
+        备注编号
+        <input id="uiNoteNumber" type="number" min="1" max="9999" step="1" inputmode="numeric" required>
+      </label>
+        <label>
+        备注标题
+        <input id="uiNoteTitle" type="text" maxlength="120" placeholder="例如：金额调整为299元" required>
+      </label>
+      <label>
+        备注内容
+        <textarea id="uiNoteContent" maxlength="2000" placeholder="请填写需要修改的文案、展示内容或交互说明"></textarea>
+      </label>
+      <p class="ui-note-editor-error" id="uiNoteEditorError" role="alert"></p>
+      <footer>
+        <button class="ui-note-delete" id="uiNoteDelete" type="button">删除备注</button>
+        <button class="ui-note-cancel" id="uiNoteCancel" type="button">取消</button>
+        <button class="ui-note-save" id="uiNoteSave" type="submit">保存备注</button>
+      </footer>
+    </form>
+  </section>
+
+  <script src="scripts/00-dom-state.js?v=20260803-order-refund-v1"></script>
   <script src="scripts/01-data-store.js?v=20260727-archive-upload-v1"></script>
-  <script src="scripts/10-schedule.js?v=20260727-schedule-patient-mask-v1"></script>
-  <script src="scripts/20-diet-sport-detail.js?v=20260729-water-record-edit-v1"></script>
-  <script src="scripts/30-medicine.js?v=20260726-pressure-sheet-v1"></script>
+  <script src="scripts/10-schedule.js?v=20260731-diet-meal-night-v1"></script>
+  <script src="scripts/20-diet-sport-detail.js?v=20260731-record-detail-page-v1"></script>
+  <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260727-report-card-v1"></script>
-  <script src="scripts/60-metrics.js?v=20260727-pressure-delete-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260728-portrait-report-sheet-v1"></script>
+  <script src="scripts/50-reports-services.js?v=20260731-assessment-language-default-v1"></script>
+  <script src="scripts/60-metrics.js?v=20260731-assessment-language-default-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260803-order-count-v1"></script>
+  <script src="scripts/80-ui-notes.js?v=20260804-ui-notes-project-seed-v1"></script>
 </body>
 </html>

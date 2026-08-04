@@ -641,6 +641,87 @@ function renderPackages(filter = "all") {
   `).join("");
 }
 
+function renderHomePackages() {
+  if (!homeServiceList) return;
+  homeServiceList.innerHTML = packages.map((item) => `
+    <article class="package-card home-package-card" data-home-service-id="${item.id}" role="button" tabindex="0" aria-label="查看${item.title}详情">
+      <div class="package-cover service-img ${item.img}" aria-hidden="true"></div>
+      <div class="package-info">
+        <h3>${item.title}</h3>
+        <p class="package-tags">${item.tags}</p>
+        <p class="package-sales"><strong>${item.price}</strong><span>${item.sales}</span></p>
+      </div>
+      <i class="package-arrow" aria-hidden="true"></i>
+    </article>
+  `).join("");
+}
+
+const serviceOrders = [
+  { id: "o1001", serviceId: "weight", status: "pending", orderTime: "2026-07-28 16:30" },
+  { id: "o1002", serviceId: "sugar", status: "pending", orderTime: "2026-07-20 09:15" },
+  { id: "o1003", serviceId: "nutrition", status: "pending", orderTime: "2026-07-09 14:08" },
+  { id: "o1004", serviceId: "pressure", status: "pending", orderTime: "2026-06-18 11:20" },
+  { id: "o2001", serviceId: "weight", status: "effective", orderTime: "2026-07-25 10:42" },
+  { id: "o2002", serviceId: "sugar", status: "effective", orderTime: "2026-07-16 18:05" },
+  { id: "o2003", serviceId: "comprehensive", status: "effective", orderTime: "2026-07-01 08:50" },
+  { id: "o2004", serviceId: "pressure", status: "effective", orderTime: "2026-06-25 13:36" },
+  { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19" },
+  { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10" },
+  { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45" },
+  { id: "o4001", serviceId: "pressure", status: "refunded", orderTime: "2026-07-18 09:32" },
+  { id: "o4002", serviceId: "weight", status: "refunded", orderTime: "2026-06-29 20:06" },
+  { id: "o4003", serviceId: "nutrition", status: "refunded", orderTime: "2026-06-08 10:18" }
+];
+
+const orderStatusMeta = {
+  pending: { label: "待使用", priority: 0 },
+  effective: { label: "生效中", priority: 1 },
+  refunding: { label: "退款中", priority: 2 },
+  refunded: { label: "已退款", priority: 3 }
+};
+
+function sortedServiceOrders(status = "all") {
+  return serviceOrders
+    .filter((order) => status === "all" || order.status === status)
+    .sort((a, b) => {
+      const priorityDiff = orderStatusMeta[a.status].priority - orderStatusMeta[b.status].priority;
+      return priorityDiff || b.orderTime.localeCompare(a.orderTime);
+    });
+}
+
+function updateOrderStatusCounts() {
+  const counts = serviceOrders.reduce((result, order) => {
+    result.all += 1;
+    result[order.status] += 1;
+    return result;
+  }, { all: 0, pending: 0, effective: 0, refunding: 0, refunded: 0 });
+  orderStatusTabs?.querySelectorAll("[data-order-count]").forEach((badge) => {
+    badge.textContent = String(counts[badge.dataset.orderCount] || 0);
+  });
+}
+
+function renderServiceOrders(status = "all") {
+  if (!orderServiceList) return;
+  updateOrderStatusCounts();
+  orderServiceList.innerHTML = sortedServiceOrders(status).map((order) => {
+    const service = packages.find((item) => item.id === order.serviceId) || packages[0];
+    const statusMeta = orderStatusMeta[order.status];
+    const cycleText = order.status === "pending"
+      ? '<em class="order-cycle">服务周期：1个月</em>'
+      : order.status === "effective"
+        ? '<em class="order-cycle">服务周期至：2026/01/01</em>'
+        : "";
+    const useButton = order.status === "pending"
+      ? `<button class="order-use-button" type="button" data-order-use aria-label="立即使用${service.title}">立即使用</button>`
+      : "";
+    return `<article class="archive-service-card order-card-${order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
+      <i class="owned-img ${service.img}" aria-hidden="true"></i>
+      <span><strong>${service.title}</strong><em class="order-time">下单时间：${order.orderTime}</em>${cycleText}<em class="order-amount">金额：<b>${service.price}</b></em></span>
+      <div class="archive-service-actions"><b class="order-status status-${order.status}">${statusMeta.label}</b>${useButton}</div>
+    </article>`;
+  }).join("");
+}
+
 function serviceTagsHtml(tags) {
   const parts = String(tags || "").split("｜").filter(Boolean);
   if (parts.length <= 1) return tags || "";
@@ -648,8 +729,13 @@ function serviceTagsHtml(tags) {
   return `${parts.join("｜")}｜<span>${last}</span>`;
 }
 
+let activePurchaseService = packages[0];
+let boundServiceState = null;
+let activeServiceOrder = null;
+
 function renderServiceDetail(service, source = "service") {
   if (!service) return;
+  activePurchaseService = service;
   serviceDetailSource = source;
   const ageText = currentPatient.age ? `${currentPatient.age}岁` : "年龄待完善";
   if (detailPatientName) detailPatientName.textContent = currentPatient.name || "就诊人";
@@ -657,22 +743,52 @@ function renderServiceDetail(service, source = "service") {
   if (detailPatientAvatar) {
     detailPatientAvatar.className = `detail-patient-avatar ${currentPatient.sex === "male" ? "male" : currentPatient.sex === "female" ? "female" : ""}`;
   }
-  if (detailProductCover) detailProductCover.className = `detail-product service-img ${service.img}`;
+  if (detailProductCover) detailProductCover.className = "detail-product service-img img-banner";
   if (detailServiceTitle) detailServiceTitle.textContent = service.title;
   if (detailServiceTags) detailServiceTags.innerHTML = serviceTagsHtml(service.tags);
   if (detailServicePrice) detailServicePrice.textContent = service.price;
-  if (detailServiceSales) detailServiceSales.textContent = service.sales;
+  if (detailFooterPrice) detailFooterPrice.textContent = service.price;
+  if (detailServiceSales) detailServiceSales.textContent = String(service.sales || "").replace(/^月销量\s*/, "");
   if (detailServiceDesc) detailServiceDesc.textContent = service.desc;
-  if (buyButton) buyButton.textContent = source === "orders" ? "进入服务" : `立即购买 ${service.price}`;
+  const isBoundService = boundServiceState?.serviceId === service.id;
+  const isPendingOrder = source === "orders" && activeServiceOrder?.status === "pending";
+  serviceDetailPage?.classList.toggle("bound-service", isBoundService);
+  serviceDetailPage?.classList.toggle("pending-order-detail", isPendingOrder);
+  if (detailBoundPatient) detailBoundPatient.hidden = !isBoundService;
+  if (isBoundService) {
+    const sexLabel = boundServiceState.sex === "female" ? "女" : boundServiceState.sex === "male" ? "男" : "未知";
+    if (detailPatientAvatar) {
+      detailPatientAvatar.textContent = boundServiceState.avatar;
+      detailPatientAvatar.className = `detail-patient-avatar ${boundServiceState.sex}`;
+    }
+    if (detailPatientName) detailPatientName.textContent = boundServiceState.name;
+    if (detailPatientMeta) detailPatientMeta.textContent = `${sexLabel} · ${boundServiceState.age}岁`;
+  }
+  if (refundAfterSalesButton) refundAfterSalesButton.hidden = !isPendingOrder;
+  if (buyButton) buyButton.textContent = isBoundService ? "查看健康管理计划" : isPendingOrder ? "立即使用" : source === "orders" ? "进入服务" : "立即订阅";
 }
 
-function openServiceDetail(serviceId, source = "service") {
+function openServiceDetail(serviceId, source = "service", orderId = "") {
   const service = packages.find((item) => item.id === serviceId) || packages[0];
+  activeServiceOrder = source === "orders" ? serviceOrders.find((order) => order.id === orderId) || null : null;
   renderServiceDetail(service, source);
+  const homePage = document.querySelector(".home-page");
+  if (homePage) {
+    const shellRect = homePage.getBoundingClientRect();
+    const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
+    homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
+    homePage.style.setProperty("--service-detail-shell-height", `${Math.round(visibleShellHeight)}px`);
+  }
   servicePage.classList.remove("active");
   minePage.classList.remove("active");
+  homeOnlySections.forEach((item) => item.classList.add("hidden"));
   subPages.forEach((page) => page.classList.remove("active"));
   serviceDetailPage.classList.add("active");
+  servicePurchaseSuccessPage?.classList.remove("active");
+  window.scrollTo(0, 0);
+  if (homePage) homePage.scrollTop = 0;
+  const detailScroll = serviceDetailPage.querySelector(".detail-scroll");
+  if (detailScroll) detailScroll.scrollTop = 0;
   closeOverlays();
 }
 
@@ -689,27 +805,95 @@ packageList.addEventListener("click", (event) => {
   if (card) openServiceDetail(card.dataset.id, "service");
 });
 
-document.querySelector(".orders-panel")?.addEventListener("click", (event) => {
-  const recordsButton = event.target.closest("[data-service-records]");
-  if (recordsButton) {
-    event.preventDefault();
-    event.stopPropagation();
-    toast.textContent = "执行记录功能待接入";
-    toast.classList.add("show");
-    window.setTimeout(() => toast.classList.remove("show"), 1600);
+function openHomeServiceDetail(card) {
+  if (!card) return;
+  openServiceDetail(card.dataset.homeServiceId, "home");
+}
+
+homeServiceList?.addEventListener("click", (event) => {
+  openHomeServiceDetail(event.target.closest("[data-home-service-id]"));
+});
+
+homeServiceList?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const card = event.target.closest("[data-home-service-id]");
+  if (!card) return;
+  event.preventDefault();
+  openHomeServiceDetail(card);
+});
+
+homeServiceViewAll?.addEventListener("click", (event) => {
+  event.preventDefault();
+  tabbarLinks.forEach((item) => item.classList.toggle("active", item.dataset.view === "service"));
+  switchView("service");
+});
+
+function openRefundOrderDetail(order) {
+  if (!order) return;
+  const service = packages.find((item) => item.id === order.serviceId) || packages[0];
+  activeServiceOrder = order;
+  const isRefunded = order.status === "refunded";
+  const cover = isRefunded ? refundSuccessCover : refundProgressCover;
+  const title = isRefunded ? refundSuccessTitle : refundProgressTitle;
+  const amount = isRefunded ? refundSuccessAmount : refundProgressAmount;
+  const money = isRefunded ? refundSuccessMoney : refundProgressMoney;
+  const orderNo = isRefunded ? refundSuccessOrderNo : refundProgressOrderNo;
+  const orderTime = isRefunded ? refundSuccessOrderTime : refundProgressOrderTime;
+  if (cover) cover.className = `refund-product-cover service-img ${service.img}`;
+  if (title) title.textContent = service.title;
+  if (amount) amount.textContent = service.price;
+  if (money) money.textContent = service.price;
+  if (orderNo) orderNo.textContent = order.id.toUpperCase();
+  if (orderTime) orderTime.textContent = order.orderTime;
+  const homePage = document.querySelector(".home-page");
+  if (homePage) {
+    const shellRect = homePage.getBoundingClientRect();
+    const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
+    homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
+    homePage.style.setProperty("--service-detail-shell-height", `${Math.round(visibleShellHeight)}px`);
+  }
+  openSubPage(isRefunded ? "refundSuccessPage" : "refundProgressPage");
+  (isRefunded ? refundSuccessPage : refundProgressPage)?.scrollTo?.(0, 0);
+}
+
+function openOrderCard(card) {
+  if (!card) return;
+  const order = serviceOrders.find((item) => item.id === card.dataset.orderId);
+  if (!order) return;
+  if (order.status === "refunding" || order.status === "refunded") {
+    openRefundOrderDetail(order);
     return;
   }
-  const card = event.target.closest(".archive-service-card");
-  if (!card) return;
-  openServiceDetail(card.dataset.serviceId, "orders");
+  if (order.status === "effective") {
+    boundServiceState = { serviceId: order.serviceId, name: currentPatient.name || "张女士", sex: currentPatient.sex || "female", age: currentPatient.age || "35", avatar: (currentPatient.name || "张").slice(0, 1) };
+  } else {
+    boundServiceState = null;
+  }
+  openServiceDetail(order.serviceId, "orders", order.id);
+}
+
+document.querySelector(".orders-panel")?.addEventListener("click", (event) => {
+  const useButton = event.target.closest("[data-order-use]");
+  if (useButton) {
+    event.stopPropagation();
+    const card = useButton.closest(".archive-service-card");
+    const order = serviceOrders.find((item) => item.id === card?.dataset.orderId);
+    if (!order || order.status !== "pending") return;
+    boundServiceState = null;
+    openServiceDetail(order.serviceId, "orders", order.id);
+    openServiceUserSheet();
+    return;
+  }
+  openOrderCard(event.target.closest(".archive-service-card"));
 });
 
 document.querySelector(".orders-panel")?.addEventListener("keydown", (event) => {
+  if (event.target.closest("[data-order-use]")) return;
   if (event.key !== "Enter" && event.key !== " ") return;
   const card = event.target.closest(".archive-service-card");
-  if (!card || event.target.closest("[data-service-records]")) return;
+  if (!card) return;
   event.preventDefault();
-  openServiceDetail(card.dataset.serviceId, "orders");
+  openOrderCard(card);
 });
 
 function openSheet(sheet) {
@@ -1299,28 +1483,38 @@ function renderPortraitMarkers(regionName) {
 setPortraitAnatomyView();
 
 function closeOverlays() {
+  const metricRecordAsPage = metricRecordSheet?.classList.contains("metric-record-detail-page") && metricRecordSheet?.classList.contains("active");
   sheetMask.classList.remove("active");
   cameraPage?.classList.remove("active");
   cameraPage?.classList.remove("diet-camera");
-  metricRecordSheet?.classList.remove("active");
+  if (!metricRecordAsPage) {
+    metricRecordSheet?.classList.remove("active");
+    metricRecordSheet?.classList.remove("metric-record-detail-page");
+  }
   metricRecordTimePicker?.classList.remove("active");
-  editingMetricRecordId = "";
-  if (metricRecordConfirm) metricRecordConfirm.textContent = "打卡";
-  document.querySelector("#metricRecordInlineDelete")?.remove();
-  document.querySelector("#metricRecordActions")?.classList.remove("has-delete");
+  if (!metricRecordAsPage) {
+    editingMetricRecordId = "";
+    if (metricRecordConfirm) metricRecordConfirm.textContent = "打卡";
+    document.querySelector("#metricRecordInlineDelete")?.remove();
+    document.querySelector("#metricRecordActions")?.classList.remove("has-delete");
+  }
   serviceActionSheet.classList.remove("active");
   supportSheet.classList.remove("active");
   shareSheet.classList.remove("active");
   uploadSheet.classList.remove("active");
   purchaseDialog.classList.remove("active");
+  purchaseAgreementSheet?.classList.remove("active");
+  purchaseAgreementMask?.classList.remove("active");
+  serviceUserSheet?.classList.remove("active");
+  serviceUserMask?.classList.remove("active");
+  bindingConfirmDialog?.classList.remove("active");
+  bindingConfirmMask?.classList.remove("active");
   logoutDialog.classList.remove("active");
   cycleSheet.classList.remove("active");
   periodConfirmDialog.classList.remove("active");
   periodEditDialog.classList.remove("active");
   periodDeleteDialog.classList.remove("active");
   metricDeleteDialog?.classList.remove("active");
-  weightRecordDetailDialog?.classList.remove("active");
-  heartRecordDetailDialog?.classList.remove("active");
   document.querySelector("#portraitReportSheet")?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");
@@ -1339,7 +1533,6 @@ function closeOverlays() {
   medicineTimePicker?.classList.remove("active");
   sportCheckinSheet?.classList.remove("active");
   sportTimePicker?.classList.remove("active");
-  sportRecordEditor?.classList.remove("active");
   sportSuccessDialog?.classList.remove("active");
   weightCheckinPage?.classList.remove("active");
   weightTimePicker?.classList.remove("active");
@@ -1603,13 +1796,18 @@ metricRecordsGroups?.addEventListener("click", (event) => {
   }
   const checkinCard = event.target.closest("[data-checkin-record-type]");
   if (checkinCard) openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
+  const metricRecordCard = event.target.closest("[data-metric-record-id]");
+  if (metricRecordCard) openMetricRecordSheet(metricRecordCard.dataset.metricRecordId);
 });
+
 metricRecordsGroups?.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   const checkinCard = event.target.closest("[data-checkin-record-type]");
-  if (!checkinCard) return;
+  const metricRecordCard = event.target.closest("[data-metric-record-id]");
+  if (!checkinCard && !metricRecordCard) return;
   event.preventDefault();
-  openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
+  if (checkinCard) openAllCheckinRecordDetail(checkinCard.dataset.checkinRecordType, checkinCard.dataset.checkinRecordId);
+  if (metricRecordCard) openMetricRecordSheet(metricRecordCard.dataset.metricRecordId);
 });
 weightDetailRecords?.addEventListener("click", (event) => {
   const card = event.target.closest("[data-weight-record-key]");
@@ -2143,9 +2341,7 @@ orderStatusTabs?.addEventListener("click", (event) => {
   orderStatusTabs.querySelectorAll("[data-order-tab]").forEach((item) => {
     item.classList.toggle("active", item === button);
   });
-  orderPanels.forEach((panel) => {
-    panel.classList.toggle("active", panel.dataset.orderPanel === tab);
-  });
+  renderServiceOrders(tab);
 });
 
 periodCard?.addEventListener("click", (event) => {
@@ -2236,11 +2432,237 @@ document.querySelector(".task-delete-confirm")?.addEventListener("click", () => 
 });
 serviceSupport?.addEventListener("click", () => openSheet(supportSheet));
 detailShare.addEventListener("click", () => openSheet(shareSheet));
+
+function purchaseUnitPrice() {
+  return Number(String(activePurchaseService?.price || "0").replace(/[^\d.]/g, "")) || 0;
+}
+
+function normalizedPurchaseQuantity(value) {
+  return Math.max(1, Math.min(100, Math.floor(Number(value) || 1)));
+}
+
+function updatePurchaseTotals(quantity = normalizedPurchaseQuantity(purchaseQuantityInput?.value)) {
+  const safeQuantity = normalizedPurchaseQuantity(quantity);
+  if (purchaseTotalQuantity) purchaseTotalQuantity.textContent = String(safeQuantity);
+  if (purchaseTotalAmount) purchaseTotalAmount.textContent = `¥${purchaseUnitPrice() * safeQuantity}`;
+  if (purchaseQuantityMinus) purchaseQuantityMinus.disabled = safeQuantity <= 1;
+  if (purchaseQuantityPlus) purchaseQuantityPlus.disabled = safeQuantity >= 100;
+}
+
+function setPurchaseQuantity(value) {
+  const quantity = normalizedPurchaseQuantity(value);
+  if (purchaseQuantityInput) purchaseQuantityInput.value = String(quantity);
+  updatePurchaseTotals(quantity);
+}
+
+function preparePurchaseSheet() {
+  const service = activePurchaseService || packages[0];
+  if (!service) return;
+  if (purchasePackageCover) purchasePackageCover.className = `purchase-package-cover service-img ${service.img}`;
+  if (purchasePackageTitle) purchasePackageTitle.textContent = service.title;
+  if (purchasePackageTags) purchasePackageTags.textContent = service.tags;
+  if (purchasePackagePrice) purchasePackagePrice.textContent = service.price;
+  setPurchaseQuantity(1);
+  if (purchasePhoneInput) purchasePhoneInput.value = "";
+  if (purchasePhoneError) purchasePhoneError.textContent = "";
+  if (purchaseAgreementCheck) purchaseAgreementCheck.checked = false;
+  if (purchaseAgreementError) purchaseAgreementError.textContent = "";
+}
+
 buyButton.addEventListener("click", () => {
+  if (serviceDetailPage?.classList.contains("bound-service")) {
+    toast.textContent = "健康管理计划已生成";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1800);
+    return;
+  }
+  if (serviceDetailSource === "orders" && activeServiceOrder?.status === "pending") {
+    openServiceUserSheet();
+    return;
+  }
   closeOverlays();
+  preparePurchaseSheet();
   sheetMask.classList.add("active");
   purchaseDialog.classList.add("active");
 });
+
+purchaseQuantityMinus?.addEventListener("click", () => setPurchaseQuantity(Number(purchaseQuantityInput?.value || 1) - 1));
+purchaseQuantityPlus?.addEventListener("click", () => setPurchaseQuantity(Number(purchaseQuantityInput?.value || 1) + 1));
+purchaseQuantityInput?.addEventListener("input", () => {
+  const digits = purchaseQuantityInput.value.replace(/\D/g, "");
+  if (!digits) {
+    purchaseQuantityInput.value = "";
+    updatePurchaseTotals(1);
+    return;
+  }
+  const quantity = Math.min(100, Number(digits));
+  purchaseQuantityInput.value = String(quantity);
+  updatePurchaseTotals(quantity);
+});
+purchaseQuantityInput?.addEventListener("blur", () => setPurchaseQuantity(purchaseQuantityInput.value));
+
+purchasePhoneInput?.addEventListener("input", () => {
+  purchasePhoneInput.value = purchasePhoneInput.value.replace(/\D/g, "").slice(0, 11);
+  const phone = purchasePhoneInput.value;
+  if (purchasePhoneError) {
+    purchasePhoneError.textContent = phone.length === 11 && !/^1[3-9]\d{9}$/.test(phone) ? "请输入有效的11位手机号" : "";
+  }
+});
+
+const purchaseAgreementCopy = {
+  service: {
+    title: "用户协议",
+    content: `<h4>服务购买与使用</h4><p>购买前请确认服务包名称、服务周期、适用人群和服务权益。支付成功后，请在规定时间内绑定就诊人。</p><h4>订单与退款</h4><p>待使用且未绑定就诊人的订单可按服务规则申请退款；服务生效后的退款与变更请联系客服处理。</p><h4>服务说明</h4><p>实际服务时间、响应方式及服务范围以服务详情页公示内容为准。</p>`
+  },
+  privacy: {
+    title: "用户隐私协议",
+    content: `<h4>信息使用</h4><p>您填写的手机号仅用于订单通知、购买成功短信和必要的服务联系。</p><h4>信息保护</h4><p>平台将采取合理安全措施保护您的个人信息，不会将信息用于与本次服务无关的用途。</p><h4>授权与撤回</h4><p>您可以联系客服查询、更正或申请删除相关个人信息。</p>`
+  }
+};
+
+document.querySelectorAll("[data-purchase-agreement]").forEach((button) => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const copy = purchaseAgreementCopy[button.dataset.purchaseAgreement] || purchaseAgreementCopy.service;
+    if (purchaseAgreementTitle) purchaseAgreementTitle.textContent = copy.title;
+    if (purchaseAgreementContent) purchaseAgreementContent.innerHTML = copy.content;
+    purchaseAgreementMask?.classList.add("active");
+    purchaseAgreementSheet?.classList.add("active");
+  });
+});
+
+function closePurchaseAgreementPreview() {
+  purchaseAgreementSheet?.classList.remove("active");
+  purchaseAgreementMask?.classList.remove("active");
+}
+
+purchaseAgreementClose?.addEventListener("click", closePurchaseAgreementPreview);
+purchaseAgreementMask?.addEventListener("click", closePurchaseAgreementPreview);
+purchaseAgreementCheck?.addEventListener("change", () => {
+  if (purchaseAgreementError && purchaseAgreementCheck.checked) purchaseAgreementError.textContent = "";
+});
+
+purchaseConfirmButton?.addEventListener("click", () => {
+  setPurchaseQuantity(purchaseQuantityInput?.value);
+  const phone = purchasePhoneInput?.value || "";
+  if (!/^1[3-9]\d{9}$/.test(phone)) {
+    if (purchasePhoneError) purchasePhoneError.textContent = "请输入有效的11位手机号";
+    purchasePhoneInput?.focus();
+    return;
+  }
+  if (!purchaseAgreementCheck?.checked) {
+    if (purchaseAgreementError) purchaseAgreementError.textContent = "请先阅读并同意用户协议和用户隐私协议";
+    return;
+  }
+  closeOverlays();
+  if (purchaseSuccessServiceTitle) purchaseSuccessServiceTitle.textContent = activePurchaseService?.title || "90天减重管理服务包";
+  serviceDetailPage?.classList.remove("active");
+  servicePurchaseSuccessPage?.classList.add("active");
+  servicePurchaseSuccessPage?.scrollTo?.(0, 0);
+});
+
+purchaseSuccessBack?.addEventListener("click", () => {
+  servicePurchaseSuccessPage?.classList.remove("active");
+  serviceDetailPage?.classList.add("active");
+});
+
+function openServiceUserSheet() {
+  serviceUserMask?.classList.add("active");
+  serviceUserSheet?.classList.add("active");
+}
+
+bindServiceUserButton?.addEventListener("click", openServiceUserSheet);
+
+refundAfterSalesButton?.addEventListener("click", () => {
+  toast.textContent = "退款或售后请联系客服申请";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1800);
+});
+
+function closeServiceUserSheet() {
+  serviceUserSheet?.classList.remove("active");
+  serviceUserMask?.classList.remove("active");
+}
+
+function syncServiceUserSelection() {
+  serviceUserList?.querySelectorAll("[data-service-user-row]").forEach((row) => {
+    const radio = row.querySelector('input[name="serviceUser"]');
+    row.classList.toggle("active", Boolean(radio?.checked));
+  });
+}
+
+serviceUserClose?.addEventListener("click", closeServiceUserSheet);
+serviceUserMask?.addEventListener("click", closeServiceUserSheet);
+serviceUserList?.addEventListener("change", (event) => {
+  if (event.target.matches('input[name="serviceUser"]')) syncServiceUserSelection();
+});
+
+let pendingServiceUser = null;
+serviceUserConfirm?.addEventListener("click", () => {
+  const selected = serviceUserList?.querySelector('input[name="serviceUser"]:checked');
+  if (!selected) return;
+  const row = selected.closest("[data-service-user-row]");
+  pendingServiceUser = {
+    name: selected.value,
+    sex: selected.dataset.sex || "unknown",
+    age: selected.dataset.age || "",
+    avatar: row?.querySelector(".service-user-avatar")?.textContent.trim() || selected.value.slice(0, 1)
+  };
+  bindingConfirmMask?.classList.add("active");
+  bindingConfirmDialog?.classList.add("active");
+});
+
+function closeBindingConfirmation() {
+  bindingConfirmDialog?.classList.remove("active");
+  bindingConfirmMask?.classList.remove("active");
+}
+
+bindingConfirmCancel?.addEventListener("click", closeBindingConfirmation);
+bindingConfirmMask?.addEventListener("click", closeBindingConfirmation);
+
+bindingConfirmSubmit?.addEventListener("click", () => {
+  if (!pendingServiceUser) return;
+  const sexLabel = pendingServiceUser.sex === "female" ? "女" : pendingServiceUser.sex === "male" ? "男" : "未知";
+  if (detailPatientAvatar) {
+    detailPatientAvatar.textContent = pendingServiceUser.avatar;
+    detailPatientAvatar.className = `detail-patient-avatar ${pendingServiceUser.sex}`;
+  }
+  if (detailPatientName) detailPatientName.textContent = pendingServiceUser.name;
+  if (detailPatientMeta) detailPatientMeta.textContent = `${sexLabel} · ${pendingServiceUser.age}岁`;
+  if (detailBoundPatient) detailBoundPatient.hidden = false;
+  boundServiceState = { serviceId: activePurchaseService?.id, ...pendingServiceUser };
+  if (activeServiceOrder?.status === "pending") {
+    activeServiceOrder.status = "effective";
+    orderStatusTabs?.querySelectorAll("[data-order-tab]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.orderTab === "effective");
+    });
+    renderServiceOrders("effective");
+  }
+  serviceDetailPage?.classList.add("bound-service");
+  serviceDetailPage?.classList.remove("pending-order-detail");
+  if (refundAfterSalesButton) refundAfterSalesButton.hidden = true;
+  if (buyButton) buyButton.textContent = "查看健康管理计划";
+  if (purchaseSuccessBindingHint) purchaseSuccessBindingHint.textContent = `服务用户：${pendingServiceUser.name}（已绑定）`;
+  closeBindingConfirmation();
+  closeServiceUserSheet();
+  servicePurchaseSuccessPage?.classList.remove("active");
+  serviceDetailPage?.classList.add("active");
+  const detailScroll = serviceDetailPage?.querySelector(".detail-scroll");
+  if (detailScroll) detailScroll.scrollTop = 0;
+  toast.textContent = "绑定成功";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1800);
+  pendingServiceUser = null;
+});
+
+purchaseSuccessMore?.addEventListener("click", () => {
+  servicePurchaseSuccessPage?.classList.remove("active");
+  serviceDetailPage?.classList.remove("active");
+  tabbarLinks.forEach((item) => item.classList.toggle("active", item.dataset.view === "service"));
+  switchView("service");
+});
+
 sheetMask.addEventListener("click", closeOverlays);
 document.querySelectorAll(".sheet-cancel, .dialog-cancel, .dialog-confirm").forEach((button) => {
   button.addEventListener("click", closeOverlays);
@@ -2262,6 +2684,10 @@ detailBack.addEventListener("click", () => {
   if (serviceDetailSource === "orders") {
     minePage.classList.add("active");
     setProfileTab("orders");
+  } else if (serviceDetailSource === "home") {
+    tabbarLinks.forEach((item) => item.classList.toggle("active", item.dataset.view === "home"));
+    switchView("home");
+    return;
   } else {
     servicePage.classList.add("active");
   }
@@ -2276,6 +2702,8 @@ renderMedicalReports();
 renderParseTasks();
 renderSelectedFiles();
 renderPackages();
+renderHomePackages();
+renderServiceOrders();
 updateMedicineScheduleCard();
 initCycleReminder();
 renderFocusPlans();

@@ -1,0 +1,182 @@
+.assessment-mic-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 0;
+  background: url("../assets/assessment-voice-mic.png?v=20260731") center / contain no-repeat;
+  box-shadow: none;
+}
+
+.assessment-mic-button::before,
+.assessment-mic-button::after {
+  display: none;
+}
+
+.assessment-voice-nav {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 88px;
+  align-items: center;
+  height: 43px;
+}
+
+.assessment-voice-back {
+  justify-self: start;
+  align-self: center;
+}
+
+.assessment-voice-nav h1 {
+  grid-column: 2;
+  justify-self: center;
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.assessment-voice-capsule {
+  grid-column: 3;
+  align-self: center;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 88px;
+  height: 32px;
+  margin: 0;
+  transform: none;
+  white-space: nowrap;
+}
+
+.assessment-voice-capsule .capsule-more,
+.assessment-voice-capsule .capsule-close {
+  flex: 0 0 44px;
+}
+
+.assessment-voice-agent {
+  grid-template-columns: 44px minmax(0, 1fr) 46px;
+  column-gap: 7px;
+}
+
+.assessment-voice-agent strong,
+.assessment-voice-agent p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assessment-voice-agent p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.assessment-voice-progress {
+  align-self: center;
+  justify-self: end;
+}
+
+.assessment-language-menu {
+  display: none;
+}
+
+.assessment-language-switch.open .assessment-language-menu {
+  display: grid;
+}
+
+.assessment-voice-page .assessment-language-menu button:not(.active),
+.assessment-voice-page .assessment-language-menu button[aria-selected="false"] {
+  color: #3d4d68 !important;
+  background: #fff !important;
+}
+
+.assessment-voice-page .assessment-language-menu button:not(.active)::after,
+.assessment-voice-page .assessment-language-menu button[aria-selected="false"]::after {
+  border-color: rgba(54, 113, 255, 0.42) !important;
+  background: #fff !important;
+}
+
+.assessment-voice-page .assessment-language-menu button:not(.active)::before,
+.assessment-voice-page .assessment-language-menu button[aria-selected="false"]::before {
+  background: transparent !important;
+}
+
+.assessment-voice-nav {
+  position: relative;
+  grid-template-columns: 44px 1fr 88px;
+  padding: 0 10px;
+}
+
+.assessment-voice-nav h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: 150px;
+  transform: translate(-50%, -50%);
+}
+
+.assessment-voice-back {
+  grid-column: 1;
+  margin: 0;
+}
+
+.assessment-voice-capsule {
+  position: relative;
+  top: auto;
+  right: auto;
+  grid-column: 3;
+  grid-area: auto;
+  align-self: center;
+  justify-self: end;
+}
+
+.assessment-voice-progress {
+  width: 38px;
+  min-height: 34px;
+  font-size: 10px;
+}
+
+.assessment-voice-page .assessment-voice-nav {
+  z-index: 2;
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) 88px !important;
+  align-items: center !important;
+  height: 43px !important;
+  padding: 0 10px !important;
+}
+
+.assessment-voice-page .assessment-voice-back {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+}
+
+.assessment-voice-page .assessment-voice-nav h1 {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  text-align: center !important;
+}
+
+.assessment-voice-page .assessment-voice-capsule {
+  position: static !important;
+  grid-column: 3 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  width: 88px !important;
+  height: 32px !important;
+  margin: 0 !important;
+}
+
+.assessment-voice-page .assessment-voice-agent {
+  margin-top: 4px;
+}
+
+.assessment-voice-page .assessment-voice-progress {
+  position: static !important;
+  width: 38px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  transform: none !important;
+  font-size: 10px !important;
+}

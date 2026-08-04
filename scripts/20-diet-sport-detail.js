@@ -84,6 +84,25 @@ function formatFoodNumber(value) {
   return Number.isInteger(numeric) ? String(numeric) : numeric.toFixed(1).replace(/\.0$/, "");
 }
 
+const dietGlycemicFallbacks = [
+  { gi: 15, gl: 1 },
+  { gi: 53, gl: 4 },
+  { gi: 45, gl: 9 },
+  { gi: 35, gl: 3 },
+  { gi: 55, gl: 8 },
+  { gi: 30, gl: 2 }
+];
+
+function dietFoodGlycemic(food, index = 0) {
+  const preset = dietGlycemicFallbacks[index % dietGlycemicFallbacks.length];
+  const gi = food?.gi ?? preset.gi;
+  const gl = food?.gl ?? preset.gl;
+  return {
+    gi: Number.isFinite(Number(gi)) ? formatFoodNumber(Number(gi)) : "--",
+    gl: Number.isFinite(Number(gl)) ? formatFoodNumber(Number(gl)) : "--"
+  };
+}
+
 function updateFoodByGrams(food, grams) {
   const nextGrams = Math.max(1, Math.min(2000, Number(grams) || 1));
   const ratio = nextGrams / 100;
@@ -160,6 +179,7 @@ function openDietResultPage() {
   clearTimeout(dietRecognitionTimer);
   dietResultMode = "checkin";
   dietResultReadonly = false;
+  dietResultMealGroupIndex = -1;
   dietResultIndex = 0;
   if (dietResultTime && dietMealTime?.value) dietResultTime.value = dietMealTime.value;
   if (dietResultNoteInput) dietResultNoteInput.value = dietNoteInput?.value?.trim() || "今天的分量比平时稍少。";
@@ -185,18 +205,22 @@ function renderDietResult() {
   dietMealTitle.textContent = current?.meal || "早餐";
   const resultTime = formatDietTime(dietResultTime?.value || dietMealTime?.value);
   dietRecordTimeText.textContent = `${resultTime || current?.time || "12:00"} 记录`;
-  dietFoodList.innerHTML = (current?.foods || []).map((food) => `
+  dietFoodList.innerHTML = (current?.foods || []).map((food, foodIndex) => {
+    const glycemic = dietFoodGlycemic(food, foodIndex);
+    return `
     <article class="diet-food-card${lockedResult ? " readonly" : ""}" data-food-id="${food.id}"${lockedResult ? "" : ` role="button" tabindex="0"`}>
       <i class="food-thumb ${food.image}" aria-hidden="true"></i>
       <div>
         <strong>${food.name}</strong>
         <p>${food.calories} kcal · ${formatFoodNumber(food.grams || 100)}g</p>
+        <span class="diet-food-glycemic">GI ${glycemic.gi} · GL ${glycemic.gl}</span>
       </div>
       ${lockedResult ? "" : `<menu class="diet-food-actions">
         <button class="diet-food-edit" type="button" data-edit-food="${food.id}" aria-label="编辑${escapeAttr(food.name)}"></button>
       </menu>`}
     </article>
-  `).join("") + (current ? renderDietResultMeta(current) : "") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
+  `;
+  }).join("") + (current ? renderDietResultMeta(current) : "") || `<div class="diet-empty-result">当前图片的食物已删除</div>`;
   if (dietResultNoteInput) {
     dietResultNoteInput.readOnly = readonlyResult;
     dietResultNoteInput.setAttribute("aria-readonly", String(readonlyResult));
@@ -409,14 +433,73 @@ function deleteCurrentDietMealResult() {
     return true;
   }
   const meal = current?.meal;
-  if (meal && dietDetailMealGroups) {
+  if (dietDetailMealGroups && dietResultMealGroupIndex > -1) {
+    dietDetailMealGroups = dietDetailMealGroups.filter((_, index) => index !== dietResultMealGroupIndex);
+  } else if (meal && dietDetailMealGroups) {
     dietDetailMealGroups = dietDetailMealGroups.filter((group) => group.meal !== meal);
   }
   dietDetailHasRecords = Boolean((dietDetailMealGroups || []).some((group) => group.foods.length));
+  syncDietCheckinAfterMealDelete(meal);
+  dietResultMealGroupIndex = -1;
   renderDietDetailPage();
   openSubPage("dietDetailPage");
   showToast("已删除该餐次记录");
   return true;
+}
+
+function resetDietTaskStatusAfterDelete(deletedMeal) {
+  const data = mutableScheduleDataForSelected();
+  (data.followups || []).forEach((task) => {
+    const isDietTask = scheduleTaskCheckinType(task.type) === "diet"
+      || String(task.type || "").includes("饮食")
+      || String(task.title || "").includes("饮食")
+      || String(task.type || "").includes("楗")
+      || String(task.title || "").includes("楗");
+    if (!isDietTask || task.status !== "已完成") return;
+    const bound = task.boundRecord;
+    const sameMeal = !deletedMeal || !bound?.meal || bound.meal === deletedMeal;
+    if (bound?.type === "diet" && sameMeal) {
+      task.status = "进行中";
+      task.action = "去打卡";
+      delete task.boundRecord;
+    }
+  });
+}
+
+function syncDietCheckinAfterMealDelete(deletedMeal) {
+  const data = mutableScheduleDataForSelected();
+  resetDietTaskStatusAfterDelete(deletedMeal);
+  const groups = (dietDetailMealGroups || []).filter((group) => group.foods?.length);
+  const foods = groups.flatMap((group) => group.foods || []);
+  const dietIndex = data.checkins.findIndex((item) => item.type === "diet");
+  if (!foods.length) {
+    if (dietIndex > -1) data.checkins.splice(dietIndex, 1);
+    dietCheckinSummary = null;
+    dietDetailHasRecords = false;
+  } else {
+    const calories = foods.reduce((sum, food) => sum + Number(food.calories || 0), 0);
+    const totalGrams = foods.reduce((sum, food) => sum + Number(food.grams || detailFoodGrams(food) || 0), 0);
+    const latestGroup = [...groups].sort((a, b) => dietDetailMealSortValue(b) - dietDetailMealSortValue(a))[0];
+    const latestTime = dietDetailTimeOnly(latestGroup?.time);
+    const nextDietItem = {
+      type: "diet",
+      title: "饮食打卡",
+      desc: `当日摄入 ${Math.round(calories)} kcal，食物克重 ${formatFoodNumber(totalGrams)}g`,
+      count: `已记录 ${foods.length} 项`,
+      value: `${Math.round(calories)} kcal`,
+      totalCalories: Math.round(calories),
+      latestRecordTime: latestTime
+    };
+    if (dietIndex > -1) {
+      data.checkins[dietIndex] = { ...data.checkins[dietIndex], ...nextDietItem };
+    } else {
+      data.checkins.unshift(nextDietItem);
+    }
+    dietCheckinSummary = nextDietItem;
+    dietDetailHasRecords = true;
+  }
+  scheduleTasks[schedulePatientId][scheduleSelectedDate] = data;
+  renderSchedule();
 }
 
 function currentDietBindingTasks() {
@@ -940,11 +1023,10 @@ function openSportDetailPage() {
 }
 
 function closeSportRecordEditor() {
-  sportRecordEditor?.classList.remove("active");
-  if (!document.querySelector(".sport-checkin-sheet.active, .sport-time-picker.active, .sport-success-dialog.active")) {
-    sheetMask.classList.remove("active");
-  }
   editingSportRecordId = "";
+  if (sportRecordEditor?.classList.contains("active")) {
+    goBackPage();
+  }
 }
 
 function currentEditingSportRecord() {
@@ -964,27 +1046,27 @@ function sportEditorCalories(record) {
 function renderSportRecordEditor() {
   const record = currentEditingSportRecord();
   if (!record) return;
-  const readonly = Boolean(record.review);
   const duration = sportEditorDurationValue();
   const calories = sportEditorCalories(record);
   sportRecordIntensityOptions?.querySelectorAll("[data-record-sport-intensity]").forEach((button) => {
     button.classList.toggle("active", button.dataset.recordSportIntensity === editingSportRecordIntensity);
-    button.disabled = readonly;
+    button.disabled = false;
   });
+  if (sportRecordEditorTitle) sportRecordEditorTitle.textContent = `${record.name || "运动"}详情`;
   if (sportRecordIcon) sportRecordIcon.className = `sport-icon ${record.type || sportTypeKeyByName(record.name) || "walk"}`;
   if (sportRecordName) sportRecordName.textContent = record.name || "运动";
   if (sportRecordMeta) sportRecordMeta.textContent = `${sportIntensities[editingSportRecordIntensity] || "中强度"} · ${Math.round(duration)} 分钟`;
   if (sportRecordCalories) sportRecordCalories.textContent = String(Math.round(calories));
   if (sportRecordTimeText) sportRecordTimeText.textContent = formatSportTimeText(sportRecordTimeInput?.value || record.time);
-  if (sportRecordDurationInput) sportRecordDurationInput.disabled = readonly;
-  if (sportRecordTimeTrigger) sportRecordTimeTrigger.disabled = readonly;
-  if (sportRecordNoteInput) sportRecordNoteInput.disabled = readonly;
-  if (sportRecordDelete) sportRecordDelete.hidden = readonly;
+  if (sportRecordDurationInput) sportRecordDurationInput.disabled = false;
+  if (sportRecordTimeTrigger) sportRecordTimeTrigger.disabled = false;
+  if (sportRecordNoteInput) sportRecordNoteInput.disabled = false;
+  if (sportRecordDelete) sportRecordDelete.hidden = false;
   if (sportRecordSave) {
-    sportRecordSave.hidden = readonly;
-    sportRecordSave.disabled = readonly;
+    sportRecordSave.hidden = false;
+    sportRecordSave.disabled = false;
   }
-  sportRecordEditor?.classList.toggle("readonly", readonly);
+  sportRecordEditor?.classList.remove("readonly");
 }
 
 function openSportRecordEditor(recordId) {
@@ -1000,18 +1082,13 @@ function openSportRecordEditor(recordId) {
   }
   if (sportRecordNoteInput) sportRecordNoteInput.value = record.note || "";
   renderSportRecordEditor();
-  sheetMask.classList.add("active");
-  sportRecordEditor?.classList.add("active");
+  openSubPage("sportRecordEditor");
 }
 
 function saveSportRecordEdit() {
   const { item, records } = ensureSportRecordStore();
   const record = records.find((entry) => entry.id === editingSportRecordId);
   if (!record) return;
-  if (record.review) {
-    showToast("有评价的记录仅支持查看");
-    return;
-  }
   record.duration = sportEditorDurationValue();
   record.intensity = editingSportRecordIntensity || "medium";
   record.intensityLabel = sportIntensities[record.intensity] || "中强度";
@@ -1021,23 +1098,19 @@ function saveSportRecordEdit() {
   syncSportCheckinItem(item);
   renderSchedule();
   renderSportDetailPage();
-  closeSportRecordEditor();
   showToast("运动记录已更新");
+  closeSportRecordEditor();
 }
 
 function deleteSportRecordEdit() {
   const { item } = ensureSportRecordStore();
   const record = item.records.find((entry) => entry.id === editingSportRecordId);
-  if (record?.review) {
-    showToast("有评价的记录不能删除");
-    return;
-  }
   item.records = item.records.filter((record) => record.id !== editingSportRecordId);
   syncSportCheckinItem(item);
   renderSchedule();
   renderSportDetailPage();
-  closeSportRecordEditor();
   showToast("运动记录已删除");
+  closeSportRecordEditor();
 }
 
 function dateOnlyValue(date = new Date()) {
@@ -1101,11 +1174,14 @@ function detailFoodGrams(food) {
 
 function prepareDietDetailFood(food, groupIndex, foodIndex) {
   const grams = detailFoodGrams(food);
+  const glycemic = dietFoodGlycemic(food, foodIndex);
   return {
     ...food,
     id: food.id || `detail-${groupIndex}-${foodIndex}`,
     grams,
     amount: food.amount || `${formatFoodNumber(grams)}g`,
+    gi: food.gi ?? glycemic.gi,
+    gl: food.gl ?? glycemic.gl,
     baseCalories: food.baseCalories ?? Number(((Number(food.calories || 0) * 100) / Math.max(grams, 1)).toFixed(2)),
     baseProtein: food.baseProtein ?? 0,
     baseFat: food.baseFat ?? 0,
@@ -1258,7 +1334,7 @@ function dietDetailMealSortValue(group) {
 }
 
 function dietDetailMealOrderValue(meal) {
-  const mealOrder = ["早餐", "早加餐", "午餐", "午加餐", "晚餐", "晚加餐"];
+  const mealOrder = ["早餐", "早加餐", "午餐", "午加餐", "晚餐", "晚加餐", "夜宵"];
   const index = mealOrder.indexOf(String(meal || ""));
   return index === -1 ? mealOrder.length : index;
 }
@@ -1279,6 +1355,7 @@ function openDietMealResult(groupIndex, readonly = false) {
   dietReturnView = "dietDetail";
   dietResultMode = "detail";
   dietResultReadonly = Boolean(readonly);
+  dietResultMealGroupIndex = groupIndex;
   dietResultIndex = 0;
   dietResults = [{
     meal: group.meal,
@@ -1337,7 +1414,7 @@ function renderDietDetailPage() {
       dietDetailRecords.innerHTML = `
         <div class="diet-detail-empty">
           <strong>记录今日饮食，获取饮食建议</strong>
-          <span>点击右上角去打卡，完成后这里会展示早餐、早加餐、午餐、午加餐、晚餐和晚加餐记录。</span>
+          <span>点击右上角去打卡，完成后这里会展示早餐、早加餐、午餐、午加餐、晚餐、晚加餐和夜宵记录。</span>
         </div>
       `;
     }

@@ -2,9 +2,13 @@ import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createUiNotesApi } from "./ui-notes-server.mjs";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const port = 8767;
+const staticOnly = process.argv.includes("--static-only");
+const portArgument = process.argv.find((argument) => argument.startsWith("--port="));
+const port = Number(portArgument?.split("=")[1]) || 8767;
+const handleUiNotesApi = staticOnly ? null : createUiNotesApi(root);
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -16,7 +20,13 @@ const mime = {
   ".webp": "image/webp"
 };
 
-http.createServer((req, res) => {
+http.createServer(async (req, res) => {
+  const requestUrl = new URL(req.url || "/", `http://${req.headers.host || "127.0.0.1"}`);
+  if (handleUiNotesApi && requestUrl.pathname.startsWith("/api/ui-notes")) {
+    await handleUiNotesApi(req, res, requestUrl);
+    return;
+  }
+
   let pathname = decodeURIComponent((req.url || "/").split("?")[0]);
   if (pathname === "/") pathname = "/index.html";
 
@@ -41,5 +51,5 @@ http.createServer((req, res) => {
     res.end(data);
   });
 }).listen(port, "0.0.0.0", () => {
-  console.log(`Preview server running on http://0.0.0.0:${port}`);
+  console.log(`${staticOnly ? "Static" : "Preview"} server running on http://0.0.0.0:${port}`);
 });

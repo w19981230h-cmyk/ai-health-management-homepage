@@ -1,9 +1,13 @@
+function medicineSingleImages(images = []) {
+  return Array.from(images || []).filter(Boolean).slice(0, 1);
+}
+
 function renderMedicineRecordGroup(group, recordId, compact = false) {
   return `
     <section class="${compact ? "medicine-record-group compact" : "medicine-record-group"}">
       <div class="medicine-record-meds">
         ${group.items.map((item) => {
-          const image = item.images?.[0] || "";
+          const image = medicineSingleImages(item.images)[0] || "";
           return `
             <button class="medicine-record-med" type="button" data-medicine-item="${recordId}" data-medicine-item-id="${item.id}">
               <b class="medicine-record-thumb" style="${medicineThumbStyle(image)}" aria-hidden="true"></b>
@@ -45,7 +49,7 @@ function renderMedicineOverviewCard(records) {
 }
 
 function renderMedicineDoseItem(item, recordId) {
-  const image = item.images?.[0] || "";
+  const image = medicineSingleImages(item.images)[0] || "";
   return `
     <button class="medicine-dose-item ${item.type === "nutrition" ? "nutrition" : "medicine"}" type="button" data-medicine-item="${escapeAttr(recordId)}" data-medicine-item-id="${escapeAttr(item.id)}">
       <b class="medicine-record-thumb" style="${medicineThumbStyle(image)}" aria-hidden="true"></b>
@@ -318,8 +322,9 @@ function renderMedicineDetailPage() {
           <strong>${group.items.length}次</strong>
         </div>
         ${group.items.map((item) => {
-          const images = item.images || [];
+          const images = medicineSingleImages(item.images);
           const preview = images[0] || "";
+          const imageIndex = preview ? imageCursor++ : -1;
           return `
             <article class="medicine-detail-item" data-medicine-item="${record.id}" data-medicine-item-id="${item.id}">
               <div class="medicine-detail-item-main">
@@ -329,12 +334,9 @@ function renderMedicineDetailPage() {
                 </span>
                 <i class="medicine-detail-item-arrow" aria-hidden="true"></i>
               </div>
-              ${images.length ? `<div class="medicine-detail-proof">
+              ${preview ? `<div class="medicine-detail-proof">
                 <div class="medicine-detail-images">
-                  ${images.map((image) => {
-                    const index = imageCursor++;
-                    return `<button type="button" data-medicine-image="${record.id}" data-image-index="${index}" style="${medicineThumbStyle(image)}" aria-label="查看${escapeAttr(item.name)}图片"></button>`;
-                  }).join("")}
+                  <button type="button" data-medicine-image="${record.id}" data-image-index="${imageIndex}" style="${medicineThumbStyle(preview)}" aria-label="查看${escapeAttr(item.name)}图片"></button>
                 </div>
               </div>` : ""}
             </article>
@@ -376,7 +378,7 @@ function openMedicineItemDetailSheet(recordId, itemId) {
   if (!record || !item || !medicineItemDetailSheet || !medicineItemDetailBody) return;
   selectedMedicineItemRecordId = recordId;
   selectedMedicineItemId = itemId;
-  const images = item.images || [];
+  const images = medicineSingleImages(item.images);
   const itemType = item.type === "nutrition" ? "nutrition" : "medicine";
   const itemCopy = medicineRecordCopy(itemType);
   medicineItemDetailBody.innerHTML = `
@@ -416,7 +418,7 @@ function openMedicineItemDetailSheet(recordId, itemId) {
   if (footer) {
     footer.innerHTML = `
       <button id="medicineItemDelete" class="medicine-item-delete-action" type="button">删除</button>
-      <button id="medicineItemSave" class="medicine-item-save-action" type="button">确定</button>
+      <button id="medicineItemSave" class="medicine-item-save-action" type="button">保存</button>
     `;
     footer.querySelector("#medicineItemDelete")?.addEventListener("click", deleteSelectedMedicineItem);
     footer.querySelector("#medicineItemSave")?.addEventListener("click", saveSelectedMedicineItem);
@@ -480,7 +482,7 @@ function addSelectedMedicineItemImages(files) {
   const incoming = Array.from(files || []);
   if (!incoming.length) return;
   updateSelectedMedicineItem((item) => {
-    const images = [...(item.images || [])];
+    const images = medicineSingleImages(item.images);
     if (images.length >= 1) {
       showToast("每个药品最多上传1张图片");
       return { ...item, name: selectedMedicineItemDraftName(item.name), images };
@@ -504,7 +506,7 @@ function addSelectedMedicineItemImages(files) {
 
 function removeSelectedMedicineItemImage(index) {
   updateSelectedMedicineItem((item) => {
-    const images = [...(item.images || [])];
+    const images = medicineSingleImages(item.images);
     const [removed] = images.splice(index, 1);
     if (removed?.startsWith("blob:")) URL.revokeObjectURL(removed);
     return { ...item, name: selectedMedicineItemDraftName(item.name), images };
@@ -566,7 +568,7 @@ function deleteSelectedMedicineRecord() {
 function openMedicineImagePage(recordId, imageIndex = 0) {
   const record = medicineRecordById(recordId);
   if (!record) return;
-  medicinePreviewImages = record.items.flatMap((item) => (item.images || []).map((image) => ({ image, name: item.name })));
+  medicinePreviewImages = record.items.flatMap((item) => medicineSingleImages(item.images).map((image) => ({ image, name: item.name })));
   medicinePreviewIndex = Math.max(0, Math.min(Number(imageIndex) || 0, medicinePreviewImages.length - 1));
   renderMedicineImagePage();
   openSubPage("medicineImagePage");
@@ -595,7 +597,7 @@ function createMedicineItem(name = "", images = [], type = "medicine") {
     id: `medicine-${medicineIdSeed++}`,
     type,
     name,
-    images
+    images: medicineSingleImages(images)
   };
 }
 
@@ -604,7 +606,7 @@ function openMedicineCheckinSheet(recordId = "") {
   const record = recordId ? medicineRecordById(recordId) : null;
   editingMedicineRecordId = record?.id || "";
   medicineItems = record
-    ? record.items.map((item) => createMedicineItem(item.name, [...(item.images || [])], item.type))
+    ? record.items.map((item) => createMedicineItem(item.name, medicineSingleImages(item.images), item.type))
     : [createMedicineItem()];
   medicineImageTargetId = "";
   if (medicineTime) medicineTime.value = record?.time || localDateTimeValue();
@@ -614,7 +616,7 @@ function openMedicineCheckinSheet(recordId = "") {
   renderMedicineItems();
   const title = medicineCheckinSheet?.querySelector(".medicine-sheet-head h3");
   if (title) title.textContent = editingMedicineRecordId ? "编辑用药/补充记录" : "用药/补充记录";
-  if (medicineConfirm) medicineConfirm.textContent = editingMedicineRecordId ? "保存记录" : "打卡";
+  if (medicineConfirm) medicineConfirm.textContent = editingMedicineRecordId ? "保存" : "打卡";
   sheetMask.classList.add("active");
   medicineCheckinSheet?.classList.add("active");
 }
@@ -749,6 +751,7 @@ function renderMedicineItems() {
   if (medicineListDesc) medicineListDesc.textContent = "最多只能添加10个药品/营养素";
   if (medicineAdd) medicineAdd.textContent = "+ 添加记录";
   medicineList.innerHTML = medicineItems.map((item, index) => {
+    const images = medicineSingleImages(item.images);
     const itemType = item.type === "nutrition" ? "nutrition" : "medicine";
     const copy = medicineRecordCopy(itemType);
     const history = medicineNameHistory(itemType, item.name);
@@ -782,12 +785,12 @@ function renderMedicineItems() {
       <div>
         <p class="medicine-image-help">${copy.imageHelp}</p>
         <div class="medicine-images">
-          ${item.images.map((image, imageIndex) => `
+          ${images.map((image, imageIndex) => `
             <div class="medicine-thumb" style="${image.startsWith("blob:") ? `background-image:url('${image}')` : `background:${image}`}">
               <button type="button" data-remove-medicine-image="${item.id}" data-image-index="${imageIndex}" aria-label="删除图片">×</button>
             </div>
           `).join("")}
-          ${item.images.length < 1 ? `<button class="medicine-add-image" type="button" data-add-medicine-image="${item.id}">添加图片</button>` : ""}
+          ${images.length < 1 ? `<button class="medicine-add-image" type="button" data-add-medicine-image="${item.id}">添加图片</button>` : ""}
         </div>
       </div>
     </article>
@@ -842,6 +845,7 @@ function deleteMedicineItem(id) {
 function addMedicineImages(files) {
   const item = medicineItems.find((medicine) => medicine.id === medicineImageTargetId);
   if (!item) return;
+  item.images = medicineSingleImages(item.images);
   if (item.images.length >= 1) {
     showToast("每个药品最多上传1张图片");
     return;
@@ -897,7 +901,7 @@ function confirmMedicineCheckin() {
       id: item.id || `med-item-${Date.now()}-${index}`,
       type: item.type === "nutrition" ? "nutrition" : "medicine",
       name: item.name,
-      images: [...(item.images || [])]
+      images: medicineSingleImages(item.images)
     }))
   };
   if (!medicineRecordsByPatient[key]) medicineRecordsByPatient[key] = [];

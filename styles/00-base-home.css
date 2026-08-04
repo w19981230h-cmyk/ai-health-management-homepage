@@ -1069,7 +1069,7 @@ body.detail-page-open #reportDetailPage .report-actions {
   width: 82px;
   height: 64px;
   border-radius: 12px;
-  background-image: url("assets/health-service-triptych.png");
+  background-image: url("../assets/health-service-triptych.png");
   background-size: 300% 100%;
   background-repeat: no-repeat;
   box-shadow: 0 5px 14px rgba(21, 36, 138, 0.12);

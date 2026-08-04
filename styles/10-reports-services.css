@@ -1181,6 +1181,19 @@
   font-size: 11px;
 }
 
+.diet-food-card .diet-food-glycemic {
+  display: inline-flex;
+  width: max-content;
+  margin-top: 2px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #f0f5ff;
+  color: #3671ff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
 .diet-food-card menu {
   display: grid;
   gap: 6px;
