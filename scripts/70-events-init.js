@@ -704,6 +704,8 @@ function updateOrderStatusCounts() {
   orderStatusTabs?.querySelectorAll("[data-order-count]").forEach((badge) => {
     badge.textContent = String(counts[badge.dataset.orderCount] || 0);
   });
+  const orderShortcutBadge = document.querySelector(".service-count-badge");
+  if (orderShortcutBadge) orderShortcutBadge.dataset.count = String(counts.pending || 0);
 }
 
 function renderServiceOrders(status = "all") {
@@ -720,10 +722,13 @@ function renderServiceOrders(status = "all") {
     const useButton = order.status === "pending"
       ? `<button class="order-use-button" type="button" data-order-use aria-label="立即使用${service.title}">立即使用</button>`
       : "";
+    const statusBadge = status === "all"
+      ? `<b class="order-status status-${order.status}">${statusMeta.label}</b>`
+      : "";
     return `<article class="archive-service-card order-card-${order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
       <i class="owned-img ${service.img}" aria-hidden="true"></i>
       <span><strong>${service.title}</strong><em class="order-time">下单时间：${order.orderTime}</em>${cycleText}<em class="order-amount">金额：<b>${service.price}</b></em></span>
-      <div class="archive-service-actions"><b class="order-status status-${order.status}">${statusMeta.label}</b>${useButton}</div>
+      <div class="archive-service-actions">${statusBadge}${useButton}</div>
     </article>`;
   }).join("");
 }
