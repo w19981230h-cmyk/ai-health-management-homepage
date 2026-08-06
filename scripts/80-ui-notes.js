@@ -159,6 +159,15 @@
     const serviceDetail = document.querySelector("#serviceDetailPage.active");
     if (serviceDetail) {
       const title = document.querySelector("#detailServiceTitle")?.textContent.trim() || "default";
+      if (serviceDetail.classList.contains("bound-service")) {
+        return "service-bound-detail:" + title;
+      }
+      if (typeof serviceDetailSource !== "undefined" && serviceDetailSource === "orders") {
+        const orderStatus = typeof activeServiceOrder !== "undefined" && activeServiceOrder?.status
+          ? activeServiceOrder.status
+          : "default";
+        return "service-order-detail:" + orderStatus + ":" + title;
+      }
       return "service-detail:" + title;
     }
 

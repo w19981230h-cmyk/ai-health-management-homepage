@@ -761,7 +761,9 @@ function renderServiceDetail(service, source = "service") {
   if (detailFooterPrice) detailFooterPrice.textContent = service.price;
   if (detailServiceSales) detailServiceSales.textContent = String(service.sales || "").replace(/^月销量\s*/, "");
   if (detailServiceDesc) detailServiceDesc.textContent = service.desc;
-  const isBoundService = boundServiceState?.serviceId === service.id;
+  const isBoundService = source === "orders"
+    && activeServiceOrder?.status === "effective"
+    && boundServiceState?.serviceId === service.id;
   const isPendingOrder = source === "orders" && activeServiceOrder?.status === "pending";
   serviceDetailPage?.classList.toggle("bound-service", isBoundService);
   serviceDetailPage?.classList.toggle("pending-order-detail", isPendingOrder);
@@ -2632,6 +2634,7 @@ purchaseAgreementCheck?.addEventListener("change", () => {
 
 purchaseConfirmButton?.addEventListener("click", () => {
   setPurchaseQuantity(purchaseQuantityInput?.value);
+  const confirmedQuantity = normalizedPurchaseQuantity(purchaseQuantityInput?.value);
   const phone = purchasePhoneInput?.value || "";
   if (!/^1[3-9]\d{9}$/.test(phone)) {
     if (purchasePhoneError) purchasePhoneError.textContent = "请输入有效的11位手机号";
@@ -2644,6 +2647,8 @@ purchaseConfirmButton?.addEventListener("click", () => {
   }
   closeOverlays();
   if (purchaseSuccessServiceTitle) purchaseSuccessServiceTitle.textContent = activePurchaseService?.title || "90天减重管理服务包";
+  if (purchaseSuccessQuantity) purchaseSuccessQuantity.textContent = String(confirmedQuantity);
+  if (purchaseSuccessAmount) purchaseSuccessAmount.textContent = `¥${purchaseUnitPrice() * confirmedQuantity}元`;
   serviceDetailPage?.classList.remove("active");
   servicePurchaseSuccessPage?.classList.add("active");
   servicePurchaseSuccessPage?.scrollTo?.(0, 0);

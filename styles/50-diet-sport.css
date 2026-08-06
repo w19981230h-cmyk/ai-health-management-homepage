@@ -1956,13 +1956,14 @@
 }
 
 .mine-page .history-entry {
-  height: auto;
-  padding: 0;
-  color: rgba(3, 16, 46, 0.58);
+  flex: 0 0 auto;
+  height: 29px;
+  padding: 0 2px 0 0;
+  color: #122e84;
   background: transparent;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 18px;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 29px;
 }
 
 .mine-page .history-entry::after {
@@ -1970,18 +1971,22 @@
 }
 
 .mine-page .medical-toolbar {
-  margin: 7px -14px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
 }
 
 .mine-page .profile-content .pill-tabs {
-  gap: 8px;
-  padding: 0 0 10px;
+  flex: 1 1 auto;
+  gap: 4px;
+  padding: 0;
 }
 
 .mine-page .profile-content .pill-tabs button {
   flex: 0 0 auto;
   height: 29px;
-  padding: 0 12px;
+  padding: 0 11px;
   border: 0;
   border-radius: 10px;
   color: #59677d;
@@ -2117,7 +2122,7 @@
 
 /* Health archive report cards: compact document style */
 .mine-page .medical-toolbar {
-  margin: 7px 0 0;
+  margin: 0 0 10px;
 }
 
 .mine-page .profile-content .pill-tabs {

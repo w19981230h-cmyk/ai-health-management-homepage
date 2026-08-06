@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260804-order-use-bottom-v1">
+  <link rel="stylesheet" href="styles.css?v=20260805-service-benefits-full-text-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -247,15 +247,29 @@
           </section>
 
           <section class="reference-detail-section detail-introduction">
-            <h2>服务介绍</h2>
-            <p>服务结合专业医学评估方法与数字化健康管理工具，通过智能设备记录、健康档案整理和专家团队分析，形成连续、可追踪的健康管理过程。</p>
-            <p>服务期间将依据您的指标变化和执行情况，制定阶段管理计划，并指导记录饮食、运动及相关健康数据，让每次调整都有依据。</p>
+            <header class="detail-section-heading">
+              <h2>服务介绍</h2>
+              <p>专业评估 · 数字管理 · 持续陪伴</p>
+            </header>
+            <div class="detail-intro-list">
+              <article>
+                <i aria-hidden="true">01</i>
+                <div><strong>专业评估与健康建档</strong><p>结合专业医学评估方法与数字化健康管理工具，通过智能设备记录、健康档案整理和专家团队分析，形成连续、可追踪的健康管理过程。</p></div>
+              </article>
+              <article>
+                <i aria-hidden="true">02</i>
+                <div><strong>阶段计划与持续随访</strong><p>服务期间依据指标变化和执行情况制定阶段管理计划，并指导记录饮食、运动及相关健康数据，让每次调整都有依据。</p></div>
+              </article>
+            </div>
           </section>
 
           <section class="reference-detail-section detail-benefits">
-            <h2>服务权益</h2>
+            <header class="detail-section-heading">
+              <h2>服务权益</h2>
+              <p>服务包有效期为90天</p>
+            </header>
             <table>
-              <thead><tr><th>服务项目</th><th>内容详情</th><th>服务频次</th></tr></thead>
+              <thead><tr><th>服务权益</th><th>权益说明</th><th>次数</th></tr></thead>
               <tbody>
                 <tr><td>健康档案</td><td>建立完整健康档案，整合就诊记录、检查结果和日常健康信息</td><td>1次</td></tr>
                 <tr><td rowspan="2">个性化健康管理</td><td>纳入管理后进行全面健康评估，并制定个性化管理计划</td><td>1次</td></tr>
@@ -267,7 +281,10 @@
           </section>
 
           <section class="detail-rules">
-            <h2>服务规则</h2>
+            <header class="detail-section-heading">
+              <h2>服务规则</h2>
+              <p>购买及使用前请仔细阅读</p>
+            </header>
             <ol>
               <li>支付成功后，服务包状态为“待使用”，用户需在支付成功后30天内绑定就诊人。</li>
               <li>服务包绑定就诊人后立即生效，服务周期自绑定成功之日起计算。</li>
@@ -458,8 +475,8 @@
               </div>
               <dl class="purchase-success-summary">
                 <div><dt>服务周期：</dt><dd>90天</dd></div>
-                <div><dt>购买数量：</dt><dd>5</dd></div>
-                <div><dt>金额：</dt><dd><strong>¥897元</strong></dd></div>
+                <div><dt>购买数量：</dt><dd id="purchaseSuccessQuantity">1</dd></div>
+                <div><dt>金额：</dt><dd><strong id="purchaseSuccessAmount">¥299元</strong></dd></div>
               </dl>
               <button id="bindServiceUserButton" type="button">立即使用</button>
               <p id="purchaseSuccessBindingHint">定制专属您的健康管理计划</p>
@@ -541,11 +558,8 @@
         </section>
         <section class="profile-content" aria-live="polite">
           <section class="medical-card profile-panel active" data-profile-panel="medical">
-            <div class="medical-section-header">
-              <h2>健康档案</h2>
-              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
-            </div>
             <div class="medical-toolbar">
+              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
               <div class="pill-tabs" id="medicalCategoryTabs">
                 <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="就诊记录">就诊记录</button><button type="button" data-category="处方记录">处方记录</button><button type="button" data-category="报告单">报告单</button>
               </div>
@@ -2357,7 +2371,7 @@
     </form>
   </section>
 
-  <script src="scripts/00-dom-state.js?v=20260804-refund-quantity-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260805-purchase-success-sync-v1"></script>
   <script src="scripts/01-data-store.js?v=20260804-report-type-data-v1"></script>
   <script src="scripts/10-schedule.js?v=20260731-diet-meal-night-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260731-record-detail-page-v1"></script>
@@ -2365,7 +2379,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260804-report-status-summary-v1"></script>
   <script src="scripts/60-metrics.js?v=20260804-refund-application-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260804-order-status-badge-scope-v1"></script>
-  <script src="scripts/80-ui-notes.js?v=20260804-all-c-end-notes-v3"></script>
+  <script src="scripts/70-events-init.js?v=20260806-catalog-service-unbound-v1"></script>
+  <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
 </body>
 </html>
