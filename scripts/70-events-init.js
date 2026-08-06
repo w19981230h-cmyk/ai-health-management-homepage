@@ -671,12 +671,12 @@ const serviceOrders = [
   { id: "o2002", serviceId: "sugar", status: "effective", orderTime: "2026-07-16 18:05" },
   { id: "o2003", serviceId: "comprehensive", status: "effective", orderTime: "2026-07-01 08:50" },
   { id: "o2004", serviceId: "pressure", status: "effective", orderTime: "2026-06-25 13:36" },
-  { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19" },
-  { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10" },
-  { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45" },
-  { id: "o4001", serviceId: "pressure", status: "refunded", orderTime: "2026-07-18 09:32" },
-  { id: "o4002", serviceId: "weight", status: "refunded", orderTime: "2026-06-29 20:06" },
-  { id: "o4003", serviceId: "nutrition", status: "refunded", orderTime: "2026-06-08 10:18" }
+  { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19", refundRequest: { reason: "暂时不需要该服务", submittedAt: "2026-07-23 09:18", phone: "138****5216" } },
+  { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10", refundRequest: { reason: "误购或重复购买服务包", submittedAt: "2026-07-01 10:26", phone: "139****2843" } },
+  { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45", refundRequest: { reason: "服务用户信息填写错误", submittedAt: "2026-06-12 08:42", phone: "186****0731" } },
+  { id: "o4001", serviceId: "pressure", status: "refunded", orderTime: "2026-07-18 09:32", refundRequest: { reason: "服务用户信息填写错误", submittedAt: "2026-07-18 10:05", phone: "138****2669" } },
+  { id: "o4002", serviceId: "weight", status: "refunded", orderTime: "2026-06-29 20:06", refundRequest: { reason: "误购或重复购买服务包", submittedAt: "2026-06-30 09:12", phone: "186****1058" } },
+  { id: "o4003", serviceId: "nutrition", status: "refunded", orderTime: "2026-06-08 10:18", refundRequest: { reason: "医生建议暂停当前健康管理计划", submittedAt: "2026-06-08 11:34", phone: "139****6732" } }
 ];
 
 const orderStatusMeta = {
@@ -783,10 +783,12 @@ function renderServiceDetail(service, source = "service") {
 
 function openServiceDetail(serviceId, source = "service", orderId = "") {
   const service = packages.find((item) => item.id === serviceId) || packages[0];
-  activeServiceOrder = source === "orders" ? serviceOrders.find((order) => order.id === orderId) || null : null;
+  const keepsOrderContext = source === "orders" || source === "refund-progress" || source === "refund-success";
+  activeServiceOrder = keepsOrderContext ? serviceOrders.find((order) => order.id === orderId) || null : null;
   renderServiceDetail(service, source);
   const homePage = document.querySelector(".home-page");
-  if (homePage) {
+  const enteredFromRefundPage = source === "refund-progress" || source === "refund-success";
+  if (homePage && !enteredFromRefundPage) {
     const shellRect = homePage.getBoundingClientRect();
     const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
     homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
@@ -798,7 +800,7 @@ function openServiceDetail(serviceId, source = "service", orderId = "") {
   subPages.forEach((page) => page.classList.remove("active"));
   serviceDetailPage.classList.add("active");
   servicePurchaseSuccessPage?.classList.remove("active");
-  window.scrollTo(0, 0);
+  if (!enteredFromRefundPage) window.scrollTo(0, 0);
   if (homePage) homePage.scrollTop = 0;
   const detailScroll = serviceDetailPage.querySelector(".detail-scroll");
   if (detailScroll) detailScroll.scrollTop = 0;
@@ -841,7 +843,7 @@ homeServiceViewAll?.addEventListener("click", (event) => {
   switchView("service");
 });
 
-function openRefundOrderDetail(order) {
+function openRefundOrderDetail(order, preserveShellSize = false) {
   if (!order) return;
   const service = packages.find((item) => item.id === order.serviceId) || packages[0];
   activeServiceOrder = order;
@@ -860,13 +862,14 @@ function openRefundOrderDetail(order) {
   if (money) money.textContent = refundPrice;
   if (orderNo) orderNo.textContent = order.id.toUpperCase();
   if (orderTime) orderTime.textContent = order.orderTime;
-  if (!isRefunded) {
-    if (refundProgressReason) refundProgressReason.textContent = order.refundRequest?.reason || "暂时不需要该服务";
-    if (refundProgressSubmittedAt) refundProgressSubmittedAt.textContent = order.refundRequest?.submittedAt || order.orderTime;
-    if (refundProgressPhone) refundProgressPhone.textContent = order.refundRequest?.phone || "138****8888";
-  }
+  const reason = isRefunded ? refundSuccessReason : refundProgressReason;
+  const submittedAt = isRefunded ? refundSuccessSubmittedAt : refundProgressSubmittedAt;
+  const phone = isRefunded ? refundSuccessPhone : refundProgressPhone;
+  if (reason) reason.textContent = order.refundRequest?.reason || "暂时不需要该服务";
+  if (submittedAt) submittedAt.textContent = order.refundRequest?.submittedAt || order.orderTime;
+  if (phone) phone.textContent = order.refundRequest?.phone || "138****8888";
   const homePage = document.querySelector(".home-page");
-  if (homePage) {
+  if (homePage && !preserveShellSize) {
     const shellRect = homePage.getBoundingClientRect();
     const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
     homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
@@ -874,7 +877,33 @@ function openRefundOrderDetail(order) {
   }
   openSubPage(isRefunded ? "refundSuccessPage" : "refundProgressPage");
   (isRefunded ? refundSuccessPage : refundProgressPage)?.scrollTo?.(0, 0);
+  if (!preserveShellSize) {
+    window.requestAnimationFrame(() => {
+      refundDetailReturnWindowScroll = window.scrollY;
+    });
+  }
 }
+
+let refundDetailReturnScroll = 0;
+let refundDetailReturnWindowScroll = 0;
+
+function openRefundServiceDetail(source) {
+  const expectedStatus = source === "refund-success" ? "refunded" : "refunding";
+  if (!activeServiceOrder || activeServiceOrder.status !== expectedStatus) return;
+  const returnPage = source === "refund-success" ? refundSuccessPage : refundProgressPage;
+  refundDetailReturnScroll = returnPage?.scrollTop || 0;
+  openServiceDetail(activeServiceOrder.serviceId, source, activeServiceOrder.id);
+}
+
+document.querySelectorAll("[data-refund-progress-service], [data-refund-success-service]").forEach((card) => {
+  const openCardDetail = () => openRefundServiceDetail(card.hasAttribute("data-refund-success-service") ? "refund-success" : "refund-progress");
+  card.addEventListener("click", openCardDetail);
+  card.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openCardDetail();
+  });
+});
 
 let refundVerificationCode = "";
 let refundVerificationPhone = "";
@@ -2548,22 +2577,49 @@ function purchaseUnitPrice() {
   return Number(String(activePurchaseService?.price || "0").replace(/[^\d.]/g, "")) || 0;
 }
 
-function normalizedPurchaseQuantity(value) {
-  return Math.max(1, Math.min(100, Math.floor(Number(value) || 1)));
+function updatePurchaseTotals() {
+  if (purchaseTotalQuantity) purchaseTotalQuantity.textContent = "1";
+  if (purchaseTotalAmount) purchaseTotalAmount.textContent = `¥${purchaseUnitPrice()}`;
 }
 
-function updatePurchaseTotals(quantity = normalizedPurchaseQuantity(purchaseQuantityInput?.value)) {
-  const safeQuantity = normalizedPurchaseQuantity(quantity);
-  if (purchaseTotalQuantity) purchaseTotalQuantity.textContent = String(safeQuantity);
-  if (purchaseTotalAmount) purchaseTotalAmount.textContent = `¥${purchaseUnitPrice() * safeQuantity}`;
-  if (purchaseQuantityMinus) purchaseQuantityMinus.disabled = safeQuantity <= 1;
-  if (purchaseQuantityPlus) purchaseQuantityPlus.disabled = safeQuantity >= 100;
+const boundAccountPhone = "13800138000";
+let purchaseVerificationCode = "";
+let purchaseVerificationExpiresAt = 0;
+let purchaseVerificationTimer = null;
+
+function resetPurchaseVerification() {
+  if (purchaseVerificationTimer) window.clearInterval(purchaseVerificationTimer);
+  purchaseVerificationTimer = null;
+  purchaseVerificationCode = "";
+  purchaseVerificationExpiresAt = 0;
+  if (purchaseCodeInput) purchaseCodeInput.value = "";
+  if (purchaseCodeSend) {
+    purchaseCodeSend.disabled = false;
+    purchaseCodeSend.textContent = "获取验证码";
+  }
+  if (purchaseCodeHint) {
+    purchaseCodeHint.textContent = "验证绑定手机号后才可确认购买";
+    purchaseCodeHint.classList.remove("verified");
+  }
+  if (purchaseCodeError) purchaseCodeError.textContent = "";
 }
 
-function setPurchaseQuantity(value) {
-  const quantity = normalizedPurchaseQuantity(value);
-  if (purchaseQuantityInput) purchaseQuantityInput.value = String(quantity);
-  updatePurchaseTotals(quantity);
+function startPurchaseVerificationCountdown() {
+  let remaining = 60;
+  if (!purchaseCodeSend) return;
+  purchaseCodeSend.disabled = true;
+  purchaseCodeSend.textContent = `${remaining}s后重发`;
+  purchaseVerificationTimer = window.setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      window.clearInterval(purchaseVerificationTimer);
+      purchaseVerificationTimer = null;
+      purchaseCodeSend.disabled = false;
+      purchaseCodeSend.textContent = "重新获取";
+      return;
+    }
+    purchaseCodeSend.textContent = `${remaining}s后重发`;
+  }, 1000);
 }
 
 function preparePurchaseSheet() {
@@ -2573,9 +2629,10 @@ function preparePurchaseSheet() {
   if (purchasePackageTitle) purchasePackageTitle.textContent = service.title;
   if (purchasePackageTags) purchasePackageTags.textContent = service.tags;
   if (purchasePackagePrice) purchasePackagePrice.textContent = service.price;
-  setPurchaseQuantity(1);
-  if (purchasePhoneInput) purchasePhoneInput.value = "";
+  updatePurchaseTotals();
+  if (purchasePhoneInput) purchasePhoneInput.value = boundAccountPhone;
   if (purchasePhoneError) purchasePhoneError.textContent = "";
+  resetPurchaseVerification();
   if (purchaseAgreementCheck) purchaseAgreementCheck.checked = false;
   if (purchaseAgreementError) purchaseAgreementError.textContent = "";
 }
@@ -2597,26 +2654,32 @@ buyButton.addEventListener("click", () => {
   purchaseDialog.classList.add("active");
 });
 
-purchaseQuantityMinus?.addEventListener("click", () => setPurchaseQuantity(Number(purchaseQuantityInput?.value || 1) - 1));
-purchaseQuantityPlus?.addEventListener("click", () => setPurchaseQuantity(Number(purchaseQuantityInput?.value || 1) + 1));
-purchaseQuantityInput?.addEventListener("input", () => {
-  const digits = purchaseQuantityInput.value.replace(/\D/g, "");
-  if (!digits) {
-    purchaseQuantityInput.value = "";
-    updatePurchaseTotals(1);
-    return;
+purchaseCodeSend?.addEventListener("click", () => {
+  resetPurchaseVerification();
+  purchaseVerificationCode = String(Math.floor(100000 + Math.random() * 900000));
+  purchaseVerificationExpiresAt = Date.now() + 5 * 60 * 1000;
+  if (purchaseCodeHint) {
+    purchaseCodeHint.textContent = `验证码已发送至 ${boundAccountPhone.slice(0, 3)}****${boundAccountPhone.slice(-4)}，演示验证码：${purchaseVerificationCode}`;
   }
-  const quantity = Math.min(100, Number(digits));
-  purchaseQuantityInput.value = String(quantity);
-  updatePurchaseTotals(quantity);
+  startPurchaseVerificationCountdown();
+  toast.textContent = "验证码已发送";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1600);
 });
-purchaseQuantityInput?.addEventListener("blur", () => setPurchaseQuantity(purchaseQuantityInput.value));
 
-purchasePhoneInput?.addEventListener("input", () => {
-  purchasePhoneInput.value = purchasePhoneInput.value.replace(/\D/g, "").slice(0, 11);
-  const phone = purchasePhoneInput.value;
-  if (purchasePhoneError) {
-    purchasePhoneError.textContent = phone.length === 11 && !/^1[3-9]\d{9}$/.test(phone) ? "请输入有效的11位手机号" : "";
+purchaseCodeInput?.addEventListener("input", () => {
+  purchaseCodeInput.value = purchaseCodeInput.value.replace(/\D/g, "").slice(0, 6);
+  if (purchaseCodeError) purchaseCodeError.textContent = "";
+  const isVerified = purchaseCodeInput.value.length === 6
+    && purchaseCodeInput.value === purchaseVerificationCode
+    && Date.now() <= purchaseVerificationExpiresAt;
+  if (purchaseCodeHint) {
+    purchaseCodeHint.classList.toggle("verified", isVerified);
+    purchaseCodeHint.textContent = isVerified
+      ? "绑定手机号验证通过"
+      : purchaseVerificationCode
+        ? `验证码已发送至 ${boundAccountPhone.slice(0, 3)}****${boundAccountPhone.slice(-4)}，演示验证码：${purchaseVerificationCode}`
+        : "验证绑定手机号后才可确认购买";
   }
 });
 
@@ -2655,18 +2718,32 @@ purchaseAgreementCheck?.addEventListener("change", () => {
 });
 
 purchaseConfirmButton?.addEventListener("click", () => {
-  setPurchaseQuantity(purchaseQuantityInput?.value);
-  const confirmedQuantity = normalizedPurchaseQuantity(purchaseQuantityInput?.value);
+  const confirmedQuantity = 1;
   const phone = purchasePhoneInput?.value || "";
   if (!/^1[3-9]\d{9}$/.test(phone)) {
     if (purchasePhoneError) purchasePhoneError.textContent = "请输入有效的11位手机号";
     purchasePhoneInput?.focus();
     return;
   }
+  const verificationCode = purchaseCodeInput?.value || "";
+  if (!purchaseVerificationCode) {
+    if (purchaseCodeError) purchaseCodeError.textContent = "请先获取短信验证码";
+    return;
+  }
+  if (Date.now() > purchaseVerificationExpiresAt) {
+    if (purchaseCodeError) purchaseCodeError.textContent = "验证码已过期，请重新获取";
+    return;
+  }
+  if (verificationCode !== purchaseVerificationCode) {
+    if (purchaseCodeError) purchaseCodeError.textContent = "请输入正确的短信验证码";
+    purchaseCodeInput?.focus();
+    return;
+  }
   if (!purchaseAgreementCheck?.checked) {
     if (purchaseAgreementError) purchaseAgreementError.textContent = "请先阅读并同意用户协议和用户隐私协议";
     return;
   }
+  resetPurchaseVerification();
   closeOverlays();
   if (purchaseSuccessServiceTitle) purchaseSuccessServiceTitle.textContent = activePurchaseService?.title || "90天减重管理服务包";
   if (purchaseSuccessQuantity) purchaseSuccessQuantity.textContent = String(confirmedQuantity);
@@ -2912,7 +2989,17 @@ favoriteBtn?.addEventListener("click", () => {
 
 detailBack.addEventListener("click", () => {
   serviceDetailPage.classList.remove("active");
-  if (serviceDetailSource === "orders") {
+  if ((serviceDetailSource === "refund-progress" || serviceDetailSource === "refund-success") && activeServiceOrder) {
+    openRefundOrderDetail(activeServiceOrder, true);
+    const returnPage = serviceDetailSource === "refund-success" ? refundSuccessPage : refundProgressPage;
+    const restoreRefundViewport = () => {
+      window.scrollTo(0, refundDetailReturnWindowScroll);
+      returnPage?.scrollTo?.(0, refundDetailReturnScroll);
+    };
+    window.requestAnimationFrame(restoreRefundViewport);
+    window.setTimeout(restoreRefundViewport, 80);
+    return;
+  } else if (serviceDetailSource === "orders") {
     minePage.classList.add("active");
     setProfileTab("orders");
   } else if (serviceDetailSource === "home") {

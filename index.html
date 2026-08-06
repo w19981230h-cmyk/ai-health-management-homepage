@@ -334,10 +334,8 @@
                   <option value="">请选择退款原因</option>
                   <option value="暂时不需要该服务">暂时不需要该服务</option>
                   <option value="误购或重复购买服务包">误购或重复购买服务包</option>
-                  <option value="无法在服务有效期内使用">无法在服务有效期内使用</option>
                   <option value="服务用户信息填写错误">服务用户信息填写错误</option>
                   <option value="医生建议暂停当前健康管理计划">医生建议暂停当前健康管理计划</option>
-                  <option value="服务内容与购买前了解不一致">服务内容与购买前了解不一致</option>
                   <option value="其他原因">其他原因</option>
                 </select>
               </label>
@@ -391,22 +389,22 @@
         <main class="refund-page-content">
           <section class="refund-progress-card">
             <h2>退款处理中</h2>
-            <p>退款申请已受理，请耐心等待平台完成审核</p>
+            <p>系统审核已通过，退款已提交至微信支付</p>
             <ol class="refund-stepper" aria-label="退款流程">
               <li class="done"><i>✓</i><strong>提交申请</strong><em>已完成</em></li>
-              <li class="current"><i>2</i><strong>平台审核</strong><em>处理中</em></li>
-              <li><i>3</i><strong>原路退款</strong><em>待处理</em></li>
+              <li class="done"><i>✓</i><strong>系统自动审核</strong><em>已通过</em></li>
+              <li class="current"><i>3</i><strong>微信原路退款</strong><em>处理中</em></li>
             </ol>
           </section>
-          <aside class="refund-note"><strong>退款说明</strong><p>平台预计在1–3个工作日内完成审核。审核通过后，退款将原路退回微信支付账户，实际到账时间以支付机构为准。</p></aside>
+          <aside class="refund-note"><strong>退款说明</strong><p>系统已自动核验订单状态及退款金额。退款已提交至微信支付，预计1–3个工作日原路到账，实际到账时间以支付机构处理进度为准。</p></aside>
           <section class="refund-service-card">
             <h2>退款服务</h2>
-            <article class="refund-product-row">
+            <article class="refund-product-row refund-product-link" data-refund-progress-service role="button" tabindex="0" aria-label="查看退款中服务包详情">
               <i class="refund-product-cover service-img img-weight" id="refundProgressCover" aria-hidden="true"></i>
               <div><strong id="refundProgressTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundProgressAmount">¥299</em></div>
             </article>
             <dl class="refund-order-info">
-              <div><dt>退款状态</dt><dd class="refund-state-text">退款中</dd></div>
+              <div><dt>退款状态</dt><dd class="refund-state-text">原路退款中</dd></div>
               <div><dt>退款金额</dt><dd id="refundProgressMoney">¥299</dd></div>
               <div><dt>退款原因</dt><dd id="refundProgressReason">暂时不需要该服务</dd></div>
               <div><dt>申请时间</dt><dd id="refundProgressSubmittedAt">2026-08-04 10:00</dd></div>
@@ -435,13 +433,16 @@
           <aside class="refund-note"><strong>到账说明</strong><p>退款已由平台处理完成。因银行或支付机构处理时间不同，具体到账时间请以微信支付账单为准。</p></aside>
           <section class="refund-service-card">
             <h2>退款服务</h2>
-            <article class="refund-product-row">
+            <article class="refund-product-row refund-product-link" data-refund-success-service role="button" tabindex="0" aria-label="查看退款服务包详情">
               <i class="refund-product-cover service-img img-weight" id="refundSuccessCover" aria-hidden="true"></i>
               <div><strong id="refundSuccessTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundSuccessAmount">¥299</em></div>
             </article>
             <dl class="refund-order-info">
               <div><dt>退款状态</dt><dd class="refund-success-text">已退款</dd></div>
               <div><dt>退款金额</dt><dd id="refundSuccessMoney">¥299</dd></div>
+              <div><dt>退款原因</dt><dd id="refundSuccessReason">暂时不需要该服务</dd></div>
+              <div><dt>申请时间</dt><dd id="refundSuccessSubmittedAt">2026-07-18 10:05</dd></div>
+              <div><dt>联系电话</dt><dd id="refundSuccessPhone">138****2669</dd></div>
               <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
               <div><dt>订单编号</dt><dd id="refundSuccessOrderNo">O4001</dd></div>
               <div><dt>下单时间</dt><dd id="refundSuccessOrderTime">2026-07-18 09:32</dd></div>
@@ -558,16 +559,15 @@
         <section class="profile-content" aria-live="polite">
           <section class="medical-card profile-panel active" data-profile-panel="medical">
             <div class="medical-toolbar">
-              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
               <div class="pill-tabs" id="medicalCategoryTabs">
                 <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="就诊记录">就诊记录</button><button type="button" data-category="处方记录">处方记录</button><button type="button" data-category="报告单">报告单</button>
               </div>
+              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
             </div>
             <div class="report-list" id="medicalReportList"></div>
           </section>
           <section class="metrics-panel profile-panel" data-profile-panel="metrics">
             <div class="metrics-head">
-              <h2>健康指标</h2>
               <div class="metrics-team-switch" id="focusPlanSwitch" role="tablist" aria-label="团队切换">
                 <button class="active" type="button" role="tab" aria-selected="true" data-focus-plan="weight90">营养师团队</button>
                 <button type="button" role="tab" aria-selected="false" data-focus-plan="kidney">肾病团队</button>
@@ -2228,20 +2228,21 @@
           </article>
 
           <section class="purchase-form-section purchase-quantity-row">
-            <div><strong>购买数量</strong><span>最多购买100个</span></div>
-            <div class="purchase-stepper" aria-label="购买数量调整">
-              <button id="purchaseQuantityMinus" type="button" aria-label="减少购买数量">−</button>
-              <input id="purchaseQuantityInput" type="number" min="1" max="100" step="1" value="1" inputmode="numeric" aria-label="购买数量">
-              <button id="purchaseQuantityPlus" type="button" aria-label="增加购买数量">＋</button>
-            </div>
+            <div><strong>购买数量</strong><span>每笔订单固定购买1份</span></div>
+            <strong class="purchase-fixed-quantity">1份</strong>
           </section>
 
-          <label class="purchase-form-section purchase-phone-field" for="purchasePhoneInput">
+          <section class="purchase-form-section purchase-phone-field">
             <strong>短信接收手机号</strong>
-            <input id="purchasePhoneInput" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" placeholder="请输入11位手机号">
+            <input id="purchasePhoneInput" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel" value="13800138000" readonly>
             <em id="purchasePhoneError" aria-live="polite"></em>
-            <small>购买成功后，将通过该手机号发送购买成功短信。</small>
-          </label>
+            <div class="purchase-code-control">
+              <input id="purchaseCodeInput" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="请输入6位验证码" aria-describedby="purchaseCodeHint purchaseCodeError">
+              <button id="purchaseCodeSend" type="button">获取验证码</button>
+            </div>
+            <small id="purchaseCodeHint">验证绑定手机号后才可确认购买</small>
+            <em id="purchaseCodeError" aria-live="polite"></em>
+          </section>
 
           <section class="purchase-form-section purchase-payment-row">
             <div><strong>支付方式</strong><span>安全便捷支付</span></div>
@@ -2266,7 +2267,7 @@
         </div>
 
         <footer class="purchase-sheet-footer">
-          <div><strong id="purchaseTotalAmount">¥299</strong><span>共 <b id="purchaseTotalQuantity">1</b> 件</span></div>
+          <div><strong id="purchaseTotalAmount">¥299</strong><span>共 <b id="purchaseTotalQuantity">1</b> 份</span></div>
           <button id="purchaseConfirmButton" type="button">确定</button>
         </footer>
       </section>
