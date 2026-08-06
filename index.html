@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260805-service-benefits-full-text-v1">
+  <link rel="stylesheet" href="styles.css?v=20260806-refund-phone-verification-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -333,10 +333,11 @@
                 <select id="refundReasonSelect" aria-describedby="refundReasonError">
                   <option value="">请选择退款原因</option>
                   <option value="暂时不需要该服务">暂时不需要该服务</option>
-                  <option value="重复购买服务包">重复购买服务包</option>
-                  <option value="无法在有效期内使用">无法在有效期内使用</option>
-                  <option value="就诊人或服务信息选择有误">就诊人或服务信息选择有误</option>
-                  <option value="服务内容与预期不符">服务内容与预期不符</option>
+                  <option value="误购或重复购买服务包">误购或重复购买服务包</option>
+                  <option value="无法在服务有效期内使用">无法在服务有效期内使用</option>
+                  <option value="服务用户信息填写错误">服务用户信息填写错误</option>
+                  <option value="医生建议暂停当前健康管理计划">医生建议暂停当前健康管理计划</option>
+                  <option value="服务内容与购买前了解不一致">服务内容与购买前了解不一致</option>
                   <option value="其他原因">其他原因</option>
                 </select>
               </label>
@@ -352,18 +353,11 @@
 
             <section class="refund-apply-card refund-form-card">
               <label class="refund-textarea-field">
-                <span><strong>申请说明</strong><i>选填</i></span>
-                <textarea id="refundDescriptionInput" maxlength="300" placeholder="请补充说明退款原因，便于我们更快处理"></textarea>
+                <span><strong>申请说明</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
+                <textarea id="refundDescriptionInput" maxlength="300" placeholder="请说明退款的具体情况，不少于5个字" aria-describedby="refundDescriptionError"></textarea>
               </label>
               <p class="refund-text-count"><span id="refundDescriptionCount">0</span>/300</p>
-
-              <div class="refund-upload-field">
-                <div class="refund-upload-heading"><strong>上传图片或视频</strong><i>选填，最多6个</i></div>
-                <label class="refund-upload-button" for="refundEvidenceInput"><b>＋</b><span>上传凭证</span></label>
-                <input id="refundEvidenceInput" type="file" accept="image/*,video/*" multiple hidden>
-                <div class="refund-upload-list" id="refundUploadList" aria-live="polite"></div>
-                <p class="refund-field-error" id="refundUploadError"></p>
-              </div>
+              <p class="refund-field-error" id="refundDescriptionError"></p>
             </section>
 
             <section class="refund-apply-card refund-form-card">
@@ -371,8 +365,13 @@
                 <span><strong>联系电话</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
                 <input id="refundPhoneInput" type="tel" maxlength="11" inputmode="numeric" placeholder="请输入11位手机号码" aria-describedby="refundPhoneError">
               </label>
-              <p class="refund-field-hint">用于接收退款进度通知及必要的售后沟通</p>
               <p class="refund-field-error" id="refundPhoneError"></p>
+              <label class="refund-verification-field">
+                <span><strong>短信验证码</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
+                <span class="refund-code-control"><input id="refundCodeInput" type="text" maxlength="6" inputmode="numeric" placeholder="请输入6位验证码" aria-describedby="refundCodeHint refundCodeError"><button id="refundCodeSend" type="button">获取验证码</button></span>
+              </label>
+              <p class="refund-field-hint" id="refundCodeHint">验证通过后，该手机号将用于接收退款进度通知</p>
+              <p class="refund-field-error" id="refundCodeError"></p>
             </section>
           </form>
         </main>
@@ -2371,7 +2370,7 @@
     </form>
   </section>
 
-  <script src="scripts/00-dom-state.js?v=20260805-purchase-success-sync-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260806-refund-phone-verification-v1"></script>
   <script src="scripts/01-data-store.js?v=20260804-report-type-data-v1"></script>
   <script src="scripts/10-schedule.js?v=20260731-diet-meal-night-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260731-record-detail-page-v1"></script>
@@ -2379,7 +2378,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260804-report-status-summary-v1"></script>
   <script src="scripts/60-metrics.js?v=20260804-refund-application-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260806-catalog-service-unbound-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260806-refund-phone-verification-v1"></script>
   <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
 </body>
 </html>

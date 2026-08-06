@@ -195,6 +195,7 @@
 .refund-form-row > span:first-child,
 .refund-textarea-field > span,
 .refund-phone-field > span,
+.refund-verification-field > span:first-child,
 .refund-upload-heading {
   display: flex;
   align-items: baseline;
@@ -311,6 +312,7 @@
 
 .refund-textarea-field textarea:focus,
 .refund-phone-field input:focus,
+.refund-code-control input:focus,
 .refund-amount-input input:focus {
   border-color: #3671ff;
 }
@@ -431,6 +433,56 @@
   background: #fafcff;
   font-size: 13px;
   box-sizing: border-box;
+}
+
+.refund-verification-field {
+  display: block;
+  padding-top: 14px;
+  border-top: 1px solid #eef1f5;
+}
+
+.refund-code-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.refund-code-control input {
+  width: 100%;
+  height: 44px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #e5eaf2;
+  border-radius: 10px;
+  outline: 0;
+  color: #27344a;
+  background: #fafcff;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.refund-code-control button {
+  height: 44px;
+  padding: 0 8px;
+  border: 1px solid rgba(54, 113, 255, 0.28);
+  border-radius: 10px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.06);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.refund-code-control button:disabled {
+  color: #99a5b8;
+  border-color: #e5eaf2;
+  background: #f4f6f9;
+}
+
+#refundCodeHint.verified {
+  color: #14a66f;
+  font-weight: 700;
 }
 
 .refund-submit-bar {

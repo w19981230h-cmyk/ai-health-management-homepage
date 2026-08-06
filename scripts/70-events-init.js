@@ -876,7 +876,10 @@ function openRefundOrderDetail(order) {
   (isRefunded ? refundSuccessPage : refundProgressPage)?.scrollTo?.(0, 0);
 }
 
-let refundEvidenceFiles = [];
+let refundVerificationCode = "";
+let refundVerificationPhone = "";
+let refundVerificationExpiresAt = 0;
+let refundVerificationTimer = null;
 
 function servicePriceNumber(service) {
   return Number(String(service?.price || "0").replace(/[^\d.]/g, "")) || 0;
@@ -893,21 +896,40 @@ function refundSubmittedAtText() {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
-function clearRefundEvidenceFiles() {
-  refundEvidenceFiles.forEach((item) => URL.revokeObjectURL(item.url));
-  refundEvidenceFiles = [];
-  if (refundEvidenceInput) refundEvidenceInput.value = "";
-  renderRefundEvidenceFiles();
+function resetRefundVerification() {
+  if (refundVerificationTimer) window.clearInterval(refundVerificationTimer);
+  refundVerificationTimer = null;
+  refundVerificationCode = "";
+  refundVerificationPhone = "";
+  refundVerificationExpiresAt = 0;
+  if (refundCodeInput) refundCodeInput.value = "";
+  if (refundCodeSend) {
+    refundCodeSend.disabled = false;
+    refundCodeSend.textContent = "获取验证码";
+  }
+  if (refundCodeHint) {
+    refundCodeHint.textContent = "验证通过后，该手机号将用于接收退款进度通知";
+    refundCodeHint.classList.remove("verified");
+  }
+  if (refundCodeError) refundCodeError.textContent = "";
 }
 
-function renderRefundEvidenceFiles() {
-  if (!refundUploadList) return;
-  refundUploadList.innerHTML = refundEvidenceFiles.map((item, index) => {
-    const preview = item.file.type.startsWith("image/")
-      ? `<img src="${item.url}" alt="退款凭证${index + 1}">`
-      : `<video src="${item.url}" muted aria-label="退款视频凭证${index + 1}"></video><i class="refund-video-mark">▶</i>`;
-    return `<figure class="refund-upload-item">${preview}<button type="button" data-refund-file-remove="${index}" aria-label="删除${item.file.name}">×</button><figcaption>${item.file.name}</figcaption></figure>`;
-  }).join("");
+function startRefundVerificationCountdown() {
+  let remaining = 60;
+  if (!refundCodeSend) return;
+  refundCodeSend.disabled = true;
+  refundCodeSend.textContent = `${remaining}s后重发`;
+  refundVerificationTimer = window.setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      window.clearInterval(refundVerificationTimer);
+      refundVerificationTimer = null;
+      refundCodeSend.disabled = false;
+      refundCodeSend.textContent = "重新获取";
+      return;
+    }
+    refundCodeSend.textContent = `${remaining}s后重发`;
+  }, 1000);
 }
 
 function syncRefundAmountDisplay() {
@@ -935,10 +957,10 @@ function openRefundApplication() {
   if (refundDescriptionInput) refundDescriptionInput.value = "";
   if (refundDescriptionCount) refundDescriptionCount.textContent = "0";
   if (refundPhoneInput) refundPhoneInput.value = "";
-  [refundReasonError, refundAmountError, refundPhoneError, refundUploadError].forEach((item) => {
+  [refundReasonError, refundAmountError, refundDescriptionError, refundPhoneError, refundCodeError].forEach((item) => {
     if (item) item.textContent = "";
   });
-  clearRefundEvidenceFiles();
+  resetRefundVerification();
   syncRefundAmountDisplay();
   openSubPage("refundApplicationPage");
   refundApplicationPage?.scrollTo?.(0, 0);
@@ -2680,37 +2702,53 @@ refundAmountInput?.addEventListener("blur", () => {
 
 refundDescriptionInput?.addEventListener("input", () => {
   if (refundDescriptionCount) refundDescriptionCount.textContent = String(refundDescriptionInput.value.length);
+  if (refundDescriptionError) refundDescriptionError.textContent = "";
 });
 
 refundPhoneInput?.addEventListener("input", () => {
   refundPhoneInput.value = refundPhoneInput.value.replace(/\D/g, "").slice(0, 11);
   if (refundPhoneError) refundPhoneError.textContent = "";
+  if (refundVerificationPhone && refundPhoneInput.value !== refundVerificationPhone) resetRefundVerification();
 });
 
 refundReasonSelect?.addEventListener("change", () => {
   if (refundReasonError) refundReasonError.textContent = "";
 });
 
-refundEvidenceInput?.addEventListener("change", () => {
-  const incomingFiles = [...(refundEvidenceInput.files || [])];
-  if (!incomingFiles.length) return;
-  const available = Math.max(0, 6 - refundEvidenceFiles.length);
-  incomingFiles.slice(0, available).forEach((file) => {
-    refundEvidenceFiles.push({ file, url: URL.createObjectURL(file) });
-  });
-  if (refundUploadError) refundUploadError.textContent = incomingFiles.length > available ? "最多上传6个图片或视频" : "";
-  refundEvidenceInput.value = "";
-  renderRefundEvidenceFiles();
+refundCodeSend?.addEventListener("click", () => {
+  const phone = refundPhoneInput?.value || "";
+  if (!/^1[3-9]\d{9}$/.test(phone)) {
+    if (refundPhoneError) refundPhoneError.textContent = "请先输入有效的11位手机号码";
+    refundPhoneInput?.focus();
+    return;
+  }
+  resetRefundVerification();
+  refundVerificationPhone = phone;
+  refundVerificationCode = String(Math.floor(100000 + Math.random() * 900000));
+  refundVerificationExpiresAt = Date.now() + 5 * 60 * 1000;
+  startRefundVerificationCountdown();
+  if (refundCodeHint) refundCodeHint.textContent = `验证码已发送至 ${phone.slice(0, 3)}****${phone.slice(-4)}，演示验证码：${refundVerificationCode}`;
+  toast.textContent = "验证码已发送";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1800);
 });
 
-refundUploadList?.addEventListener("click", (event) => {
-  const removeButton = event.target.closest("[data-refund-file-remove]");
-  if (!removeButton) return;
-  const index = Number(removeButton.dataset.refundFileRemove);
-  const removed = refundEvidenceFiles.splice(index, 1)[0];
-  if (removed) URL.revokeObjectURL(removed.url);
-  if (refundUploadError) refundUploadError.textContent = "";
-  renderRefundEvidenceFiles();
+refundCodeInput?.addEventListener("input", () => {
+  refundCodeInput.value = refundCodeInput.value.replace(/\D/g, "").slice(0, 6);
+  if (refundCodeError) refundCodeError.textContent = "";
+  const verified = refundCodeInput.value.length === 6
+    && refundCodeInput.value === refundVerificationCode
+    && refundPhoneInput?.value === refundVerificationPhone
+    && Date.now() < refundVerificationExpiresAt;
+  if (verified && refundCodeHint) {
+    refundCodeHint.textContent = "手机号验证通过";
+    refundCodeHint.classList.add("verified");
+  } else if (refundCodeHint) {
+    refundCodeHint.classList.remove("verified");
+    if (refundVerificationCode && refundVerificationPhone) {
+      refundCodeHint.textContent = `验证码已发送至 ${refundVerificationPhone.slice(0, 3)}****${refundVerificationPhone.slice(-4)}，演示验证码：${refundVerificationCode}`;
+    }
+  }
 });
 
 refundApplicationForm?.addEventListener("submit", (event) => {
@@ -2719,6 +2757,8 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   const maxAmount = servicePriceNumber(activePurchaseService);
   const amount = Number(refundAmountInput?.value || 0);
   const phone = refundPhoneInput?.value || "";
+  const description = refundDescriptionInput?.value.trim() || "";
+  const code = refundCodeInput?.value || "";
   let firstInvalid = null;
   if (!refundReasonSelect?.value) {
     if (refundReasonError) refundReasonError.textContent = "请选择退款原因";
@@ -2728,9 +2768,23 @@ refundApplicationForm?.addEventListener("submit", (event) => {
     if (refundAmountError) refundAmountError.textContent = `退款金额需大于0且不超过¥${formatRefundAmount(maxAmount)}`;
     firstInvalid ||= refundAmountInput;
   }
+  if (description.length < 5) {
+    if (refundDescriptionError) refundDescriptionError.textContent = "请填写不少于5个字的申请说明";
+    firstInvalid ||= refundDescriptionInput;
+  }
   if (!/^1[3-9]\d{9}$/.test(phone)) {
     if (refundPhoneError) refundPhoneError.textContent = "请输入有效的11位手机号码";
     firstInvalid ||= refundPhoneInput;
+  }
+  if (!refundVerificationCode || phone !== refundVerificationPhone) {
+    if (refundCodeError) refundCodeError.textContent = "请先获取短信验证码";
+    firstInvalid ||= refundCodeInput;
+  } else if (Date.now() >= refundVerificationExpiresAt) {
+    if (refundCodeError) refundCodeError.textContent = "验证码已过期，请重新获取";
+    firstInvalid ||= refundCodeInput;
+  } else if (code !== refundVerificationCode) {
+    if (refundCodeError) refundCodeError.textContent = "验证码不正确，请重新输入";
+    firstInvalid ||= refundCodeInput;
   }
   if (firstInvalid) {
     firstInvalid.focus();
@@ -2740,9 +2794,9 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   activeServiceOrder.refundRequest = {
     reason: refundReasonSelect.value,
     amount,
-    description: refundDescriptionInput?.value.trim() || "",
+    description,
     phone,
-    attachments: refundEvidenceFiles.map((item) => ({ name: item.file.name, type: item.file.type })),
+    phoneVerified: true,
     submittedAt: refundSubmittedAtText()
   };
   activeServiceOrder.status = "refunding";
@@ -2751,7 +2805,7 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   pageStack = [];
   openRefundOrderDetail(activeServiceOrder);
   if (pageStack.length) pageStack[pageStack.length - 1] = "minePage";
-  clearRefundEvidenceFiles();
+  resetRefundVerification();
   toast.textContent = "退款申请已提交";
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1800);
