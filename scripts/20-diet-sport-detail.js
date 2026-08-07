@@ -502,22 +502,9 @@ function syncDietCheckinAfterMealDelete(deletedMeal) {
   renderSchedule();
 }
 
-function dietTaskStartDate(task) {
-  const rangeDate = String(task?.range || "").match(/\d{4}[/-]\d{2}[/-]\d{2}/)?.[0];
-  return String(rangeDate || scheduleSelectedDate || "").replaceAll("-", "/");
-}
-
-function dietTaskRecommendedTime() {
-  const recommendedTimeMap = {
-    "早餐": "07:00–09:00",
-    "早加餐": "09:30–10:30",
-    "午餐": "11:30–13:30",
-    "午加餐": "15:00–16:00",
-    "晚餐": "18:00–20:00",
-    "晚加餐": "20:00–21:00",
-    "夜宵": "21:00–22:00"
-  };
-  return recommendedTimeMap[dietSelectedMeal] || "用餐后30分钟内";
+function dietTaskDisplayTime(task) {
+  const raw = String(task?.displayTime || task?.startAt || task?.taskTime || "2026/01/01 08:00").trim();
+  return raw.replaceAll("-", "/").replace("T", " ");
 }
 
 function currentDietBindingTasks() {
@@ -533,8 +520,7 @@ function currentDietBindingTasks() {
       plan: task.plan || "健康管理方案",
       title: task.title || task.type || "饮食打卡任务",
       desc: task.range || task.status || "按任务要求完成饮食打卡",
-      startDate: dietTaskStartDate(task),
-      recommendedTime: dietTaskRecommendedTime(),
+      displayTime: dietTaskDisplayTime(task),
       source: task
     });
   });
@@ -545,8 +531,7 @@ function currentDietBindingTasks() {
       plan: item.plan || "今日健康日程",
       title: item.title || "饮食打卡",
       desc: item.desc || "记录今日饮食，完成健康日程打卡",
-      startDate: dietTaskStartDate(item),
-      recommendedTime: dietTaskRecommendedTime(),
+      displayTime: dietTaskDisplayTime(item),
       source: item
     });
   });
@@ -594,7 +579,7 @@ function openDietTaskBindSheet() {
           <span aria-hidden="true"></span>
           <b>${escapeAttr(task.title)}</b>
           <em>${escapeAttr(task.plan || "打卡任务")}</em>
-          <small>任务开始：${escapeAttr(task.startDate)} · 推荐时间：${escapeAttr(task.recommendedTime)}</small>
+          <small>${escapeAttr(task.displayTime)}</small>
         </label>
       `),
       `<label class="diet-task-bind-option muted">

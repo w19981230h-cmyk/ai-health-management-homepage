@@ -1,31 +1,148 @@
 function renderMedicalReports() {
   if (!medicalReportList) return;
   const reports = sortedMedicalReports();
-  const groups = reports.reduce((result, report) => {
-    const month = formatYearMonth(reportDateValue(report));
+  const syncedEncounters = selectedMedicalCategory === "全部" || selectedMedicalCategory === "就诊记录"
+    ? hospitalSyncedEncounters
+    : [];
+  const timelineItems = [
+    ...reports.map((report) => ({ kind: "report", date: reportDateValue(report), report })),
+    ...syncedEncounters.map((encounter) => ({ kind: "hospital", date: encounter.date, encounter }))
+  ].sort((left, right) => parseDateTime(right.date) - parseDateTime(left.date));
+  const groups = timelineItems.reduce((result, item) => {
+    const month = formatYearMonth(item.date);
     if (!result.has(month)) result.set(month, []);
-    result.get(month).push(report);
+    result.get(month).push(item);
     return result;
   }, new Map());
-  medicalReportList.innerHTML = reports.length ? [...groups.entries()].map(([month, items]) => `
+  medicalReportList.innerHTML = timelineItems.length ? [...groups.entries()].map(([month, items]) => `
     <section class="report-month-section">
       <h3>${month}</h3>
-      ${items.map((report) => `
-        <button class="report-card report-row" type="button" data-report-id="${report.id}" data-report-row="${report.id}">
+      ${items.map((item) => item.kind === "hospital" ? renderHospitalEncounterCard(item.encounter) : `
+        <button class="report-card report-row" type="button" data-report-id="${item.report.id}" data-report-row="${item.report.id}">
           <span class="report-card-main">
             <span class="report-card-meta">
-              <strong>${reportCardTypeLabel(report)}${isNewReport(report) ? '<em class="new-badge">新增</em>' : ""}</strong>
-              <em>报告时间:${reportCardDateText(report.reportTime)}</em>
+              <strong>${reportCardTypeLabel(item.report)}${isNewReport(item.report) ? '<em class="new-badge">新增</em>' : ""}</strong>
+              <em>报告时间:${reportCardDateText(item.report.reportTime)}</em>
             </span>
-            <span class="report-card-title">${report.name}</span>
-            <span class="report-card-source">来源：${report.source || report.org || "自动上传"}</span>
+            <span class="report-card-title">${item.report.name}</span>
+            <span class="report-card-source">来源：${item.report.source || item.report.org || "自动上传"}</span>
           </span>
-          <i class="report-thumb ${thumbForType(report.type, report.thumb || "doc")}"></i>
+          <i class="report-thumb ${thumbForType(item.report.type, item.report.thumb || "doc")}"></i>
         </button>
       `).join("")}
     </section>
   `).join("") : `<p class="period-empty">暂无就医资料</p>`;
   updateParseTaskEntry();
+}
+
+function renderHospitalEncounterCard(encounter) {
+  const visitDate = reportCardDateText(encounter.date);
+  return `
+    <button class="report-card report-row hospital-encounter-card" type="button" data-hospital-encounter="${encounter.id}">
+      <span class="report-card-main">
+        <span class="report-card-meta">
+          <strong>就诊记录</strong><em>就诊时间:${visitDate}</em>
+        </span>
+        <span class="report-card-title">${visitDate}${encounter.title}</span>
+        <span class="report-card-source hospital-encounter-source">医院同步 · ${encounter.org}</span>
+      </span>
+      <i class="report-thumb medical" aria-hidden="true"></i>
+    </button>
+  `;
+}
+
+function openHospitalRecordPage(encounterId) {
+  selectedHospitalEncounterId = encounterId;
+  selectedHospitalRecordGroup = "病案首页";
+  renderHospitalRecordPage();
+  openSubPage("hospitalRecordPage");
+}
+
+function renderHospitalRecordPage() {
+  const encounter = hospitalSyncedEncounters.find((item) => item.id === selectedHospitalEncounterId);
+  if (!encounter) return;
+  const records = encounter.records.filter((record) => record.group === selectedHospitalRecordGroup);
+  const list = document.querySelector("#hospitalRecordPageList");
+  const tabs = document.querySelector("#hospitalRecordTabs");
+  tabs?.querySelectorAll("[data-hospital-page-group]").forEach((button) => {
+    const isActive = button.dataset.hospitalPageGroup === selectedHospitalRecordGroup;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+  if (!list) return;
+  list.innerHTML = records.length ? records.map((record) => `
+    <article class="hospital-record-document">
+      <h2>${record.name}</h2>
+      <div class="hospital-record-file-image">
+        ${renderHospitalOriginalFile(record, encounter)}
+      </div>
+    </article>
+  `).join("") : `<p class="period-empty">该分类暂无同步资料</p>`;
+}
+
+function renderHospitalOriginalFile(record, encounter) {
+  const commonHeader = `
+    <span class="hospital-file-hospital">${encounter.org}</span>
+    <strong class="hospital-file-title">${record.name}</strong>
+  `;
+  if (record.id === "hospital-case-home") {
+    return `
+      <i class="hospital-file-preview hospital-file-case-home" aria-hidden="true">
+        ${commonHeader}
+        <span class="hospital-file-number">住院号：${encounter.admissionNo}</span>
+        <span class="hospital-file-grid hospital-file-patient-grid">
+          <span><b>姓名</b>张女士</span><span><b>性别</b>女</span><span><b>年龄</b>38岁</span>
+          <span><b>科室</b>${encounter.department}</span><span><b>入院日期</b>2024.02.02</span><span><b>出院日期</b>2024.02.08</span>
+          <span class="hospital-file-grid-wide"><b>主要诊断</b>原发性高血压</span>
+        </span>
+        <span class="hospital-file-seal">医院<br>归档</span>
+      </i>
+    `;
+  }
+  if (record.id === "hospital-discharge-summary") {
+    return `
+      <i class="hospital-file-preview hospital-file-discharge" aria-hidden="true">
+        ${commonHeader}
+        <span class="hospital-file-number">科室：${encounter.department}　住院号：${encounter.admissionNo}</span>
+        <span class="hospital-file-paragraph"><b>入院情况</b>患者因血压升高入院，完善相关检查后给予规范治疗。</span>
+        <span class="hospital-file-paragraph"><b>出院诊断</b>原发性高血压，治疗后血压较入院时改善。</span>
+        <span class="hospital-file-paragraph"><b>出院医嘱</b>规律服药，居家监测血压，按时复诊。</span>
+        <span class="hospital-file-sign">医师签名：王医生　　2024.02.08</span>
+      </i>
+    `;
+  }
+  if (record.group === "检验记录") {
+    return `
+      <i class="hospital-file-preview hospital-file-lab" aria-hidden="true">
+        ${commonHeader}
+        <span class="hospital-file-number">检验日期：${reportCardDateText(record.reportTime)}　${encounter.department}</span>
+        <span class="hospital-file-lab-table">
+          <span class="hospital-file-lab-head"><b>检验项目</b><b>结果</b><b>参考范围</b></span>
+          ${record.keyResults.map((item) => `
+            <span class="${item.status === "异常" ? "hospital-file-result-abnormal" : ""}">
+              <b>${item.name}</b><em>${item.result}</em><small>${item.extra.replace(/^参考范围\s*/, "")}</small>
+            </span>
+          `).join("")}
+        </span>
+        <span class="hospital-file-sign">检验者：李医生　审核者：陈医生</span>
+      </i>
+    `;
+  }
+  return `
+    <i class="hospital-file-preview hospital-file-generic" aria-hidden="true">
+      ${commonHeader}
+      <span class="hospital-file-number">${reportCardDateText(record.reportTime)}　${encounter.department}</span>
+      <span class="hospital-file-lab-table hospital-file-result-table">
+        <span class="hospital-file-lab-head"><b>项目</b><b>结果</b><b>说明</b></span>
+        ${record.keyResults.map((item) => `
+          <span class="${item.status === "异常" ? "hospital-file-result-abnormal" : ""}">
+            <b>${item.name}</b><em>${item.result}</em><small>${item.extra}</small>
+          </span>
+        `).join("")}
+      </span>
+      <span class="hospital-file-sign">数据来源：医院同步</span>
+    </i>
+  `;
 }
 
 function reportCardDateText(value) {
@@ -290,9 +407,16 @@ function renderKeyResults(report) {
 }
 
 function openReportDetail(reportId) {
-  const report = medicalReports.find((item) => item.id === reportId);
+  const report = medicalReports.find((item) => item.id === reportId) || hospitalSyncedReport(reportId);
   if (!report) return;
   selectedReportId = reportId;
+  const isHospitalSynced = report.sourceType === "hospital";
+  const reportEditEntry = document.querySelector("#reportDetailPage .report-edit-entry");
+  const reportDeleteEntry = document.querySelector("#reportDetailPage .report-delete-icon");
+  const reportSourceText = document.querySelector("#detailReportSourceText");
+  if (reportEditEntry) reportEditEntry.hidden = isHospitalSynced;
+  if (reportDeleteEntry) reportDeleteEntry.hidden = isHospitalSynced;
+  if (reportSourceText) reportSourceText.textContent = isHospitalSynced ? "医院同步" : "上传保存";
   const previewClass = report.thumb === "upload-image" ? "upload-image-thumb" : thumbForType(report.type, report.thumb || "doc");
   document.querySelector("#reportPreview").innerHTML = `<i class="report-thumb ${previewClass} big"></i><span>图片预览</span>`;
   detailReportName.value = report.name;

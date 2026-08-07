@@ -761,6 +761,11 @@
   background: #eaf3ff;
 }
 
+.archive-service-card .status-completed {
+  color: #16a36b;
+  background: rgba(22, 163, 107, 0.1);
+}
+
 .archive-service-card .status-refunding {
   color: #7a5af8;
   background: rgba(122, 90, 248, 0.1);
@@ -769,6 +774,22 @@
 .archive-service-card .status-refunded {
   color: #667085;
   background: #f2f4f7;
+}
+
+.archive-service-card.order-card-refunding {
+  border-color: rgba(122, 90, 248, 0.18);
+  background: linear-gradient(135deg, rgba(122, 90, 248, 0.045), #fbfdff 48%);
+}
+
+.archive-service-card.order-card-refunded {
+  border-color: rgba(102, 112, 133, 0.12);
+  background: linear-gradient(135deg, rgba(102, 112, 133, 0.045), #f8fafc 52%);
+}
+
+.archive-service-card.order-card-refunded > span > strong,
+.archive-service-card.order-card-refunded .order-time,
+.archive-service-card.order-card-refunded .order-amount {
+  color: #7b8494;
 }
 
 .archive-service-actions {
@@ -2239,6 +2260,287 @@
     linear-gradient(#d9e3f2 0 0) 10px 31px / 35px 1px no-repeat,
     linear-gradient(#d9e3f2 0 0) 10px 38px / 29px 1px no-repeat,
     #fffaf1;
+}
+
+.mine-page .hospital-encounter-card {
+  min-height: 120px;
+}
+
+.mine-page #medicalReportList .hospital-encounter-card .report-card-main {
+  grid-template-rows: 22px 1fr auto;
+}
+
+.mine-page #medicalReportList .hospital-encounter-source {
+  display: block;
+  overflow: hidden;
+  color: #8a95a8;
+  font-size: 12px;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hospital-record-page {
+  width: 100%;
+  min-height: calc(100vh - 62px);
+  padding: 44px 0 86px;
+  background: linear-gradient(180deg, #eef5ff 0%, #f6f9ff 44%, #f5f7fb 100%);
+}
+
+.hospital-record-page .hospital-record-nav {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  grid-template-columns: 40px 1fr 40px;
+  margin-bottom: 0;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+}
+
+.hospital-record-tabs {
+  position: sticky;
+  top: 52px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  overflow-x: auto;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(229, 235, 246, 0.9);
+  border-bottom: 1px solid rgba(229, 235, 246, 0.9);
+  background: rgba(255, 255, 255, 0.96);
+  scrollbar-width: none;
+}
+
+.hospital-record-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.hospital-record-tabs button {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 7px;
+  border-radius: 9px;
+  color: #64748b;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.hospital-record-tabs button.active {
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(54, 113, 255, 0.2);
+}
+
+.hospital-record-page-content {
+  padding: 16px 14px 32px;
+}
+
+.hospital-record-page-list {
+  display: grid;
+  gap: 18px;
+}
+
+.hospital-record-document h2 {
+  margin: 0 0 10px;
+  color: #122e84;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 900;
+}
+
+.hospital-record-file-image {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border-radius: 14px;
+  text-align: left;
+  background: transparent;
+}
+
+.hospital-file-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 238px;
+  overflow: hidden;
+  padding: 18px 20px;
+  border: 1px solid #d6dfeb;
+  border-radius: 14px;
+  color: #243958;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 8px 20px rgba(34, 66, 132, 0.07);
+  font-style: normal;
+}
+
+.hospital-file-preview::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border: 1px solid rgba(18, 46, 132, 0.1);
+  border-radius: 8px;
+}
+
+.hospital-file-preview::after {
+  content: none;
+}
+
+.hospital-file-preview span {
+  display: block;
+}
+
+.hospital-file-hospital {
+  position: relative;
+  color: #475569;
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+}
+
+.hospital-file-title {
+  position: relative;
+  display: block;
+  margin-top: 1px;
+  color: #122e84;
+  font-family: "SimSun", "Songti SC", serif;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.hospital-file-number {
+  position: relative;
+  margin-top: 7px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #aebbd0;
+  color: #64748b;
+  font-size: 9px;
+  line-height: 13px;
+  text-align: center;
+}
+
+.hospital-file-grid {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 8px;
+  border-top: 1px solid #b7c2d2;
+  border-left: 1px solid #b7c2d2;
+}
+
+.hospital-file-grid > span {
+  min-width: 0;
+  padding: 6px 5px;
+  border-right: 1px solid #b7c2d2;
+  border-bottom: 1px solid #b7c2d2;
+  color: #334155;
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.hospital-file-grid b,
+.hospital-file-paragraph b {
+  display: block;
+  margin-bottom: 2px;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 500;
+}
+
+.hospital-file-grid-wide {
+  grid-column: 1 / -1;
+}
+
+.hospital-file-seal {
+  position: absolute;
+  right: 26px;
+  bottom: 23px;
+  width: 42px;
+  height: 42px;
+  padding-top: 7px;
+  border: 2px solid rgba(232, 73, 73, 0.32);
+  border-radius: 50%;
+  color: rgba(210, 55, 55, 0.55);
+  font-size: 9px;
+  line-height: 12px;
+  text-align: center;
+  transform: rotate(-11deg);
+}
+
+.hospital-file-paragraph {
+  position: relative;
+  margin-top: 8px;
+  color: #475569;
+  font-family: "SimSun", "Songti SC", serif;
+  font-size: 9px;
+  line-height: 15px;
+}
+
+.hospital-file-sign {
+  position: absolute;
+  left: 20px;
+  bottom: 14px;
+  color: #7b8799;
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.hospital-file-lab-table {
+  position: relative;
+  margin-top: 7px;
+  border-top: 1px solid #aebbd0;
+}
+
+.hospital-file-lab-table > span {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1.35fr;
+  min-height: 25px;
+  align-items: center;
+  border-bottom: 1px solid #d7dee8;
+  color: #475569;
+  font-size: 9px;
+}
+
+.hospital-file-lab-table b,
+.hospital-file-lab-table em,
+.hospital-file-lab-table small {
+  min-width: 0;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.hospital-file-lab-head {
+  min-height: 21px !important;
+  color: #122e84 !important;
+  background: rgba(54, 113, 255, 0.06);
+}
+
+.hospital-file-result-abnormal em,
+.hospital-file-result-abnormal small {
+  color: #ff4d4f;
+  font-weight: 800;
+}
+
+.hospital-file-result-table > span {
+  grid-template-columns: 0.9fr 0.8fr 1.7fr;
+}
+
+.hospital-file-placeholder-lines {
+  position: relative;
+  height: 110px;
+  margin-top: 12px;
+  background: repeating-linear-gradient(to bottom, #d7dee8 0 1px, transparent 1px 20px);
+}
+
+.hospital-record-tabs button:focus-visible {
+  outline: 2px solid #3671ff;
+  outline-offset: 2px;
 }
 
 .common-card > div {

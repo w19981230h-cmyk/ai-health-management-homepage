@@ -141,6 +141,22 @@ function renderReminderSection(reminders) {
   return renderSection("今日提醒", body);
 }
 
+function scheduleTaskNotificationTime(type, task) {
+  if (task?.notifyTime) return task.notifyTime;
+  return {
+    pressure: "08:00",
+    sugar: "07:30",
+    diet: "12:00",
+    medicine: "20:00",
+    sport: "18:30",
+    weight: "07:00",
+    lipid: "08:00",
+    uric: "08:00",
+    waist: "07:30",
+    heart: "09:00"
+  }[type] || "08:00";
+}
+
 function renderFollowupSection(followups) {
   const body = followups.length ? followups.map((task, index) => {
     const buttonClass = task.status === "已完成" ? "done" : "";
@@ -153,6 +169,9 @@ function renderFollowupSection(followups) {
     const taskIdAttr = isCheckinTask ? ` data-task-id="followup-${index}"` : "";
     const completedClass = isCompletedCheckin ? " completed" : "";
     const completedMark = isCompletedCheckin ? `<i class="task-done-mark" aria-hidden="true"></i>` : "";
+    const taskMeta = isCheckinTask
+      ? scheduleTaskNotificationTime(checkinType, task)
+      : task.range ? `任务周期：${task.range}` : "";
     return `
       <article class="schedule-card follow-card ${taskKind}${completedClass}" data-schedule-action="${scheduleAction}"${checkinType ? ` data-type="${checkinType}"` : ""}${taskIdAttr}>
         <div class="follow-copy">
@@ -160,6 +179,7 @@ function renderFollowupSection(followups) {
             <span class="task-tag-small">健康行动</span>
           </div>
           <strong>${completedMark}${task.title}</strong>
+          ${taskMeta ? `<p class="follow-task-meta ${isCheckinTask ? "notification-time" : "task-cycle"}">${taskMeta}</p>` : ""}
         </div>
         <button class="task-primary ${buttonClass}" type="button" data-schedule-action="${scheduleAction}"${checkinType ? ` data-type="${checkinType}"` : ""}${taskIdAttr}>${action}</button>
       </article>

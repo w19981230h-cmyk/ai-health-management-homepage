@@ -693,6 +693,15 @@
   font-weight: 500 !important;
 }
 
+.follow-card .follow-task-meta {
+  display: flex !important;
+  align-items: center;
+  margin: -3px 0 0 !important;
+  color: #7d899c !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+}
+
 .assessment-card {
   grid-template-columns: 1fr auto !important;
   gap: 6px 10px !important;

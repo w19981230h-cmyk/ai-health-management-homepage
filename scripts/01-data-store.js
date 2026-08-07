@@ -190,9 +190,9 @@ const scheduleTasks = {
       reminders: ["复诊提醒", "用药提醒", "报告查看"],
       followups: [
         { type: "随访量表", plan: "高血压服务包", title: "出院随访跟踪量表", range: "2025/05/01 至 2025/05/10", status: "进行中", action: "立即查看" },
-        { type: "血压记录", plan: "", title: "完成血压打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" },
-        { type: "饮食记录", plan: "", title: "完成饮食打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" },
-        { type: "用药记录", plan: "", title: "完成用药打卡", range: "", status: "进行中", action: "去打卡", taskKind: "checkin" }
+        { type: "血压记录", plan: "", title: "完成血压打卡", range: "", notifyTime: "08:00", status: "进行中", action: "去打卡", taskKind: "checkin" },
+        { type: "饮食记录", plan: "", title: "完成饮食打卡", range: "", notifyTime: "12:00", status: "进行中", action: "去打卡", taskKind: "checkin" },
+        { type: "用药记录", plan: "", title: "完成用药打卡", range: "", notifyTime: "20:00", status: "进行中", action: "去打卡", taskKind: "checkin" }
       ],
       assessments: [
         { title: "糖尿病风险评估", desc: "健康管理师邀请您完成健康评估，了解健康状况。", status: "待完成", action: "开始评估" }
@@ -609,6 +609,152 @@ const defaultMedicalReports = [
     }
   }
 ];
+
+const hospitalSyncedEncounters = [
+  {
+    id: "hospital-20260101",
+    date: "2026-01-01",
+    title: "住院病历",
+    tag: "住院",
+    org: "南宁市第一人民医院",
+    department: "心血管内科",
+    admissionNo: "ZY202601010136",
+    records: [
+      {
+        id: "hospital-case-home",
+        group: "病案首页",
+        name: "住院病案首页",
+        type: "住院记录",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-02T10:20",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "medical",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "病案首页", type: "住院记录", name: "入院诊断", result: "原发性高血压", status: "需关注", extra: "高血压2级，心血管风险需持续评估", date: "2024-02-02" },
+          { category: "病案首页", type: "住院记录", name: "出院诊断", result: "原发性高血压", status: "需关注", extra: "血压控制较入院时改善", date: "2024-02-08" },
+          { category: "病案首页", type: "住院记录", name: "住院科室", result: "心血管内科", status: "正常", extra: "住院号 ZY202402020136", date: "2024-02-02" }
+        ]
+      },
+      {
+        id: "hospital-discharge-summary",
+        group: "出院记录",
+        name: "出院小结",
+        type: "住院记录",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-08T08:30",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "medical",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "出院记录", type: "出院记录", name: "住院天数", result: "6天", status: "正常", extra: "2024-02-02 至 2024-02-08", date: "2024-02-08" },
+          { category: "出院记录", type: "出院记录", name: "出院血压", result: "132/84 mmHg", status: "正常", extra: "继续居家早晚监测", date: "2024-02-08" },
+          { category: "出院记录", type: "出院记录", name: "复诊计划", result: "2周后复诊", status: "待确认", extra: "携带家庭血压记录", date: "2024-02-08" }
+        ]
+      },
+      {
+        id: "hospital-first-nursing",
+        group: "护理记录",
+        name: "首次护理记录单",
+        type: "住院记录",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-02T11:00",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "medical",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "护理记录", type: "护理记录", name: "入院血压", result: "166/102 mmHg", status: "异常", extra: "入院后给予一级护理观察", date: "2024-02-02" },
+          { category: "护理记录", type: "护理记录", name: "意识状态", result: "清醒", status: "正常", extra: "对答切题，可配合治疗", date: "2024-02-02" },
+          { category: "护理记录", type: "护理记录", name: "跌倒风险", result: "低风险", status: "正常", extra: "已完成住院安全宣教", date: "2024-02-02" }
+        ]
+      },
+      {
+        id: "hospital-nursing-assessment",
+        group: "护理记录",
+        name: "护理评估记录",
+        type: "住院记录",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-05T09:20",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "medical",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "护理记录", type: "护理记录", name: "睡眠情况", result: "一般", status: "需关注", extra: "夜间偶有醒来", date: "2024-02-05" },
+          { category: "护理记录", type: "护理记录", name: "饮食依从", result: "良好", status: "正常", extra: "已执行低盐饮食", date: "2024-02-05" },
+          { category: "护理记录", type: "护理记录", name: "用药依从", result: "良好", status: "正常", extra: "能按时配合服药", date: "2024-02-05" }
+        ]
+      },
+      {
+        id: "hospital-chest-ct",
+        group: "检查记录",
+        name: "胸部CT检查报告",
+        type: "检查报告",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-03T14:20",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "ct",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "检查记录", type: "CT报告", name: "双肺", result: "未见明显实变", status: "正常", extra: "肺纹理稍增多", date: "2024-02-03" },
+          { category: "检查记录", type: "CT报告", name: "肺结节", result: "未见", status: "正常", extra: "未见明确占位性病变", date: "2024-02-03" },
+          { category: "检查记录", type: "CT报告", name: "胸腔积液", result: "未见", status: "正常", extra: "双侧胸腔未见积液", date: "2024-02-03" }
+        ]
+      },
+      {
+        id: "hospital-ecg",
+        group: "检查记录",
+        name: "心电图检查报告",
+        type: "检查报告",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-03T09:10",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "ct",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "检查记录", type: "心电图报告", name: "心律", result: "窦性心律", status: "正常", extra: "心律规则", date: "2024-02-03" },
+          { category: "检查记录", type: "心电图报告", name: "心率", result: "76次/分", status: "正常", extra: "参考范围 60–100次/分", date: "2024-02-03" },
+          { category: "检查记录", type: "心电图报告", name: "ST-T改变", result: "轻度改变", status: "需关注", extra: "建议结合临床症状", date: "2024-02-03" }
+        ]
+      },
+      {
+        id: "hospital-blood-routine",
+        group: "检验记录",
+        name: "血常规检查检验报告",
+        type: "检验报告",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-03T08:40",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "doc",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "检验记录", type: "检验报告", name: "白细胞计数", result: "8.6 ×10⁹/L", status: "正常", extra: "参考范围 3.5–9.5 ×10⁹/L", date: "2024-02-03" },
+          { category: "检验记录", type: "检验报告", name: "血红蛋白", result: "136 g/L", status: "正常", extra: "参考范围 115–150 g/L", date: "2024-02-03" },
+          { category: "检验记录", type: "检验报告", name: "血小板计数", result: "226 ×10⁹/L", status: "正常", extra: "参考范围 125–350 ×10⁹/L", date: "2024-02-03" }
+        ]
+      },
+      {
+        id: "hospital-liver-kidney",
+        group: "检验记录",
+        name: "肝肾功能检验报告",
+        type: "检验报告",
+        org: "南宁市第一人民医院",
+        reportTime: "2024-02-04T08:50",
+        uploadTime: "2024-02-08T09:10",
+        thumb: "doc",
+        sourceType: "hospital",
+        keyResults: [
+          { category: "检验记录", type: "检验报告", name: "丙氨酸氨基转移酶", result: "32 U/L", status: "正常", extra: "参考范围 7–40 U/L", date: "2024-02-04" },
+          { category: "检验记录", type: "检验报告", name: "血肌酐", result: "72 μmol/L", status: "正常", extra: "参考范围 41–81 μmol/L", date: "2024-02-04" },
+          { category: "检验记录", type: "检验报告", name: "尿酸", result: "428 μmol/L", status: "异常", extra: "高于参考范围，建议复查", date: "2024-02-04" }
+        ]
+      }
+    ]
+  }
+];
+
+function hospitalSyncedReport(reportId) {
+  return hospitalSyncedEncounters.flatMap((encounter) => encounter.records).find((report) => report.id === reportId);
+}
 
 const defaultParseTasks = [
   { id: "t1", fileName: "image1", status: "parsing", thumb: "doc", createdAt: "2026-06-07T09:20" },

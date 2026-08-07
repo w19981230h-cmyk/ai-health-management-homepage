@@ -3143,7 +3143,7 @@ function openSubPage(pageId) {
   pageStack.push(currentPageId());
   document.body.classList.toggle(
     "detail-page-open",
-    pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "assessmentStartPage" || pageId === "assessmentVoicePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "metricRecordSheet" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "waterDetailPage" || pageId === "waterRecordDetailPage" || pageId === "sportDetailPage" || pageId === "sportRecordEditor" || pageId === "weightRecordDetailDialog" || pageId === "heartRecordDetailDialog" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
+    pageId === "hospitalRecordPage" || pageId === "reportDetailPage" || pageId === "aiReparsePage" || pageId === "assessmentStartPage" || pageId === "assessmentVoicePage" || pageId === "metricDetailPage" || pageId === "metricRecordsPage" || pageId === "metricRecordSheet" || pageId === "dietRecognizePage" || pageId === "dietResultPage" || pageId === "dietDetailPage" || pageId === "waterDetailPage" || pageId === "waterRecordDetailPage" || pageId === "sportDetailPage" || pageId === "sportRecordEditor" || pageId === "weightRecordDetailDialog" || pageId === "heartRecordDetailDialog" || pageId === "medicineRecordsPage" || pageId === "medicineDetailPage" || pageId === "medicineImagePage" || pageId === "portraitBiomarkerDetailPage"
   );
   homeOnlySections.forEach((item) => item.classList.add("hidden"));
   planPage.classList.remove("active");
@@ -3166,7 +3166,7 @@ function goBackPage() {
     previousSubPage.classList.add("active");
     document.body.classList.toggle(
       "detail-page-open",
-      previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "assessmentStartPage" || previous === "assessmentVoicePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "metricRecordSheet" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "waterDetailPage" || previous === "waterRecordDetailPage" || previous === "sportDetailPage" || previous === "sportRecordEditor" || previous === "weightRecordDetailDialog" || previous === "heartRecordDetailDialog" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
+      previous === "hospitalRecordPage" || previous === "reportDetailPage" || previous === "aiReparsePage" || previous === "assessmentStartPage" || previous === "assessmentVoicePage" || previous === "metricDetailPage" || previous === "metricRecordsPage" || previous === "metricRecordSheet" || previous === "dietRecognizePage" || previous === "dietResultPage" || previous === "dietDetailPage" || previous === "waterDetailPage" || previous === "waterRecordDetailPage" || previous === "sportDetailPage" || previous === "sportRecordEditor" || previous === "weightRecordDetailDialog" || previous === "heartRecordDetailDialog" || previous === "medicineRecordsPage" || previous === "medicineDetailPage" || previous === "medicineImagePage" || previous === "portraitBiomarkerDetailPage"
     );
   } else if (previous === "minePage") {
     minePage.classList.add("active");

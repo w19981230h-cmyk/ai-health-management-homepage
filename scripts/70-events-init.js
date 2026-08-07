@@ -671,6 +671,9 @@ const serviceOrders = [
   { id: "o2002", serviceId: "sugar", status: "effective", orderTime: "2026-07-16 18:05" },
   { id: "o2003", serviceId: "comprehensive", status: "effective", orderTime: "2026-07-01 08:50" },
   { id: "o2004", serviceId: "pressure", status: "effective", orderTime: "2026-06-25 13:36" },
+  { id: "o2501", serviceId: "weight", status: "completed", orderTime: "2026-03-18 09:20", completedAt: "2026-06-16" },
+  { id: "o2502", serviceId: "nutrition", status: "completed", orderTime: "2026-02-12 14:35", completedAt: "2026-05-13" },
+  { id: "o2503", serviceId: "pressure", status: "completed", orderTime: "2026-01-06 10:08", completedAt: "2026-04-06" },
   { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19", refundRequest: { reason: "暂时不需要该服务", submittedAt: "2026-07-23 09:18", phone: "138****5216" } },
   { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10", refundRequest: { reason: "误购或重复购买服务包", submittedAt: "2026-07-01 10:26", phone: "139****2843" } },
   { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45", refundRequest: { reason: "服务用户信息填写错误", submittedAt: "2026-06-12 08:42", phone: "186****0731" } },
@@ -682,13 +685,16 @@ const serviceOrders = [
 const orderStatusMeta = {
   pending: { label: "待使用", priority: 0 },
   effective: { label: "生效中", priority: 1 },
-  refunding: { label: "退款中", priority: 2 },
-  refunded: { label: "已退款", priority: 3 }
+  completed: { label: "已完成", priority: 2 },
+  refunding: { label: "退款中", priority: 3 },
+  refunded: { label: "已退款", priority: 4 }
 };
 
 function sortedServiceOrders(status = "all") {
   return serviceOrders
-    .filter((order) => status === "all" || order.status === status)
+    .filter((order) => status === "all"
+      || order.status === status
+      || (status === "after_sales" && ["refunding", "refunded"].includes(order.status)))
     .sort((a, b) => {
       const priorityDiff = orderStatusMeta[a.status].priority - orderStatusMeta[b.status].priority;
       return priorityDiff || b.orderTime.localeCompare(a.orderTime);
@@ -700,7 +706,8 @@ function updateOrderStatusCounts() {
     result.all += 1;
     result[order.status] += 1;
     return result;
-  }, { all: 0, pending: 0, effective: 0, refunding: 0, refunded: 0 });
+  }, { all: 0, pending: 0, effective: 0, completed: 0, refunding: 0, refunded: 0 });
+  counts.after_sales = counts.refunding + counts.refunded;
   orderStatusTabs?.querySelectorAll("[data-order-count]").forEach((badge) => {
     badge.textContent = String(counts[badge.dataset.orderCount] || 0);
   });
@@ -718,11 +725,13 @@ function renderServiceOrders(status = "all") {
       ? '<em class="order-cycle">服务周期：1个月</em>'
       : order.status === "effective"
         ? '<em class="order-cycle">服务周期至：2026/01/01</em>'
-        : "";
+        : order.status === "completed"
+          ? `<em class="order-cycle">完成时间：${order.completedAt || "--"}</em>`
+          : "";
     const useButton = order.status === "pending"
       ? `<button class="order-use-button" type="button" data-order-use aria-label="立即使用${service.title}">立即使用</button>`
       : "";
-    const statusBadge = status === "all"
+    const statusBadge = status === "all" || status === "after_sales"
       ? `<b class="order-status status-${order.status}">${statusMeta.label}</b>`
       : "";
     return `<article class="archive-service-card order-card-${order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
@@ -762,7 +771,7 @@ function renderServiceDetail(service, source = "service") {
   if (detailServiceSales) detailServiceSales.textContent = String(service.sales || "").replace(/^月销量\s*/, "");
   if (detailServiceDesc) detailServiceDesc.textContent = service.desc;
   const isBoundService = source === "orders"
-    && activeServiceOrder?.status === "effective"
+    && ["effective", "completed"].includes(activeServiceOrder?.status)
     && boundServiceState?.serviceId === service.id;
   const isPendingOrder = source === "orders" && activeServiceOrder?.status === "pending";
   serviceDetailPage?.classList.toggle("bound-service", isBoundService);
@@ -778,7 +787,11 @@ function renderServiceDetail(service, source = "service") {
     if (detailPatientMeta) detailPatientMeta.textContent = `${sexLabel} · ${boundServiceState.age}岁`;
   }
   if (refundAfterSalesButton) refundAfterSalesButton.hidden = !isPendingOrder;
-  if (buyButton) buyButton.textContent = isBoundService ? "查看健康管理计划" : isPendingOrder ? "立即使用" : source === "orders" ? "进入服务" : "立即订阅";
+  if (buyButton) buyButton.textContent = isBoundService
+    ? "查看健康管理方案"
+    : isPendingOrder
+      ? "立即使用"
+      : source === "orders" ? "进入服务" : "立即订阅";
 }
 
 function openServiceDetail(serviceId, source = "service", orderId = "") {
@@ -1003,7 +1016,7 @@ function openOrderCard(card) {
     openRefundOrderDetail(order);
     return;
   }
-  if (order.status === "effective") {
+  if (order.status === "effective" || order.status === "completed") {
     boundServiceState = { serviceId: order.serviceId, name: currentPatient.name || "张女士", sex: currentPatient.sex || "female", age: currentPatient.age || "35", avatar: (currentPatient.name || "张").slice(0, 1) };
   } else {
     boundServiceState = null;
@@ -1725,6 +1738,16 @@ medicalCategoryTabs?.addEventListener("click", (event) => {
   medicalCategoryTabs.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
   button.classList.add("active");
   renderMedicalReports();
+});
+medicalReportList?.addEventListener("click", (event) => {
+  const encounterButton = event.target.closest("[data-hospital-encounter]");
+  if (encounterButton) openHospitalRecordPage(encounterButton.dataset.hospitalEncounter);
+});
+document.querySelector("#hospitalRecordTabs")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-hospital-page-group]");
+  if (!button) return;
+  selectedHospitalRecordGroup = button.dataset.hospitalPageGroup;
+  renderHospitalRecordPage();
 });
 parseTaskEntry?.addEventListener("click", () => {
   openSubPage("parseTaskPage");
@@ -2950,7 +2973,7 @@ bindingConfirmSubmit?.addEventListener("click", () => {
   serviceDetailPage?.classList.add("bound-service");
   serviceDetailPage?.classList.remove("pending-order-detail");
   if (refundAfterSalesButton) refundAfterSalesButton.hidden = true;
-  if (buyButton) buyButton.textContent = "查看健康管理计划";
+  if (buyButton) buyButton.textContent = "查看健康管理方案";
   if (purchaseSuccessBindingHint) purchaseSuccessBindingHint.textContent = `服务用户：${pendingServiceUser.name}（已绑定）`;
   closeBindingConfirmation();
   closeServiceUserSheet();
