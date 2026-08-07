@@ -3944,7 +3944,7 @@
 
 .diet-task-bind-option span {
   position: relative;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   width: 20px;
   height: 20px;
   margin-top: 1px;
@@ -3975,9 +3975,25 @@
   line-height: 1.45;
 }
 
+.diet-task-bind-option small {
+  min-width: 0;
+  color: #596a86;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.diet-task-bind-option:has(input:checked) small {
+  color: #3671ff;
+}
+
 .diet-task-bind-option.muted {
   border-color: #edf1f7;
   background: #fbfcff;
+}
+
+.diet-task-bind-option.muted span {
+  grid-row: 1 / span 2;
 }
 
 .diet-task-bind-option.muted:has(input:checked) {

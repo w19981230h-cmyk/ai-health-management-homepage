@@ -202,7 +202,7 @@ function renderAssessmentSection(assessments) {
 function renderCheckinSection(checkins) {
   const checkinMap = new Map();
   (checkins || []).forEach((item) => checkinMap.set(item.type, item));
-  const wallItems = ["diet", "water", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart", "period"]
+  const wallItems = ["diet", "water", "sport", "medicine", "weight", "pressure", "sugar", "lipid", "uric", "waist", "heart"]
     .map((type) => checkinMap.get(type) || defaultCheckinItem(type));
   const body = `<div class="checkin-wall">${wallItems.map(renderCheckinCard).join("")}</div>`;
   return renderSection("健康打卡", body, `<button type="button" data-schedule-records>全部打卡 〉</button>`);

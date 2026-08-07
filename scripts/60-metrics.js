@@ -410,8 +410,7 @@ const allCheckinFilterOptions = [
   { type: "lipid", label: "血脂" },
   { type: "uric", label: "尿酸" },
   { type: "waist", label: "腰围" },
-  { type: "heart", label: "心率" },
-  { type: "period", label: "经期" }
+  { type: "heart", label: "心率" }
 ];
 
 const allCheckinTypeMeta = {
@@ -428,21 +427,6 @@ const allCheckinTypeMeta = {
   period: { label: "经期管理", icon: "经", tone: "pink" },
   water: { label: "饮水", icon: "水", tone: "blue" },
   sleep: { label: "睡眠", icon: "眠", tone: "purple" }
-};
-
-const allCheckinDemoRecords = {
-  diet: { title: "饮食记录", value: "摄入 430 kcal", time: "08:10", sort: 810 },
-  water: { title: "饮水", value: "饮水 400 ml", time: "10:30", sort: 1030 },
-  sport: { title: "运动", value: "快走 · 45分钟 · 180 kcal", time: "19:20", sort: 1920 },
-  medicine: { title: "用药/补充", value: "药品 1次 · 营养素 1次", time: "22:00", sort: 2200 },
-  weight: { title: "体重", value: "68.5 kg", time: "10:18", sort: 1018 },
-  pressure: { title: "血压", value: "血压 128/82 mmHg", time: "08:30", sort: 830 },
-  sugar: { title: "血糖", value: "血糖 5.0 mmol/L · 午餐后2h", time: "13:42", sort: 1342 },
-  lipid: { title: "血脂", value: "低密度脂蛋白LDL-C：3.1 mmol/L", time: "18:07", sort: 1807 },
-  uric: { title: "尿酸", value: "尿酸 362 μmol/L", time: "08:30", sort: 831 },
-  waist: { title: "腰围", value: "腰围 82 cm", time: "10:20", sort: 1020 },
-  heart: { title: "心率", value: "心率 72 bpm", time: "14:40", sort: 1440 },
-  period: { title: "经期管理", value: "经期第 2 天", time: "09:10", sort: 910 }
 };
 
 function setMetricRecordsPageMode(mode) {
@@ -587,24 +571,22 @@ function allCheckinRecordCards() {
       sort: allCheckinTimeValue(allCheckinRecordTime(item))
     });
   });
-  const existingTypes = new Set(cards.map((card) => card.type));
-  allCheckinFilterOptions
-    .filter((option) => option.type !== "all" && !existingTypes.has(option.type))
-    .forEach((option) => {
-      const demo = allCheckinDemoRecords[option.type];
-      if (!demo) return;
-      cards.push({
-        id: `demo-${option.type}`,
-        type: option.type,
-        title: demo.title,
-        value: demo.value,
-        time: demo.time,
-        rawTime: `${scheduleSelectedDate || dateInputValue(new Date())}T${demo.time}`,
-        sort: demo.sort,
-        demo: true
-      });
-    });
   return cards.sort((a, b) => b.sort - a.sort);
+}
+
+function allCheckinEmptyState(filter) {
+  const meta = allCheckinTypeMeta[filter];
+  const typeLabel = meta?.label || "该类型";
+  const title = filter === "all"
+    ? "当前日期暂无打卡记录"
+    : `暂无${typeLabel}${typeLabel.endsWith("记录") ? "" : "记录"}`;
+  return `
+    <div class="all-checkin-empty" data-empty-checkin-type="${escapeAttr(filter)}">
+      <i aria-hidden="true">${escapeAttr(meta?.icon || "记")}</i>
+      <strong>${escapeAttr(title)}</strong>
+      <span>点击日程卡片右上角“+”，完成首次打卡。</span>
+    </div>
+  `;
 }
 
 function renderAllCheckinFilters() {
@@ -644,12 +626,7 @@ function renderAllCheckinRecords(filter = "all") {
         }).join("")}
       </div>
     </section>
-  `).join("") : `
-    <div class="all-checkin-empty">
-      <strong>暂无打卡记录</strong>
-      <span>切换类型或点击卡片右上角新增打卡。</span>
-    </div>
-  `;
+  `).join("") : allCheckinEmptyState(allCheckinFilter);
   return;
   metricRecordsGroups.innerHTML = records.length ? records.map((record) => {
     const meta = allCheckinTypeMeta[record.type] || { label: record.title, icon: "记", tone: "blue" };

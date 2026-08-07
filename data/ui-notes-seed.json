@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "exportedAt": "2026-08-06T12:26:51.841Z",
+  "exportedAt": "2026-08-06T17:35:54.833Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -195,6 +195,21 @@
       "createdAt": "2026-08-06T09:28:21.762Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:28:24.627Z",
+      "status": "active"
+    },
+    {
+      "noteId": "0dec0213-3378-4648-a2fb-5f2557d4a3d1",
+      "projectId": "ai-health-management",
+      "pageId": "service-detail:90天减重管理服务包",
+      "noteNumber": 4,
+      "title": "服务包详情页",
+      "content": "本期每次只能购买1份，不提供数量选择器。\n页面展示内容取自当前已发布服务包配置。\n支付成功后，订单使用购买时的配置快照，不跟随后续服务包修改。",
+      "x": 0.48,
+      "y": 0.08647707486941382,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-06T17:35:54.829Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-06T17:35:54.829Z",
       "status": "active"
     },
     {

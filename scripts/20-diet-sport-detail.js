@@ -502,6 +502,24 @@ function syncDietCheckinAfterMealDelete(deletedMeal) {
   renderSchedule();
 }
 
+function dietTaskStartDate(task) {
+  const rangeDate = String(task?.range || "").match(/\d{4}[/-]\d{2}[/-]\d{2}/)?.[0];
+  return String(rangeDate || scheduleSelectedDate || "").replaceAll("-", "/");
+}
+
+function dietTaskRecommendedTime() {
+  const recommendedTimeMap = {
+    "早餐": "07:00–09:00",
+    "早加餐": "09:30–10:30",
+    "午餐": "11:30–13:30",
+    "午加餐": "15:00–16:00",
+    "晚餐": "18:00–20:00",
+    "晚加餐": "20:00–21:00",
+    "夜宵": "21:00–22:00"
+  };
+  return recommendedTimeMap[dietSelectedMeal] || "用餐后30分钟内";
+}
+
 function currentDietBindingTasks() {
   const data = scheduleDataFor();
   const tasks = [];
@@ -515,6 +533,8 @@ function currentDietBindingTasks() {
       plan: task.plan || "健康管理方案",
       title: task.title || task.type || "饮食打卡任务",
       desc: task.range || task.status || "按任务要求完成饮食打卡",
+      startDate: dietTaskStartDate(task),
+      recommendedTime: dietTaskRecommendedTime(),
       source: task
     });
   });
@@ -525,6 +545,8 @@ function currentDietBindingTasks() {
       plan: item.plan || "今日健康日程",
       title: item.title || "饮食打卡",
       desc: item.desc || "记录今日饮食，完成健康日程打卡",
+      startDate: dietTaskStartDate(item),
+      recommendedTime: dietTaskRecommendedTime(),
       source: item
     });
   });
@@ -572,6 +594,7 @@ function openDietTaskBindSheet() {
           <span aria-hidden="true"></span>
           <b>${escapeAttr(task.title)}</b>
           <em>${escapeAttr(task.plan || "打卡任务")}</em>
+          <small>任务开始：${escapeAttr(task.startDate)} · 推荐时间：${escapeAttr(task.recommendedTime)}</small>
         </label>
       `),
       `<label class="diet-task-bind-option muted">
@@ -852,19 +875,7 @@ function ensureSportRecordStore() {
     item = { type: "sport", title: "运动打卡", count: "暂无记录", desc: "", records: [] };
     data.checkins.unshift(item);
   }
-  if (!Array.isArray(item.records) || !item.records.length) {
-    item.records = defaultSportDetailData().records.map((record) => ({
-      id: record.id,
-      type: record.type,
-      name: record.name,
-      duration: record.duration,
-      calories: record.calories,
-      kcalRate: record.kcalRate,
-      intensity: record.intensity || "medium",
-      intensityLabel: record.intensityLabel || sportIntensities[record.intensity || "medium"] || "中强度",
-      time: `${scheduleSelectedDate}T${record.timeText}`
-    }));
-  }
+  if (!Array.isArray(item.records)) item.records = [];
   item.records = item.records.map((record, index) => normalizeSportRecord(record, index));
   return { data, item, records: item.records };
 }
@@ -890,25 +901,8 @@ function syncSportCheckinItem(item) {
   });
 }
 
-function defaultSportDetailData() {
-  return {
-    totalDuration: 108,
-    totalCalories: 569,
-    records: [
-      { id: "sport-default-0", type: "walk", timeText: "08:30", name: "快走", duration: 30, calories: 90, kcalRate: 3, intensity: "medium", intensityLabel: "中强度" },
-      { id: "sport-default-1", type: "fitness", timeText: "10:15", name: "力量训练", duration: 20, calories: 140, kcalRate: 7, intensity: "high", intensityLabel: "高强度" },
-      { id: "sport-default-2", type: "cycle", timeText: "16:40", name: "骑行", duration: 25, calories: 150, kcalRate: 6, intensity: "medium", intensityLabel: "中强度" },
-      { id: "sport-default-3", type: "fitness", timeText: "19:20", name: "瑜伽", duration: 15, calories: 45, kcalRate: 3, intensity: "low", intensityLabel: "低强度", review: defaultSportReviews()[1] },
-      { id: "sport-default-4", type: "run", timeText: "20:30", name: "慢跑", duration: 18, calories: 144, kcalRate: 8, intensity: "high", intensityLabel: "高强度", review: defaultSportReview() }
-    ]
-  };
-}
-
 function sportDetailDataForRender() {
   const item = currentSportCheckinItem();
-  if (item && Array.isArray(item.records) && !item.records.length) {
-    return { totalDuration: 0, totalCalories: 0, records: [] };
-  }
   const records = Array.isArray(item?.records) && item.records.length
     ? item.records.map((record, index) => {
         const normalized = normalizeSportRecord({ ...record }, index);
@@ -919,13 +913,7 @@ function sportDetailDataForRender() {
         };
       })
     : [];
-  if (!records.length) {
-    const data = defaultSportDetailData();
-    return {
-      ...data,
-      records: [...data.records].sort((a, b) => sportRecordSortValue(b) - sportRecordSortValue(a))
-    };
-  }
+  if (!records.length) return { totalDuration: 0, totalCalories: 0, records: [] };
   records.sort((a, b) => sportRecordSortValue(b) - sportRecordSortValue(a));
   const totalDuration = records.reduce((sum, record) => sum + Number(record.duration || 0), 0);
   const calculatedCalories = records.reduce((sum, record) => sum + Number(record.calories || 0), 0);
@@ -1013,7 +1001,13 @@ function renderSportDetailPage() {
           ${renderSportRecordReview(record)}
         </article>
       `).join("")
-      : `<div class="sport-detail-empty">今日暂无运动记录</div>`;
+      : `
+        <div class="sport-detail-empty">
+          <i aria-hidden="true"></i>
+          <strong>今日暂无运动记录</strong>
+          <span>完成首次运动打卡后，这里将展示运动时长与消耗。</span>
+        </div>
+      `;
   }
 }
 
