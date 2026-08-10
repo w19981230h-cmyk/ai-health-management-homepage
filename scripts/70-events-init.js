@@ -776,6 +776,23 @@ function renderServiceDetail(service, source = "service") {
   const isPendingOrder = source === "orders" && activeServiceOrder?.status === "pending";
   serviceDetailPage?.classList.toggle("bound-service", isBoundService);
   serviceDetailPage?.classList.toggle("pending-order-detail", isPendingOrder);
+  if (isPendingOrder) {
+    const orderTime = activeServiceOrder.orderTime || "--";
+    const orderSequence = String(activeServiceOrder.id || "0001").replace(/\D/g, "").padStart(4, "0").slice(-4);
+    const orderDate = orderTime.slice(0, 10).replace(/-/g, "") || "20260728";
+    const setText = (selector, value) => {
+      const element = serviceDetailPage?.querySelector(selector);
+      if (element) element.textContent = value;
+    };
+    const pendingCover = serviceDetailPage?.querySelector("#pendingOrderCover");
+    if (pendingCover) pendingCover.className = `pending-order-cover service-img ${service.img}`;
+    setText("#pendingOrderServiceTitle", service.title);
+    setText("#pendingOrderServiceTags", service.tags);
+    setText("#pendingOrderServicePrice", service.price);
+    setText("#pendingOrderNumber", `CH${orderDate}${orderSequence}`);
+    setText("#pendingOrderTime", orderTime);
+    setText("#pendingOrderPaidAmount", service.price);
+  }
   if (detailBoundPatient) detailBoundPatient.hidden = !isBoundService;
   if (isBoundService) {
     const sexLabel = boundServiceState.sex === "female" ? "女" : boundServiceState.sex === "male" ? "男" : "未知";
@@ -795,13 +812,15 @@ function renderServiceDetail(service, source = "service") {
 }
 
 function openServiceDetail(serviceId, source = "service", orderId = "") {
+  const previousDetailSource = serviceDetailSource;
   const service = packages.find((item) => item.id === serviceId) || packages[0];
-  const keepsOrderContext = source === "orders" || source === "refund-progress" || source === "refund-success";
+  const keepsOrderContext = source === "orders" || source === "order-product" || source === "refund-progress" || source === "refund-success";
   activeServiceOrder = keepsOrderContext ? serviceOrders.find((order) => order.id === orderId) || null : null;
   renderServiceDetail(service, source);
   const homePage = document.querySelector(".home-page");
   const enteredFromRefundPage = source === "refund-progress" || source === "refund-success";
-  if (homePage && !enteredFromRefundPage) {
+  const preservesOrderPreviewSize = source === "order-product" || previousDetailSource === "order-product";
+  if (homePage && !enteredFromRefundPage && !preservesOrderPreviewSize) {
     const shellRect = homePage.getBoundingClientRect();
     const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
     homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
@@ -896,6 +915,20 @@ function openRefundOrderDetail(order, preserveShellSize = false) {
     });
   }
 }
+
+document.querySelector("#pendingOrderBack")?.addEventListener("click", () => detailBack?.click());
+
+function openPendingOrderProductPreview() {
+  if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
+  openServiceDetail(activeServiceOrder.serviceId, "order-product", activeServiceOrder.id);
+}
+
+document.querySelector("#pendingOrderProduct")?.addEventListener("click", openPendingOrderProductPreview);
+document.querySelector("#pendingOrderProduct")?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  openPendingOrderProductPreview();
+});
 
 let refundDetailReturnScroll = 0;
 let refundDetailReturnWindowScroll = 0;
@@ -3021,6 +3054,9 @@ detailBack.addEventListener("click", () => {
     };
     window.requestAnimationFrame(restoreRefundViewport);
     window.setTimeout(restoreRefundViewport, 80);
+    return;
+  } else if (serviceDetailSource === "order-product" && activeServiceOrder) {
+    openServiceDetail(activeServiceOrder.serviceId, "orders", activeServiceOrder.id);
     return;
   } else if (serviceDetailSource === "orders") {
     minePage.classList.add("active");

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260806-refund-phone-verification-v1">
+  <link rel="stylesheet" href="styles.css?v=20260810-order-product-preview-v3">
 </head>
 <body>
   <main class="app-shell">
@@ -218,6 +218,51 @@
 
       <section class="service-detail-page reference-service-detail" id="serviceDetailPage" aria-label="服务详情">
         <main class="detail-scroll">
+          <section class="pending-order-overview" id="pendingOrderOverview" aria-label="待使用订单详情">
+            <header class="pending-order-nav">
+              <div class="pending-order-statusbar"><strong>9:41</strong><span aria-hidden="true"></span></div>
+              <div class="pending-order-navbar">
+                <button class="pending-order-back" id="pendingOrderBack" type="button" aria-label="返回订单列表"></button>
+                <h1>订单详情</h1>
+                <i aria-hidden="true"></i>
+              </div>
+            </header>
+
+            <section class="pending-order-state-card">
+              <i aria-hidden="true"></i>
+              <div>
+                <strong>待使用</strong>
+                <p>服务用户绑定暂无时间限制，绑定成功后服务立即生效。</p>
+              </div>
+            </section>
+
+            <section class="pending-order-card">
+              <header class="detail-section-heading">
+                <h2>订单信息</h2>
+                <p>支付成功</p>
+              </header>
+              <article class="pending-order-product" id="pendingOrderProduct" role="button" tabindex="0" aria-label="预览服务包详情并继续购买">
+                <i class="pending-order-cover service-img img-weight" id="pendingOrderCover" aria-hidden="true"></i>
+                <div>
+                  <strong id="pendingOrderServiceTitle">90天减重管理服务包</strong>
+                  <p id="pendingOrderServiceTags">科学减重｜饮食管理｜运动指导</p>
+                  <em id="pendingOrderServicePrice">¥299</em>
+                </div>
+                <span class="pending-order-product-action">×1<i>查看详情</i></span>
+              </article>
+              <dl class="pending-order-fields">
+                <div><dt>订单状态</dt><dd class="is-warning">待使用</dd></div>
+                <div><dt>订单编号</dt><dd id="pendingOrderNumber">CH2026072801001</dd></div>
+                <div><dt>下单时间</dt><dd id="pendingOrderTime">2026-07-28 16:30</dd></div>
+                <div><dt>支付方式</dt><dd>微信支付</dd></div>
+                <div><dt>购买数量</dt><dd>1份</dd></div>
+                <div><dt>服务周期</dt><dd>90天（绑定后计算）</dd></div>
+                <div><dt>实付金额</dt><dd class="is-price" id="pendingOrderPaidAmount">¥299</dd></div>
+              </dl>
+            </section>
+
+          </section>
+
           <section class="detail-showcase">
             <div class="detail-product service-img img-weight" id="detailProductCover" aria-hidden="true"></div>
             <div class="detail-showcase-status" aria-hidden="true"><strong>9:41</strong><span></span></div>
@@ -286,7 +331,7 @@
               <p>购买及使用前请仔细阅读</p>
             </header>
             <ol>
-              <li>支付成功后，服务包状态为“待使用”，用户需在支付成功后30天内绑定就诊人。</li>
+              <li>支付成功后，服务包状态为“待使用”，服务用户绑定暂无时间限制。</li>
               <li>服务包绑定就诊人后立即生效，服务周期自绑定成功之日起计算。</li>
               <li>一个订单仅限绑定一名就诊人，绑定生效后暂不支持用户自行更换。</li>
               <li>待使用且未绑定就诊人的订单支持申请全额原路退款；退款完成后该服务包不可继续使用。</li>
@@ -2397,7 +2442,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260807-hospital-flat-data-v9"></script>
   <script src="scripts/60-metrics.js?v=20260807-hospital-record-page-v2"></script>
-  <script src="scripts/70-events-init.js?v=20260807-hospital-record-page-v2"></script>
+  <script src="scripts/70-events-init.js?v=20260810-order-preview-fixed-size-v4"></script>
   <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
 </body>
 </html>
