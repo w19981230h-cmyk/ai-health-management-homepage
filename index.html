@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260810-order-product-preview-v3">
+  <link rel="stylesheet" href="styles.css?v=20260810-fixed-refund-amount-v5">
 </head>
 <body>
   <main class="app-shell">
@@ -388,9 +388,9 @@
 
               <label class="refund-form-row refund-amount-row">
                 <span><strong>申请金额</strong></span>
-                <span class="refund-amount-input"><b>¥</b><input id="refundAmountInput" type="number" min="0.01" step="0.01" inputmode="decimal" value="299" aria-describedby="refundAmountHint refundAmountError"></span>
+                <span class="refund-amount-input"><b>¥</b><input id="refundAmountInput" type="text" value="299" readonly tabindex="-1" aria-readonly="true" aria-describedby="refundAmountHint"></span>
               </label>
-              <p class="refund-field-hint" id="refundAmountHint">最多可退 ¥299</p>
+              <p class="refund-field-hint" id="refundAmountHint">按订单实付金额原路退回</p>
               <p class="refund-field-error" id="refundAmountError"></p>
             </section>
 
@@ -2442,7 +2442,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260807-hospital-flat-data-v9"></script>
   <script src="scripts/60-metrics.js?v=20260807-hospital-record-page-v2"></script>
-  <script src="scripts/70-events-init.js?v=20260810-order-preview-fixed-size-v4"></script>
+  <script src="scripts/70-events-init.js?v=20260810-fixed-refund-amount-v5"></script>
   <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
 </body>
 </html>

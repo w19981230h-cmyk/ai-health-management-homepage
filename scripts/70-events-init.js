@@ -1009,9 +1009,8 @@ function startRefundVerificationCountdown() {
 
 function syncRefundAmountDisplay() {
   const maxAmount = servicePriceNumber(activePurchaseService);
-  const entered = Number(refundAmountInput?.value || 0);
-  const displayAmount = entered > 0 ? Math.min(entered, maxAmount) : 0;
-  if (refundSubmitAmount) refundSubmitAmount.textContent = `¥${formatRefundAmount(displayAmount)}`;
+  if (refundAmountInput) refundAmountInput.value = formatRefundAmount(maxAmount);
+  if (refundSubmitAmount) refundSubmitAmount.textContent = `¥${formatRefundAmount(maxAmount)}`;
   if (refundAmountError) refundAmountError.textContent = "";
 }
 
@@ -1025,10 +1024,9 @@ function openRefundApplication() {
   if (refundApplicationQuantity) refundApplicationQuantity.textContent = `数量：${activeServiceOrder.quantity || 1}`;
   if (refundReasonSelect) refundReasonSelect.value = "";
   if (refundAmountInput) {
-    refundAmountInput.max = String(maxAmount);
     refundAmountInput.value = formatRefundAmount(maxAmount);
   }
-  if (refundAmountHint) refundAmountHint.textContent = `最多可退 ¥${formatRefundAmount(maxAmount)}`;
+  if (refundAmountHint) refundAmountHint.textContent = "按订单实付金额原路退回";
   if (refundDescriptionInput) refundDescriptionInput.value = "";
   if (refundDescriptionCount) refundDescriptionCount.textContent = "0";
   if (refundPhoneInput) refundPhoneInput.value = "";
@@ -2825,14 +2823,6 @@ refundAfterSalesButton?.addEventListener("click", () => {
   openRefundApplication();
 });
 
-refundAmountInput?.addEventListener("input", syncRefundAmountDisplay);
-refundAmountInput?.addEventListener("blur", () => {
-  const maxAmount = servicePriceNumber(activePurchaseService);
-  const amount = Number(refundAmountInput.value);
-  if (Number.isFinite(amount) && amount > maxAmount) refundAmountInput.value = formatRefundAmount(maxAmount);
-  syncRefundAmountDisplay();
-});
-
 refundDescriptionInput?.addEventListener("input", () => {
   if (refundDescriptionCount) refundDescriptionCount.textContent = String(refundDescriptionInput.value.length);
   if (refundDescriptionError) refundDescriptionError.textContent = "";
@@ -2888,7 +2878,7 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
   const maxAmount = servicePriceNumber(activePurchaseService);
-  const amount = Number(refundAmountInput?.value || 0);
+  const amount = maxAmount;
   const phone = refundPhoneInput?.value || "";
   const description = refundDescriptionInput?.value.trim() || "";
   const code = refundCodeInput?.value || "";
@@ -2896,10 +2886,6 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   if (!refundReasonSelect?.value) {
     if (refundReasonError) refundReasonError.textContent = "请选择退款原因";
     firstInvalid = refundReasonSelect;
-  }
-  if (!Number.isFinite(amount) || amount <= 0 || amount > maxAmount) {
-    if (refundAmountError) refundAmountError.textContent = `退款金额需大于0且不超过¥${formatRefundAmount(maxAmount)}`;
-    firstInvalid ||= refundAmountInput;
   }
   if (description.length < 5) {
     if (refundDescriptionError) refundDescriptionError.textContent = "请填写不少于5个字的申请说明";

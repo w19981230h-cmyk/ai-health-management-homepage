@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "exportedAt": "2026-08-10T01:33:30.158Z",
+  "exportedAt": "2026-08-10T02:42:48.815Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -428,13 +428,13 @@
       "pageId": "sub:refundApplicationPage",
       "noteNumber": 2,
       "title": "申请内容",
-      "content": "红色信号表示必填\n1、申请原因支持选择，做成可配置的字段，后续可以继续加\n2、申请金额可以修改，不能总金额",
+      "content": "红色信号表示必填\n1、申请原因支持选择，做成可配置的字段，后续可以继续加\n2、申请金额不可以修改",
       "x": 0.4106666666666667,
       "y": 0.2610062893081761,
       "createdBy": "在线访客",
       "createdAt": "2026-08-06T11:00:25.733Z",
       "updatedBy": "在线访客",
-      "updatedAt": "2026-08-06T11:00:29.010Z",
+      "updatedAt": "2026-08-10T02:42:48.812Z",
       "status": "active"
     },
     {

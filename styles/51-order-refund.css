@@ -741,6 +741,12 @@
   border-bottom: 1px solid #eef1f5;
 }
 
+.refund-amount-input input[readonly] {
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+}
+
 .pending-order-overview {
   display: none;
 }
