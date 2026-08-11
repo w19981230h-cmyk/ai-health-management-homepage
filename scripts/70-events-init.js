@@ -666,7 +666,7 @@ const serviceOrders = [
   { id: "o1001", serviceId: "weight", status: "pending", orderTime: "2026-07-28 16:30" },
   { id: "o1002", serviceId: "sugar", status: "pending", orderTime: "2026-07-20 09:15" },
   { id: "o1003", serviceId: "nutrition", status: "pending", orderTime: "2026-07-09 14:08" },
-  { id: "o1004", serviceId: "pressure", status: "pending", orderTime: "2026-06-18 11:20" },
+  { id: "o1004", serviceId: "pressure", status: "pending", orderTime: "2026-06-18 11:20", refundRequest: { status: "failed", reason: "暂时不需要该服务", amount: 299, description: "近期健康管理计划调整，暂时不需要继续使用该服务。", submittedAt: "2026-06-19 09:10", failedAt: "2026-06-19 09:12", failReason: "退款申请信息与订单记录不一致，平台审核未通过。请核对退款原因并补充准确说明后再次申请。" } },
   { id: "o2001", serviceId: "weight", status: "effective", orderTime: "2026-07-25 10:42" },
   { id: "o2002", serviceId: "sugar", status: "effective", orderTime: "2026-07-16 18:05" },
   { id: "o2003", serviceId: "comprehensive", status: "effective", orderTime: "2026-07-01 08:50" },
@@ -674,12 +674,12 @@ const serviceOrders = [
   { id: "o2501", serviceId: "weight", status: "completed", orderTime: "2026-03-18 09:20", completedAt: "2026-06-16" },
   { id: "o2502", serviceId: "nutrition", status: "completed", orderTime: "2026-02-12 14:35", completedAt: "2026-05-13" },
   { id: "o2503", serviceId: "pressure", status: "completed", orderTime: "2026-01-06 10:08", completedAt: "2026-04-06" },
-  { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19", refundRequest: { reason: "暂时不需要该服务", submittedAt: "2026-07-23 09:18", phone: "138****5216" } },
-  { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10", refundRequest: { reason: "误购或重复购买服务包", submittedAt: "2026-07-01 10:26", phone: "139****2843" } },
-  { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45", refundRequest: { reason: "服务用户信息填写错误", submittedAt: "2026-06-12 08:42", phone: "186****0731" } },
-  { id: "o4001", serviceId: "pressure", status: "refunded", orderTime: "2026-07-18 09:32", refundRequest: { reason: "服务用户信息填写错误", submittedAt: "2026-07-18 10:05", phone: "138****2669" } },
-  { id: "o4002", serviceId: "weight", status: "refunded", orderTime: "2026-06-29 20:06", refundRequest: { reason: "误购或重复购买服务包", submittedAt: "2026-06-30 09:12", phone: "186****1058" } },
-  { id: "o4003", serviceId: "nutrition", status: "refunded", orderTime: "2026-06-08 10:18", refundRequest: { reason: "医生建议暂停当前健康管理计划", submittedAt: "2026-06-08 11:34", phone: "139****6732" } }
+  { id: "o3001", serviceId: "nutrition", status: "refunding", orderTime: "2026-07-22 15:19", refundRequest: { status: "processing", reason: "暂时不需要该服务", submittedAt: "2026-07-23 09:18" } },
+  { id: "o3002", serviceId: "comprehensive", status: "refunding", orderTime: "2026-06-30 12:10", refundRequest: { status: "processing", reason: "误购或重复购买服务包", submittedAt: "2026-07-01 10:26" } },
+  { id: "o3003", serviceId: "sugar", status: "refunding", orderTime: "2026-06-11 17:45", refundRequest: { status: "processing", reason: "服务用户信息填写错误", submittedAt: "2026-06-12 08:42" } },
+  { id: "o4001", serviceId: "pressure", status: "refunded", orderTime: "2026-07-18 09:32", refundRequest: { status: "succeeded", reason: "服务用户信息填写错误", submittedAt: "2026-07-18 10:05" } },
+  { id: "o4002", serviceId: "weight", status: "refunded", orderTime: "2026-06-29 20:06", refundRequest: { status: "succeeded", reason: "误购或重复购买服务包", submittedAt: "2026-06-30 09:12" } },
+  { id: "o4003", serviceId: "nutrition", status: "refunded", orderTime: "2026-06-08 10:18", refundRequest: { status: "succeeded", reason: "医生建议暂停当前健康管理计划", submittedAt: "2026-06-08 11:34" } }
 ];
 
 const orderStatusMeta = {
@@ -690,13 +690,19 @@ const orderStatusMeta = {
   refunded: { label: "已退款", priority: 4 }
 };
 
+function isAfterSalesOrder(order) {
+  return ["refunding", "refunded"].includes(order.status) || order.refundRequest?.status === "failed";
+}
+
 function sortedServiceOrders(status = "all") {
   return serviceOrders
     .filter((order) => status === "all"
       || order.status === status
-      || (status === "after_sales" && ["refunding", "refunded"].includes(order.status)))
+      || (status === "after_sales" && isAfterSalesOrder(order)))
     .sort((a, b) => {
-      const priorityDiff = orderStatusMeta[a.status].priority - orderStatusMeta[b.status].priority;
+      const aPriority = a.refundRequest?.status === "failed" ? 3 : orderStatusMeta[a.status].priority;
+      const bPriority = b.refundRequest?.status === "failed" ? 3 : orderStatusMeta[b.status].priority;
+      const priorityDiff = aPriority - bPriority;
       return priorityDiff || b.orderTime.localeCompare(a.orderTime);
     });
 }
@@ -707,7 +713,7 @@ function updateOrderStatusCounts() {
     result[order.status] += 1;
     return result;
   }, { all: 0, pending: 0, effective: 0, completed: 0, refunding: 0, refunded: 0 });
-  counts.after_sales = counts.refunding + counts.refunded;
+  counts.after_sales = serviceOrders.filter(isAfterSalesOrder).length;
   orderStatusTabs?.querySelectorAll("[data-order-count]").forEach((badge) => {
     badge.textContent = String(counts[badge.dataset.orderCount] || 0);
   });
@@ -720,7 +726,8 @@ function renderServiceOrders(status = "all") {
   updateOrderStatusCounts();
   orderServiceList.innerHTML = sortedServiceOrders(status).map((order) => {
     const service = packages.find((item) => item.id === order.serviceId) || packages[0];
-    const statusMeta = orderStatusMeta[order.status];
+    const isFailedAfterSales = status === "after_sales" && order.refundRequest?.status === "failed";
+    const statusMeta = isFailedAfterSales ? { label: "已完成" } : orderStatusMeta[order.status];
     const cycleText = order.status === "pending"
       ? '<em class="order-cycle">服务周期：1个月</em>'
       : order.status === "effective"
@@ -728,13 +735,13 @@ function renderServiceOrders(status = "all") {
         : order.status === "completed"
           ? `<em class="order-cycle">完成时间：${order.completedAt || "--"}</em>`
           : "";
-    const useButton = order.status === "pending"
+    const useButton = order.status === "pending" && status !== "after_sales"
       ? `<button class="order-use-button" type="button" data-order-use aria-label="立即使用${service.title}">立即使用</button>`
       : "";
     const statusBadge = status === "all" || status === "after_sales"
-      ? `<b class="order-status status-${order.status}">${statusMeta.label}</b>`
+      ? `<b class="order-status status-${isFailedAfterSales ? "refund-failed" : order.status}">${statusMeta.label}</b>`
       : "";
-    return `<article class="archive-service-card order-card-${order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
+    return `<article class="archive-service-card order-card-${isFailedAfterSales ? "refund-failed" : order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
       <i class="owned-img ${service.img}" aria-hidden="true"></i>
       <span><strong>${service.title}</strong><em class="order-time">下单时间：${order.orderTime}</em>${cycleText}<em class="order-amount">金额：<b>${service.price}</b></em></span>
       <div class="archive-service-actions">${statusBadge}${useButton}</div>
@@ -814,11 +821,11 @@ function renderServiceDetail(service, source = "service") {
 function openServiceDetail(serviceId, source = "service", orderId = "") {
   const previousDetailSource = serviceDetailSource;
   const service = packages.find((item) => item.id === serviceId) || packages[0];
-  const keepsOrderContext = source === "orders" || source === "order-product" || source === "refund-progress" || source === "refund-success";
+  const keepsOrderContext = source === "orders" || source === "order-product" || source === "refund-progress" || source === "refund-success" || source === "refund-failed";
   activeServiceOrder = keepsOrderContext ? serviceOrders.find((order) => order.id === orderId) || null : null;
   renderServiceDetail(service, source);
   const homePage = document.querySelector(".home-page");
-  const enteredFromRefundPage = source === "refund-progress" || source === "refund-success";
+  const enteredFromRefundPage = source === "refund-progress" || source === "refund-success" || source === "refund-failed";
   const preservesOrderPreviewSize = source === "order-product" || previousDetailSource === "order-product";
   if (homePage && !enteredFromRefundPage && !preservesOrderPreviewSize) {
     const shellRect = homePage.getBoundingClientRect();
@@ -896,10 +903,8 @@ function openRefundOrderDetail(order, preserveShellSize = false) {
   if (orderTime) orderTime.textContent = order.orderTime;
   const reason = isRefunded ? refundSuccessReason : refundProgressReason;
   const submittedAt = isRefunded ? refundSuccessSubmittedAt : refundProgressSubmittedAt;
-  const phone = isRefunded ? refundSuccessPhone : refundProgressPhone;
   if (reason) reason.textContent = order.refundRequest?.reason || "暂时不需要该服务";
   if (submittedAt) submittedAt.textContent = order.refundRequest?.submittedAt || order.orderTime;
-  if (phone) phone.textContent = order.refundRequest?.phone || "138****8888";
   const homePage = document.querySelector(".home-page");
   if (homePage && !preserveShellSize) {
     const shellRect = homePage.getBoundingClientRect();
@@ -914,6 +919,34 @@ function openRefundOrderDetail(order, preserveShellSize = false) {
       refundDetailReturnWindowScroll = window.scrollY;
     });
   }
+}
+
+function openRefundFailedDetail(order, preserveShellSize = false) {
+  if (!order || order.refundRequest?.status !== "failed") return;
+  const service = packages.find((item) => item.id === order.serviceId) || packages[0];
+  const requestedAmount = order.refundRequest?.amount;
+  const refundPrice = Number.isFinite(requestedAmount) ? `¥${formatRefundAmount(requestedAmount)}` : service.price;
+  activeServiceOrder = order;
+  activePurchaseService = service;
+  if (refundFailedCover) refundFailedCover.className = `refund-product-cover service-img ${service.img}`;
+  if (refundFailedTitle) refundFailedTitle.textContent = service.title;
+  if (refundFailedAmount) refundFailedAmount.textContent = refundPrice;
+  if (refundFailedMoney) refundFailedMoney.textContent = refundPrice;
+  if (refundFailedRequestReason) refundFailedRequestReason.textContent = order.refundRequest.reason || "暂时不需要该服务";
+  if (refundFailedSubmittedAt) refundFailedSubmittedAt.textContent = order.refundRequest.submittedAt || order.orderTime;
+  if (refundFailedAt) refundFailedAt.textContent = order.refundRequest.failedAt || "--";
+  if (refundFailedReason) refundFailedReason.textContent = order.refundRequest.failReason || "平台审核未通过，请核对退款信息后再次申请。";
+  if (refundFailedOrderNo) refundFailedOrderNo.textContent = order.id.toUpperCase();
+  if (refundFailedOrderTime) refundFailedOrderTime.textContent = order.orderTime;
+  const homePage = document.querySelector(".home-page");
+  if (homePage && !preserveShellSize) {
+    const shellRect = homePage.getBoundingClientRect();
+    const visibleShellHeight = Math.min(shellRect.height, window.innerHeight);
+    homePage.style.setProperty("--service-detail-shell-width", `${Math.round(shellRect.width)}px`);
+    homePage.style.setProperty("--service-detail-shell-height", `${Math.round(visibleShellHeight)}px`);
+  }
+  openSubPage("refundFailedPage");
+  refundFailedPage?.scrollTo?.(0, 0);
 }
 
 document.querySelector("#pendingOrderBack")?.addEventListener("click", () => detailBack?.click());
@@ -934,15 +967,18 @@ let refundDetailReturnScroll = 0;
 let refundDetailReturnWindowScroll = 0;
 
 function openRefundServiceDetail(source) {
-  const expectedStatus = source === "refund-success" ? "refunded" : "refunding";
+  const expectedStatus = source === "refund-success" ? "refunded" : source === "refund-failed" ? "pending" : "refunding";
   if (!activeServiceOrder || activeServiceOrder.status !== expectedStatus) return;
-  const returnPage = source === "refund-success" ? refundSuccessPage : refundProgressPage;
+  if (source === "refund-failed" && activeServiceOrder.refundRequest?.status !== "failed") return;
+  const returnPage = source === "refund-success" ? refundSuccessPage : source === "refund-failed" ? refundFailedPage : refundProgressPage;
   refundDetailReturnScroll = returnPage?.scrollTop || 0;
   openServiceDetail(activeServiceOrder.serviceId, source, activeServiceOrder.id);
 }
 
-document.querySelectorAll("[data-refund-progress-service], [data-refund-success-service]").forEach((card) => {
-  const openCardDetail = () => openRefundServiceDetail(card.hasAttribute("data-refund-success-service") ? "refund-success" : "refund-progress");
+document.querySelectorAll("[data-refund-progress-service], [data-refund-success-service], [data-refund-failed-service]").forEach((card) => {
+  const openCardDetail = () => openRefundServiceDetail(card.hasAttribute("data-refund-success-service")
+    ? "refund-success"
+    : card.hasAttribute("data-refund-failed-service") ? "refund-failed" : "refund-progress");
   card.addEventListener("click", openCardDetail);
   card.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -950,11 +986,6 @@ document.querySelectorAll("[data-refund-progress-service], [data-refund-success-
     openCardDetail();
   });
 });
-
-let refundVerificationCode = "";
-let refundVerificationPhone = "";
-let refundVerificationExpiresAt = 0;
-let refundVerificationTimer = null;
 
 function servicePriceNumber(service) {
   return Number(String(service?.price || "0").replace(/[^\d.]/g, "")) || 0;
@@ -969,42 +1000,6 @@ function refundSubmittedAtText() {
   const now = new Date();
   const pad = (value) => String(value).padStart(2, "0");
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-}
-
-function resetRefundVerification() {
-  if (refundVerificationTimer) window.clearInterval(refundVerificationTimer);
-  refundVerificationTimer = null;
-  refundVerificationCode = "";
-  refundVerificationPhone = "";
-  refundVerificationExpiresAt = 0;
-  if (refundCodeInput) refundCodeInput.value = "";
-  if (refundCodeSend) {
-    refundCodeSend.disabled = false;
-    refundCodeSend.textContent = "获取验证码";
-  }
-  if (refundCodeHint) {
-    refundCodeHint.textContent = "验证通过后，该手机号将用于接收退款进度通知";
-    refundCodeHint.classList.remove("verified");
-  }
-  if (refundCodeError) refundCodeError.textContent = "";
-}
-
-function startRefundVerificationCountdown() {
-  let remaining = 60;
-  if (!refundCodeSend) return;
-  refundCodeSend.disabled = true;
-  refundCodeSend.textContent = `${remaining}s后重发`;
-  refundVerificationTimer = window.setInterval(() => {
-    remaining -= 1;
-    if (remaining <= 0) {
-      window.clearInterval(refundVerificationTimer);
-      refundVerificationTimer = null;
-      refundCodeSend.disabled = false;
-      refundCodeSend.textContent = "重新获取";
-      return;
-    }
-    refundCodeSend.textContent = `${remaining}s后重发`;
-  }, 1000);
 }
 
 function syncRefundAmountDisplay() {
@@ -1029,11 +1024,9 @@ function openRefundApplication() {
   if (refundAmountHint) refundAmountHint.textContent = "按订单实付金额原路退回";
   if (refundDescriptionInput) refundDescriptionInput.value = "";
   if (refundDescriptionCount) refundDescriptionCount.textContent = "0";
-  if (refundPhoneInput) refundPhoneInput.value = "";
-  [refundReasonError, refundAmountError, refundDescriptionError, refundPhoneError, refundCodeError].forEach((item) => {
+  [refundReasonError, refundAmountError, refundDescriptionError].forEach((item) => {
     if (item) item.textContent = "";
   });
-  resetRefundVerification();
   syncRefundAmountDisplay();
   openSubPage("refundApplicationPage");
   refundApplicationPage?.scrollTo?.(0, 0);
@@ -1043,6 +1036,11 @@ function openOrderCard(card) {
   if (!card) return;
   const order = serviceOrders.find((item) => item.id === card.dataset.orderId);
   if (!order) return;
+  const activeOrderTab = orderStatusTabs?.querySelector("[data-order-tab].active")?.dataset.orderTab || "all";
+  if (activeOrderTab === "after_sales" && order.refundRequest?.status === "failed") {
+    openRefundFailedDetail(order);
+    return;
+  }
   if (order.status === "refunding" || order.status === "refunded") {
     openRefundOrderDetail(order);
     return;
@@ -2828,50 +2826,8 @@ refundDescriptionInput?.addEventListener("input", () => {
   if (refundDescriptionError) refundDescriptionError.textContent = "";
 });
 
-refundPhoneInput?.addEventListener("input", () => {
-  refundPhoneInput.value = refundPhoneInput.value.replace(/\D/g, "").slice(0, 11);
-  if (refundPhoneError) refundPhoneError.textContent = "";
-  if (refundVerificationPhone && refundPhoneInput.value !== refundVerificationPhone) resetRefundVerification();
-});
-
 refundReasonSelect?.addEventListener("change", () => {
   if (refundReasonError) refundReasonError.textContent = "";
-});
-
-refundCodeSend?.addEventListener("click", () => {
-  const phone = refundPhoneInput?.value || "";
-  if (!/^1[3-9]\d{9}$/.test(phone)) {
-    if (refundPhoneError) refundPhoneError.textContent = "请先输入有效的11位手机号码";
-    refundPhoneInput?.focus();
-    return;
-  }
-  resetRefundVerification();
-  refundVerificationPhone = phone;
-  refundVerificationCode = String(Math.floor(100000 + Math.random() * 900000));
-  refundVerificationExpiresAt = Date.now() + 5 * 60 * 1000;
-  startRefundVerificationCountdown();
-  if (refundCodeHint) refundCodeHint.textContent = `验证码已发送至 ${phone.slice(0, 3)}****${phone.slice(-4)}，演示验证码：${refundVerificationCode}`;
-  toast.textContent = "验证码已发送";
-  toast.classList.add("show");
-  window.setTimeout(() => toast.classList.remove("show"), 1800);
-});
-
-refundCodeInput?.addEventListener("input", () => {
-  refundCodeInput.value = refundCodeInput.value.replace(/\D/g, "").slice(0, 6);
-  if (refundCodeError) refundCodeError.textContent = "";
-  const verified = refundCodeInput.value.length === 6
-    && refundCodeInput.value === refundVerificationCode
-    && refundPhoneInput?.value === refundVerificationPhone
-    && Date.now() < refundVerificationExpiresAt;
-  if (verified && refundCodeHint) {
-    refundCodeHint.textContent = "手机号验证通过";
-    refundCodeHint.classList.add("verified");
-  } else if (refundCodeHint) {
-    refundCodeHint.classList.remove("verified");
-    if (refundVerificationCode && refundVerificationPhone) {
-      refundCodeHint.textContent = `验证码已发送至 ${refundVerificationPhone.slice(0, 3)}****${refundVerificationPhone.slice(-4)}，演示验证码：${refundVerificationCode}`;
-    }
-  }
 });
 
 refundApplicationForm?.addEventListener("submit", (event) => {
@@ -2879,9 +2835,7 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
   const maxAmount = servicePriceNumber(activePurchaseService);
   const amount = maxAmount;
-  const phone = refundPhoneInput?.value || "";
   const description = refundDescriptionInput?.value.trim() || "";
-  const code = refundCodeInput?.value || "";
   let firstInvalid = null;
   if (!refundReasonSelect?.value) {
     if (refundReasonError) refundReasonError.textContent = "请选择退款原因";
@@ -2891,31 +2845,16 @@ refundApplicationForm?.addEventListener("submit", (event) => {
     if (refundDescriptionError) refundDescriptionError.textContent = "请填写不少于5个字的申请说明";
     firstInvalid ||= refundDescriptionInput;
   }
-  if (!/^1[3-9]\d{9}$/.test(phone)) {
-    if (refundPhoneError) refundPhoneError.textContent = "请输入有效的11位手机号码";
-    firstInvalid ||= refundPhoneInput;
-  }
-  if (!refundVerificationCode || phone !== refundVerificationPhone) {
-    if (refundCodeError) refundCodeError.textContent = "请先获取短信验证码";
-    firstInvalid ||= refundCodeInput;
-  } else if (Date.now() >= refundVerificationExpiresAt) {
-    if (refundCodeError) refundCodeError.textContent = "验证码已过期，请重新获取";
-    firstInvalid ||= refundCodeInput;
-  } else if (code !== refundVerificationCode) {
-    if (refundCodeError) refundCodeError.textContent = "验证码不正确，请重新输入";
-    firstInvalid ||= refundCodeInput;
-  }
   if (firstInvalid) {
     firstInvalid.focus();
     firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
   activeServiceOrder.refundRequest = {
+    status: "processing",
     reason: refundReasonSelect.value,
     amount,
     description,
-    phone,
-    phoneVerified: true,
     submittedAt: refundSubmittedAtText()
   };
   activeServiceOrder.status = "refunding";
@@ -2924,10 +2863,51 @@ refundApplicationForm?.addEventListener("submit", (event) => {
   pageStack = [];
   openRefundOrderDetail(activeServiceOrder);
   if (pageStack.length) pageStack[pageStack.length - 1] = "minePage";
-  resetRefundVerification();
   toast.textContent = "退款申请已提交";
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1800);
+});
+
+function closeRefundWithdrawConfirmation() {
+  refundWithdrawDialog?.classList.remove("active");
+  refundWithdrawMask?.classList.remove("active");
+}
+
+refundWithdrawButton?.addEventListener("click", () => {
+  if (!activeServiceOrder || activeServiceOrder.status !== "refunding") return;
+  refundWithdrawMask?.classList.add("active");
+  refundWithdrawDialog?.classList.add("active");
+});
+
+refundWithdrawCancel?.addEventListener("click", closeRefundWithdrawConfirmation);
+refundWithdrawMask?.addEventListener("click", closeRefundWithdrawConfirmation);
+
+refundWithdrawConfirm?.addEventListener("click", () => {
+  if (!activeServiceOrder || activeServiceOrder.status !== "refunding") return;
+  activeServiceOrder.refundRequest = {
+    ...activeServiceOrder.refundRequest,
+    status: "canceled",
+    canceledAt: refundSubmittedAtText()
+  };
+  activeServiceOrder.status = "pending";
+  closeRefundWithdrawConfirmation();
+  orderStatusTabs?.querySelectorAll("[data-order-tab]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.orderTab === "pending");
+  });
+  renderServiceOrders("pending");
+  pageStack = [];
+  subPages.forEach((page) => page.classList.remove("active"));
+  minePage.classList.add("active");
+  setProfileTab("orders");
+  toast.textContent = "退款申请已撤销，订单已恢复为待使用";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 2000);
+});
+
+refundRetryButton?.addEventListener("click", () => {
+  if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
+  activePurchaseService = packages.find((item) => item.id === activeServiceOrder.serviceId) || packages[0];
+  openRefundApplication();
 });
 
 function closeServiceUserSheet() {
@@ -3031,9 +3011,13 @@ favoriteBtn?.addEventListener("click", () => {
 
 detailBack.addEventListener("click", () => {
   serviceDetailPage.classList.remove("active");
-  if ((serviceDetailSource === "refund-progress" || serviceDetailSource === "refund-success") && activeServiceOrder) {
-    openRefundOrderDetail(activeServiceOrder, true);
-    const returnPage = serviceDetailSource === "refund-success" ? refundSuccessPage : refundProgressPage;
+  if ((serviceDetailSource === "refund-progress" || serviceDetailSource === "refund-success" || serviceDetailSource === "refund-failed") && activeServiceOrder) {
+    if (serviceDetailSource === "refund-failed") {
+      openRefundFailedDetail(activeServiceOrder, true);
+    } else {
+      openRefundOrderDetail(activeServiceOrder, true);
+    }
+    const returnPage = serviceDetailSource === "refund-success" ? refundSuccessPage : serviceDetailSource === "refund-failed" ? refundFailedPage : refundProgressPage;
     const restoreRefundViewport = () => {
       window.scrollTo(0, refundDetailReturnWindowScroll);
       returnPage?.scrollTo?.(0, refundDetailReturnScroll);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260810-fixed-refund-amount-v5">
+  <link rel="stylesheet" href="styles.css?v=20260811-refund-four-step-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -403,19 +403,6 @@
               <p class="refund-field-error" id="refundDescriptionError"></p>
             </section>
 
-            <section class="refund-apply-card refund-form-card">
-              <label class="refund-phone-field">
-                <span><strong>联系电话</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
-                <input id="refundPhoneInput" type="tel" maxlength="11" inputmode="numeric" placeholder="请输入11位手机号码" aria-describedby="refundPhoneError">
-              </label>
-              <p class="refund-field-error" id="refundPhoneError"></p>
-              <label class="refund-verification-field">
-                <span><strong>短信验证码</strong><em class="refund-required-mark" aria-label="必填">*</em></span>
-                <span class="refund-code-control"><input id="refundCodeInput" type="text" maxlength="6" inputmode="numeric" placeholder="请输入6位验证码" aria-describedby="refundCodeHint refundCodeError"><button id="refundCodeSend" type="button">获取验证码</button></span>
-              </label>
-              <p class="refund-field-hint" id="refundCodeHint">验证通过后，该手机号将用于接收退款进度通知</p>
-              <p class="refund-field-error" id="refundCodeError"></p>
-            </section>
           </form>
         </main>
         <footer class="refund-submit-bar">
@@ -434,14 +421,15 @@
         <main class="refund-page-content">
           <section class="refund-progress-card">
             <h2>退款处理中</h2>
-            <p>系统审核已通过，退款已提交至微信支付</p>
+            <p>平台审核已通过，退款已提交至微信支付</p>
             <ol class="refund-stepper" aria-label="退款流程">
               <li class="done"><i>✓</i><strong>提交申请</strong><em>已完成</em></li>
-              <li class="done"><i>✓</i><strong>系统自动审核</strong><em>已通过</em></li>
-              <li class="current"><i>3</i><strong>微信原路退款</strong><em>处理中</em></li>
+              <li class="done"><i>✓</i><strong>平台审核</strong><em>已通过</em></li>
+              <li class="current"><i>3</i><strong>原路退款</strong><em>处理中</em></li>
+              <li><i>4</i><strong>退款完成</strong><em>待完成</em></li>
             </ol>
           </section>
-          <aside class="refund-note"><strong>退款说明</strong><p>系统已自动核验订单状态及退款金额。退款已提交至微信支付，预计1–3个工作日原路到账，实际到账时间以支付机构处理进度为准。</p></aside>
+          <aside class="refund-note"><strong>退款说明</strong><p>系统已完成订单状态与退款金额核验，并通过平台审核。退款已提交至微信支付，预计1–3个工作日原路到账，实际到账时间以支付机构处理进度为准。</p></aside>
           <section class="refund-service-card">
             <h2>退款服务</h2>
             <article class="refund-product-row refund-product-link" data-refund-progress-service role="button" tabindex="0" aria-label="查看退款中服务包详情">
@@ -449,16 +437,16 @@
               <div><strong id="refundProgressTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundProgressAmount">¥299</em></div>
             </article>
             <dl class="refund-order-info">
-              <div><dt>退款状态</dt><dd class="refund-state-text">原路退款中</dd></div>
+              <div><dt>退款状态</dt><dd class="refund-state-text">退款中</dd></div>
               <div><dt>退款金额</dt><dd id="refundProgressMoney">¥299</dd></div>
               <div><dt>退款原因</dt><dd id="refundProgressReason">暂时不需要该服务</dd></div>
               <div><dt>申请时间</dt><dd id="refundProgressSubmittedAt">2026-08-04 10:00</dd></div>
-              <div><dt>联系电话</dt><dd id="refundProgressPhone">138****8888</dd></div>
               <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
               <div><dt>订单编号</dt><dd id="refundProgressOrderNo">O3001</dd></div>
               <div><dt>下单时间</dt><dd id="refundProgressOrderTime">2026-07-22 15:19</dd></div>
             </dl>
           </section>
+          <button class="refund-withdraw-button" id="refundWithdrawButton" type="button">撤销退款申请</button>
         </main>
       </section>
 
@@ -474,6 +462,12 @@
             <i aria-hidden="true">✓</i>
             <h2>退款成功</h2>
             <p>退款已原路退回微信支付账户</p>
+            <ol class="refund-stepper refund-stepper-complete" aria-label="退款流程">
+              <li class="done"><i>✓</i><strong>提交申请</strong><em>已完成</em></li>
+              <li class="done"><i>✓</i><strong>平台审核</strong><em>已通过</em></li>
+              <li class="done"><i>✓</i><strong>原路退款</strong><em>已退回</em></li>
+              <li class="done"><i>✓</i><strong>退款完成</strong><em>已完成</em></li>
+            </ol>
           </section>
           <aside class="refund-note"><strong>到账说明</strong><p>退款已由平台处理完成。因银行或支付机构处理时间不同，具体到账时间请以微信支付账单为准。</p></aside>
           <section class="refund-service-card">
@@ -484,10 +478,10 @@
             </article>
             <dl class="refund-order-info">
               <div><dt>退款状态</dt><dd class="refund-success-text">已退款</dd></div>
+              <div><dt>处理结果</dt><dd class="refund-success-text">退款成功</dd></div>
               <div><dt>退款金额</dt><dd id="refundSuccessMoney">¥299</dd></div>
               <div><dt>退款原因</dt><dd id="refundSuccessReason">暂时不需要该服务</dd></div>
               <div><dt>申请时间</dt><dd id="refundSuccessSubmittedAt">2026-07-18 10:05</dd></div>
-              <div><dt>联系电话</dt><dd id="refundSuccessPhone">138****2669</dd></div>
               <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
               <div><dt>订单编号</dt><dd id="refundSuccessOrderNo">O4001</dd></div>
               <div><dt>下单时间</dt><dd id="refundSuccessOrderTime">2026-07-18 09:32</dd></div>
@@ -681,6 +675,42 @@
           <button class="parse-task-entry" id="parseTaskEntry" type="button">解析</button>
           <button class="upload-fab" id="uploadFab" type="button" aria-label="上传资料">上传</button>
         </section>
+      </section>
+
+      <section class="sub-page refund-order-page refund-failed-page" id="refundFailedPage" aria-label="退款失败详情">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="refund-page-nav">
+          <button class="back-page" type="button" aria-label="返回我的订单"></button>
+          <h1>退款详情</h1>
+          <span aria-hidden="true"></span>
+        </header>
+        <main class="refund-page-content">
+          <section class="refund-failed-card">
+            <i aria-hidden="true">!</i>
+            <h2>平台审核未通过</h2>
+            <p>本次退款申请未通过，订单已恢复为“待使用”</p>
+          </section>
+          <aside class="refund-failure-note"><strong>审核不通过原因</strong><p id="refundFailedReason">退款申请信息与订单记录不一致，平台审核未通过。请核对退款原因并补充准确说明后再次申请。</p></aside>
+          <section class="refund-service-card">
+            <h2>退款服务</h2>
+            <article class="refund-product-row refund-product-link" data-refund-failed-service role="button" tabindex="0" aria-label="查看退款失败服务包详情">
+              <i class="refund-product-cover service-img img-weight" id="refundFailedCover" aria-hidden="true"></i>
+              <div><strong id="refundFailedTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundFailedAmount">¥299</em></div>
+            </article>
+            <dl class="refund-order-info">
+              <div><dt>退款状态</dt><dd>已完成</dd></div>
+              <div><dt>处理结果</dt><dd class="refund-failed-text">平台审核未通过</dd></div>
+              <div><dt>退款金额</dt><dd id="refundFailedMoney">¥299</dd></div>
+              <div><dt>退款原因</dt><dd id="refundFailedRequestReason">暂时不需要该服务</dd></div>
+              <div><dt>申请时间</dt><dd id="refundFailedSubmittedAt">2026-06-19 09:10</dd></div>
+              <div><dt>审核时间</dt><dd id="refundFailedAt">2026-06-19 09:12</dd></div>
+              <div><dt>退款方式</dt><dd>微信支付原路退回</dd></div>
+              <div><dt>订单编号</dt><dd id="refundFailedOrderNo">O1004</dd></div>
+              <div><dt>下单时间</dt><dd id="refundFailedOrderTime">2026-06-18 11:20</dd></div>
+            </dl>
+          </section>
+        </main>
+        <footer class="refund-failed-footer"><button id="refundRetryButton" type="button">再次申请退款</button></footer>
       </section>
 
       <section class="sub-page hospital-record-page" id="hospitalRecordPage" aria-label="医院同步住院病历">
@@ -2359,6 +2389,12 @@
         <p>服务包绑定后将立即生效，并为该就诊人生成健康计划。为保证健康数据准确，生效后暂不支持自行更换就诊人，请确认信息无误。</p>
         <div><button id="bindingConfirmCancel" type="button">取消</button><button id="bindingConfirmSubmit" type="button">确定</button></div>
       </section>
+      <div class="refund-withdraw-mask" id="refundWithdrawMask" aria-hidden="true"></div>
+      <section class="refund-withdraw-dialog" id="refundWithdrawDialog" role="dialog" aria-modal="true" aria-label="确认撤销退款申请">
+        <h3>确认撤销退款申请？</h3>
+        <p>撤销后，本次退款流程将终止，订单恢复为“待使用”，您仍可继续使用服务或重新申请退款。</p>
+        <div><button id="refundWithdrawCancel" type="button">取消</button><button id="refundWithdrawConfirm" type="button">确认撤销</button></div>
+      </section>
       <div class="toast" id="toast">已加入收藏</div>
 
       <div class="task-panel-mask home-only" id="taskPanelMask"></div>
@@ -2434,7 +2470,7 @@
     </form>
   </section>
 
-  <script src="scripts/00-dom-state.js?v=20260807-hospital-record-page-v2"></script>
+  <script src="scripts/00-dom-state.js?v=20260810-refund-closed-loop-v1"></script>
   <script src="scripts/01-data-store.js?v=20260807-hospital-report-card-v6"></script>
   <script src="scripts/10-schedule.js?v=20260807-checkin-catalog-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
@@ -2442,7 +2478,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260807-hospital-flat-data-v9"></script>
   <script src="scripts/60-metrics.js?v=20260807-hospital-record-page-v2"></script>
-  <script src="scripts/70-events-init.js?v=20260810-fixed-refund-amount-v5"></script>
+  <script src="scripts/70-events-init.js?v=20260811-refund-four-step-v1"></script>
   <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
 </body>
 </html>

@@ -776,6 +776,11 @@
   background: #f2f4f7;
 }
 
+.archive-service-card .status-refund-failed {
+  color: #d92d20;
+  background: rgba(255, 77, 79, 0.1);
+}
+
 .archive-service-card.order-card-refunding {
   border-color: rgba(122, 90, 248, 0.18);
   background: linear-gradient(135deg, rgba(122, 90, 248, 0.045), #fbfdff 48%);
@@ -784,6 +789,11 @@
 .archive-service-card.order-card-refunded {
   border-color: rgba(102, 112, 133, 0.12);
   background: linear-gradient(135deg, rgba(102, 112, 133, 0.045), #f8fafc 52%);
+}
+
+.archive-service-card.order-card-refund-failed {
+  border-color: rgba(255, 77, 79, 0.16);
+  background: linear-gradient(135deg, rgba(255, 77, 79, 0.04), #fff 52%);
 }
 
 .archive-service-card.order-card-refunded > span > strong,
