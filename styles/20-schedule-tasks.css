@@ -5658,10 +5658,10 @@
   bottom: 0;
   z-index: 33;
   display: none;
-  height: 67vh;
-  max-height: 67vh;
+  height: min(90vh, 760px);
+  max-height: 90vh;
   padding: 8px 13px 24px;
-  border-radius: 12px 12px 0 0;
+  border-radius: 16px 16px 0 0;
   background: linear-gradient(180deg, #eef5ff 0%, #f8fbff 16%, #fff 100%);
   box-shadow: 0 -12px 36px rgba(17, 42, 102, 0.16);
   overflow: hidden;
@@ -5717,6 +5717,10 @@
   background: #ff4d4f;
   vertical-align: 2px;
 }
+
+.portrait-report-tabs button[data-tone="orange"] i { background: #ff8a65; }
+.portrait-report-tabs button[data-tone="green"] i { background: #45c878; }
+.portrait-report-tabs button[data-tone="mint"] i { background: #50d2b0; }
 
 .portrait-report-tabs button:nth-child(3) i {
   background: #45c878;
@@ -5965,14 +5969,23 @@
 
 .portrait-report-data-list {
   display: grid;
-  gap: 11px;
+  gap: 0;
+  border: 1px solid rgba(54, 113, 255, 0.14);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(32, 67, 132, 0.07);
+  overflow: hidden;
 }
 
 .portrait-report-data-card {
-  padding: 12px 12px 11px;
-  border-radius: 10px;
+  padding: 14px 12px 13px;
+  border-radius: 0;
   background: #f8fbff;
-  box-shadow: 0 0 0 1px rgba(220, 229, 244, 0.58);
+  box-shadow: none;
+}
+
+.portrait-report-data-card + .portrait-report-data-card {
+  border-top: 1px solid rgba(54, 113, 255, 0.1);
 }
 
 .portrait-report-pressure-card {
@@ -6031,6 +6044,11 @@
   line-height: 21px;
   font-style: normal;
   font-weight: 600;
+}
+
+.portrait-report-data-main strong em.is-normal {
+  color: #12a66a;
+  background: #eafaf3;
 }
 
 .portrait-report-data-main p {
@@ -6183,6 +6201,292 @@
   font-size: 11px;
   line-height: 1.4;
   font-weight: 500;
+}
+
+/* 心血管系统二级分类：按报告详情弹窗的独立数据卡片样式展示 */
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-summary h3 b.is-normal {
+  color: #12a66a;
+  background: #eafaf3;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-list {
+  gap: 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-card {
+  min-height: 128px;
+  padding: 14px 13px 15px;
+  border: 1px solid rgba(54, 113, 255, 0.06);
+  border-radius: 13px;
+  background: #f7f9fd;
+  box-shadow: 0 4px 12px rgba(60, 82, 128, 0.035);
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-card + .portrait-report-data-card {
+  border-top: 1px solid rgba(54, 113, 255, 0.06);
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-meta {
+  min-height: 24px;
+  padding-bottom: 10px;
+  color: #8e9bb0;
+  font-size: 12px;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-meta > span:first-child {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-meta-action,
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-detail-action {
+  color: #3671ff;
+  white-space: nowrap;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-main {
+  min-height: 70px;
+  padding-top: 11px;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-main.no-media {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-main strong {
+  color: #1d2d4e;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-main strong em.is-normal {
+  color: #12a66a;
+  background: #eafaf3;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-main p {
+  margin-top: 8px;
+  color: #273754;
+  font-size: 15px;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-detail-action {
+  display: block;
+  margin-top: 9px;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-advice-section > h4 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-advice-list {
+  margin-top: 0;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-advice-list article::before,
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-advice-list article:nth-child(2)::before {
+  background: #3671ff;
+}
+
+.portrait-report-card-actions {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  width: 58px;
+}
+
+.portrait-report-history-entry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 56px;
+  min-height: 24px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.07);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-card-actions .portrait-report-thumb {
+  width: 42px;
+  height: 48px;
+}
+
+.portrait-report-history-entry i {
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.portrait-report-history-entry:focus-visible,
+.portrait-metric-history-close:focus-visible {
+  outline: 2px solid #3671ff;
+  outline-offset: 2px;
+}
+
+.portrait-report-sheet.is-history-open {
+  filter: brightness(0.92);
+  pointer-events: none;
+}
+
+.portrait-metric-history-sheet {
+  position: fixed;
+  left: calc(50% - 187.5px);
+  right: calc(50% - 187.5px);
+  bottom: 0;
+  z-index: 36;
+  display: none;
+  max-height: min(72vh, 600px);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  border-radius: 20px 20px 0 0;
+  background: #fff;
+  box-shadow: 0 -16px 40px rgba(18, 46, 132, 0.2);
+  overflow: hidden;
+}
+
+.portrait-metric-history-sheet.active {
+  display: grid;
+}
+
+.portrait-metric-history-sheet > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.portrait-metric-history-sheet h2 {
+  margin: 0 0 5px;
+  color: #03102e;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.portrait-metric-history-sheet header p {
+  margin: 0;
+  color: #667da5;
+  font-size: 11px;
+}
+
+.portrait-metric-history-close {
+  position: relative;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f4f8;
+}
+
+.portrait-metric-history-close::before,
+.portrait-metric-history-close::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 15px;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #667085;
+}
+
+.portrait-metric-history-close::before { transform: rotate(45deg); }
+.portrait-metric-history-close::after { transform: rotate(-45deg); }
+
+.portrait-metric-history-scroll {
+  display: grid;
+  gap: 0;
+  overflow-y: auto;
+  padding: 8px 18px max(24px, env(safe-area-inset-bottom));
+  overscroll-behavior: contain;
+}
+
+.portrait-metric-history-record {
+  position: relative;
+  padding: 16px 0 16px 20px;
+  border-bottom: 1px solid #edf1f7;
+}
+
+.portrait-metric-history-record::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 22px;
+  width: 8px;
+  height: 8px;
+  border: 3px solid #d9e5ff;
+  border-radius: 50%;
+  background: #3671ff;
+}
+
+.portrait-metric-history-record::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 36px;
+  bottom: -6px;
+  width: 1px;
+  background: #dfe8f8;
+}
+
+.portrait-metric-history-record:last-child::after { display: none; }
+
+.portrait-metric-history-record > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.portrait-metric-history-record time {
+  color: #667da5;
+  font-size: 12px;
+}
+
+.portrait-metric-history-record b {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #12a66a;
+  background: #eafaf3;
+  font-size: 10px;
+}
+
+.portrait-metric-history-record strong {
+  display: block;
+  margin-top: 8px;
+  color: #122e54;
+  font-size: 18px;
+}
+
+.portrait-metric-history-record p {
+  margin: 5px 0 0;
+  color: #8b98aa;
+  font-size: 11px;
 }
 
 .archive-assistant-card {

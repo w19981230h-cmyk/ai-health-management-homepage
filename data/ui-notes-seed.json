@@ -1,6 +1,6 @@
 {
-  "formatVersion": 1,
-  "exportedAt": "2026-08-11T01:45:20.639Z",
+  "formatVersion": 2,
+  "exportedAt": "2026-08-17T07:15:30.869Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -15,7 +15,12 @@
       "createdAt": "2026-08-03T12:08:13.673Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-03T12:15:19.444Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "131224c5-6f77-4a34-ba2f-464ec2cb47a5",
@@ -23,14 +28,191 @@
       "pageId": "home",
       "noteNumber": 2,
       "title": "全部服务",
-      "content": "1、点击全部服务支持跳转到服务界面",
+      "content": "1、点击全部服务支持跳转到服务界面\n补充：服务页面打开失败时，提示“加载失败，请重试”。",
       "x": 0.7186666666666667,
       "y": 0.43564356435643564,
       "createdBy": "在线访客",
       "createdAt": "2026-08-03T12:24:21.441Z",
       "updatedBy": "在线访客",
-      "updatedAt": "2026-08-03T12:24:21.441Z",
-      "status": "active"
+      "updatedAt": "2026-08-17T07:02:14.164Z",
+      "status": "active",
+      "targetKey": "page",
+      "targetSnapshot": {
+        "interfaceManifest": {
+          "pageId": "home",
+          "route": "/",
+          "pageLabel": "健康服务",
+          "headings": [
+            "健康服务",
+            "90天减重管理服务包",
+            "90天控糖管理服务包",
+            "90天控压管理服务包",
+            "90天营养管理服务包",
+            "90天综合健康管理包",
+            "体重打卡",
+            "体重 *",
+            "体脂率",
+            "记录时间 *",
+            "备注",
+            "腰围打卡"
+          ],
+          "controls": [
+            {
+              "key": "a.brand-mark",
+              "label": "春晓健康首页",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "张女士 管理中",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "李先生 风险提醒",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "小宝 待完善",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-add",
+              "label": "添加就诊人",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.mini-program-capsule",
+              "label": "小程序菜单",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "a.detail-link",
+              "label": "查看档案信息",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "健康咨询",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "报告解读",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "春晓商城",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "全部功能",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#homeServiceViewAll",
+              "label": "查看全部 〉",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天减重管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天控糖管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天控压管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天营养管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天综合健康管理包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "button.weight-sheet-close",
+              "label": "关闭",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#weightValueInput",
+              "label": "请输入",
+              "role": "输入框",
+              "disabled": false
+            },
+            {
+              "key": "#weightFatInput",
+              "label": "请输入",
+              "role": "输入框",
+              "disabled": false
+            },
+            {
+              "key": "#weightTimeTrigger",
+              "label": "2025-05-19 15:50",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#weightNoteInput",
+              "label": "例如：晨起空腹、饭后、运动后等",
+              "role": "多行输入",
+              "disabled": false
+            },
+            {
+              "key": "#weightPhotoButton",
+              "label": "拍照识别",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#weightSubmit",
+              "label": "打卡",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-17T07:02:14.163Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "全部服务",
+        "confidence": "中",
+        "basis": "主要依据：标题“全部服务”；界面核对：健康服务",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "a1379651-18b4-4360-b1ad-9df1888cde67",
@@ -45,7 +227,12 @@
       "createdAt": "2026-08-04T08:48:49.224Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-04T08:48:49.224Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "8a3aeb6a-4822-4bfc-befd-0f2f3b94472f",
@@ -60,7 +247,12 @@
       "createdAt": "2026-08-04T08:49:28.337Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:24:47.757Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "c00dbb2f-8961-4fc6-91e4-e805412c3e11",
@@ -75,7 +267,12 @@
       "createdAt": "2026-08-06T09:54:24.793Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:24:45.214Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "adbb8784-3995-4eee-8838-551a8caae765",
@@ -90,7 +287,12 @@
       "createdAt": "2026-08-06T11:43:26.930Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T11:44:20.047Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "fe4903be-5c2e-468b-acfd-060acf313589",
@@ -105,7 +307,12 @@
       "createdAt": "2026-08-06T09:56:46.499Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:24:41.163Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "6d35cd5a-0131-44f0-8a0a-68bbb4206fcb",
@@ -120,7 +327,12 @@
       "createdAt": "2026-08-06T09:56:57.459Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:58:30.179Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "176b3735-3c78-44c9-ba6e-6f559a3c33c6",
@@ -135,7 +347,12 @@
       "createdAt": "2026-08-06T12:06:19.504Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:06:19.504Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "9d2bd972-4fce-4261-9034-dfff85e5940c",
@@ -150,7 +367,12 @@
       "createdAt": "2026-08-06T12:02:31.156Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:04:15.310Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "2a61da7b-4815-4d72-983f-863a62fffec6",
@@ -159,13 +381,18 @@
       "noteNumber": 1,
       "title": "立即订阅",
       "content": "1、点击立即订阅进入订阅详情页面",
-      "x": 0.7666666666666667,
-      "y": 0.947945205479452,
+      "x": 0.772,
+      "y": 0.9599535693557748,
       "createdBy": "在线访客",
       "createdAt": "2026-08-03T12:26:10.725Z",
       "updatedBy": "在线访客",
-      "updatedAt": "2026-08-03T12:39:23.768Z",
-      "status": "active"
+      "updatedAt": "2026-08-17T07:04:00.182Z",
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "059dafeb-f138-43f6-aab4-95bf46bd120c",
@@ -180,22 +407,12 @@
       "createdAt": "2026-08-03T12:28:41.454Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-03T12:28:41.454Z",
-      "status": "active"
-    },
-    {
-      "noteId": "ddc57e2e-9d5f-4322-8a9d-ae8cf2df20e1",
-      "projectId": "ai-health-management",
-      "pageId": "service-detail:90天减重管理服务包",
-      "noteNumber": 3,
-      "title": "查看健康 管理计划",
-      "content": "支持直接跳转到日程首页，可以查看当日的任务",
-      "x": 0.4613333333333333,
-      "y": 0.9654036243822076,
-      "createdBy": "在线访客",
-      "createdAt": "2026-08-06T09:28:21.762Z",
-      "updatedBy": "在线访客",
-      "updatedAt": "2026-08-06T09:28:24.627Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "0dec0213-3378-4648-a2fb-5f2557d4a3d1",
@@ -209,8 +426,51 @@
       "createdBy": "在线访客",
       "createdAt": "2026-08-06T17:35:54.829Z",
       "updatedBy": "在线访客",
-      "updatedAt": "2026-08-06T17:35:54.829Z",
-      "status": "active"
+      "updatedAt": "2026-08-17T07:03:50.328Z",
+      "status": "active",
+      "targetKey": "page",
+      "targetSnapshot": {
+        "interfaceManifest": {
+          "pageId": "service-detail:90天减重管理服务包",
+          "route": "/",
+          "pageLabel": "90天减重管理服务包",
+          "headings": [
+            "90天减重管理服务包",
+            "服务介绍",
+            "服务权益",
+            "服务规则"
+          ],
+          "controls": [
+            {
+              "key": "#detailBack",
+              "label": "返回",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#detailShare",
+              "label": "更多操作",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#buyButton",
+              "label": "立即订阅",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-17T07:03:50.327Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "订单管理",
+        "confidence": "高",
+        "basis": "主要依据：标题“服务包详情页”；界面核对：90天减重管理服务包",
+        "states": "待使用、生效中、退款中、已退款、已关闭"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "6b5b4569-5394-44ca-80f1-1416ad73de0f",
@@ -219,13 +479,18 @@
       "noteNumber": 1,
       "title": "服务包详情数据",
       "content": "1、展示购买服务包的基础数据\n2、内容包括：封面、服务包名称、标签、价格",
-      "x": 0.7826666666666666,
-      "y": 0.18,
+      "x": 0.804,
+      "y": 0.18445121951219512,
       "createdBy": "在线访客",
       "createdAt": "2026-08-03T12:44:50.452Z",
-      "updatedBy": "位置稳定修复",
-      "updatedAt": "2026-08-03T12:48:48.495Z",
-      "status": "active"
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-17T07:15:30.868Z",
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "730ba710-5fc8-47dc-945c-b854e2fb8779",
@@ -240,7 +505,12 @@
       "createdAt": "2026-08-03T12:54:55.843Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:26:48.074Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "e7b19db5-b4ea-4553-93fd-451931ab3854",
@@ -255,7 +525,12 @@
       "createdAt": "2026-08-03T12:55:20.668Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-03T12:55:22.819Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "df9bbc00-b094-42b2-bd4f-4f4df71df6cf",
@@ -270,7 +545,12 @@
       "createdAt": "2026-08-03T12:55:52.100Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:18:48.728Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "8a2b5941-d74f-4c0e-b438-f2cc25482358",
@@ -285,7 +565,12 @@
       "createdAt": "2026-08-03T12:56:52.580Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-03T12:56:52.580Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "a6f15410-8ce3-4682-a468-478b7fc917d6",
@@ -300,7 +585,12 @@
       "createdAt": "2026-08-03T12:57:18.912Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:19:54.556Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "aafe658d-8437-449a-a0e1-9278fc9021eb",
@@ -315,7 +605,12 @@
       "createdAt": "2026-08-06T10:30:57.269Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:30:57.269Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "015e8bc8-eddd-46bf-ac81-7d9925151e87",
@@ -330,7 +625,12 @@
       "createdAt": "2026-08-06T10:31:56.295Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:31:56.295Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "b71c8724-b74a-45ac-b6e3-e73623a951fe",
@@ -345,7 +645,12 @@
       "createdAt": "2026-08-06T09:12:15.492Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:13:34.259Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "533fb192-11e4-4e32-9812-deb9180e6bd7",
@@ -360,7 +665,12 @@
       "createdAt": "2026-08-06T09:17:15.073Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:17:15.073Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "3fd876b8-afe4-4e9d-8d35-f91d09cd97bc",
@@ -375,7 +685,12 @@
       "createdAt": "2026-08-06T09:19:19.899Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:19:19.899Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "5eb2aba4-3057-4156-8e5a-c436df855bc4",
@@ -390,7 +705,12 @@
       "createdAt": "2026-08-06T09:23:29.125Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:23:29.125Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "b7b8d5bf-9c2f-4562-8e57-4154d73768eb",
@@ -405,7 +725,12 @@
       "createdAt": "2026-08-06T09:22:52.429Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T09:26:27.469Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "481c6a96-0aef-4ae5-af30-c965d491c648",
@@ -420,7 +745,12 @@
       "createdAt": "2026-08-06T10:54:46.684Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T10:55:06.057Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "15043794-e41a-4bbf-b34f-eced3aea2790",
@@ -435,7 +765,12 @@
       "createdAt": "2026-08-06T11:00:25.733Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-10T02:42:48.812Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "10958d1e-79bd-4b32-8988-d5ce248d984a",
@@ -450,7 +785,12 @@
       "createdAt": "2026-08-06T11:03:51.112Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T11:03:51.112Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "c638cee6-1344-4190-a330-ed014ea10e9b",
@@ -465,7 +805,12 @@
       "createdAt": "2026-08-06T11:06:02.919Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T11:38:54.778Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "7f15057e-d00f-4b42-9aea-219d8f06e24c",
@@ -480,7 +825,12 @@
       "createdAt": "2026-08-06T11:41:48.201Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T11:41:48.201Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "79177bef-1aad-43a2-a710-1b371f39a2dd",
@@ -495,7 +845,12 @@
       "createdAt": "2026-08-06T11:42:31.980Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T11:42:31.980Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "50e36e7c-eb4c-4adb-ae9e-216c9b01467c",
@@ -510,7 +865,12 @@
       "createdAt": "2026-08-06T12:05:03.931Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:05:03.931Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "13295d37-f682-4d70-987f-dd734ba3a470",
@@ -525,7 +885,12 @@
       "createdAt": "2026-08-06T12:06:46.144Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:06:46.144Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "f5e52c41-2e31-4ea0-9cab-6a24e745eced",
@@ -540,7 +905,12 @@
       "createdAt": "2026-08-06T12:07:45.917Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:07:45.917Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     },
     {
       "noteId": "cf62cd6b-0942-4f78-b14e-9ef19d7cda46",
@@ -555,7 +925,12 @@
       "createdAt": "2026-08-06T12:08:11.650Z",
       "updatedBy": "在线访客",
       "updatedAt": "2026-08-06T12:08:11.650Z",
-      "status": "active"
+      "status": "active",
+      "targetKey": "",
+      "targetSnapshot": {},
+      "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
     }
   ]
 }

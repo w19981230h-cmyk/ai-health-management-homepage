@@ -3448,8 +3448,17 @@
   grid-template-columns: 1fr;
 }
 
-#reportDetailPage .ai-key-result-meta.only-time time {
+#reportDetailPage .ai-key-result-meta.only-time .ai-key-result-meta-actions {
   justify-self: end;
+}
+
+.ai-key-result-meta-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 #reportDetailPage .ai-key-result-meta time {
@@ -3467,6 +3476,84 @@
   color: #a0aabd;
   font-size: 9px;
   font-weight: 500;
+}
+
+.ai-key-history-entry {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  color: #3671ff;
+  background: transparent;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.ai-key-history-entry::after {
+  content: " ›";
+  color: #3671ff;
+}
+
+.ai-key-history-entry:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.42);
+  outline-offset: 2px;
+}
+
+.ai-key-history-record {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e2eaff;
+  border-radius: 12px;
+  color: #122e54;
+  background: linear-gradient(145deg, #fff 0%, #f8faff 100%);
+  box-shadow: 0 4px 12px rgba(92, 120, 176, 0.08);
+  text-align: left;
+}
+
+.ai-key-history-record-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ai-key-history-record-head time {
+  color: #667da5;
+  font-size: 11px;
+}
+
+.ai-key-history-record-head b {
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.ai-key-history-record-head .is-normal { color: #16865e; background: #e8f8f1; }
+.ai-key-history-record-head .is-abnormal { color: #d4383a; background: #fff0f0; }
+.ai-key-history-record-head .is-attention { color: #b76509; background: #fff5e8; }
+.ai-key-history-record-head .is-pending { color: #667085; background: #eef1f5; }
+
+.ai-key-history-record > strong {
+  margin: 0;
+  color: #122e54;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.ai-key-history-record-source {
+  overflow: hidden;
+  color: #8b98aa;
+  font-size: 10px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #reportDetailPage .ai-key-result-more {

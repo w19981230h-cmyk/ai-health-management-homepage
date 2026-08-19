@@ -378,9 +378,38 @@ function keyDataReference(item) {
   return "";
 }
 
-function renderKeyResultItem(item) {
+function allReportsForMetricHistory() {
+  const syncedReports = hospitalSyncedEncounters.flatMap((encounter) => encounter.records);
+  const reportsById = new Map();
+  [...medicalReports, ...syncedReports].forEach((report) => reportsById.set(report.id, report));
+  return [...reportsById.values()];
+}
+
+function metricHistoryRecords(metricName) {
+  const seen = new Set();
+  return allReportsForMetricHistory().flatMap((report) => keyResultsForReport(report)
+    .filter((item) => item.name === metricName)
+    .map((item) => ({
+      ...item,
+      reportId: report.id,
+      reportName: report.name,
+      reportOrg: report.org || "",
+      reportSource: report.sourceType === "hospital" ? "医院同步" : (report.source || "上传保存"),
+      recordDate: item.date || (report.reportTime || "").slice(0, 10)
+    })))
+    .filter((item) => {
+      const key = `${item.reportId}|${item.name}|${item.recordDate}|${item.result}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((left, right) => parseDateTime(right.recordDate) - parseDateTime(left.recordDate));
+}
+
+function renderKeyResultItem(item, showHistory = true) {
   const reference = keyDataReference(item);
   const statusClass = keyResultStatusClass(item.status);
+  const historyCount = showHistory ? metricHistoryRecords(item.name).length : 0;
   return `
     <article class="ai-key-result-item ${statusClass}">
       <div class="ai-key-result-top"><span>${keyDataCategory(item)}</span><b class="${statusClass}">${item.status}</b></div>
@@ -388,9 +417,37 @@ function renderKeyResultItem(item) {
         <div class="ai-key-data-field"><small>名称</small><strong>${item.name}</strong></div>
         <div class="ai-key-data-field is-value"><small>结果</small><p>${item.result}</p></div>
       </div>
-      <div class="ai-key-result-meta ${reference ? "has-reference" : "only-time"}">${reference ? `<span class="ai-key-reference">${reference}</span>` : ""}<time datetime="${item.date}"><small>报告时间</small>${item.date}</time></div>
+      <div class="ai-key-result-meta ${reference ? "has-reference" : "only-time"}">
+        ${reference ? `<span class="ai-key-reference">${reference}</span>` : ""}
+        <span class="ai-key-result-meta-actions">
+          <time datetime="${item.date}"><small>报告时间</small>${item.date}</time>
+          ${historyCount > 1 ? `<button class="ai-key-history-entry" type="button" data-key-history-name="${encodeURIComponent(item.name)}">共${historyCount}次记录</button>` : ""}
+        </span>
+      </div>
     </article>
   `;
+}
+
+function renderMetricHistoryRecord(item, index) {
+  const statusClass = keyResultStatusClass(item.status);
+  return `
+    <article class="ai-key-history-record">
+      <span class="ai-key-history-record-head"><time datetime="${item.recordDate}">${item.recordDate}${index === 0 ? " · 最新" : ""}</time><b class="${statusClass}">${item.status}</b></span>
+      <strong>${item.result}</strong>
+      <span class="ai-key-history-record-source">${item.reportName} · ${item.reportSource}${item.reportOrg ? ` · ${item.reportOrg}` : ""}</span>
+    </article>
+  `;
+}
+
+function openMetricHistory(metricName) {
+  const history = metricHistoryRecords(metricName);
+  if (history.length <= 1) return;
+  const sheetTitle = document.querySelector("#aiKeyResultsTitle");
+  if (sheetTitle) sheetTitle.textContent = metricName;
+  if (aiKeyResultsSheetStats) aiKeyResultsSheetStats.textContent = `历次数据 · 共 ${history.length} 次`;
+  if (aiKeyResultsAll) aiKeyResultsAll.innerHTML = history.map(renderMetricHistoryRecord).join("");
+  openSheet(aiKeyResultsSheet);
+  window.setTimeout(() => aiKeyResultsClose?.focus(), 0);
 }
 
 function renderKeyResults(report) {
@@ -399,12 +456,19 @@ function renderKeyResults(report) {
   const sortedResults = [...results].sort((left, right) => (statusPriority[left.status] ?? 4) - (statusPriority[right.status] ?? 4));
   const abnormalCount = results.filter((item) => item.status !== "正常").length;
   const stats = `共 ${results.length} 条数据${abnormalCount ? ` · ${abnormalCount} 条异常/需关注` : ""}`;
-  document.querySelector("#aiSummary").innerHTML = sortedResults.slice(0, 3).map(renderKeyResultItem).join("");
+  document.querySelector("#aiSummary").innerHTML = sortedResults.slice(0, 3).map((item) => renderKeyResultItem(item)).join("");
   if (aiKeyResultStats) aiKeyResultStats.textContent = stats;
   if (aiKeyResultsSheetStats) aiKeyResultsSheetStats.textContent = stats;
-  if (aiKeyResultsAll) aiKeyResultsAll.innerHTML = sortedResults.map(renderKeyResultItem).join("");
+  if (aiKeyResultsAll) aiKeyResultsAll.innerHTML = sortedResults.map((item) => renderKeyResultItem(item)).join("");
   if (aiKeyResultMore) aiKeyResultMore.hidden = results.length <= 3;
 }
+
+document.addEventListener("click", (event) => {
+  const historyEntry = event.target.closest("[data-key-history-name]");
+  if (historyEntry) {
+    openMetricHistory(decodeURIComponent(historyEntry.dataset.keyHistoryName));
+  }
+});
 
 function openReportDetail(reportId) {
   const report = medicalReports.find((item) => item.id === reportId) || hospitalSyncedReport(reportId);

@@ -19,7 +19,7 @@ const focusPlanDashboards = {
     name: "90天减肥计划",
     metrics: [
       { id: "sugar", name: "血糖", value: 5.0, display: "5.0", unit: "mmol/L", status: "正常", values: [5.4, 5.2, 5.1, 5.3, 5.0, 4.9, 5.0] },
-      { id: "bp", name: "血压", value: 130, display: "130/85", unit: "mmHg", status: "正常", values: [134, 132, 131, 129, 133, 128, 130] },
+      { id: "bp", name: "血压", value: 148, display: "148/92", unit: "mmHg", status: "偏高", attention: true, values: [142, 145, 147, 146, 150, 149, 148] },
       { id: "weight", name: "体重", value: 68.5, display: "68.5", unit: "kg", status: "下降 1.6kg", values: [70.1, 69.8, 69.6, 69.3, 69.0, 68.8, 68.5] },
       { id: "waist", name: "腰围", value: 82.5, display: "82.5", unit: "cm", status: "正常", values: [84.2, 83.9, 83.6, 83.2, 82.9, 82.7, 82.5] },
       { id: "height", name: "身高", value: 165, display: "165", unit: "cm", status: "稳定", values: [165, 165, 165, 165, 165, 165, 165] },
@@ -27,7 +27,7 @@ const focusPlanDashboards = {
       { id: "lipid", name: "血脂", value: 1.6, display: "1.6", unit: "mmol/L", status: "正常", values: [1.9, 1.8, 1.8, 1.7, 1.7, 1.6, 1.6] },
       { id: "uric", name: "尿酸", value: 368, display: "368", unit: "μmol/L", status: "正常", values: [354, 360, 365, 358, 370, 372, 368] },
       { id: "fat", name: "体脂", value: 28.4, display: "28.4", unit: "%", status: "下降 2.1%", values: [30.5, 30.1, 29.8, 29.4, 29.0, 28.7, 28.4] },
-      { id: "bmi", name: "BMI", value: 25.2, display: "25.2", unit: "", status: "较上次下降 0.6", values: [25.8, 25.7, 25.6, 25.5, 25.4, 25.3, 25.2] }
+      { id: "bmi", name: "BMI", value: 27.2, display: "27.2", unit: "kg/m²", status: "较前改善", attention: true, values: [28.1, 27.9, 27.8, 27.6, 27.5, 27.3, 27.2] }
     ]
   },
   kidney: {
@@ -65,7 +65,8 @@ const extendedHealthMetrics = [
   { id: "tc", name: "总胆固醇 TC", value: 4.82, display: "4.82", unit: "mmol/L", status: "正常", values: [5.08, 5.0, 4.96, 4.9, 4.88, 4.85, 4.82] },
   { id: "tg", name: "甘油三酯 TG", value: 1.36, display: "1.36", unit: "mmol/L", status: "正常", values: [1.58, 1.5, 1.46, 1.42, 1.39, 1.38, 1.36] },
   { id: "hdl", name: "高密度脂蛋白 HDL-C", value: 1.28, display: "1.28", unit: "mmol/L", status: "正常", values: [1.18, 1.2, 1.22, 1.23, 1.25, 1.26, 1.28] },
-  { id: "ldl", name: "低密度脂蛋白 LDL-C", value: 2.72, display: "2.72", unit: "mmol/L", status: "正常", values: [3.1, 3.0, 2.94, 2.88, 2.82, 2.78, 2.72] },
+  { id: "ldl", name: "低密度脂蛋白 LDL-C", value: 4.3, display: "4.3", unit: "mmol/L", status: "偏高", attention: true, values: [3.6, 3.7, 3.8, 3.9, 4.0, 4.1, 4.3] },
+  { id: "sleep", name: "平均睡眠", value: 5.9, display: "5.9", unit: "小时/晚", status: "偏短", attention: true, values: [6.3, 6.1, 6.0, 5.8, 6.0, 5.7, 5.9] },
   { id: "hba1c", name: "糖化血红蛋白 HbA1c", value: 5.8, display: "5.8", unit: "%", status: "正常", values: [6.1, 6.0, 5.9, 5.9, 5.8, 5.8, 5.8] },
   { id: "tgab", name: "抗甲状腺球蛋白抗体 TgAb", value: 32, display: "32", unit: "IU/mL", status: "正常", values: [35, 34, 34, 33, 33, 32, 32] },
   { id: "tpoab", name: "抗甲状腺过氧化物酶抗体 TPOAb", value: 18, display: "18", unit: "IU/mL", status: "正常", values: [20, 20, 19, 19, 18, 18, 18] },
