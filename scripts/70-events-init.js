@@ -16,11 +16,7 @@
   }
   const portraitProblemButton = event.target.closest(".portrait-problem-card[data-portrait-organ]");
   if (portraitProblemButton) {
-    if (portraitProblemButton.dataset.portraitOrgan === "heart") {
-      openPortraitReportSheet();
-      return;
-    }
-    openPortraitBiomarkerDetail(portraitProblemButton.dataset.portraitOrgan);
+    openPortraitReportSheet(portraitProblemButton.dataset.portraitOrgan);
     return;
   }
   const portraitOrganButton = event.target.closest("[data-portrait-organ]");
@@ -112,6 +108,10 @@ document.querySelector("#shareReport")?.addEventListener("click", () => {
 });
 
 aiKeyResultMore?.addEventListener("click", () => {
+  const report = medicalReports.find((item) => item.id === selectedReportId) || hospitalSyncedReport(selectedReportId);
+  if (report) renderKeyResults(report);
+  const sheetTitle = document.querySelector("#aiKeyResultsTitle");
+  if (sheetTitle) sheetTitle.textContent = "全部关键数据";
   openSheet(aiKeyResultsSheet);
   window.setTimeout(() => aiKeyResultsClose?.focus(), 0);
 });
@@ -216,11 +216,303 @@ function openPortraitBiomarkerDetail(organId) {
   openSubPage("portraitBiomarkerDetailPage");
 }
 
-function openPortraitReportSheet() {
+const portraitReportProfiles = {
+  throat: {
+    name: "呼吸系统",
+    active: "overview",
+    overview: null,
+    tabs: [
+      { id: "airway", label: "气道与肺部", tone: "red" },
+      { id: "pleura", label: "胸膜与纵隔", tone: "orange" },
+      { id: "function", label: "肺功能", tone: "green" },
+      { id: "oxygen", label: "氧合", tone: "mint" }
+    ],
+    sections: {
+      airway: {
+        title: "气道与肺部",
+        total: 22,
+        summary: "2026年1月肺功能及影像检查提示轻度阻塞性通气改变，静息血氧略低；右上肺3 mm实性结节倾向良性，建议按期复查。",
+        cards: [
+          { source: "门（急）诊病历（手动上传）", date: "2026.01.11", name: "静息血氧饱和度（SpO₂）", value: "94%", reference: "参考：95%–100%", status: "需关注", media: "report" },
+          { source: "肺功能检查报告（医院同步）", date: "2026.01.08", name: "FEV₁/FVC", value: "68%", reference: "参考：≥70%", status: "需关注", media: "report" },
+          { source: "胸部CT（医院同步）", date: "2026.01.08", name: "低剂量螺旋CT", value: "右上肺3 mm实性结节", reference: "Lung-RADS 2类", status: "随访", media: "document" }
+        ],
+        advice: [
+          { title: "按期复查", text: "建议12个月后复查低剂量胸部CT；若出现持续咳嗽、咯血或气促加重，请提前就诊。" },
+          { title: "改善呼吸环境", text: "避免吸烟及二手烟暴露，雾霾天气减少户外活动，接触粉尘时佩戴防护口罩。" }
+        ]
+      },
+      pleura: {
+        title: "胸膜与纵隔", total: 6, summary: "胸膜光滑，纵隔未见明显增宽或占位，当前未发现需要紧急处理的异常。",
+        cards: [
+          { source: "胸部CT（医院同步）", date: "2026.01.08", name: "胸膜", value: "未见明显增厚或胸腔积液", reference: "影像结论：未见异常", status: "正常", media: "document" },
+          { source: "胸部CT（医院同步）", date: "2026.01.08", name: "纵隔淋巴结", value: "未见明显肿大", reference: "短径＜10 mm", status: "正常", media: "document" }
+        ],
+        advice: [{ title: "保持随访", text: "目前无需额外处理，可随年度健康体检继续观察。" }]
+      },
+      function: {
+        title: "肺功能", total: 8, summary: "FEV₁/FVC为68%，提示轻度阻塞性通气功能障碍，建议结合吸烟史、过敏史和临床症状由呼吸科评估。",
+        cards: [
+          { source: "肺功能检查报告（医院同步）", date: "2026.01.08", name: "FEV₁", value: "2.86 L（预计值82%）", reference: "参考：≥80%预计值", status: "正常", media: "report" },
+          { source: "肺功能检查报告（医院同步）", date: "2026.01.08", name: "FEV₁/FVC", value: "68%", reference: "参考：≥70%", status: "需关注", media: "report" },
+          { source: "肺功能检查报告（医院同步）", date: "2026.01.08", name: "DLCO", value: "78%预计值", reference: "参考：≥80%预计值", status: "轻度降低", media: "report" }
+        ],
+        advice: [{ title: "呼吸科评估", text: "建议携带原始肺功能报告就诊，医生可能根据症状安排支气管舒张试验。" }]
+      },
+      oxygen: {
+        title: "氧合", total: 4, summary: "静息血氧饱和度为94%，较参考范围略低，建议在安静状态下重复测量并观察活动后变化。",
+        cards: [
+          { source: "门诊测量（手动记录）", date: "2026.01.11", name: "静息血氧饱和度", value: "94%", reference: "参考：95%–100%", status: "需关注", media: "report" },
+          { source: "运动后测量（手动记录）", date: "2026.01.11", name: "步行后血氧饱和度", value: "92%", reference: "参考：≥94%", status: "需关注", media: "report" }
+        ],
+        advice: [{ title: "规范复测", text: "测量前静坐5分钟并保持手指温暖；若血氧持续≤92%或伴胸闷气促，请及时就医。" }]
+      }
+    }
+  },
+  heart: {
+    name: "心脏与血管健康",
+    active: "overview",
+    overview: {
+      label: "综合总结",
+      title: "心脏与血管健康",
+      summary: "近期心脏与血管相关数据主要显示，血压控制需要优先关注，血脂仍需持续管理。近7天血压多次处于偏高状态，并较前有所升高；LDL-C仍存在异常。与此同时，近期静息心率整体保持稳定，规律运动情况较前有所改善。后续建议继续关注血压变化，并做好血脂及心血管健康行为管理。",
+      priority: [
+        { title: "血压控制需要加强关注", text: "近期多次血压记录偏高，且较此前记录呈升高变化，建议近期加强监测。", metric: "近7天平均血压 148/92 mmHg", target: "pressure", focus: "近7天平均血压" }
+      ],
+      routine: [
+        { title: "血脂需要持续管理", text: "近期LDL-C仍存在异常，需要继续关注后续变化并按计划复查。", metric: "LDL-C 4.1 mmol/L", target: "lipid", focus: "LDL-C" },
+        { title: "心血管健康行为仍需持续管理", text: "当前运动情况已有改善，但仍建议长期保持规律运动、合理饮食等健康行为。", metric: "", target: "circulation", focus: "规律运动" }
+      ],
+      positive: [
+        { title: "静息心率保持稳定", text: "近30天多次记录整体无明显波动。" },
+        { title: "规律运动有所改善", text: "近期每周规律运动次数较前增加。" }
+      ],
+      advice: ["近期继续规律监测血压，并持续观察血压变化趋势。", "按既定健康管理计划关注并复查血脂相关指标。", "继续保持规律运动及合理饮食等心血管健康行为。"]
+    },
+    tabs: [{ id: "circulation", label: "心血管健康", tone: "red" }, { id: "pressure", label: "血压", tone: "orange" }, { id: "lipid", label: "血脂", tone: "green" }],
+    sections: {
+      circulation: {
+        title: "心血管健康", status: "正常", total: 12,
+        summary: "近期心率、心律及心功能相关数据均处于正常范围，未见明显异常变化。建议继续保持规律作息和适量运动。",
+        cards: [
+          { source: "心电图检查报告（医院同步）", date: "2026.01.11", metaAction: "参考详情", name: "静息心率", value: "72 次/分", reference: "参考：60–100 次/分", status: "正常", media: "report", history: [{ date: "2026.01.11", value: "72 次/分", status: "正常", source: "心电图检查报告 · 医院同步" }, { date: "2025.10.18", value: "70 次/分", status: "正常", source: "体检报告 · 医院同步" }, { date: "2025.07.12", value: "74 次/分", status: "正常", source: "心电图检查报告 · 手动上传" }] },
+          { source: "心电图检查报告（医院同步）", date: "2026.01.11", name: "心律", value: "窦性心律", reference: "检查结论：正常心电图", status: "正常", detailAction: "查看详情", history: [{ date: "2026.01.11", value: "窦性心律", status: "正常", source: "心电图检查报告 · 医院同步" }, { date: "2025.10.18", value: "窦性心律", status: "正常", source: "体检报告 · 医院同步" }] },
+          { source: "心脏超声检查（医院同步）", date: "2026.01.09", name: "左心室射血分数（LVEF）", value: "66%", reference: "参考：55%–70%", status: "正常", history: [{ date: "2026.01.09", value: "66%", status: "正常", source: "心脏超声检查 · 医院同步" }, { date: "2025.06.20", value: "64%", status: "正常", source: "心脏超声检查 · 医院同步" }] },
+          { source: "健康监测（自动同步）", date: "2026.01.11", timeLabel: "记录时间", name: "平均静息心率", value: "70 次/分", reference: "参考：60–100 次/分", status: "正常", media: "document", history: [{ date: "2026.01.11", value: "70 次/分", status: "正常", source: "健康监测 · 自动同步" }, { date: "2026.01.04", value: "71 次/分", status: "正常", source: "健康监测 · 自动同步" }, { date: "2025.12.28", value: "69 次/分", status: "正常", source: "健康监测 · 自动同步" }, { date: "2025.12.21", value: "72 次/分", status: "正常", source: "健康监测 · 自动同步" }] }
+        ],
+        advice: [
+          { title: "日常防护", text: "保持低盐、均衡饮食，避免吸烟和过量饮酒。" },
+          { title: "适量运动", text: "坚持散步、慢跑等有氧运动，保持心血管功能。" }
+        ]
+      },
+      pressure: {
+        title: "血压", status: "正常", total: 8,
+        summary: "近期血压记录均处于正常范围，收缩压和舒张压整体平稳，暂未发现明显异常波动。",
+        cards: [
+          { source: "健康监测（自动同步）", date: "2026.01.11", timeLabel: "记录时间", name: "血压", value: "118/76 mmHg", reference: "参考：90–139/60–89 mmHg", status: "正常", media: "report", history: [{ date: "2026.01.11", value: "118/76 mmHg", status: "正常", source: "健康监测 · 自动同步" }, { date: "2026.01.08", value: "121/79 mmHg", status: "正常", source: "健康监测 · 自动同步" }, { date: "2026.01.05", value: "119/77 mmHg", status: "正常", source: "健康监测 · 自动同步" }] },
+          { source: "门（急）诊病历（手动上传）", date: "2025.12.20", name: "诊室血压", value: "120/78 mmHg", reference: "参考：90–139/60–89 mmHg", status: "正常", detailAction: "查看详情" },
+          { source: "体检报告（医院同步）", date: "2025.10.18", name: "血压", value: "116/74 mmHg", reference: "参考：90–139/60–89 mmHg", status: "正常" }
+        ],
+        advice: [
+          { title: "规律监测", text: "保持当前测量频率，并在安静状态下规范记录血压。" },
+          { title: "健康生活", text: "继续保持低盐饮食、规律作息和适量运动。" }
+        ]
+      },
+      lipid: {
+        title: "血脂", status: "正常", total: 10,
+        summary: "近期血脂相关指标均处于正常参考范围，总胆固醇、甘油三酯及脂蛋白水平整体稳定。",
+        cards: [
+          { source: "血脂检验报告（医院同步）", date: "2026.01.10", metaAction: "参考详情", name: "总胆固醇（TC）", value: "4.5 mmol/L", reference: "参考：＜5.2 mmol/L", status: "正常" },
+          { source: "血脂检验报告（医院同步）", date: "2026.01.10", name: "低密度脂蛋白胆固醇（LDL-C）", value: "2.6 mmol/L", reference: "参考：＜3.4 mmol/L", status: "正常", detailAction: "查看详情", history: [{ date: "2026.01.10", value: "2.6 mmol/L", status: "正常", source: "血脂检验报告 · 医院同步" }, { date: "2025.10.18", value: "2.8 mmol/L", status: "正常", source: "体检报告 · 医院同步" }, { date: "2025.04.12", value: "2.7 mmol/L", status: "正常", source: "血脂检验报告 · 手动上传" }] },
+          { source: "血脂检验报告（医院同步）", date: "2026.01.10", name: "高密度脂蛋白胆固醇（HDL-C）", value: "1.45 mmol/L", reference: "参考：＞1.0 mmol/L", status: "正常" },
+          { source: "体检报告（手动上传）", date: "2025.10.18", name: "甘油三酯（TG）", value: "1.2 mmol/L", reference: "参考：＜1.7 mmol/L", status: "正常", media: "document" }
+        ],
+        advice: [
+          { title: "均衡饮食", text: "继续控制油脂摄入，多选择蔬菜、全谷物和优质蛋白。" },
+          { title: "定期复查", text: "按年度健康检查计划复查血脂，持续观察指标变化。" }
+        ]
+      }
+    }
+  }
+};
+
+let activePortraitReportProfile = "throat";
+
+function getPortraitReportProfile(organId) {
+  if (organId === "heart") return portraitReportProfiles.heart;
+  return portraitReportProfiles.throat;
+}
+
+function renderPortraitReportSection(profile, sectionId) {
+  const tabs = document.querySelector("#portraitReportTabs");
+  const dataList = document.querySelector("#portraitReportDataList");
+  const adviceList = document.querySelector("#portraitReportAdviceList");
+  const overallView = document.querySelector("#portraitCategoryOverall");
+  const detailView = document.querySelector("#portraitReportDetailView");
+  const allTabs = [{ id: "overview", label: "综合", tone: "blue" }, ...profile.tabs];
+  if (tabs) {
+    tabs.innerHTML = allTabs.map((tab) => `<button class="${tab.id === sectionId ? "active" : ""}" type="button" data-portrait-report-tab="${tab.id}" data-tone="${tab.tone}"><i></i>${tab.label}</button>`).join("");
+  }
+  if (sectionId === "overview") {
+    if (detailView) detailView.hidden = true;
+    if (overallView) {
+      overallView.hidden = false;
+      renderPortraitCategoryOverview(profile, overallView);
+    }
+    document.querySelector("#portraitReportSheet .portrait-report-scroll")?.scrollTo({ top: 0 });
+    return;
+  }
+  const section = profile.sections[sectionId] || profile.sections[profile.tabs[0].id];
+  if (overallView) overallView.hidden = true;
+  if (detailView) detailView.hidden = false;
+  document.querySelector("#portraitReportName").textContent = section.title;
+  const reportStatus = document.querySelector("#portraitReportStatus");
+  const reportStatusText = section.status || (section.cards.some((card) => card.status !== "正常") ? "需关注" : "状态稳定");
+  if (reportStatus) {
+    reportStatus.textContent = reportStatusText;
+    reportStatus.classList.toggle("is-normal", /正常|稳定/.test(reportStatusText));
+  }
+  document.querySelector("#portraitReportSummaryText").textContent = section.summary;
+  const total = document.querySelector("#portraitReportTotal");
+  const expand = document.querySelector("#portraitReportExpand");
+  if (total) {
+    total.hidden = !Number.isFinite(section.total);
+    total.textContent = Number.isFinite(section.total) ? `共计 ${section.total} 条数据` : "";
+  }
+  if (expand) {
+    expand.hidden = !Number.isFinite(section.total);
+    expand.innerHTML = Number.isFinite(section.total) ? `展开全部数据（${section.total}）<i aria-hidden="true"></i>` : "";
+  }
+  if (dataList) {
+    dataList.innerHTML = section.cards.map((card, cardIndex) => `
+      <article class="portrait-report-data-card" data-portrait-report-card-name="${card.name}">
+        ${card.source || card.date || card.metaAction ? `<div class="portrait-report-meta">${card.source ? `<span>${card.source}</span>` : ""}${card.metaAction ? `<span class="portrait-report-meta-action">${card.metaAction}</span>` : card.date ? `<span>${card.timeLabel || "报告时间"}：${card.date}</span>` : ""}</div>` : ""}
+        <div class="portrait-report-data-main${card.media || card.history?.length > 1 ? "" : " no-media"}">
+          <div><strong>${card.name}${card.status ? `<em class="${card.status === "正常" || card.status === "稳定" || card.status === "改善" ? "is-normal" : ""}">${card.status}</em>` : ""}</strong><p>${card.value}${card.reference ? ` <span>（${card.reference}）</span>` : ""}</p>${card.detailAction ? `<span class="portrait-report-detail-action">${card.detailAction} ›</span>` : ""}</div>
+          ${card.media || card.history?.length > 1 ? `<div class="portrait-report-card-actions">${card.media ? `<button class="${card.media === "document" ? "portrait-report-doc" : "portrait-report-thumb"}" type="button" aria-label="预览${card.name}原始报告"></button>` : ""}${card.history?.length > 1 ? `<button class="portrait-report-history-entry" type="button" data-portrait-history-section="${sectionId}" data-portrait-history-index="${cardIndex}" aria-label="查看${card.name}历次数据">历次 ${card.history.length}次<i aria-hidden="true"></i></button>` : ""}</div>` : ""}
+        </div>
+      </article>`).join("");
+  }
+  if (adviceList) adviceList.innerHTML = section.advice.map((item) => `<article><strong>${item.title}</strong><p>${item.text}</p></article>`).join("");
+  document.querySelector("#portraitReportSheet .portrait-report-scroll")?.scrollTo({ top: 0 });
+}
+
+function renderPortraitCategoryOverview(profile, container) {
+  const overview = profile.overview;
+  if (!overview) {
+    container.innerHTML = `
+      <section class="portrait-category-empty">
+        <div class="portrait-category-empty-body"><strong>暂无综合总结内容</strong><p>补充明确的示例数据后再进行展示。</p></div>
+      </section>`;
+    return;
+  }
+  const attentionItems = (items) => items.map((item, index) => `
+    <article><b>${index + 1}</b><div><strong>${item.title}</strong><p>${item.text}${item.metric ? `${item.metric}。` : ""}</p>${item.target ? `
+      <button class="portrait-category-detail-link" type="button" data-portrait-category-target="${item.target}" data-portrait-category-focus="${item.focus || ""}" aria-label="查看${item.title}详情">
+        <em>查看详情</em>
+      </button>` : ""}</div></article>
+  `).join("");
+  container.innerHTML = `
+    <section class="portrait-overall-analysis portrait-category-analysis">
+      <div class="portrait-overall-section-title"><i>01</i><h3>综合分析</h3></div>
+      <p>${overview.summary}</p>
+    </section>
+    <section class="portrait-overall-block priority">
+      <div class="portrait-overall-section-title"><i>02</i><h3>优先关注</h3><em class="portrait-overall-count">${overview.priority.length}项</em></div>
+      ${attentionItems(overview.priority)}
+    </section>
+    <section class="portrait-overall-block routine">
+      <div class="portrait-overall-section-title"><i>03</i><h3>日常关注</h3><em class="portrait-overall-count">${overview.routine.length}项</em></div>
+      ${attentionItems(overview.routine)}
+    </section>
+    <section class="portrait-overall-block positive">
+      <div class="portrait-overall-section-title"><i>04</i><h3>积极情况</h3></div>
+      <ul>${overview.positive.map((item) => `<li><strong>${item.title}</strong><span>${item.text}</span></li>`).join("")}</ul>
+    </section>
+    <section class="portrait-overall-block recommendation">
+      <div class="portrait-overall-section-title"><i>05</i><h3>健康建议</h3></div>
+      <ol>${overview.advice.map((item, index) => `<li><b>${String(index + 1).padStart(2, "0")}</b><span>${item}</span></li>`).join("")}</ol>
+    </section>
+    <p class="portrait-report-disclaimer">*以上内容仅汇总${profile.name}范围内的数据，不代表整体健康情况。</p>
+  `;
+}
+
+function openPortraitReportSheet(organId = "throat") {
+  activePortraitReportProfile = organId === "heart" ? "heart" : "throat";
+  const profile = getPortraitReportProfile(organId);
+  const reportSheet = document.querySelector("#portraitReportSheet");
+  if (reportSheet) reportSheet.dataset.portraitProfile = activePortraitReportProfile;
+  renderPortraitReportSection(profile, profile.active);
   closeOverlays();
   sheetMask.classList.add("active");
-  document.querySelector("#portraitReportSheet")?.classList.add("active");
+  reportSheet?.classList.add("active");
 }
+
+document.querySelector("#portraitReportTabs")?.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-portrait-report-tab]");
+  if (!tab) return;
+  const profile = portraitReportProfiles[activePortraitReportProfile];
+  renderPortraitReportSection(profile, tab.dataset.portraitReportTab);
+});
+
+function closePortraitMetricHistory() {
+  document.querySelector("#portraitMetricHistorySheet")?.classList.remove("active");
+  document.querySelector("#portraitReportSheet")?.classList.remove("is-history-open");
+}
+
+function openPortraitMetricHistory(sectionId, cardIndex) {
+  const profile = portraitReportProfiles[activePortraitReportProfile];
+  const card = profile?.sections?.[sectionId]?.cards?.[Number(cardIndex)];
+  if (!card?.history || card.history.length <= 1) return;
+  const historySheet = document.querySelector("#portraitMetricHistorySheet");
+  const historyTitle = document.querySelector("#portraitMetricHistoryTitle");
+  const historyStats = document.querySelector("#portraitMetricHistoryStats");
+  const historyList = document.querySelector("#portraitMetricHistoryList");
+  if (historyTitle) historyTitle.textContent = card.name;
+  if (historyStats) historyStats.textContent = `历次数据 · 共 ${card.history.length} 次`;
+  if (historyList) historyList.innerHTML = card.history.map((record, index) => `
+    <article class="portrait-metric-history-record">
+      <span><time datetime="${record.date}">${record.date}${index === 0 ? " · 最新" : ""}</time><b>${record.status}</b></span>
+      <strong>${record.value}</strong>
+      <p>${record.source}</p>
+    </article>`).join("");
+  document.querySelector("#portraitReportSheet")?.classList.add("is-history-open");
+  historySheet?.classList.add("active");
+  window.setTimeout(() => document.querySelector("#portraitMetricHistoryClose")?.focus(), 0);
+}
+
+document.querySelector("#portraitReportDataList")?.addEventListener("click", (event) => {
+  const historyEntry = event.target.closest("[data-portrait-history-section]");
+  if (!historyEntry) return;
+  openPortraitMetricHistory(historyEntry.dataset.portraitHistorySection, historyEntry.dataset.portraitHistoryIndex);
+});
+
+document.querySelector("#portraitMetricHistoryClose")?.addEventListener("click", closePortraitMetricHistory);
+
+document.querySelector("#portraitCategoryOverall")?.addEventListener("click", (event) => {
+  const detailLink = event.target.closest("[data-portrait-category-target]");
+  if (!detailLink) return;
+  const profile = portraitReportProfiles[activePortraitReportProfile];
+  renderPortraitReportSection(profile, detailLink.dataset.portraitCategoryTarget);
+  const focusName = detailLink.dataset.portraitCategoryFocus;
+  if (!focusName) return;
+  const targetCard = [...document.querySelectorAll("#portraitReportDataList [data-portrait-report-card-name]")]
+    .find((card) => card.dataset.portraitReportCardName.includes(focusName));
+  if (!targetCard) return;
+  targetCard.classList.add("is-located");
+  targetCard.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
+
+function openPortraitOverallSheet() {
+  const title = document.querySelector("#portraitOverallTitle");
+  if (title) title.textContent = `${maskPatientSwitcherName(currentPatient.name || "张*超")}的AI综合健康分析`;
+  closeOverlays();
+  sheetMask.classList.add("active");
+  document.querySelector("#portraitOverallSheet")?.classList.add("active");
+}
+
+document.querySelector("#portraitOverallSummaryEntry")?.addEventListener("click", openPortraitOverallSheet);
+document.querySelector("#portraitOverallClose")?.addEventListener("click", closeOverlays);
 
 const cycleRules = {
   none: {
@@ -1696,7 +1988,9 @@ function closeOverlays() {
   periodEditDialog.classList.remove("active");
   periodDeleteDialog.classList.remove("active");
   metricDeleteDialog?.classList.remove("active");
-  document.querySelector("#portraitReportSheet")?.classList.remove("active");
+  document.querySelector("#portraitReportSheet")?.classList.remove("active", "is-history-open");
+  document.querySelector("#portraitMetricHistorySheet")?.classList.remove("active");
+  document.querySelector("#portraitOverallSheet")?.classList.remove("active");
   aiKeyResultsSheet?.classList.remove("active");
   supplementDialog.classList.remove("active");
   reportDeleteDialog.classList.remove("active");

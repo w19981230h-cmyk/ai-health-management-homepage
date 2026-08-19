@@ -34,6 +34,22 @@ function safeCoordinate(value) {
   return Math.max(0, Math.min(1, Number(value) || 0));
 }
 
+function safeObject(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) return value;
+  if (typeof value !== "string" || !value) return null;
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function storedObject(value, maxLength = 100000) {
+  const object = safeObject(value);
+  return object ? JSON.stringify(object).slice(0, maxLength) : "{}";
+}
+
 function noteRecord(row) {
   if (!row) return null;
   return {
@@ -49,7 +65,12 @@ function noteRecord(row) {
     createdAt: row.created_at,
     updatedBy: row.updated_by,
     updatedAt: row.updated_at,
-    status: row.status
+    status: row.status,
+    targetKey: row.target_key || "",
+    targetSnapshot: safeObject(row.target_snapshot),
+    featureInference: safeObject(row.feature_inference),
+    generatedRules: safeObject(row.generated_rules),
+    ruleGeneratedAt: row.rule_generated_at || ""
   };
 }
 
@@ -108,6 +129,19 @@ export function createUiNotesApi(root) {
     ].join(" "));
   }
 
+  if (schemaVersion < 3) {
+    database.exec([
+      "BEGIN;",
+      "ALTER TABLE ui_notes ADD COLUMN target_key TEXT NOT NULL DEFAULT '';",
+      "ALTER TABLE ui_notes ADD COLUMN target_snapshot TEXT NOT NULL DEFAULT '{}';",
+      "ALTER TABLE ui_notes ADD COLUMN feature_inference TEXT NOT NULL DEFAULT '{}';",
+      "ALTER TABLE ui_notes ADD COLUMN generated_rules TEXT NOT NULL DEFAULT '{}';",
+      "ALTER TABLE ui_notes ADD COLUMN rule_generated_at TEXT NOT NULL DEFAULT '';",
+      "PRAGMA user_version = 3;",
+      "COMMIT;"
+    ].join(" "));
+  }
+
   const selectNotes = database.prepare(
     "SELECT * FROM ui_notes WHERE project_id = ? AND page_id = ? AND status = 'active' ORDER BY note_number ASC"
   );
@@ -123,10 +157,10 @@ export function createUiNotesApi(root) {
     "SELECT COALESCE(MAX(note_number), 0) + 1 AS next_number FROM ui_notes WHERE project_id = ? AND page_id = ?"
   );
   const insertNote = database.prepare(
-    "INSERT INTO ui_notes (note_id, project_id, page_id, note_number, title, content, x, y, created_by, created_at, updated_by, updated_at, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')"
+    "INSERT INTO ui_notes (note_id, project_id, page_id, note_number, title, content, x, y, created_by, created_at, updated_by, updated_at, status, target_key, target_snapshot, feature_inference, generated_rules, rule_generated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?)"
   );
   const updateNote = database.prepare(
-    "UPDATE ui_notes SET note_number = ?, title = ?, content = ?, x = ?, y = ?, updated_by = ?, updated_at = ? WHERE note_id = ? AND status = 'active'"
+    "UPDATE ui_notes SET note_number = ?, title = ?, content = ?, x = ?, y = ?, updated_by = ?, updated_at = ?, target_key = ?, target_snapshot = ?, feature_inference = ?, generated_rules = ?, rule_generated_at = ? WHERE note_id = ? AND status = 'active'"
   );
   const deleteNote = database.prepare(
     "UPDATE ui_notes SET status = 'deleted', updated_by = ?, updated_at = ? WHERE note_id = ? AND status = 'active'"
@@ -155,13 +189,18 @@ export function createUiNotesApi(root) {
           String(note.pageId).slice(0, 240),
           noteNumber,
           String(note.title).slice(0, 120),
-          String(note.content || "").slice(0, 2000),
+          String(note.content || "").slice(0, 5000),
           safeCoordinate(note.x),
           safeCoordinate(note.y),
           String(note.createdBy || "项目备注").slice(0, 60),
           createdAt,
           String(note.updatedBy || note.createdBy || "项目备注").slice(0, 60),
-          updatedAt
+          updatedAt,
+          String(note.targetKey || "").slice(0, 300),
+          storedObject(note.targetSnapshot, 100000),
+          storedObject(note.featureInference, 20000),
+          storedObject(note.generatedRules, 120000),
+          String(note.ruleGeneratedAt || "").slice(0, 60)
         );
       });
       database.exec("COMMIT");
@@ -173,7 +212,7 @@ export function createUiNotesApi(root) {
   function writeProjectSeed() {
     const notes = selectAllActiveNotes.all().map(noteRecord);
     fs.writeFileSync(seedFile, JSON.stringify({
-      formatVersion: 1,
+      formatVersion: 2,
       exportedAt: new Date().toISOString(),
       notes
     }, null, 2) + "\n", "utf8");
@@ -196,7 +235,8 @@ export function createUiNotesApi(root) {
         const projectId = String(body.projectId || "").trim().slice(0, 120);
         const pageId = String(body.pageId || "").trim().slice(0, 240);
         const title = String(body.title || "").trim().slice(0, 120);
-        const content = String(body.content || "").trim().slice(0, 2000);
+        const content = String(body.content || "").trim().slice(0, 5000);
+        const targetKey = String(body.targetKey || "").trim().slice(0, 300);
         const actor = String(body.createdBy || "在线访客").trim().slice(0, 60) || "在线访客";
         if (!projectId || !pageId || !title) return sendJson(res, 400, { error: "项目、页面和备注标题不能为空" });
         const noteId = crypto.randomUUID();
@@ -211,7 +251,12 @@ export function createUiNotesApi(root) {
         const now = new Date().toISOString();
         insertNote.run(
           noteId, projectId, pageId, noteNumber, title, content,
-          safeCoordinate(body.x), safeCoordinate(body.y), actor, now, actor, now
+          safeCoordinate(body.x), safeCoordinate(body.y), actor, now, actor, now,
+          targetKey,
+          storedObject(body.targetSnapshot, 100000),
+          storedObject(body.featureInference, 20000),
+          storedObject(body.generatedRules, 120000),
+          String(body.ruleGeneratedAt || "").slice(0, 60)
         );
         writeProjectSeed();
         return sendJson(res, 201, { note: noteRecord(selectNote.get(noteId)) });
@@ -239,11 +284,16 @@ export function createUiNotesApi(root) {
         updateNote.run(
           noteNumber,
           title,
-          body.content === undefined ? existing.content : String(body.content || "").trim().slice(0, 2000),
+          body.content === undefined ? existing.content : String(body.content || "").trim().slice(0, 5000),
           body.x === undefined ? existing.x : safeCoordinate(body.x),
           body.y === undefined ? existing.y : safeCoordinate(body.y),
           actor,
           new Date().toISOString(),
+          body.targetKey === undefined ? existing.target_key : String(body.targetKey || "").trim().slice(0, 300),
+          body.targetSnapshot === undefined ? existing.target_snapshot : storedObject(body.targetSnapshot, 100000),
+          body.featureInference === undefined ? existing.feature_inference : storedObject(body.featureInference, 20000),
+          body.generatedRules === undefined ? existing.generated_rules : storedObject(body.generatedRules, 120000),
+          body.ruleGeneratedAt === undefined ? existing.rule_generated_at : String(body.ruleGeneratedAt || "").slice(0, 60),
           noteId
         );
         writeProjectSeed();

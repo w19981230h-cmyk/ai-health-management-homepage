@@ -324,7 +324,7 @@ function baselineMetricRecords(metric) {
     const time = new Date(baseDate);
     time.setDate(baseDate.getDate() - index);
     const display = metric.id === "bp"
-      ? `${formatMetricNumber(value)}/${Math.round(value * 0.65)}`
+      ? `${formatMetricNumber(value)}/${Math.round(value * 0.62)}`
       : formatMetricNumber(value);
     return {
       id: `baseline-${metric.id}-${index}`,

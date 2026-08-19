@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260811-refund-four-step-v1">
+  <link rel="stylesheet" href="styles.css?v=20260819-portrait-history-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -1066,14 +1066,15 @@
             </article>
             <div class="portrait-focus-icon" id="portraitCurrentIcon" aria-hidden="true">身</div>
           </section>
-          <section class="portrait-assistant-card" aria-label="医护助理">
+          <button class="portrait-assistant-card" id="portraitOverallSummaryEntry" type="button" aria-label="查看健康综合总结" aria-haspopup="dialog">
             <div class="assistant-bot" aria-hidden="true"></div>
             <div>
               <strong>医护助理</strong>
-              <h2>有 7 项健康内容值得关注</h2>
-              <p>我已经帮你整理好了，一起来看看吧～</p>
+              <h2>有 4 项健康内容需要关注</h2>
+              <p>血压和血脂优先关注，体重与睡眠持续管理</p>
             </div>
-          </section>
+            <i class="portrait-assistant-arrow" aria-hidden="true"></i>
+          </button>
           <section class="portrait-organ-panel" aria-label="部位器官选择">
             <div>
               <span id="portraitOrganPanelTitle">选择身体部位</span>
@@ -1783,64 +1784,88 @@
         </header>
         <div class="ai-key-results-scroll" id="aiKeyResultsAll"></div>
       </section>
-      <section class="portrait-report-sheet" id="portraitReportSheet" aria-label="健康画像系统报告详情">
+      <section class="portrait-report-sheet" id="portraitReportSheet" role="dialog" aria-modal="true" aria-label="健康画像系统报告详情">
         <div class="portrait-report-handle" aria-hidden="true"></div>
-        <nav class="portrait-report-tabs" aria-label="健康画像分类">
-          <button class="active" type="button"><i></i>血压循环</button>
-        </nav>
+        <nav class="portrait-report-tabs" id="portraitReportTabs" aria-label="健康画像分类"></nav>
         <div class="portrait-report-scroll">
-          <section class="portrait-report-summary">
-            <div class="portrait-report-corner" aria-hidden="true"></div>
-            <header>
-              <span class="portrait-report-bot" aria-hidden="true"></span>
-              <div>
-                <em>AI智能总结</em>
-                <h3><span>血压循环</span><b>需关注</b></h3>
+          <section class="portrait-category-overall" id="portraitCategoryOverall" aria-label="一级分类综合分析"></section>
+          <div id="portraitReportDetailView" hidden>
+            <section class="portrait-report-summary">
+              <div class="portrait-report-corner" aria-hidden="true"></div>
+              <header>
+                <span class="portrait-report-bot" aria-hidden="true"></span>
+                <div>
+                  <em>AI智能总结</em>
+                  <h3><span id="portraitReportName">气道与肺部</span><b id="portraitReportStatus">需关注</b></h3>
+                </div>
+              </header>
+              <p id="portraitReportSummaryText">近期肺功能检查提示轻度阻塞性通气改变，静息血氧略低，建议结合呼吸科评估并按期复查。</p>
+              <span class="portrait-report-ai-note">◆ 内容由AI辅助生成，请注意辨别 ◆</span>
+            </section>
+
+            <section class="portrait-report-section">
+              <div class="portrait-report-title-row">
+                <h4>健康数据</h4>
+                <span id="portraitReportTotal">共计 22 条数据</span>
               </div>
-            </header>
-            <p>血压偏高，建议低盐饮食并规律监测复查。</p>
-            <span class="portrait-report-ai-note">◆ 内容由AI辅助生成，请注意辨别 ◆</span>
-          </section>
+              <div class="portrait-report-data-list" id="portraitReportDataList"></div>
+              <button class="portrait-report-expand" id="portraitReportExpand" type="button">展开全部数据（22）<i aria-hidden="true"></i></button>
+            </section>
 
-          <section class="portrait-report-section">
-            <div class="portrait-report-title-row">
-              <h4>健康数据</h4>
-              <span>共计 22 条数据</span>
-            </div>
-            <div class="portrait-report-data-list">
-              <article class="portrait-report-data-card portrait-report-pressure-card">
-                <div class="portrait-report-meta">
-                  <span>健康数据（手动记录）</span>
-                  <span>记录时间：2026/01/01</span>
-                </div>
-                <div class="portrait-report-data-main">
-                  <div>
-                    <strong>血压 <em>需关注</em></strong>
-                    <p>188/92mmHg</p>
-                  </div>
-                </div>
-              </article>
-            </div>
+            <section class="portrait-report-section portrait-report-advice-section">
+              <h4>健康建议</h4>
+              <div class="portrait-report-advice-list" id="portraitReportAdviceList"></div>
+            </section>
+            <p class="portrait-report-disclaimer">*该结果仅供参考，如遇身体不适请及时就医</p>
+          </div>
+        </div>
+      </section>
+      <section class="portrait-metric-history-sheet" id="portraitMetricHistorySheet" role="dialog" aria-modal="true" aria-labelledby="portraitMetricHistoryTitle">
+        <div class="portrait-report-handle" aria-hidden="true"></div>
+        <header>
+          <div><h2 id="portraitMetricHistoryTitle">指标历次数据</h2><p id="portraitMetricHistoryStats"></p></div>
+          <button class="portrait-metric-history-close" id="portraitMetricHistoryClose" type="button" aria-label="关闭历次数据"></button>
+        </header>
+        <div class="portrait-metric-history-scroll" id="portraitMetricHistoryList"></div>
+      </section>
+      <section class="portrait-overall-sheet" id="portraitOverallSheet" role="dialog" aria-modal="true" aria-labelledby="portraitOverallTitle">
+        <div class="portrait-report-handle" aria-hidden="true"></div>
+        <header class="portrait-overall-header">
+          <span class="portrait-report-bot" aria-hidden="true"></span>
+          <div><em>健康画像综合</em><h2 id="portraitOverallTitle">张*超的AI综合健康分析</h2><p>基于当前已采集的健康数据生成</p></div>
+          <button class="portrait-overall-close" id="portraitOverallClose" type="button" aria-label="关闭健康综合总结"></button>
+        </header>
+        <div class="portrait-overall-scroll">
+          <section class="portrait-overall-analysis">
+            <div class="portrait-overall-section-title"><i>01</i><h3>综合分析</h3></div>
+            <p>当前健康数据整体较为稳定，但近期血压控制和血脂情况需要优先关注。同时，体重和睡眠仍属于需要长期管理的事项。近3个月体重有所下降，运动频率也较前增加，健康管理已经出现一定积极变化。建议继续做好血压监测，同时保持现有体重管理和运动习惯。</p>
           </section>
-
-          <section class="portrait-report-section portrait-report-advice-section">
-            <h4>健康建议</h4>
-            <div class="portrait-report-advice-list">
-              <article>
-                <strong>低盐饮食</strong>
-                <p>减少腌制、高钠食物，建议每日盐摄入控制在5g以内</p>
-              </article>
-              <article>
-                <strong>规律监测</strong>
-                <p>早晚固定时间测量血压，连续记录便于复诊判断</p>
-              </article>
-              <article>
-                <strong>及时复诊</strong>
-                <p>如多次高于140/90mmHg，建议咨询医生评估用药方案</p>
-              </article>
-            </div>
+          <section class="portrait-overall-block priority">
+            <div class="portrait-overall-section-title"><i>02</i><h3>优先关注</h3><em class="portrait-overall-count">2项</em></div>
+            <article><b>1</b><div class="portrait-overall-item-main"><strong>血压控制需要加强关注</strong><p>近期多次血压记录偏高，且较前有所升高。近7天平均血压 148/92 mmHg。</p></div></article>
+            <article><b>2</b><div class="portrait-overall-item-main"><strong>血脂情况需要加强关注</strong><p>近期血脂检查仍存在异常，且相关指标较上次有所升高。LDL-C 4.3 mmol/L。</p></div></article>
           </section>
-          <p class="portrait-report-disclaimer">*该结果仅供参考，如遇身体不适请及时就医</p>
+          <section class="portrait-overall-block routine">
+            <div class="portrait-overall-section-title"><i>03</i><h3>日常关注</h3><em class="portrait-overall-count">2项</em></div>
+            <article><b>1</b><div class="portrait-overall-item-main"><strong>体重仍需持续管理</strong><p>当前体重相关状态仍需要持续管理，虽然近期已有一定改善。BMI 27.2 kg/m²。</p></div></article>
+            <article><b>2</b><div class="portrait-overall-item-main"><strong>睡眠情况需要持续关注</strong><p>近期平均睡眠时间偏短，建议继续关注睡眠时长和作息规律。平均睡眠 5.9小时/晚。</p></div></article>
+          </section>
+          <section class="portrait-overall-block positive">
+            <div class="portrait-overall-section-title"><i>04</i><h3>积极情况</h3></div>
+            <ul>
+              <li><strong>体重管理有所改善</strong><span>近3个月体重较前下降。</span></li>
+              <li><strong>运动情况有所改善</strong><span>近期每周规律运动次数较前增加。</span></li>
+            </ul>
+          </section>
+          <section class="portrait-overall-block recommendation">
+            <div class="portrait-overall-section-title"><i>05</i><h3>健康建议</h3></div>
+            <ol>
+              <li><b>01</b><span>近期继续规律监测血压，关注血压变化情况。</span></li>
+              <li><b>02</b><span>继续做好饮食、体重及血脂相关健康管理，并按计划完成复查。</span></li>
+              <li><b>03</b><span>保持规律运动，同时逐步改善睡眠时间和作息习惯。</span></li>
+            </ol>
+          </section>
+          <p class="portrait-report-disclaimer">*以上内容由健康数据综合生成，仅用于健康管理参考，不替代医生诊断。</p>
         </div>
       </section>
       <section class="bottom-sheet" id="serviceActionSheet" aria-label="服务操作面板">
@@ -2436,49 +2461,57 @@
     </section>
   </main>
 
-  <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面备注工具">
-    <button id="uiNoteAdd" type="button">添加备注</button>
-    <button id="uiNoteToggle" type="button">显示备注</button>
-    <em id="uiNoteCount" title="当前页面备注数量">0</em>
+  <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面批注工具">
+    <button id="uiNoteAdd" type="button">添加批注</button>
+    <button id="uiNoteToggle" type="button">显示批注</button>
+    <em id="uiNoteCount" title="当前界面批注数量">0</em>
+    <button class="ui-note-collapse" id="uiNoteCollapse" type="button" aria-label="收起整个界面批注工具" title="收起整个批注工具">×</button>
   </aside>
-  <div class="ui-note-layer" id="uiNoteLayer" aria-label="当前页面备注点"></div>
-  <div class="ui-note-editor-mask" id="uiNoteEditorMask" data-ui-note-ui></div>
-  <section class="ui-note-editor" id="uiNoteEditor" role="dialog" aria-modal="true" aria-labelledby="uiNoteEditorHeading" data-ui-note-ui>
-    <header>
-      <h2 id="uiNoteEditorHeading">添加备注</h2>
-      <button id="uiNoteEditorClose" type="button" aria-label="关闭备注弹窗"></button>
+  <button class="ui-note-launcher" id="uiNoteLauncher" type="button" data-ui-note-ui hidden>批注</button>
+  <div class="ui-note-layer" id="uiNoteLayer" aria-label="当前界面批注点"></div>
+  <div class="ui-note-drawer-mask" id="uiNoteDrawerMask" data-ui-note-ui hidden></div>
+  <aside class="ui-note-drawer" id="uiNoteDrawer" role="complementary" aria-labelledby="uiNoteDrawerHeading" data-ui-note-ui>
+    <header class="ui-note-drawer-header">
+      <div><span>文本备注</span><h2 id="uiNoteDrawerHeading">添加批注</h2></div>
+      <button id="uiNoteDrawerClose" type="button" aria-label="关闭批注抽屉"></button>
     </header>
-      <form id="uiNoteForm">
-      <label class="ui-note-number-field" id="uiNoteNumberField" hidden>
-        备注编号
-        <input id="uiNoteNumber" type="number" min="1" max="9999" step="1" inputmode="numeric" required>
-      </label>
+    <form id="uiNoteForm">
+      <div class="ui-note-drawer-scroll">
+        <label class="ui-note-number-field" id="uiNoteNumberField" hidden>
+          批注编号
+          <input id="uiNoteNumber" type="number" min="1" max="9999" step="1" inputmode="numeric" required>
+        </label>
         <label>
-        备注标题
-        <input id="uiNoteTitle" type="text" maxlength="120" placeholder="例如：金额调整为299元" required>
-      </label>
-      <label>
-        备注内容
-        <textarea id="uiNoteContent" maxlength="2000" placeholder="请填写需要修改的文案、展示内容或交互说明"></textarea>
-      </label>
-      <p class="ui-note-editor-error" id="uiNoteEditorError" role="alert"></p>
-      <footer>
-        <button class="ui-note-delete" id="uiNoteDelete" type="button">删除备注</button>
+          批注标题 <small>作为主要功能判断依据</small>
+          <input id="uiNoteTitle" type="text" maxlength="120" placeholder="例如：退款按钮什么时候显示" required>
+        </label>
+        <div class="ui-note-content-field">
+          <div class="ui-note-content-heading">
+            <label for="uiNoteContent">补充说明</label>
+            <button id="uiNoteAiAppend" type="button"><b>AI</b> 自动补充</button>
+          </div>
+          <textarea id="uiNoteContent" maxlength="5000" placeholder="先写下你定的规则，AI只补充这条规则缺少的必要说明"></textarea>
+          <small id="uiNoteAiStatus" aria-live="polite">AI只补必要内容，不改变你写的规则</small>
+        </div>
+        <p class="ui-note-editor-error" id="uiNoteEditorError" role="alert"></p>
+      </div>
+      <footer class="ui-note-drawer-footer">
+        <button class="ui-note-delete" id="uiNoteDelete" type="button">删除</button>
         <button class="ui-note-cancel" id="uiNoteCancel" type="button">取消</button>
-        <button class="ui-note-save" id="uiNoteSave" type="submit">保存备注</button>
+        <button class="ui-note-save" id="uiNoteSave" type="submit">保存批注</button>
       </footer>
     </form>
-  </section>
+  </aside>
 
   <script src="scripts/00-dom-state.js?v=20260810-refund-closed-loop-v1"></script>
-  <script src="scripts/01-data-store.js?v=20260807-hospital-report-card-v6"></script>
+  <script src="scripts/01-data-store.js?v=20260817-portrait-overall-analysis-v3"></script>
   <script src="scripts/10-schedule.js?v=20260807-checkin-catalog-v1"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260807-hospital-flat-data-v9"></script>
-  <script src="scripts/60-metrics.js?v=20260807-hospital-record-page-v2"></script>
-  <script src="scripts/70-events-init.js?v=20260811-refund-four-step-v1"></script>
-  <script src="scripts/80-ui-notes.js?v=20260806-bound-service-note-isolation-v2"></script>
+  <script src="scripts/50-reports-services.js?v=20260819-metric-history-v2"></script>
+  <script src="scripts/60-metrics.js?v=20260817-portrait-overall-analysis-v3"></script>
+  <script src="scripts/70-events-init.js?v=20260819-portrait-history-v1"></script>
+  <script src="scripts/80-ui-notes.js?v=20260817-stable-drag-point-v8"></script>
 </body>
 </html>
