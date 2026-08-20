@@ -8,6 +8,7 @@
   const toolbar = $("#uiNoteToolbar");
   const addButton = $("#uiNoteAdd");
   const toggleButton = $("#uiNoteToggle");
+  const summaryButton = $("#uiNoteSummaryButton");
   const collapseButton = $("#uiNoteCollapse");
   const launcherButton = $("#uiNoteLauncher");
   const countBadge = $("#uiNoteCount");
@@ -16,6 +17,11 @@
   const drawer = $("#uiNoteDrawer");
   const drawerTitle = $("#uiNoteDrawerHeading");
   const drawerClose = $("#uiNoteDrawerClose");
+  const summary = $("#uiNoteSummary");
+  const summaryClose = $("#uiNoteSummaryClose");
+  const summaryCount = $("#uiNoteSummaryCount");
+  const summaryPageCount = $("#uiNoteSummaryPageCount");
+  const summaryList = $("#uiNoteSummaryList");
   const form = $("#uiNoteForm");
   const numberField = $("#uiNoteNumberField");
   const numberInput = $("#uiNoteNumber");
@@ -35,6 +41,7 @@
   let currentPageId = "";
   let editingPageId = "";
   let notes = [];
+  let summaryNotes = [];
   let notesVisible = false;
   let toolHidden = false;
   let addMode = false;
@@ -75,7 +82,11 @@
     const body = options.body ? JSON.parse(options.body) : {};
     const storedNotes = readLocalNotes();
     if (method === "GET") {
-      const pageId = new URL(url, window.location.href).searchParams.get("pageId") || "";
+      const searchParams = new URL(url, window.location.href).searchParams;
+      const pageId = searchParams.get("pageId") || "";
+      if (searchParams.get("scope") === "all") {
+        return { notes: storedNotes.filter((note) => note.projectId === PROJECT_ID) };
+      }
       return { notes: storedNotes.filter((note) => note.projectId === PROJECT_ID && note.pageId === pageId) };
     }
     if (method === "POST") {
@@ -139,6 +150,60 @@
     }) || frame;
   }
 
+  function activeTabContext(frame) {
+    if (!frame) return "";
+    const containers = [...frame.querySelectorAll('[role="tablist"], [class*="tabs"], [id$="Tabs"]')];
+    const identities = [];
+    const claimedTabs = new Set();
+    const clean = (value) => String(value).replace(/\s+/g, "").replace(/[:|=]/g, "-").slice(0, 40);
+    containers.forEach((container, index) => {
+      if (container.closest("[data-ui-note-ui]")) return;
+      const rect = container.getBoundingClientRect();
+      const style = getComputedStyle(container);
+      if (!rect.width || !rect.height || style.display === "none" || style.visibility === "hidden") return;
+      const activeTab = container.querySelector('[role="tab"][aria-selected="true"], [role="tab"].active, button.active, a.active');
+      if (!activeTab) return;
+      claimedTabs.add(activeTab);
+      if (activeTab.dataset.profileTab || activeTab.dataset.orderTab) return;
+      const firstTab = container.querySelector('[role="tab"], button, a');
+      if (activeTab === firstTab) return;
+      const datasetEntry = Object.entries(activeTab.dataset).find(([key, value]) => (
+        value && /(tab|category|filter|range|group|plan|region|organ)/i.test(key)
+        && !/^(profileTab|orderTab)$/.test(key)
+      ));
+      const rawValue = datasetEntry?.[1] || visibleText(activeTab);
+      if (!rawValue) return;
+      const containerKey = container.id
+        || container.getAttribute("aria-label")
+        || [...container.classList].find((name) => name.includes("tabs"))
+        || `tabs${index + 1}`;
+      identities.push(`${clean(containerKey)}=${clean(rawValue)}`);
+    });
+    [...frame.querySelectorAll('.active, [aria-selected="true"]')].forEach((candidate) => {
+      if (claimedTabs.has(candidate) || candidate.closest("[data-ui-note-ui]")) return;
+      const datasetEntry = Object.entries(candidate.dataset).find(([key, value]) => (
+        value && /(tab|category|filter|range|group|plan|region|organ)/i.test(key)
+        && !/^(profileTab|orderTab)$/.test(key)
+      ));
+      if (!datasetEntry) return;
+      const rect = candidate.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      identities.push(`data-${clean(datasetEntry[0])}=${clean(datasetEntry[1])}`);
+    });
+    return [...new Set(identities)].join("|");
+  }
+
+  function compactPageId(value) {
+    const pageId = String(value);
+    if (pageId.length <= 240) return pageId;
+    let hash = 2166136261;
+    for (let index = 0; index < pageId.length; index += 1) {
+      hash ^= pageId.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return pageId.slice(0, 220) + ":h" + (hash >>> 0).toString(36);
+  }
+
   function basePageId() {
     const activeSubPage = $(".sub-page.active");
     if (activeSubPage) return "sub:" + activeSubPage.id;
@@ -165,12 +230,15 @@
   }
 
   function activePageId() {
-    const baseId = basePageId();
+    const baseFrame = activeBaseFrame();
+    const baseTabs = activeTabContext(baseFrame);
+    const baseId = basePageId() + (baseTabs ? ":tabs:" + baseTabs : "");
     const overlay = activeOverlayFrame();
-    if (!overlay) return baseId;
+    if (!overlay) return compactPageId(baseId);
     const overlayId = overlay.id || overlay.getAttribute("aria-label")
       || [...overlay.classList].filter((name) => name !== "active").join(".") || overlay.tagName.toLowerCase();
-    return baseId + ":popup:" + overlayId;
+    const overlayTabs = activeTabContext(overlay);
+    return compactPageId(baseId + ":popup:" + overlayId + (overlayTabs ? ":tabs:" + overlayTabs : ""));
   }
 
   function syncOverlayBounds() {
@@ -209,6 +277,11 @@
     drawer.style.width = drawerWidth + "px";
     drawer.style.top = Math.max(0, drawerRect.top) + "px";
     drawer.style.height = Math.max(0, Math.min(innerHeight, drawerRect.bottom) - Math.max(0, drawerRect.top)) + "px";
+    summary.style.left = drawerLeft + "px";
+    summary.style.right = "auto";
+    summary.style.width = drawerWidth + "px";
+    summary.style.top = Math.max(0, drawerRect.top) + "px";
+    summary.style.height = Math.max(0, Math.min(innerHeight, drawerRect.bottom) - Math.max(0, drawerRect.top)) + "px";
     layer.hidden = toolHidden || !notesVisible;
   }
 
@@ -242,6 +315,22 @@
       addButton.disabled = true;
       aiAppendButton.disabled = true;
       return seed.notes.filter((note) => note.projectId === PROJECT_ID && note.pageId === pageId);
+    }
+  }
+
+  async function fetchAllNotes() {
+    const query = new URLSearchParams({ projectId: PROJECT_ID, scope: "all" });
+    if (localMode) return localNoteRequest(API_PATH + "?" + query).notes;
+    try {
+      const payload = await apiRequest(API_PATH + "?" + query);
+      if (!Array.isArray(payload.notes)) throw new Error("批注数据格式不正确");
+      return payload.notes;
+    } catch (apiError) {
+      const seedResponse = await fetch("data/ui-notes-seed.json", { cache: "no-store" });
+      if (!seedResponse.ok) throw apiError;
+      const seed = await seedResponse.json();
+      if (!Array.isArray(seed?.notes)) throw apiError;
+      return seed.notes.filter((note) => note.projectId === PROJECT_ID && note.status !== "deleted");
     }
   }
 
@@ -393,7 +482,135 @@
     return JSON.stringify([numberInput.value, titleInput.value, contentInput.value]);
   }
 
+  function pageLabelForSummary(pageId, pageNotes = []) {
+    const capturedLabel = pageNotes.map((note) => safeJson(note.targetSnapshot)?.interfaceManifest?.pageLabel)
+      .find((label) => String(label || "").trim());
+    const baseId = String(pageId || "").split(":tabs:")[0];
+    const knownPages = {
+      home: "首页",
+      "mine:medical": "健康档案",
+      "mine:metrics": "健康指标",
+      "mine:assessment": "健康评估",
+      "mine:orders": "我的订单",
+      "service-list": "健康服务",
+      schedule: "日程",
+      "service-purchase-success": "购买成功"
+    };
+    let label = capturedLabel || knownPages[baseId];
+    if (!label && baseId.startsWith("mine:orders:")) label = "我的订单";
+    if (!label && baseId.startsWith("service-order-detail:")) label = "订单详情";
+    if (!label && baseId.startsWith("service-bound-detail:")) label = "服务详情";
+    if (!label && baseId.startsWith("service-detail:")) label = "服务详情";
+    if (!label && baseId.startsWith("sub:")) label = "业务详情";
+    if (!label && baseId.startsWith("view:")) label = "功能界面";
+    label ||= "其他界面";
+
+    const tabText = String(pageId || "").split(":tabs:")[1]?.split(":popup:")[0] || "";
+    const activeTabs = tabText.split("|").map((item) => item.split("=").slice(1).join("=")).filter(Boolean);
+    if (activeTabs.length) label += " · " + activeTabs.join(" / ");
+    if (String(pageId || "").includes(":popup:")) label += " · 弹窗";
+    return label;
+  }
+
+  function summaryDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  }
+
+  function renderSummary() {
+    const grouped = new Map();
+    summaryNotes.forEach((note) => {
+      const pageId = String(note.pageId || "其他界面");
+      if (!grouped.has(pageId)) grouped.set(pageId, []);
+      grouped.get(pageId).push(note);
+    });
+    summaryCount.textContent = String(summaryNotes.length);
+    summaryPageCount.textContent = `${grouped.size} 个界面`;
+    summaryList.replaceChildren();
+    if (!summaryNotes.length) {
+      const empty = document.createElement("p");
+      empty.className = "ui-note-summary-state";
+      empty.textContent = "还没有界面批注";
+      summaryList.appendChild(empty);
+      return;
+    }
+
+    [...grouped.entries()].sort(([pageA, notesA], [pageB, notesB]) => {
+      if (pageA === currentPageId) return -1;
+      if (pageB === currentPageId) return 1;
+      return pageLabelForSummary(pageA, notesA).localeCompare(pageLabelForSummary(pageB, notesB), "zh-CN");
+    }).forEach(([pageId, pageNotes]) => {
+      const group = document.createElement("section");
+      group.className = "ui-note-summary-group";
+      const header = document.createElement("header");
+      const title = document.createElement("div");
+      title.textContent = pageLabelForSummary(pageId, pageNotes);
+      if (pageId === currentPageId) {
+        const currentTag = document.createElement("b");
+        currentTag.className = "ui-note-current-tag";
+        currentTag.textContent = "当前界面";
+        title.appendChild(currentTag);
+      }
+      const count = document.createElement("span");
+      count.textContent = `${pageNotes.length} 条`;
+      header.append(title, count);
+      group.appendChild(header);
+      pageNotes.sort((a, b) => Number(a.noteNumber) - Number(b.noteNumber)).forEach((note) => {
+        const card = document.createElement("article");
+        card.className = "ui-note-summary-card";
+        const number = document.createElement("span");
+        number.className = "ui-note-summary-number";
+        number.textContent = String(note.noteNumber);
+        const body = document.createElement("div");
+        const cardTitle = document.createElement("h3");
+        cardTitle.textContent = note.title || "未命名批注";
+        const content = document.createElement("p");
+        content.textContent = note.content || "暂无补充说明";
+        const footer = document.createElement("footer");
+        footer.textContent = [note.updatedBy || note.createdBy, summaryDate(note.updatedAt || note.createdAt)].filter(Boolean).join(" · ");
+        body.append(cardTitle, content);
+        if (footer.textContent) body.appendChild(footer);
+        card.append(number, body);
+        group.appendChild(card);
+      });
+      summaryList.appendChild(group);
+    });
+  }
+
+  function closeSummary() {
+    summary.classList.remove("active");
+    summaryButton.classList.remove("active");
+  }
+
+  async function openSummary() {
+    if (drawer.classList.contains("active")) {
+      closeDrawer();
+      if (drawer.classList.contains("active")) return;
+    }
+    summary.classList.add("active");
+    summaryButton.classList.add("active");
+    summaryList.replaceChildren();
+    const loading = document.createElement("p");
+    loading.className = "ui-note-summary-state";
+    loading.textContent = "正在归集全部批注…";
+    summaryList.appendChild(loading);
+    syncOverlayBounds();
+    try {
+      summaryNotes = await fetchAllNotes();
+      renderSummary();
+    } catch (error) {
+      summaryList.replaceChildren();
+      const failed = document.createElement("p");
+      failed.className = "ui-note-summary-state";
+      failed.textContent = error.message || "批注汇总加载失败，请稍后重试";
+      summaryList.appendChild(failed);
+    }
+  }
+
   function openDrawer(note = null) {
+    closeSummary();
     editingNoteId = note?.noteId || "";
     editingPageId = currentPageId;
     drawerTitle.textContent = note ? "编辑批注" : "添加批注";
@@ -492,6 +709,7 @@
   }
 
   function updateToolbar() {
+    toolbar.dataset.pageId = currentPageId;
     countBadge.textContent = String(notes.length);
     toggleButton.textContent = notesVisible ? "隐藏批注" : "显示批注";
     addButton.textContent = addMode ? "取消打点" : "添加批注";
@@ -511,7 +729,7 @@
     toolHidden = nextHidden;
     addMode = false;
     notesVisible = false;
-    if (toolHidden) closeDrawer(true);
+    if (toolHidden) { closeDrawer(true); closeSummary(); }
     try { window.localStorage?.setItem(TOOL_HIDDEN_KEY, toolHidden ? "1" : "0"); } catch { /* ignore */ }
     updateToolbar();
     syncOverlayBounds();
@@ -597,6 +815,10 @@
 
   addButton.addEventListener("click", () => { const next = !addMode; if (next) notesVisible = true; setAddMode(next); });
   toggleButton.addEventListener("click", () => { notesVisible = !notesVisible; setAddMode(false); updateToolbar(); });
+  summaryButton.addEventListener("click", () => {
+    if (summary.classList.contains("active")) closeSummary();
+    else openSummary();
+  });
   collapseButton.addEventListener("click", () => setToolHidden(true));
   launcherButton.addEventListener("click", () => setToolHidden(false));
   document.addEventListener("click", (event) => {
@@ -618,13 +840,19 @@
   deleteButton.addEventListener("click", removeNote);
   cancelButton.addEventListener("click", () => closeDrawer());
   drawerClose.addEventListener("click", () => closeDrawer());
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && drawer.classList.contains("active")) closeDrawer(); });
+  summaryClose.addEventListener("click", closeSummary);
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (drawer.classList.contains("active")) closeDrawer();
+    else if (summary.classList.contains("active")) closeSummary();
+  });
 
   function syncPageContext() {
     syncOverlayBounds();
     const nextPageId = activePageId();
     if (nextPageId === currentPageId) return;
     currentPageId = nextPageId; notesVisible = false; setAddMode(false); closeDrawer(true); notes = []; renderNotes(); loadNotes();
+    if (summary.classList.contains("active")) renderSummary();
   }
 
   window.addEventListener("resize", () => {

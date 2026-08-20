@@ -531,8 +531,10 @@ body.detail-page-open #reportDetailPage .report-actions {
 }
 
 .score-card {
+  position: relative;
   min-height: 206px;
   padding: 20px 18px 18px;
+  overflow: hidden;
 }
 
 .score-card.initial {
@@ -553,8 +555,72 @@ body.detail-page-open #reportDetailPage .report-actions {
 
 .score-top {
   position: relative;
-  min-height: 0;
+  z-index: 1;
+  width: calc(100% - 116px);
+  min-height: 104px;
   padding-bottom: 16px;
+}
+
+.score-portrait-entry {
+  position: absolute;
+  z-index: 2;
+  right: 8px;
+  top: 8px;
+  width: 112px;
+  height: 118px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  color: #3671ff;
+  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.95), rgba(218, 230, 255, 0.7) 56%, transparent 76%);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.score-portrait-entry img {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: auto;
+  height: 142px;
+  object-fit: contain;
+  filter: drop-shadow(0 7px 10px rgba(54, 113, 255, 0.18));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.portrait-anomaly-summary {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  right: auto;
+  top: 68px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 21px;
+  padding: 0 7px;
+  border: 1px solid rgba(255, 77, 79, 0.2);
+  border-radius: 11px;
+  color: #ff4d4f;
+  background: rgba(255, 244, 244, 0.96);
+  box-shadow: 0 4px 10px rgba(255, 77, 79, 0.12);
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 800;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.portrait-anomaly-summary b { font-size: 11px; }
+
+.score-portrait-entry:active { transform: scale(0.98); }
+
+.score-portrait-entry:focus-visible {
+  outline: 2px solid #3671ff;
+  outline-offset: -2px;
 }
 
 .card-label {
@@ -806,6 +872,8 @@ body.detail-page-open #reportDetailPage .report-actions {
 }
 
 .ai-block {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 6px;
   padding-top: 16px;

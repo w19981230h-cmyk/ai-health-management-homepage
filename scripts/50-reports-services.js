@@ -428,6 +428,60 @@ function renderKeyResultItem(item, showHistory = true) {
   `;
 }
 
+function reportMetricHistoryRecords(report, metricName) {
+  return [...(report.metricHistory || [])]
+    .sort((left, right) => metricHistorySortTime(right) - metricHistorySortTime(left))
+    .map((record, contextIndex) => ({ ...record, contextIndex }))
+    .filter((record) => record.name === metricName);
+}
+
+function renderReportMetricHistoryRecord(record, index) {
+  const statusClass = keyResultStatusClass(record.status || "正常");
+  const isCurrent = Boolean(record.current);
+  return `
+    <article class="report-metric-history-record${isCurrent ? " is-current" : ""}${index >= 3 ? " is-extra" : ""}">
+      <i class="report-metric-history-node" aria-hidden="true"></i>
+      <div class="report-metric-history-record-head">
+        <time datetime="${record.time}">${String(record.time || "").replaceAll("-", ".")}</time>
+        ${isCurrent ? "<em>当前</em>" : ""}
+        <b class="${statusClass}">${record.status || "正常"}</b>
+      </div>
+      <strong>${record.name}</strong>
+      <p>${record.value}</p>
+      <button type="button" data-report-history-source="${record.contextIndex}"><span>来源</span>${record.source}<i aria-hidden="true"></i></button>
+    </article>`;
+}
+
+function renderReportMetricHistoryInline(report, metricName) {
+  const records = reportMetricHistoryRecords(report, metricName);
+  if (!report.isPortraitMetric || records.length <= 1) return "";
+  return `
+    <section class="report-metric-history" data-report-metric-history>
+      <button class="report-metric-history-toggle" type="button" aria-expanded="false">
+        <span><strong>历史数据节</strong><em>共 ${records.length} 次</em></span><i aria-hidden="true"></i>
+      </button>
+      <div class="report-metric-history-body" hidden>
+        <div class="report-metric-history-list">${records.map(renderReportMetricHistoryRecord).join("")}</div>
+        ${records.length > 3 ? `<button class="report-metric-history-more" type="button">展开更多（${records.length - 3}）</button>` : ""}
+      </div>
+    </section>`;
+}
+
+function renderReportDetailKeyResult(item, report) {
+  const reference = keyDataReference(item) || String(item.extra || "");
+  const statusClass = keyResultStatusClass(item.status);
+  const source = item.source || item.type || keyDataCategory(item);
+  return `
+    <section class="ai-key-result-group">
+      <article class="ai-key-result-item ai-key-result-report-card ${statusClass}">
+        <div class="ai-key-result-report-meta"><span>${source}</span><time datetime="${item.date}">报告时间：${String(item.date || "").replaceAll("-", ".")}</time></div>
+        <div class="ai-key-result-report-value"><strong>${item.name}</strong><b class="${statusClass}">${item.status}</b></div>
+        <p>${item.result}${reference ? ` <span>${reference}</span>` : ""}</p>
+      </article>
+      ${renderReportMetricHistoryInline(report, item.name)}
+    </section>`;
+}
+
 function renderMetricHistoryRecord(item, index) {
   const statusClass = keyResultStatusClass(item.status);
   return `
@@ -455,13 +509,130 @@ function renderKeyResults(report) {
   const statusPriority = { "异常": 0, "需关注": 1, "待确认": 2, "正常": 3 };
   const sortedResults = [...results].sort((left, right) => (statusPriority[left.status] ?? 4) - (statusPriority[right.status] ?? 4));
   const abnormalCount = results.filter((item) => item.status !== "正常").length;
-  const stats = `共 ${results.length} 条数据${abnormalCount ? ` · ${abnormalCount} 条异常/需关注` : ""}`;
-  document.querySelector("#aiSummary").innerHTML = sortedResults.slice(0, 3).map((item) => renderKeyResultItem(item)).join("");
+  const stats = report.isPortraitMetric
+    ? `共${results.length}条数据，${abnormalCount}项异常`
+    : `共 ${results.length} 条数据${abnormalCount ? ` · ${abnormalCount} 条异常/需关注` : ""}`;
+  document.querySelector("#aiSummary").innerHTML = sortedResults.slice(0, 3)
+    .map((item) => report.isPortraitMetric ? renderReportDetailKeyResult(item, report) : renderKeyResultItem(item))
+    .join("");
   if (aiKeyResultStats) aiKeyResultStats.textContent = stats;
   if (aiKeyResultsSheetStats) aiKeyResultsSheetStats.textContent = stats;
   if (aiKeyResultsAll) aiKeyResultsAll.innerHTML = sortedResults.map((item) => renderKeyResultItem(item)).join("");
-  if (aiKeyResultMore) aiKeyResultMore.hidden = results.length <= 3;
+  if (aiKeyResultMore) {
+    aiKeyResultMore.hidden = results.length <= 3;
+    aiKeyResultMore.textContent = report.isPortraitMetric
+      ? `展开全部数据（${Math.max(0, results.length - 3)}）`
+      : "查看全部关键数据";
+  }
 }
+
+let activeReportMetricHistoryContext = null;
+let reportSourceLoadTimer = 0;
+let activeReportDetailRecord = null;
+let reportDetailNavigationStack = [];
+
+function metricHistorySortTime(record) {
+  return parseDateTime(String(record.time || record.date || "").replaceAll(".", "-")).getTime();
+}
+
+function renderReportMetricHistory(report) {
+  const records = [...(report.metricHistory || [])].sort((left, right) => metricHistorySortTime(right) - metricHistorySortTime(left));
+  activeReportMetricHistoryContext = report.isPortraitMetric && records.length > 1 ? { report, records } : null;
+}
+
+function finishReportSourceLoading() {
+  const reportPage = document.querySelector("#reportDetailPage");
+  const loading = document.querySelector("#reportSourceLoading");
+  window.clearTimeout(reportSourceLoadTimer);
+  reportSourceLoadTimer = 0;
+  reportPage?.classList.remove("is-source-loading");
+  reportPage?.removeAttribute("aria-busy");
+  if (loading) loading.hidden = true;
+}
+
+function animateReportDetailEntry() {
+  const reportPage = document.querySelector("#reportDetailPage");
+  reportPage?.classList.remove("is-source-entering");
+  window.requestAnimationFrame(() => {
+    reportPage?.classList.add("is-source-entering");
+    window.setTimeout(() => reportPage?.classList.remove("is-source-entering"), 360);
+  });
+}
+
+function goBackReportDetailRecord() {
+  if (reportSourceLoadTimer) {
+    finishReportSourceLoading();
+    return true;
+  }
+  const previousReport = reportDetailNavigationStack.pop();
+  if (!previousReport) return false;
+  openReportDetailRecord(previousReport, { replace: true, historyBack: true });
+  animateReportDetailEntry();
+  return true;
+}
+
+function openMetricHistorySourceReport(recordIndex) {
+  if (!activeReportMetricHistoryContext) return;
+  const sourceRecord = activeReportMetricHistoryContext.records[Number(recordIndex)];
+  if (!sourceRecord) return;
+  const baseReport = activeReportMetricHistoryContext.report;
+  const normalizedTime = String(sourceRecord.time || sourceRecord.date || "2026-01-11").replaceAll(".", "-");
+  const metricHistory = activeReportMetricHistoryContext.records.map((record) => ({ ...record, current: record === sourceRecord }));
+  const sourceName = String(sourceRecord.source || baseReport.name).split(" · ")[0].replace(/[（(].*?[）)]/g, "").trim();
+  const selectedResult = {
+    category: "报告单",
+    type: baseReport.type,
+    source: sourceRecord.source,
+    name: sourceRecord.name,
+    result: sourceRecord.value,
+    status: sourceRecord.status,
+    extra: sourceRecord.reference || "",
+    date: normalizedTime.slice(0, 10)
+  };
+  const nextReport = {
+    ...baseReport,
+    id: `${baseReport.id || "portrait-report"}-${recordIndex}`,
+    name: sourceName || baseReport.name,
+    reportTime: `${normalizedTime.slice(0, 10)}T09:00`,
+    uploadTime: `${normalizedTime.slice(0, 10)}T09:10`,
+    sourceLabel: String(sourceRecord.source || "").includes("自动同步") ? "自动同步" : String(sourceRecord.source || "").includes("医院同步") ? "医院同步" : "手动上传",
+    keyResults: [selectedResult, ...(baseReport.keyResults || []).filter((item) => item.name !== sourceRecord.name)],
+    metricHistory
+  };
+  const reportPage = document.querySelector("#reportDetailPage");
+  const loading = document.querySelector("#reportSourceLoading");
+  window.clearTimeout(reportSourceLoadTimer);
+  reportPage?.setAttribute("aria-busy", "true");
+  reportPage?.classList.add("is-source-loading");
+  if (loading) loading.hidden = false;
+  reportPage?.scrollTo({ top: 0, behavior: "smooth" });
+  reportSourceLoadTimer = window.setTimeout(() => {
+    reportSourceLoadTimer = 0;
+    if (activeReportDetailRecord) reportDetailNavigationStack.push(activeReportDetailRecord);
+    openReportDetailRecord(nextReport, { replace: true });
+    finishReportSourceLoading();
+    animateReportDetailEntry();
+  }, 420);
+}
+
+document.querySelector("#aiSummary")?.addEventListener("click", (event) => {
+  const toggle = event.target.closest(".report-metric-history-toggle");
+  if (toggle) {
+    const body = toggle.nextElementSibling;
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    if (body) body.hidden = expanded;
+    return;
+  }
+  const more = event.target.closest(".report-metric-history-more");
+  if (more) {
+    more.closest("[data-report-metric-history]")?.querySelectorAll(".is-extra").forEach((record) => record.classList.remove("is-extra"));
+    more.hidden = true;
+    return;
+  }
+  const source = event.target.closest("[data-report-history-source]");
+  if (source) openMetricHistorySourceReport(source.dataset.reportHistorySource);
+});
 
 document.addEventListener("click", (event) => {
   const historyEntry = event.target.closest("[data-key-history-name]");
@@ -473,14 +644,25 @@ document.addEventListener("click", (event) => {
 function openReportDetail(reportId) {
   const report = medicalReports.find((item) => item.id === reportId) || hospitalSyncedReport(reportId);
   if (!report) return;
-  selectedReportId = reportId;
-  const isHospitalSynced = report.sourceType === "hospital";
+  openReportDetailRecord(report);
+}
+
+function openReportDetailRecord(report, options = {}) {
+  if (!report) return;
+  if (!options.replace) reportDetailNavigationStack = [];
+  activeReportDetailRecord = report;
+  selectedReportId = report.isPortraitMetric ? "" : report.id;
+  const isHospitalSynced = report.sourceType === "hospital" || report.isPortraitMetric;
+  const reportPage = document.querySelector("#reportDetailPage");
+  const reportNavTitle = document.querySelector("#reportDetailNavTitle");
   const reportEditEntry = document.querySelector("#reportDetailPage .report-edit-entry");
   const reportDeleteEntry = document.querySelector("#reportDetailPage .report-delete-icon");
   const reportSourceText = document.querySelector("#detailReportSourceText");
+  reportPage?.classList.toggle("portrait-metric-detail", Boolean(report.isPortraitMetric));
+  if (reportNavTitle) reportNavTitle.textContent = report.isPortraitMetric ? "资料详情" : "报告单详情";
   if (reportEditEntry) reportEditEntry.hidden = isHospitalSynced;
   if (reportDeleteEntry) reportDeleteEntry.hidden = isHospitalSynced;
-  if (reportSourceText) reportSourceText.textContent = isHospitalSynced ? "医院同步" : "上传保存";
+  if (reportSourceText) reportSourceText.textContent = report.sourceLabel || (report.sourceType === "hospital" ? "医院同步" : "上传保存");
   const previewClass = report.thumb === "upload-image" ? "upload-image-thumb" : thumbForType(report.type, report.thumb || "doc");
   document.querySelector("#reportPreview").innerHTML = `<i class="report-thumb ${previewClass} big"></i><span>图片预览</span>`;
   detailReportName.value = report.name;
@@ -495,13 +677,20 @@ function openReportDetail(reportId) {
   detailUploadText.textContent = formatDateTime(report.uploadTime).slice(0, 10).replaceAll("-", ".");
   const ai = aiFallback(report);
   renderKeyResults(report);
+  renderReportMetricHistory(report);
   document.querySelector("#aiConclusion").textContent = ai.conclusion;
   document.querySelector("#aiFocus").textContent = ai.focus;
   document.querySelector("#aiNotice").textContent = ai.notice;
-  const adviceItems = [ai.notice, ai.advice, ai.next].filter((item, index, items) => item && items.indexOf(item) === index);
-  document.querySelector("#aiAdvice").innerHTML = adviceItems.map((item, index) => `<li><i>${index + 1}</i><span>${item}</span></li>`).join("");
+  const adviceItems = ai.adviceItems || [ai.notice, ai.advice, ai.next].filter((item, index, items) => item && items.indexOf(item) === index);
+  document.querySelector("#aiAdvice").innerHTML = adviceItems.map((item, index) => typeof item === "string"
+    ? `<li><i>${index + 1}</i><span>${item}</span></li>`
+    : `<li><i>${index + 1}</i><span><strong>${item.title}</strong><em>${item.text}</em></span></li>`).join("");
   document.querySelector("#aiNext").textContent = ai.next;
-  openSubPage("reportDetailPage");
+  if (options.replace) {
+    document.querySelector("#reportDetailPage")?.scrollTo({ top: 0, behavior: "auto" });
+  } else {
+    openSubPage("reportDetailPage");
+  }
 }
 
 function populateReportEditForm() {

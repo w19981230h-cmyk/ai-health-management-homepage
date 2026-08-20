@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260819-portrait-history-v1">
+  <link rel="stylesheet" href="styles.css?v=20260820-hide-outer-history-v8">
 </head>
 <body>
   <main class="app-shell">
@@ -559,7 +559,9 @@
               <p class="archive-score-rank">超过了 <b>62%</b> 的同龄人</p>
               <button class="archive-detail-btn" type="button">查看结果</button>
             </div>
-            <button class="archive-doctor" type="button" data-open-page="healthPortraitPage" aria-label="查看健康画像"></button>
+            <button class="archive-doctor" type="button" data-open-page="healthPortraitPage" aria-label="查看健康画像，7项指标需要关注">
+              <span class="archive-attention-badge" aria-hidden="true"><i></i><strong id="archiveAttentionCount">7项需要关注</strong></span>
+            </button>
           </section>
           <section class="archive-assistant-card" aria-label="医护助理">
             <div class="assistant-bot" aria-hidden="true"></div>
@@ -1209,7 +1211,12 @@
       </section>
 
       <section class="sub-page report-detail" id="reportDetailPage" aria-label="报告详情">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>报告单详情</h1><button class="report-delete-icon" type="button" aria-label="删除"></button></header>
+        <header class="sub-nav"><button class="back-page" type="button"></button><h1 id="reportDetailNavTitle">报告单详情</h1><button class="report-delete-icon" type="button" aria-label="删除"></button><button class="report-detail-capsule" type="button" aria-label="小程序菜单"><span></span><i></i></button></header>
+        <section class="report-source-loading" id="reportSourceLoading" aria-live="polite" hidden>
+          <p><i aria-hidden="true"></i><strong>正在加载报告数据</strong></p>
+          <div class="report-source-skeleton report-source-skeleton-info" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="report-source-skeleton report-source-skeleton-analysis" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
         <section class="report-info-section">
           <button class="report-edit-entry" type="button" data-open-page="reportEditPage">编辑</button>
           <div class="report-preview" id="reportPreview"><i class="report-thumb doc big"></i><span>图片预览</span></div>
@@ -1231,19 +1238,18 @@
         <section class="ai-interpretation" id="aiInterpretation">
           <div class="ai-result-card">
             <h3>AI智能解读</h3>
-            <article class="ai-conclusion"><strong>结果</strong><div class="ai-conclusion-panel"><p id="aiConclusion"></p></div></article>
+            <article class="ai-conclusion"><strong>结论：</strong><div class="ai-conclusion-panel"><p id="aiConclusion"></p></div></article>
             <article class="ai-key-results">
-              <div class="ai-article-heading"><strong>关键数据</strong><span id="aiKeyResultStats"></span></div>
+              <div class="ai-article-heading"><strong>关键指标：</strong><span id="aiKeyResultStats"></span></div>
               <div id="aiSummary" class="ai-key-result-list"></div>
               <button class="ai-key-result-more" id="aiKeyResultMore" type="button" aria-haspopup="dialog" aria-controls="aiKeyResultsSheet">查看全部关键数据</button>
             </article>
-            <article class="ai-analysis-section"><strong>智能分析</strong><div class="ai-analysis-panel"><p id="aiFocus"></p></div></article>
-            <article class="ai-advice-section"><strong>健康建议</strong><ol class="ai-advice-list" id="aiAdvice"></ol></article>
+            <article class="ai-analysis-section"><strong>智能分析：</strong><div class="ai-analysis-panel"><p id="aiFocus"></p></div></article>
+            <article class="ai-advice-section"><strong>健康建议：</strong><ol class="ai-advice-list" id="aiAdvice"></ol></article>
             <p class="ai-generated-note">内容由AI生成，仅供参考</p>
           </div>
           <p id="aiNotice" hidden></p><p id="aiNext" hidden></p>
         </section>
-        <footer class="report-actions"><button class="primary" id="shareReport" type="button">重新解读</button></footer>
       </section>
 
       <section class="sub-page report-edit-page" id="reportEditPage" aria-label="编辑报告单">
@@ -2464,6 +2470,7 @@
   <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面批注工具">
     <button id="uiNoteAdd" type="button">添加批注</button>
     <button id="uiNoteToggle" type="button">显示批注</button>
+    <button id="uiNoteSummaryButton" type="button">批注汇总</button>
     <em id="uiNoteCount" title="当前界面批注数量">0</em>
     <button class="ui-note-collapse" id="uiNoteCollapse" type="button" aria-label="收起整个界面批注工具" title="收起整个批注工具">×</button>
   </aside>
@@ -2502,16 +2509,27 @@
       </footer>
     </form>
   </aside>
+  <aside class="ui-note-summary" id="uiNoteSummary" role="complementary" aria-labelledby="uiNoteSummaryHeading" data-ui-note-ui>
+    <header class="ui-note-summary-header">
+      <div><span>全部界面</span><h2 id="uiNoteSummaryHeading">批注汇总</h2></div>
+      <button id="uiNoteSummaryClose" type="button" aria-label="关闭批注汇总"></button>
+    </header>
+    <div class="ui-note-summary-meta">
+      <span><strong id="uiNoteSummaryCount">0</strong> 条批注</span>
+      <span id="uiNoteSummaryPageCount">0 个界面</span>
+    </div>
+    <div class="ui-note-summary-list" id="uiNoteSummaryList" aria-live="polite"></div>
+  </aside>
 
-  <script src="scripts/00-dom-state.js?v=20260810-refund-closed-loop-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260820-home-anomaly-markers-v3"></script>
   <script src="scripts/01-data-store.js?v=20260817-portrait-overall-analysis-v3"></script>
-  <script src="scripts/10-schedule.js?v=20260807-checkin-catalog-v1"></script>
+  <script src="scripts/10-schedule.js?v=20260820-attention-label-abdomen-v5"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260819-metric-history-v2"></script>
+  <script src="scripts/50-reports-services.js?v=20260820-report-navigation-stack-v7"></script>
   <script src="scripts/60-metrics.js?v=20260817-portrait-overall-analysis-v3"></script>
-  <script src="scripts/70-events-init.js?v=20260819-portrait-history-v1"></script>
-  <script src="scripts/80-ui-notes.js?v=20260817-stable-drag-point-v8"></script>
+  <script src="scripts/70-events-init.js?v=20260820-hide-outer-history-v8"></script>
+  <script src="scripts/80-ui-notes.js?v=20260820-note-summary-v11"></script>
 </body>
 </html>

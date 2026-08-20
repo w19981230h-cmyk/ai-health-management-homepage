@@ -48,6 +48,10 @@
     return;
   }
   if (event.target.closest(".back-page")) {
+    if (document.querySelector("#reportDetailPage")?.classList.contains("active") && goBackReportDetailRecord()) {
+      event.preventDefault();
+      return;
+    }
     if (metricDetailPage?.classList.contains("active") && selectedFocusMetric === "uric" && uricDetailMode === "record") {
       event.preventDefault();
       uricDetailMode = "list";
@@ -385,11 +389,11 @@ function renderPortraitReportSection(profile, sectionId) {
   }
   if (dataList) {
     dataList.innerHTML = section.cards.map((card, cardIndex) => `
-      <article class="portrait-report-data-card" data-portrait-report-card-name="${card.name}">
+      <article class="portrait-report-data-card" role="button" tabindex="0" data-portrait-report-card-name="${card.name}" data-portrait-metric-section="${sectionId}" data-portrait-metric-index="${cardIndex}" aria-label="查看${card.name}资料详情">
         ${card.source || card.date || card.metaAction ? `<div class="portrait-report-meta">${card.source ? `<span>${card.source}</span>` : ""}${card.metaAction ? `<span class="portrait-report-meta-action">${card.metaAction}</span>` : card.date ? `<span>${card.timeLabel || "报告时间"}：${card.date}</span>` : ""}</div>` : ""}
-        <div class="portrait-report-data-main${card.media || card.history?.length > 1 ? "" : " no-media"}">
+        <div class="portrait-report-data-main${card.media ? "" : " no-media"}">
           <div><strong>${card.name}${card.status ? `<em class="${card.status === "正常" || card.status === "稳定" || card.status === "改善" ? "is-normal" : ""}">${card.status}</em>` : ""}</strong><p>${card.value}${card.reference ? ` <span>（${card.reference}）</span>` : ""}</p>${card.detailAction ? `<span class="portrait-report-detail-action">${card.detailAction} ›</span>` : ""}</div>
-          ${card.media || card.history?.length > 1 ? `<div class="portrait-report-card-actions">${card.media ? `<button class="${card.media === "document" ? "portrait-report-doc" : "portrait-report-thumb"}" type="button" aria-label="预览${card.name}原始报告"></button>` : ""}${card.history?.length > 1 ? `<button class="portrait-report-history-entry" type="button" data-portrait-history-section="${sectionId}" data-portrait-history-index="${cardIndex}" aria-label="查看${card.name}历次数据">历次 ${card.history.length}次<i aria-hidden="true"></i></button>` : ""}</div>` : ""}
+          ${card.media ? `<div class="portrait-report-card-actions"><button class="${card.media === "document" ? "portrait-report-doc" : "portrait-report-thumb"}" type="button" aria-label="预览${card.name}原始报告"></button></div>` : ""}
         </div>
       </article>`).join("");
   }
@@ -481,10 +485,73 @@ function openPortraitMetricHistory(sectionId, cardIndex) {
   window.setTimeout(() => document.querySelector("#portraitMetricHistoryClose")?.focus(), 0);
 }
 
+function openPortraitMetricReport(sectionId, cardIndex) {
+  const profile = portraitReportProfiles[activePortraitReportProfile];
+  const section = profile?.sections?.[sectionId];
+  const card = section?.cards?.[Number(cardIndex)];
+  if (!section || !card) return;
+  const normalizedDate = String(card.date || "2026.01.11").replaceAll(".", "-");
+  const keyResults = [card, ...section.cards.filter((item) => item !== card)].map((item) => ({
+    category: "报告单",
+    type: /CT|超声|心电图|检查/.test(item.source || "") ? "检查报告" : "健康数据",
+    source: item.source || "健康数据（自动同步）",
+    name: item.name,
+    result: item.value,
+    status: item.status || "正常",
+    extra: String(item.reference || "").replace(/^参考[：:]/, "参考范围："),
+    date: String(item.date || card.date || "2026.01.11").replaceAll(".", "-")
+  }));
+  const reportName = String(card.source || `${card.name}资料`).replace(/[（(].*?[）)]/g, "").trim();
+  const adviceItems = section.advice.map((item) => ({ title: item.title, text: item.text }));
+  const historySource = card.history?.length ? card.history : [{ date: card.date, value: card.value, status: card.status, source: card.source }];
+  let metricHistory = historySource.map((record) => ({
+    time: String(record.date || card.date || "2026.01.11").replaceAll(".", "-"),
+    name: card.name,
+    value: record.value,
+    status: record.status || card.status || "正常",
+    source: record.source || card.source || "健康数据",
+    reference: String(card.reference || "").replace(/^参考[：:]/, "参考范围："),
+    current: String(record.date || "").replaceAll(".", "-") === normalizedDate && record.value === card.value
+  }));
+  if (!metricHistory.some((record) => record.current) && metricHistory[0]) metricHistory[0].current = true;
+  openReportDetailRecord({
+    id: `portrait-${sectionId}-${cardIndex}`,
+    isPortraitMetric: true,
+    name: reportName,
+    type: /CT|超声|心电图|检查/.test(card.source || "") ? "检查报告" : "健康数据",
+    org: "南宁市第一人民医院",
+    reportTime: `${normalizedDate}T09:00`,
+    uploadTime: `${normalizedDate}T09:10`,
+    sourceType: (card.source || "").includes("医院同步") ? "hospital" : "manual",
+    sourceLabel: (card.source || "").includes("自动同步") ? "自动同步" : (card.source || "").includes("医院同步") ? "医院同步" : "手动上传",
+    thumb: card.media === "report" ? "ct" : "doc",
+    keyResults,
+    metricHistory,
+    ai: {
+      conclusion: section.summary,
+      focus: section.summary,
+      notice: adviceItems[0]?.text || "继续保持当前健康管理节奏。",
+      advice: adviceItems[1]?.text || "按计划完成健康复查。",
+      next: "如出现不适或指标异常，请及时咨询医生。",
+      adviceItems
+    }
+  });
+}
+
 document.querySelector("#portraitReportDataList")?.addEventListener("click", (event) => {
-  const historyEntry = event.target.closest("[data-portrait-history-section]");
-  if (!historyEntry) return;
-  openPortraitMetricHistory(historyEntry.dataset.portraitHistorySection, historyEntry.dataset.portraitHistoryIndex);
+  const metricCard = event.target.closest("[data-portrait-metric-section]");
+  if (!metricCard) return;
+  if (event.target.closest(".portrait-report-card-actions") && !event.target.closest(".portrait-report-thumb, .portrait-report-doc")) return;
+  openPortraitMetricReport(metricCard.dataset.portraitMetricSection, metricCard.dataset.portraitMetricIndex);
+});
+
+document.querySelector("#portraitReportDataList")?.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  if (event.target.closest("button")) return;
+  const metricCard = event.target.closest("[data-portrait-metric-section]");
+  if (!metricCard) return;
+  event.preventDefault();
+  openPortraitMetricReport(metricCard.dataset.portraitMetricSection, metricCard.dataset.portraitMetricIndex);
 });
 
 document.querySelector("#portraitMetricHistoryClose")?.addEventListener("click", closePortraitMetricHistory);
@@ -540,7 +607,8 @@ const portraitPatientAssets = {
     archiveImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
     portraitImage: "assets/health-portrait-female.png?v=20260707-female-portrait",
     anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
-    portraitAlt: "张女士健康画像"
+    portraitAlt: "张女士健康画像",
+    attentionCount: 7
   },
   zhang: {
     name: "张患者",
@@ -548,7 +616,8 @@ const portraitPatientAssets = {
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
     anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
-    portraitAlt: "张患者健康画像"
+    portraitAlt: "张患者健康画像",
+    attentionCount: 4
   },
   portraitZhangChao: {
     name: "张*超",
@@ -556,7 +625,8 @@ const portraitPatientAssets = {
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
     anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
-    portraitAlt: "张*超健康画像"
+    portraitAlt: "张*超健康画像",
+    attentionCount: 4
   },
   portraitLiQiang: {
     name: "李*强",
@@ -564,7 +634,8 @@ const portraitPatientAssets = {
     archiveImage: "assets/archive-patient-portrait.png?v=20260706-portrait-assets",
     portraitImage: "assets/health-portrait-fullbody.png?v=20260706-portrait-assets",
     anatomyImage: "assets/health-portrait-body-20260727.png?v=20260727-body-image-v2",
-    portraitAlt: "李*强健康画像"
+    portraitAlt: "李*强健康画像",
+    attentionCount: 3
   }
 };
 
@@ -576,11 +647,16 @@ function updatePatientPortraitAssets() {
   const portraitProfileName = document.querySelector(".portrait-profile-main strong");
   const portraitProfileMeta = document.querySelector(".portrait-profile-meta");
   const portraitProfileAvatar = document.querySelector(".portrait-profile-avatar");
+  const archiveAttentionCount = document.querySelector("#archiveAttentionCount");
   const portraitFemaleAnomaly = Boolean(portraitPatientAnomalies[currentPatient.id]);
 
   if (archiveDoctor) {
     archiveDoctor.classList.toggle("female", portraitFemaleAnomaly);
     archiveDoctor.style.backgroundImage = `url("${asset.archiveImage}")`;
+    const attentionCount = Number(asset.attentionCount ?? Object.keys(portraitPatientAnomalies[currentPatient.id] || {}).length);
+    archiveDoctor.classList.toggle("no-attention", attentionCount === 0);
+    archiveDoctor.setAttribute("aria-label", attentionCount > 0 ? `查看健康画像，${attentionCount}项指标需要关注` : "查看健康画像，当前暂无需关注指标");
+    if (archiveAttentionCount) archiveAttentionCount.textContent = attentionCount > 0 ? `${attentionCount}项需要关注` : "暂无需关注";
   }
   if (portraitFullBody) {
     portraitFullBody.src = asset.portraitImage;

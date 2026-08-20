@@ -28,6 +28,12 @@ function renderMainCard(stateKey) {
           <span class="score-status ${state.statusClass}">${state.status}</span>
         </div>
       </div>
+      <button class="score-portrait-entry ${state.abnormalCount ? "has-anomaly" : ""}" type="button" data-open-page="healthPortraitPage" aria-label="${state.abnormalCount ? `存在${state.abnormalCount}项需要关注的指标，进入健康画像` : "进入健康画像"}">
+        <img src="assets/health-portrait-fullbody.png?v=20260820-home-portrait-v2" alt="" aria-hidden="true">
+        ${state.abnormalCount ? `
+          <span class="portrait-anomaly-summary"><b>${state.abnormalCount}</b>项需要关注</span>
+        ` : ""}
+      </button>
       <div class="ai-block">
         <strong>AI建议</strong>
         <p>${state.advice}</p>

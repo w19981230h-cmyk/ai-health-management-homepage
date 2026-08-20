@@ -2765,6 +2765,59 @@
   background-size: auto 230px;
 }
 
+.archive-attention-badge {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  right: auto;
+  top: 108px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 77, 79, 0.14);
+  border-radius: 15px;
+  color: #d93c42;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 5px 14px rgba(38, 67, 132, 0.12);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.archive-attention-badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff4d4f;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.1);
+}
+
+.archive-attention-badge strong {
+  color: inherit;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.archive-doctor.no-attention .archive-attention-badge {
+  border-color: rgba(22, 183, 119, 0.14);
+  color: #159966;
+}
+
+.archive-doctor.no-attention .archive-attention-badge i {
+  background: #16b777;
+  box-shadow: 0 0 0 3px rgba(22, 183, 119, 0.1);
+}
+
+.archive-doctor:focus-visible {
+  outline: 2px solid #3671ff;
+  outline-offset: -3px;
+  border-radius: 14px;
+}
+
 .health-portrait-page .portrait-full-body.female {
   height: min(620px, calc(100vh - 176px));
   object-position: center top;
@@ -5982,6 +6035,12 @@
   border-radius: 0;
   background: #f8fbff;
   box-shadow: none;
+  cursor: pointer;
+}
+
+.portrait-report-data-card:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.65);
+  outline-offset: -2px;
 }
 
 .portrait-report-data-card + .portrait-report-data-card {
@@ -6225,6 +6284,12 @@
   border-radius: 13px;
   background: #f7f9fd;
   box-shadow: 0 4px 12px rgba(60, 82, 128, 0.035);
+  cursor: pointer;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-card:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.65);
+  outline-offset: 2px;
 }
 
 .portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-card + .portrait-report-data-card {
@@ -6312,36 +6377,11 @@
   width: 58px;
 }
 
-.portrait-report-history-entry {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-width: 56px;
-  min-height: 24px;
-  padding: 0 4px;
-  border-radius: 6px;
-  color: #3671ff;
-  background: rgba(54, 113, 255, 0.07);
-  font-size: 10px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
 .portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-card-actions .portrait-report-thumb {
   width: 42px;
   height: 48px;
 }
 
-.portrait-report-history-entry i {
-  width: 5px;
-  height: 5px;
-  border-top: 1px solid currentColor;
-  border-right: 1px solid currentColor;
-  transform: rotate(45deg);
-}
-
-.portrait-report-history-entry:focus-visible,
 .portrait-metric-history-close:focus-visible {
   outline: 2px solid #3671ff;
   outline-offset: 2px;

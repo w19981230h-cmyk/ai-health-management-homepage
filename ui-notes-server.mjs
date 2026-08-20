@@ -145,6 +145,9 @@ export function createUiNotesApi(root) {
   const selectNotes = database.prepare(
     "SELECT * FROM ui_notes WHERE project_id = ? AND page_id = ? AND status = 'active' ORDER BY note_number ASC"
   );
+  const selectProjectNotes = database.prepare(
+    "SELECT * FROM ui_notes WHERE project_id = ? AND status = 'active' ORDER BY page_id ASC, note_number ASC"
+  );
   const selectAllActiveNotes = database.prepare(
     "SELECT * FROM ui_notes WHERE status = 'active' ORDER BY project_id, page_id, note_number ASC"
   );
@@ -226,7 +229,10 @@ export function createUiNotesApi(root) {
       if (req.method === "GET" && url.pathname === "/api/ui-notes") {
         const projectId = String(url.searchParams.get("projectId") || "").trim();
         const pageId = String(url.searchParams.get("pageId") || "").trim();
-        if (!projectId || !pageId) return sendJson(res, 400, { error: "缺少项目ID或页面ID" });
+        const allPages = url.searchParams.get("scope") === "all";
+        if (!projectId) return sendJson(res, 400, { error: "缺少项目ID" });
+        if (allPages) return sendJson(res, 200, { notes: selectProjectNotes.all(projectId).map(noteRecord) });
+        if (!pageId) return sendJson(res, 400, { error: "缺少页面ID" });
         return sendJson(res, 200, { notes: selectNotes.all(projectId, pageId).map(noteRecord) });
       }
 
