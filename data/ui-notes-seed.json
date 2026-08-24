@@ -1,6 +1,6 @@
 {
   "formatVersion": 2,
-  "exportedAt": "2026-08-20T09:07:23.828Z",
+  "exportedAt": "2026-08-24T02:11:37.682Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -209,6 +209,203 @@
         "featureName": "全部服务",
         "confidence": "中",
         "basis": "主要依据：标题“全部服务”；界面核对：健康服务",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "116cf0ae-a28d-4c20-b0af-763e1e82e8b7",
+      "projectId": "ai-health-management",
+      "pageId": "home",
+      "noteNumber": 3,
+      "title": "健康画像查看",
+      "content": "1、若患者健康画像存在异常数据，这里和我的页面一样，支持展示\n2、文案“您有x项待关注指标”\n3、点击画像后直接进入健康画像界面",
+      "x": 0.6653333333333333,
+      "y": 0.14586466165413534,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:22:27.850Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:22:47.029Z",
+      "status": "active",
+      "targetKey": "button.score-portrait-entry.has-anomaly",
+      "targetSnapshot": {
+        "targetKey": "button.score-portrait-entry.has-anomaly",
+        "label": "存在7项需要关注的指标，进入健康画像",
+        "role": "按钮",
+        "section": "健康服务",
+        "pageId": "home",
+        "interfaceManifest": {
+          "pageId": "home",
+          "route": "/",
+          "pageLabel": "健康服务",
+          "headings": [
+            "健康服务",
+            "90天减重管理服务包",
+            "90天控糖管理服务包",
+            "90天控压管理服务包",
+            "90天营养管理服务包",
+            "90天综合健康管理包",
+            "体重打卡",
+            "体重 *",
+            "体脂率",
+            "记录时间 *",
+            "备注",
+            "腰围打卡"
+          ],
+          "controls": [
+            {
+              "key": "a.brand-mark",
+              "label": "春晓健康首页",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "张女士 管理中",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "李先生 风险提醒",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-chip",
+              "label": "小宝 待完善",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.member-add",
+              "label": "添加就诊人",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.mini-program-capsule",
+              "label": "小程序菜单",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.score-portrait-entry.has-anomaly",
+              "label": "存在7项需要关注的指标，进入健康画像",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "a.detail-link",
+              "label": "查看档案信息",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "健康咨询",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "报告解读",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "春晓商城",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.feature-item",
+              "label": "全部功能",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#homeServiceViewAll",
+              "label": "查看全部 〉",
+              "role": "链接",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天减重管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天控糖管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天控压管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天营养管理服务包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "article.package-card.home-package-card",
+              "label": "查看90天综合健康管理包详情",
+              "role": "button",
+              "disabled": false
+            },
+            {
+              "key": "button.weight-sheet-close",
+              "label": "关闭",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#weightValueInput",
+              "label": "请输入",
+              "role": "输入框",
+              "disabled": false
+            },
+            {
+              "key": "#weightFatInput",
+              "label": "请输入",
+              "role": "输入框",
+              "disabled": false
+            },
+            {
+              "key": "#weightTimeTrigger",
+              "label": "2025-05-19 15:50",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#weightNoteInput",
+              "label": "例如：晨起空腹、饭后、运动后等",
+              "role": "多行输入",
+              "disabled": false
+            },
+            {
+              "key": "#weightPhotoButton",
+              "label": "拍照识别",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:22:47.025Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "健康画像查看",
+        "confidence": "中",
+        "basis": "主要依据：标题“健康画像查看”；界面核对：健康服务 / 存在7项需要关注的指标，进入健康画像 / 健康服务",
         "states": "初始、处理中、成功、失败"
       },
       "generatedRules": {},
@@ -733,6 +930,235 @@
       "ruleGeneratedAt": ""
     },
     {
+      "noteId": "1f0d4f3b-750c-40a6-9269-d7673e59b233",
+      "projectId": "ai-health-management",
+      "pageId": "sub:healthPortraitPage:popup:portraitOverallSheet",
+      "noteNumber": 1,
+      "title": "综合评价",
+      "content": "1、综合健康：指的是根据患者的情况，进行整体的分析和评估，这里数据范围是“全部数据”\n2、综合健康主要由五个部分构成\n1. AI综合健康分析\n综合所有一级分类及有效健康数据，对当前整体健康情况进行总结。\n2. 优先关注\n展示当前需要近期重点处理、复查或监测的健康事项。\n例如：\n- 血压控制\n- 血糖异常\n- 异常检查结果\n3. 日常关注\n展示需要长期持续管理，但当前不属于紧急处理的问题。\n例如：\n- 体重管理\n- 血脂管理\n- 睡眠管理\n- 长期血压监测\n4. 积极情况\n展示明确存在改善或持续达标的健康情况。\n例如：\n1. 体重较前下降\n2. 原异常指标恢复正常\n3. 指标持续处于管理目标范围\n5. 健康建议\n结合当前优先关注、日常关注及积极情况，给出用户下一步可以执行的健康建议。\n\n展示规则\n人体整体：\n- 优先关注：最多3项（放入总结里面一起说明）\n- 日常关注：最多3项（放入总结里面一起说明）\n- 积极情况：最多2项（放入总结里面一起说明）\n- 健康建议：最多3～5条",
+      "x": 0.7364672364672364,
+      "y": 0.17481203007518797,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:27:51.856Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:28:02.237Z",
+      "status": "active",
+      "targetKey": "section.portrait-overall-block.priority",
+      "targetSnapshot": {
+        "targetKey": "section.portrait-overall-block.priority",
+        "label": "02优先关注2项 1血压控制需要加强关注近期多次血压记录偏高，且较前有所升高。近7天平均血压 148/92 mmHg。 2血脂情况需要加强关注近期血脂检查仍存在",
+        "role": "内容区域",
+        "section": "优先关注",
+        "pageId": "sub:healthPortraitPage:popup:portraitOverallSheet",
+        "interfaceManifest": {
+          "pageId": "sub:healthPortraitPage:popup:portraitOverallSheet",
+          "route": "/",
+          "pageLabel": "张*士的AI综合健康分析",
+          "headings": [
+            "张*士的AI综合健康分析",
+            "综合分析",
+            "优先关注",
+            "日常关注",
+            "积极情况",
+            "健康建议"
+          ],
+          "controls": [
+            {
+              "key": "#portraitOverallClose",
+              "label": "关闭健康综合总结",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:27:51.855Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "综合评价",
+        "confidence": "中",
+        "basis": "主要依据：标题“综合评价”；界面核对：优先关注 / 02优先关注2项 1血压控制需要加强关注近期多次血压记录偏高，且较前有所升高。近7天平均血压 148/92 mmHg。 2血脂情况需要加强关注近期血脂检查仍存在 / 张*士的AI综合健康分析",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "769e3464-2ce4-4993-a1c6-8d159121e634",
+      "projectId": "ai-health-management",
+      "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+      "noteNumber": 1,
+      "title": "一级分类总结",
+      "content": "1、这里主要是对1级分类的数据进行总结，数据范围“一级分类对应的健康数据”\n2、一级分类总结也是由五个区域构成\n心脏与血管健康\n展示：\n- AI专项健康分析\n- 优先关注\n- 日常关注\n- 积极情况\n- 专项健康建议\n- 所属二级健康分类入口\n一级总结只分析当前一级分类下的数据，不引用其他一级分类的数据。\n3、\n- 优先关注：最多2项\n- 日常关注：最多3项\n- 积极情况：最多2项\n- 健康建议：最多3～5条",
+      "x": 0.8581661891117478,
+      "y": 0.17117903930131004,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:31:00.881Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:31:02.545Z",
+      "status": "active",
+      "targetKey": "section.portrait-overall-analysis.portrait-category-analysis",
+      "targetSnapshot": {
+        "targetKey": "section.portrait-overall-analysis.portrait-category-analysis",
+        "label": "01综合分析 近期心脏与血管相关数据主要显示，血压控制需要优先关注，血脂仍需持续管理。近7天血压多次处于偏高状态，并较前有所升高；LDL-C仍存在异常。与此同时",
+        "role": "内容区域",
+        "section": "综合分析",
+        "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+        "interfaceManifest": {
+          "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+          "route": "/",
+          "pageLabel": "综合分析",
+          "headings": [
+            "综合分析",
+            "优先关注",
+            "日常关注",
+            "积极情况",
+            "健康建议"
+          ],
+          "controls": [
+            {
+              "key": "button",
+              "label": "综合",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "心血管健康",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "血压",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "血脂",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看血压控制需要加强关注详情",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看血脂需要持续管理详情",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看心血管健康行为仍需持续管理详情",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:31:00.879Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "一级分类总结",
+        "confidence": "中",
+        "basis": "主要依据：标题“一级分类总结”；界面核对：综合分析 / 01综合分析 近期心脏与血管相关数据主要显示，血压控制需要优先关注，血脂仍需持续管理。近7天血压多次处于偏高状态，并较前有所升高；LDL-C仍存在异常。与此同时 / 综合分析",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "9c352372-f010-47df-9e85-3838ab708449",
+      "projectId": "ai-health-management",
+      "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+      "noteNumber": 2,
+      "title": "查看详情",
+      "content": "1、支持点击后查看详情，直接定位到二级分类进行查看",
+      "x": 0.8638968481375359,
+      "y": 0.308296943231441,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:31:45.514Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:31:45.514Z",
+      "status": "active",
+      "targetKey": "article",
+      "targetSnapshot": {
+        "targetKey": "article",
+        "label": "1血压控制需要加强关注近期多次血压记录偏高，且较此前记录呈升高变化，建议近期加强监测。近7天平均血压 148/92 mmHg。 查看详情",
+        "role": "内容区域",
+        "section": "综合分析",
+        "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+        "interfaceManifest": {
+          "pageId": "sub:healthPortraitPage:popup:portraitReportSheet",
+          "route": "/",
+          "pageLabel": "综合分析",
+          "headings": [
+            "综合分析",
+            "优先关注",
+            "日常关注",
+            "积极情况",
+            "健康建议"
+          ],
+          "controls": [
+            {
+              "key": "button",
+              "label": "综合",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "心血管健康",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "血压",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "血脂",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看血压控制需要加强关注详情",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看血脂需要持续管理详情",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.portrait-category-detail-link",
+              "label": "查看心血管健康行为仍需持续管理详情",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:31:45.511Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "查看详情",
+        "confidence": "中",
+        "basis": "主要依据：标题“查看详情”；界面核对：综合分析 / 1血压控制需要加强关注近期多次血压记录偏高，且较此前记录呈升高变化，建议近期加强监测。近7天平均血压 148/92 mmHg。 查看详情 / 综合分析",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
       "noteId": "481c6a96-0aef-4ae5-af30-c965d491c648",
       "projectId": "ai-health-management",
       "pageId": "sub:refundApplicationPage",
@@ -929,6 +1355,178 @@
       "targetKey": "",
       "targetSnapshot": {},
       "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "77aae8d9-4ff4-4f99-88b0-b9cbfc1646a1",
+      "projectId": "ai-health-management",
+      "pageId": "sub:reportDetailPage",
+      "noteNumber": 1,
+      "title": "历史指标数据查看",
+      "content": "1、若用户同一个指标，支持对历史指标数据查看\n2、默认显示当前报告这条指标数据\n3、存在历史才需要显示历史数据，支持下拉，展开更多（支持折叠），没有历史数据则不需要展示",
+      "x": 0.668,
+      "y": 0.3118279569892473,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:38:21.374Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:38:36.095Z",
+      "status": "active",
+      "targetKey": "article.ai-key-result-item.ai-key-result-report-card",
+      "targetSnapshot": {
+        "targetKey": "article.ai-key-result-item.ai-key-result-report-card",
+        "label": "健康监测（自动同步）报告时间：2026.01.11 血压正常 118/76 mmHg 参考范围：90–139/60–89 mmHg",
+        "role": "内容区域",
+        "section": "资料详情",
+        "pageId": "sub:reportDetailPage",
+        "interfaceManifest": {
+          "pageId": "sub:reportDetailPage",
+          "route": "/",
+          "pageLabel": "资料详情",
+          "headings": [
+            "资料详情",
+            "健康监测",
+            "AI智能解读"
+          ],
+          "controls": [
+            {
+              "key": "button.back-page",
+              "label": "未命名控件",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-detail-capsule",
+              "label": "小程序菜单",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-metric-history-toggle",
+              "label": "历史数据节共 3 次",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-metric-history-toggle",
+              "label": "历史数据节共 3 次",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:38:21.373Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "历史指标数据查看",
+        "confidence": "中",
+        "basis": "主要依据：标题“历史指标数据查看”；界面核对：资料详情 / 健康监测（自动同步）报告时间：2026.01.11 血压正常 118/76 mmHg 参考范围：90–139/60–89 mmHg / 资料详情",
+        "states": "初始、处理中、成功、失败"
+      },
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "be95fe8b-ac5d-49e7-869d-744ff095dab1",
+      "projectId": "ai-health-management",
+      "pageId": "sub:reportDetailPage",
+      "noteNumber": 2,
+      "title": "历史指标数据查看",
+      "content": "1、点击具体指标后支持跳转到另一份报告详情页界面直接进行查看，并且定位展示",
+      "x": 0.58,
+      "y": 0.37032258064516127,
+      "createdBy": "在线访客",
+      "createdAt": "2026-08-20T09:39:44.616Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-08-20T09:39:44.616Z",
+      "status": "active",
+      "targetKey": "article.report-metric-history-record.is-current",
+      "targetSnapshot": {
+        "targetKey": "article.report-metric-history-record.is-current",
+        "label": "2026.01.11 当前 正常 血压 118/76 mmHg 来源健康监测 · 自动同步",
+        "role": "内容区域",
+        "section": "资料详情",
+        "pageId": "sub:reportDetailPage",
+        "interfaceManifest": {
+          "pageId": "sub:reportDetailPage",
+          "route": "/",
+          "pageLabel": "资料详情",
+          "headings": [
+            "资料详情",
+            "健康监测",
+            "AI智能解读"
+          ],
+          "controls": [
+            {
+              "key": "button.back-page",
+              "label": "未命名控件",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-detail-capsule",
+              "label": "小程序菜单",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-metric-history-toggle",
+              "label": "历史数据节共 3 次",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "来源健康监测 · 自动同步",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.report-metric-history-toggle",
+              "label": "历史数据节共 3 次",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-08-20T09:39:44.616Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "历史指标数据查看",
+        "confidence": "中",
+        "basis": "主要依据：标题“历史指标数据查看”；界面核对：资料详情 / 2026.01.11 当前 正常 血压 118/76 mmHg 来源健康监测 · 自动同步 / 资料详情",
+        "states": "初始、处理中、成功、失败"
+      },
       "generatedRules": {},
       "ruleGeneratedAt": ""
     }

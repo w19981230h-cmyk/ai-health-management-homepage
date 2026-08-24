@@ -285,6 +285,19 @@
     layer.hidden = toolHidden || !notesVisible;
   }
 
+  function annotationSurfaceHeight() {
+    return Math.max(1, Number.parseFloat(layer.style.height) || layer.offsetHeight || noteSurface?.scrollHeight || 1);
+  }
+
+  function prepareStablePointPosition(note) {
+    if (Number.isFinite(note?._pixelY)) return;
+    const snapshot = safeJson(note?.targetSnapshot, {}) || {};
+    const savedBasisHeight = Number(snapshot.annotationSurfaceHeight);
+    const basisHeight = savedBasisHeight > 0 ? savedBasisHeight : annotationSurfaceHeight();
+    note._positionBasisHeight = basisHeight;
+    note._pixelY = Math.max(0, Math.min(basisHeight, Number(note.y) * basisHeight));
+  }
+
   async function apiRequest(url, options = {}) {
     if (localMode) return localNoteRequest(url, options);
     const response = await fetch(url, { headers: { "Content-Type": "application/json", ...(options.headers || {}) }, ...options });
@@ -611,6 +624,7 @@
 
   function openDrawer(note = null) {
     closeSummary();
+    if (note) prepareStablePointPosition(note);
     editingNoteId = note?.noteId || "";
     editingPageId = currentPageId;
     drawerTitle.textContent = note ? "编辑批注" : "添加批注";
@@ -620,6 +634,7 @@
     titleInput.value = note?.title || "";
     contentInput.value = note?.content || "";
     currentTargetContext = safeJson(note?.targetSnapshot) || pendingTargetContext || captureTargetContext(activeAnnotationFrame());
+    currentTargetContext.annotationSurfaceHeight = note?._positionBasisHeight || pendingPosition?.basisHeight || annotationSurfaceHeight();
     currentManifest = safeJson(currentTargetContext?.interfaceManifest) || buildInterfaceManifest();
     currentInference = safeJson(note?.featureInference) || inferFeature(titleInput.value);
     aiStatus.textContent = "AI只补必要内容，不改变你写的规则";
@@ -661,19 +676,25 @@
     }
     currentManifest = buildInterfaceManifest();
     currentInference = inferFeature(title);
-    const targetSnapshot = { ...(currentTargetContext || {}), interfaceManifest: currentManifest };
+    const existingNote = notes.find((note) => note.noteId === editingNoteId);
+    const basisHeight = existingNote?._positionBasisHeight || pendingPosition?.basisHeight
+      || currentTargetContext?.annotationSurfaceHeight || annotationSurfaceHeight();
+    const targetSnapshot = { ...(currentTargetContext || {}), annotationSurfaceHeight: basisHeight, interfaceManifest: currentManifest };
     const commonPayload = { noteNumber, title, content, targetKey: currentTargetContext?.targetKey || "page", targetSnapshot,
       featureInference: currentInference, updatedBy: ACTOR };
     saveButton.disabled = true;
     deleteButton.disabled = true;
     try {
       if (editingNoteId) {
-        const existing = notes.find((note) => note.noteId === editingNoteId);
-        const payload = await apiRequest(API_PATH + "/" + editingNoteId, { method: "PATCH", body: JSON.stringify({ ...commonPayload, x: existing?.x, y: existing?.y }) });
+        const payload = await apiRequest(API_PATH + "/" + editingNoteId, { method: "PATCH", body: JSON.stringify({ ...commonPayload, x: existingNote?.x, y: existingNote?.y }) });
+        payload.note._pixelY = existingNote?._pixelY;
+        payload.note._positionBasisHeight = basisHeight;
         notes = notes.map((note) => note.noteId === editingNoteId ? payload.note : note).sort((a, b) => a.noteNumber - b.noteNumber);
       } else {
         const payload = await apiRequest(API_PATH, { method: "POST", body: JSON.stringify({ ...commonPayload, projectId: PROJECT_ID,
           pageId: currentPageId, x: pendingPosition?.x ?? 0.5, y: pendingPosition?.y ?? 0.5, createdBy: ACTOR }) });
+        payload.note._pixelY = pendingPosition?.pixelY ?? (Number(payload.note.y) * basisHeight);
+        payload.note._positionBasisHeight = basisHeight;
         notes = [...notes, payload.note].sort((a, b) => a.noteNumber - b.noteNumber);
       }
       closeDrawer(true);
@@ -695,10 +716,13 @@
 
   async function savePosition(note) {
     try {
+      const targetSnapshot = { ...(safeJson(note.targetSnapshot, {}) || {}), annotationSurfaceHeight: note._positionBasisHeight || annotationSurfaceHeight() };
       const payload = await apiRequest(API_PATH + "/" + note.noteId, {
         method: "PATCH",
-        body: JSON.stringify({ x: note.x, y: note.y, updatedBy: ACTOR })
+        body: JSON.stringify({ x: note.x, y: note.y, targetSnapshot, updatedBy: ACTOR })
       });
+      payload.note._pixelY = note._pixelY;
+      payload.note._positionBasisHeight = note._positionBasisHeight;
       notes = notes.map((item) => item.noteId === note.noteId ? payload.note : item);
       renderNotes();
     } catch (error) {
@@ -757,9 +781,11 @@
       if (!moved) return;
       const rect = layer.getBoundingClientRect();
       note.x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-      note.y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+      note._pixelY = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
+      note._positionBasisHeight = Math.max(1, rect.height);
+      note.y = Math.max(0, Math.min(1, note._pixelY / note._positionBasisHeight));
       point.style.left = note.x * 100 + "%";
-      point.style.top = note.y * 100 + "%";
+      point.style.top = note._pixelY + "px";
     });
 
     point.addEventListener("pointerup", (event) => {
@@ -784,12 +810,13 @@
   function renderNotes() {
     layer.replaceChildren();
     notes.forEach((note) => {
+      prepareStablePointPosition(note);
       const point = document.createElement("button");
       point.type = "button"; point.className = "ui-note-point"; point.dataset.noteId = note.noteId; point.dataset.uiNoteUi = "";
       point.textContent = String(note.noteNumber); point.title = note.title + (note.content ? "：" + note.content : "");
       point.setAttribute("aria-label", "批注" + note.noteNumber + "：" + note.title);
       point.style.left = Math.max(0, Math.min(1, Number(note.x))) * 100 + "%";
-      point.style.top = Math.max(0, Math.min(1, Number(note.y))) * 100 + "%";
+      point.style.top = note._pixelY + "px";
       bindPointEvents(point, note); layer.appendChild(point);
     });
     updateToolbar();
@@ -800,6 +827,13 @@
     try {
       const nextNotes = await fetchPageNotes(pageId);
       if (sequence !== loadSequence || pageId !== currentPageId) return;
+      const existingById = new Map(notes.map((note) => [note.noteId, note]));
+      nextNotes.forEach((note) => {
+        const existing = existingById.get(note.noteId);
+        if (!existing || !Number.isFinite(existing._pixelY)) return;
+        note._pixelY = existing._pixelY;
+        note._positionBasisHeight = existing._positionBasisHeight;
+      });
       const signature = (items) => JSON.stringify(items.map((note) => [note.noteId, note.noteNumber, note.title, note.content, note.x, note.y, note.updatedAt, note.ruleGeneratedAt]));
       if (silent && signature(notes) === signature(nextNotes)) return;
       notes = nextNotes; renderNotes(); toolbar.removeAttribute("data-error");
@@ -826,7 +860,12 @@
     const rect = layer.getBoundingClientRect();
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
     event.preventDefault(); event.stopPropagation();
-    pendingPosition = { x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)), y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)) };
+    pendingPosition = {
+      x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
+      y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
+      pixelY: Math.max(0, Math.min(rect.height, event.clientY - rect.top)),
+      basisHeight: Math.max(1, rect.height)
+    };
     pendingTargetContext = captureTargetContext(event.target);
     setAddMode(false); openDrawer();
   }, true);
