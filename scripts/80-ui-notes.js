@@ -9,6 +9,7 @@
   const addButton = $("#uiNoteAdd");
   const toggleButton = $("#uiNoteToggle");
   const summaryButton = $("#uiNoteSummaryButton");
+  const shareButton = $("#uiNoteShare");
   const collapseButton = $("#uiNoteCollapse");
   const launcherButton = $("#uiNoteLauncher");
   const countBadge = $("#uiNoteCount");
@@ -44,6 +45,7 @@
   const cancelButton = $("#uiNoteCancel");
   const saveButton = $("#uiNoteSave");
   const homePage = $(".home-page");
+  const sharedReviewMode = new URLSearchParams(window.location.search).get("review") === "1";
 
   if (!toolbar || !layer || !drawer || !homePage) return;
   if (layer.parentElement !== homePage) homePage.appendChild(layer);
@@ -54,7 +56,7 @@
   let summaryNotes = [];
   let currentAttachments = [];
   let currentInteractionAttachments = [];
-  let notesVisible = false;
+  let notesVisible = sharedReviewMode;
   let toolHidden = false;
   let addMode = false;
   let pendingPosition = null;
@@ -86,6 +88,48 @@
 
   function writeLocalNotes(nextNotes) {
     window.localStorage?.setItem(LOCAL_STORE_KEY, JSON.stringify(nextNotes));
+  }
+
+  function isReadonlyMode() {
+    return toolbar.hasAttribute("data-readonly");
+  }
+
+  function setReadonlyMode(message = "当前为在线只读批注") {
+    toolbar.dataset.readonly = "true";
+    toolbar.title = message;
+    addButton.disabled = true;
+    aiAppendButton.disabled = true;
+    interactionAiAppendButton.disabled = true;
+  }
+
+  function sharedReviewUrl() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("v");
+    url.searchParams.set("review", "1");
+    url.hash = "";
+    return url.toString();
+  }
+
+  async function copySharedReviewUrl() {
+    const url = sharedReviewUrl();
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
+      else {
+        const helper = document.createElement("textarea");
+        helper.value = url;
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand("copy");
+        helper.remove();
+      }
+      shareButton.textContent = "链接已复制";
+      shareButton.title = "同事打开后会自动看到已发布的全部批注";
+    } catch {
+      window.prompt("复制下面的共享批注链接", url);
+    }
+    window.setTimeout(() => { shareButton.textContent = "分享批注"; }, 1800);
   }
 
   function localNoteRequest(url, options = {}) {
@@ -335,10 +379,7 @@
       if (!seedResponse.ok) throw apiError;
       const seed = await seedResponse.json();
       if (!Array.isArray(seed?.notes)) throw apiError;
-      toolbar.dataset.readonly = "true";
-      toolbar.title = "当前为在线只读批注";
-      addButton.disabled = true;
-      aiAppendButton.disabled = true;
+      setReadonlyMode("当前为在线只读批注；点击“分享批注”可复制同事查看链接");
       return seed.notes.filter((note) => note.projectId === PROJECT_ID && note.pageId === pageId);
     }
   }
@@ -570,8 +611,9 @@
         status.textContent = "已移除截图，保存批注后生效";
         renderAttachments(kind);
       });
-      item.append(preview, remove);
-      attachmentList.appendChild(item);
+      item.appendChild(preview);
+      if (!isReadonlyMode()) item.appendChild(remove);
+      list.appendChild(item);
     });
   }
 
@@ -790,9 +832,10 @@
   function openDrawer(note = null) {
     closeSummary();
     if (note) prepareStablePointPosition(note);
+    const readonly = isReadonlyMode();
     editingNoteId = note?.noteId || "";
     editingPageId = currentPageId;
-    drawerTitle.textContent = note ? "编辑批注" : "添加批注";
+    drawerTitle.textContent = readonly ? "查看批注" : (note ? "编辑批注" : "添加批注");
     numberField.hidden = false;
     const suggestedNumber = notes.reduce((max, item) => Math.max(max, Number(item.noteNumber) || 0), 0) + 1;
     numberInput.value = String(note?.noteNumber || suggestedNumber);
@@ -820,7 +863,12 @@
     aiStatus.textContent = "输入序号后回车可自动续号，AI只追加不覆盖";
     interactionAiStatus.textContent = "输入序号后回车可自动续号，AI只追加不覆盖";
     editorError.textContent = "";
-    deleteButton.hidden = !note;
+    [numberInput, titleInput, contentInput, interactionInput].forEach((input) => { input.readOnly = readonly; });
+    deleteButton.hidden = !note || readonly;
+    saveButton.hidden = readonly;
+    cancelButton.textContent = readonly ? "关闭" : "取消";
+    aiAppendButton.hidden = readonly;
+    interactionAiAppendButton.hidden = readonly;
     refreshInference();
     drawerInitialSignature = noteSignature();
     drawer.classList.add("active");
@@ -953,7 +1001,7 @@
     let moved = false;
 
     point.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
+      if (event.button !== 0 || isReadonlyMode()) return;
       event.preventDefault();
       event.stopPropagation();
       draggingNoteId = note.noteId;
@@ -1035,8 +1083,9 @@
 
   function setAddMode(enabled) { addMode = Boolean(enabled); updateToolbar(); }
 
-  addButton.addEventListener("click", () => { const next = !addMode; if (next) notesVisible = true; setAddMode(next); });
+  addButton.addEventListener("click", () => { if (isReadonlyMode()) return; const next = !addMode; if (next) notesVisible = true; setAddMode(next); });
   toggleButton.addEventListener("click", () => { notesVisible = !notesVisible; setAddMode(false); updateToolbar(); });
+  shareButton.addEventListener("click", copySharedReviewUrl);
   summaryButton.addEventListener("click", () => {
     if (summary.classList.contains("active")) closeSummary();
     else openSummary();
@@ -1111,7 +1160,7 @@
     syncOverlayBounds();
     const nextPageId = activePageId();
     if (nextPageId === currentPageId) return;
-    currentPageId = nextPageId; notesVisible = false; setAddMode(false); closeDrawer(true); notes = []; renderNotes(); loadNotes();
+    currentPageId = nextPageId; notesVisible = sharedReviewMode; setAddMode(false); closeDrawer(true); notes = []; renderNotes(); loadNotes();
     if (summary.classList.contains("active")) renderSummary();
   }
 
@@ -1125,7 +1174,10 @@
   window.addEventListener("scroll", syncOverlayBounds, true);
   currentPageId = activePageId();
   if (localMode) { toolbar.dataset.local = "true"; toolbar.title = "批注保存在当前浏览器"; }
-  syncOverlayBounds(); renderNotes(); loadNotes();
+  if (sharedReviewMode) setReadonlyMode("共享查看模式：已发布批注对所有访问者一致可见");
+  syncOverlayBounds(); renderNotes();
+  const initialLoad = loadNotes();
+  if (sharedReviewMode) initialLoad.finally(() => openSummary());
   window.setInterval(syncPageContext, 250);
   window.setInterval(() => { if (!editingNoteId && !draggingNoteId && !drawer.classList.contains("active")) loadNotes(true); }, 5000);
 })();
