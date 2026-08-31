@@ -9,7 +9,6 @@
   const addButton = $("#uiNoteAdd");
   const toggleButton = $("#uiNoteToggle");
   const summaryButton = $("#uiNoteSummaryButton");
-  const shareButton = $("#uiNoteShare");
   const collapseButton = $("#uiNoteCollapse");
   const launcherButton = $("#uiNoteLauncher");
   const countBadge = $("#uiNoteCount");
@@ -100,36 +99,6 @@
     addButton.disabled = true;
     aiAppendButton.disabled = true;
     interactionAiAppendButton.disabled = true;
-  }
-
-  function sharedReviewUrl() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("v");
-    url.searchParams.set("review", "1");
-    url.hash = "";
-    return url.toString();
-  }
-
-  async function copySharedReviewUrl() {
-    const url = sharedReviewUrl();
-    try {
-      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
-      else {
-        const helper = document.createElement("textarea");
-        helper.value = url;
-        helper.style.position = "fixed";
-        helper.style.opacity = "0";
-        document.body.appendChild(helper);
-        helper.select();
-        document.execCommand("copy");
-        helper.remove();
-      }
-      shareButton.textContent = "链接已复制";
-      shareButton.title = "同事打开后会自动看到已发布的全部批注";
-    } catch {
-      window.prompt("复制下面的共享批注链接", url);
-    }
-    window.setTimeout(() => { shareButton.textContent = "分享批注"; }, 1800);
   }
 
   function localNoteRequest(url, options = {}) {
@@ -379,7 +348,7 @@
       if (!seedResponse.ok) throw apiError;
       const seed = await seedResponse.json();
       if (!Array.isArray(seed?.notes)) throw apiError;
-      setReadonlyMode("当前为在线只读批注；点击“分享批注”可复制同事查看链接");
+      setReadonlyMode("当前为在线只读批注");
       return seed.notes.filter((note) => note.projectId === PROJECT_ID && note.pageId === pageId);
     }
   }
@@ -1085,13 +1054,15 @@
 
   addButton.addEventListener("click", () => { if (isReadonlyMode()) return; const next = !addMode; if (next) notesVisible = true; setAddMode(next); });
   toggleButton.addEventListener("click", () => { notesVisible = !notesVisible; setAddMode(false); updateToolbar(); });
-  shareButton.addEventListener("click", copySharedReviewUrl);
   summaryButton.addEventListener("click", () => {
     if (summary.classList.contains("active")) closeSummary();
     else openSummary();
   });
   collapseButton.addEventListener("click", () => setToolHidden(true));
-  launcherButton.addEventListener("click", () => setToolHidden(false));
+  launcherButton.addEventListener("click", () => {
+    setToolHidden(false);
+    openSummary();
+  });
   document.addEventListener("click", (event) => {
     if (!addMode || event.target.closest("[data-ui-note-ui]")) return;
     const rect = layer.getBoundingClientRect();
