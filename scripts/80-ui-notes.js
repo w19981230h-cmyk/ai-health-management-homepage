@@ -29,6 +29,16 @@
   const contentInput = $("#uiNoteContent");
   const aiAppendButton = $("#uiNoteAiAppend");
   const aiStatus = $("#uiNoteAiStatus");
+  const attachmentList = $("#uiNoteAttachmentList");
+  const attachmentStatus = $("#uiNoteAttachmentStatus");
+  const interactionInput = $("#uiNoteInteractionContent");
+  const interactionAiAppendButton = $("#uiNoteInteractionAiAppend");
+  const interactionAiStatus = $("#uiNoteInteractionAiStatus");
+  const interactionAttachmentList = $("#uiNoteInteractionAttachmentList");
+  const interactionAttachmentStatus = $("#uiNoteInteractionAttachmentStatus");
+  const imageViewer = $("#uiNoteImageViewer");
+  const imageViewerImage = $("#uiNoteImageViewerImage");
+  const imageViewerClose = $("#uiNoteImageViewerClose");
   const editorError = $("#uiNoteEditorError");
   const deleteButton = $("#uiNoteDelete");
   const cancelButton = $("#uiNoteCancel");
@@ -42,6 +52,8 @@
   let editingPageId = "";
   let notes = [];
   let summaryNotes = [];
+  let currentAttachments = [];
+  let currentInteractionAttachments = [];
   let notesVisible = false;
   let toolHidden = false;
   let addMode = false;
@@ -425,14 +437,21 @@
     currentInference = inferFeature(titleInput.value);
   }
 
-  function resizeContentInput() {
-    contentInput.style.height = "auto";
-    contentInput.style.height = Math.max(76, contentInput.scrollHeight) + "px";
+  function resizeContentInput(input = contentInput) {
+    input.style.height = "auto";
+    input.style.height = Math.max(76, input.scrollHeight) + "px";
   }
 
-  function appendAiNote() {
+  function nextOrderedPrefix(value) {
+    const markers = [...String(value || "").matchAll(/^\s*(\d+)\s*([、.)．])\s*/gm)];
+    if (!markers.length) return "补充：";
+    const last = markers.at(-1);
+    return `${Number(last[1]) + 1}${last[2]} `;
+  }
+
+  function appendAiNote(input = contentInput, status = aiStatus, button = aiAppendButton) {
     const title = titleInput.value.trim();
-    const writtenRule = contentInput.value.trim();
+    const writtenRule = input.value.trim();
     if (!title) {
       editorError.textContent = "请先填写批注标题";
       titleInput.focus();
@@ -440,59 +459,183 @@
     }
     if (!writtenRule) {
       editorError.textContent = "请先写下你定的规则，AI只在这条规则上做必要补充";
-      contentInput.focus();
+      input.focus();
       return;
     }
     editorError.textContent = "";
-    aiAppendButton.disabled = true;
-    aiAppendButton.classList.add("loading");
-    aiStatus.textContent = "正在检查这条规则还缺什么…";
+    button.disabled = true;
+    button.classList.add("loading");
+    status.textContent = "正在检查这条规则还缺什么…";
     window.setTimeout(() => {
       currentManifest = buildInterfaceManifest();
       currentInference = inferFeature(title);
-      let addition = "";
+      const context = [title, currentTargetContext?.section, currentTargetContext?.label, currentManifest?.pageLabel].filter(Boolean).join(" ");
+      const candidates = [];
       const destinationMatch = writtenRule.match(/(?:跳转|进入|打开)(?:到|至)?[“\"]?([^，。；\n”\"]{1,18}?)(?:界面|页面)/);
       if (destinationMatch && !/失败|打不开|加载失败/.test(writtenRule)) {
         const destination = destinationMatch[1].replace(/^(到|至)/, "");
-        addition = `补充：${destination}页面打开失败时，提示“加载失败，请重试”。`;
-      } else if (/仅.+显示|只有.+显示|满足.+显示/.test(writtenRule) && !/其他|不满足|隐藏|不显示/.test(writtenRule)) {
-        addition = "补充：不满足上述条件时，不显示该入口。";
-      } else if (/保存|提交/.test(writtenRule) && !/失败|重试/.test(writtenRule)) {
-        addition = "补充：操作失败时保留已填写内容，并提示用户重试。";
-      } else if (/删除|移除/.test(writtenRule) && !/确认|二次/.test(writtenRule)) {
-        addition = "补充：删除前需要再次确认，避免误操作。";
-      } else if (/切换/.test(writtenRule) && !/刷新|更新/.test(writtenRule)) {
-        addition = "补充：切换成功后，同时更新当前页面显示的内容。";
-      } else if (/必填|校验|格式/.test(writtenRule) && !/提示|说明/.test(writtenRule)) {
-        addition = "补充：填写不正确时，在对应位置直接说明问题。";
+        candidates.push({ covered: /失败|打不开|加载失败|重试/, rule: `${destination}页面打开失败时，提示“加载失败，请重试”。` });
       }
+      if (/健康画像|画像|档案|报告|详情|查看|数据/.test(context)) {
+        candidates.push(
+          { covered: /无数据|暂无数据|空状态/, rule: "没有可展示的数据时，显示空状态说明，不保留上一次的数据。" },
+          { covered: /加载失败|重新加载|重试/, rule: "数据加载失败时，保留当前页面并提供“重新加载”入口。" },
+          { covered: /加载中|加载状态/, rule: "数据请求期间显示加载状态，完成后再展示结果。" }
+        );
+      }
+      if (/仅.+显示|只有.+显示|满足.+显示/.test(writtenRule) || /显示|隐藏|入口/.test(title)) {
+        candidates.push({ covered: /不满足|隐藏|不显示/, rule: "不满足上述条件时，不显示该入口。" });
+      }
+      if (/保存|提交|确认/.test(context)) {
+        candidates.push({ covered: /失败|重试|保留已填写/, rule: "操作失败时保留已填写内容，并提示用户重试。" });
+      }
+      if (/删除|移除/.test(context)) {
+        candidates.push({ covered: /确认|二次/, rule: "删除前需要再次确认，避免误操作。" });
+      }
+      if (/切换/.test(context)) {
+        candidates.push({ covered: /刷新|更新当前|同步更新/, rule: "切换成功后，同步更新当前页面显示的内容。" });
+      }
+      if (/必填|校验|格式|输入/.test(context)) {
+        candidates.push({ covered: /错误提示|对应位置|填写不正确/, rule: "填写不正确时，在对应位置直接说明问题。" });
+      }
+      candidates.push(
+        { covered: /重复点击|处理中|不可重复/, rule: "操作处理中不可重复点击，完成后恢复操作。" },
+        { covered: /成功提示|完成提示|操作成功/, rule: "操作完成后给出明确结果提示。" }
+      );
+      const selected = candidates.find((item) => !item.covered.test(writtenRule));
+      const addition = selected ? nextOrderedPrefix(writtenRule) + selected.rule : "";
 
-      if (!addition || writtenRule.includes(addition.replace(/^补充：/, ""))) {
-        aiStatus.textContent = "这条规则已经很清楚，暂时不需要补充";
-        aiAppendButton.disabled = false;
-        aiAppendButton.classList.remove("loading");
+      if (!addition) {
+        status.textContent = "这条规则已经很清楚，暂时不需要补充";
+        button.disabled = false;
+        button.classList.remove("loading");
         return;
       }
-      const separator = contentInput.value.trim() ? "\n" : "";
-      const nextContent = contentInput.value + separator + addition;
-      if (nextContent.length > contentInput.maxLength) {
+      const separator = input.value.trim() ? "\n" : "";
+      const nextContent = input.value + separator + addition;
+      if (nextContent.length > input.maxLength) {
         editorError.textContent = "补充说明内容较长，请精简部分文字后再使用AI补充";
-        aiStatus.textContent = "未修改原有备注";
+        status.textContent = "未修改原有备注";
       } else {
-        contentInput.value = nextContent;
-        resizeContentInput();
-        contentInput.focus();
-        contentInput.setSelectionRange(contentInput.value.length, contentInput.value.length);
-        contentInput.scrollTop = contentInput.scrollHeight;
-        aiStatus.textContent = "只补充了这条规则，可直接修改";
+        input.value = nextContent;
+        resizeContentInput(input);
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+        input.scrollTop = input.scrollHeight;
+        status.textContent = "只补充了这条规则，可直接修改";
       }
-      aiAppendButton.disabled = false;
-      aiAppendButton.classList.remove("loading");
+      button.disabled = false;
+      button.classList.remove("loading");
     }, 260);
   }
 
   function noteSignature() {
-    return JSON.stringify([numberInput.value, titleInput.value, contentInput.value]);
+    return JSON.stringify([numberInput.value, titleInput.value, contentInput.value, interactionInput.value,
+      currentAttachments.map((item) => [item.id, item.name, item.dataUrl?.length || 0]),
+      currentInteractionAttachments.map((item) => [item.id, item.name, item.dataUrl?.length || 0])]);
+  }
+
+  function openImageViewer(attachment) {
+    if (!String(attachment?.dataUrl || "").startsWith("data:image/")) return;
+    imageViewerImage.src = attachment.dataUrl;
+    imageViewerImage.alt = attachment.name || "批注截图大图";
+    imageViewer.hidden = false;
+  }
+
+  function closeImageViewer() {
+    imageViewer.hidden = true;
+    imageViewerImage.removeAttribute("src");
+  }
+
+  function renderAttachments(kind = "logic") {
+    const isInteraction = kind === "interaction";
+    const list = isInteraction ? interactionAttachmentList : attachmentList;
+    const status = isInteraction ? interactionAttachmentStatus : attachmentStatus;
+    const attachments = isInteraction ? currentInteractionAttachments : currentAttachments;
+    list.replaceChildren();
+    attachments.forEach((attachment) => {
+      const item = document.createElement("figure");
+      item.className = "ui-note-attachment-item";
+      const preview = document.createElement("img");
+      preview.src = attachment.dataUrl;
+      preview.alt = attachment.name || "批注截图";
+      preview.addEventListener("click", () => openImageViewer(attachment));
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "×";
+      remove.setAttribute("aria-label", `删除截图${attachment.name || ""}`);
+      remove.addEventListener("click", () => {
+        if (isInteraction) currentInteractionAttachments = currentInteractionAttachments.filter((entry) => entry.id !== attachment.id);
+        else currentAttachments = currentAttachments.filter((entry) => entry.id !== attachment.id);
+        status.textContent = "已移除截图，保存批注后生效";
+        renderAttachments(kind);
+      });
+      item.append(preview, remove);
+      attachmentList.appendChild(item);
+    });
+  }
+
+  function readBlobAsDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("截图读取失败，请重新选择"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function loadPreviewImage(dataUrl) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("截图格式无法识别"));
+      image.src = dataUrl;
+    });
+  }
+
+  async function screenshotAttachment(file, attachmentNumber = 1) {
+    if (!file?.type?.startsWith("image/")) throw new Error("只能添加图片格式的截图");
+    if (file.size > 10 * 1024 * 1024) throw new Error("单张截图不能超过10MB");
+    const original = await readBlobAsDataUrl(file);
+    const image = await loadPreviewImage(original);
+    const maxEdge = 1280;
+    const scale = Math.min(1, maxEdge / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const compressedBlob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.78));
+    const dataUrl = compressedBlob ? await readBlobAsDataUrl(compressedBlob) : original;
+    if (dataUrl.length > 900000) throw new Error("截图内容较大，请裁剪后再粘贴");
+    return {
+      id: `shot-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name: String(file.name || `批注截图-${attachmentNumber}.jpg`).slice(0, 80),
+      mimeType: "image/jpeg",
+      dataUrl,
+      createdAt: new Date().toISOString()
+    };
+  }
+
+  async function addScreenshotFiles(files, kind = "logic") {
+    const imageFiles = [...files].filter((file) => file?.type?.startsWith("image/"));
+    if (!imageFiles.length) return;
+    const isInteraction = kind === "interaction";
+    const attachments = isInteraction ? currentInteractionAttachments : currentAttachments;
+    const status = isInteraction ? interactionAttachmentStatus : attachmentStatus;
+    const remaining = Math.max(0, 3 - attachments.length);
+    if (!remaining) { status.textContent = "每个补充框最多添加3张截图"; return; }
+    status.textContent = "正在处理截图…";
+    try {
+      for (const file of imageFiles.slice(0, remaining)) attachments.push(await screenshotAttachment(file, attachments.length + 1));
+      status.textContent = `已添加${Math.min(imageFiles.length, remaining)}张截图，点击可放大，保存批注后生效`;
+      renderAttachments(kind);
+    } catch (error) {
+      status.textContent = error.message;
+      renderAttachments(kind);
+    }
   }
 
   function pageLabelForSummary(pageId, pageNotes = []) {
@@ -584,6 +727,28 @@
         const footer = document.createElement("footer");
         footer.textContent = [note.updatedBy || note.createdBy, summaryDate(note.updatedAt || note.createdAt)].filter(Boolean).join(" · ");
         body.append(cardTitle, content);
+        const noteSnapshot = safeJson(note.targetSnapshot, {}) || {};
+        const interactionText = String(noteSnapshot.interactionContent || "").trim();
+        if (interactionText) {
+          const interaction = document.createElement("p");
+          interaction.textContent = `交互逻辑：${interactionText}`;
+          body.appendChild(interaction);
+        }
+        const attachments = [...(Array.isArray(noteSnapshot.attachments) ? noteSnapshot.attachments : []),
+          ...(Array.isArray(noteSnapshot.interactionAttachments) ? noteSnapshot.interactionAttachments : [])];
+        if (Array.isArray(attachments) && attachments.length) {
+          const previews = document.createElement("div");
+          previews.className = "ui-note-summary-attachments";
+          attachments.slice(0, 3).forEach((attachment) => {
+            if (!String(attachment?.dataUrl || "").startsWith("data:image/")) return;
+            const image = document.createElement("img");
+            image.src = attachment.dataUrl;
+            image.alt = attachment.name || "批注截图";
+            image.addEventListener("click", () => openImageViewer(attachment));
+            previews.appendChild(image);
+          });
+          if (previews.childElementCount) body.appendChild(previews);
+        }
         if (footer.textContent) body.appendChild(footer);
         card.append(number, body);
         group.appendChild(card);
@@ -634,10 +799,26 @@
     titleInput.value = note?.title || "";
     contentInput.value = note?.content || "";
     currentTargetContext = safeJson(note?.targetSnapshot) || pendingTargetContext || captureTargetContext(activeAnnotationFrame());
+    interactionInput.value = String(currentTargetContext?.interactionContent || "");
+    currentAttachments = Array.isArray(currentTargetContext?.attachments)
+      ? currentTargetContext.attachments.filter((item) => String(item?.dataUrl || "").startsWith("data:image/")).slice(0, 3)
+      : [];
+    currentInteractionAttachments = Array.isArray(currentTargetContext?.interactionAttachments)
+      ? currentTargetContext.interactionAttachments.filter((item) => String(item?.dataUrl || "").startsWith("data:image/")).slice(0, 3)
+      : [];
+    renderAttachments();
+    renderAttachments("interaction");
+    attachmentStatus.textContent = currentAttachments.length
+      ? `已保存${currentAttachments.length}张截图，可继续粘贴或删除`
+      : "支持在逻辑补充中直接按 Ctrl+V 粘贴截图";
+    interactionAttachmentStatus.textContent = currentInteractionAttachments.length
+      ? `已保存${currentInteractionAttachments.length}张截图，可点击放大查看`
+      : "支持在交互逻辑补充中直接按 Ctrl+V 粘贴截图";
     currentTargetContext.annotationSurfaceHeight = note?._positionBasisHeight || pendingPosition?.basisHeight || annotationSurfaceHeight();
     currentManifest = safeJson(currentTargetContext?.interfaceManifest) || buildInterfaceManifest();
     currentInference = safeJson(note?.featureInference) || inferFeature(titleInput.value);
-    aiStatus.textContent = "AI只补必要内容，不改变你写的规则";
+    aiStatus.textContent = "输入序号后回车可自动续号，AI只追加不覆盖";
+    interactionAiStatus.textContent = "输入序号后回车可自动续号，AI只追加不覆盖";
     editorError.textContent = "";
     deleteButton.hidden = !note;
     refreshInference();
@@ -646,6 +827,7 @@
     syncOverlayBounds();
     window.setTimeout(() => {
       resizeContentInput();
+      resizeContentInput(interactionInput);
       titleInput.focus();
     }, 80);
   }
@@ -654,6 +836,7 @@
     if (!force && drawer.classList.contains("active") && drawerInitialSignature && noteSignature() !== drawerInitialSignature
       && !window.confirm("当前批注还没有保存，确定关闭吗？")) return;
     drawer.classList.remove("active");
+    closeImageViewer();
     editingNoteId = "";
     editingPageId = "";
     pendingPosition = null;
@@ -661,6 +844,8 @@
     currentTargetContext = null;
     currentManifest = null;
     currentInference = null;
+    currentAttachments = [];
+    currentInteractionAttachments = [];
     drawerInitialSignature = "";
     editorError.textContent = "";
   }
@@ -668,6 +853,7 @@
   async function saveNote() {
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
+    const interactionContent = interactionInput.value.trim();
     if (!title) { editorError.textContent = "请填写批注标题"; titleInput.focus(); return; }
     if (editingPageId !== currentPageId) { editorError.textContent = "页面已切换，请在当前页面重新添加批注"; return; }
     const noteNumber = Number(numberInput.value);
@@ -679,7 +865,9 @@
     const existingNote = notes.find((note) => note.noteId === editingNoteId);
     const basisHeight = existingNote?._positionBasisHeight || pendingPosition?.basisHeight
       || currentTargetContext?.annotationSurfaceHeight || annotationSurfaceHeight();
-    const targetSnapshot = { ...(currentTargetContext || {}), annotationSurfaceHeight: basisHeight, interfaceManifest: currentManifest };
+    const targetSnapshot = { ...(currentTargetContext || {}), attachments: currentAttachments,
+      interactionContent, interactionAttachments: currentInteractionAttachments,
+      annotationSurfaceHeight: basisHeight, interfaceManifest: currentManifest };
     const commonPayload = { noteNumber, title, content, targetKey: currentTargetContext?.targetKey || "page", targetSnapshot,
       featureInference: currentInference, updatedBy: ACTOR };
     saveButton.disabled = true;
@@ -871,18 +1059,51 @@
   }, true);
   form.addEventListener("submit", (event) => { event.preventDefault(); saveNote(); });
   titleInput.addEventListener("input", refreshInference);
-  contentInput.addEventListener("input", () => {
-    resizeContentInput();
-    if (!aiAppendButton.classList.contains("loading")) aiStatus.textContent = "可继续手动修改，AI不会自动覆盖内容";
-  });
-  aiAppendButton.addEventListener("click", appendAiNote);
+  function bindRichEditor(input, status, button, kind) {
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return;
+      const cursor = input.selectionStart;
+      if (cursor !== input.selectionEnd) return;
+      const lineStart = input.value.lastIndexOf("\n", cursor - 1) + 1;
+      const currentLine = input.value.slice(lineStart, cursor);
+      const match = currentLine.match(/^(\s*)(\d+)\s*([、.)．])\s*(.*)$/);
+      if (!match) return;
+      event.preventDefault();
+      let insertion = "";
+      if (!match[4].trim() && lineStart > 0) input.setRangeText("", lineStart, cursor, "end");
+      else {
+        insertion = `\n${match[1]}${Number(match[2]) + 1}${match[3]} `;
+        input.setRangeText(insertion, cursor, cursor, "end");
+      }
+      resizeContentInput(input);
+      status.textContent = insertion ? "已自动续写下一条序号" : "已结束自动编号";
+    });
+    input.addEventListener("input", () => {
+      resizeContentInput(input);
+      if (!button.classList.contains("loading")) status.textContent = "可继续手动修改，AI不会自动覆盖内容";
+    });
+    input.addEventListener("paste", (event) => {
+      const imageFiles = [...(event.clipboardData?.items || [])]
+        .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+        .map((item) => item.getAsFile()).filter(Boolean);
+      if (!imageFiles.length) return;
+      event.preventDefault();
+      addScreenshotFiles(imageFiles, kind);
+    });
+    button.addEventListener("click", () => appendAiNote(input, status, button));
+  }
+  bindRichEditor(contentInput, aiStatus, aiAppendButton, "logic");
+  bindRichEditor(interactionInput, interactionAiStatus, interactionAiAppendButton, "interaction");
+  imageViewerClose.addEventListener("click", closeImageViewer);
+  imageViewer.addEventListener("click", (event) => { if (event.target === imageViewer) closeImageViewer(); });
   deleteButton.addEventListener("click", removeNote);
   cancelButton.addEventListener("click", () => closeDrawer());
   drawerClose.addEventListener("click", () => closeDrawer());
   summaryClose.addEventListener("click", closeSummary);
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (drawer.classList.contains("active")) closeDrawer();
+    if (!imageViewer.hidden) closeImageViewer();
+    else if (drawer.classList.contains("active")) closeDrawer();
     else if (summary.classList.contains("active")) closeSummary();
   });
 
@@ -896,7 +1117,10 @@
 
   window.addEventListener("resize", () => {
     syncOverlayBounds();
-    if (drawer.classList.contains("active")) resizeContentInput();
+    if (drawer.classList.contains("active")) {
+      resizeContentInput();
+      resizeContentInput(interactionInput);
+    }
   });
   window.addEventListener("scroll", syncOverlayBounds, true);
   currentPageId = activePageId();

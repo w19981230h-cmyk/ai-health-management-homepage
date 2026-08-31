@@ -17,7 +17,7 @@ function readJsonBody(req) {
     req.setEncoding("utf8");
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 1024 * 1024) reject(new Error("请求内容过大"));
+      if (body.length > 8 * 1024 * 1024) reject(new Error("请求内容过大"));
     });
     req.on("end", () => {
       try {
@@ -200,7 +200,7 @@ export function createUiNotesApi(root) {
           String(note.updatedBy || note.createdBy || "项目备注").slice(0, 60),
           updatedAt,
           String(note.targetKey || "").slice(0, 300),
-          storedObject(note.targetSnapshot, 100000),
+          storedObject(note.targetSnapshot, 7000000),
           storedObject(note.featureInference, 20000),
           storedObject(note.generatedRules, 120000),
           String(note.ruleGeneratedAt || "").slice(0, 60)
@@ -259,7 +259,7 @@ export function createUiNotesApi(root) {
           noteId, projectId, pageId, noteNumber, title, content,
           safeCoordinate(body.x), safeCoordinate(body.y), actor, now, actor, now,
           targetKey,
-          storedObject(body.targetSnapshot, 100000),
+          storedObject(body.targetSnapshot, 7000000),
           storedObject(body.featureInference, 20000),
           storedObject(body.generatedRules, 120000),
           String(body.ruleGeneratedAt || "").slice(0, 60)
@@ -296,7 +296,7 @@ export function createUiNotesApi(root) {
           actor,
           new Date().toISOString(),
           body.targetKey === undefined ? existing.target_key : String(body.targetKey || "").trim().slice(0, 300),
-          body.targetSnapshot === undefined ? existing.target_snapshot : storedObject(body.targetSnapshot, 100000),
+          body.targetSnapshot === undefined ? existing.target_snapshot : storedObject(body.targetSnapshot, 7000000),
           body.featureInference === undefined ? existing.feature_inference : storedObject(body.featureInference, 20000),
           body.generatedRules === undefined ? existing.generated_rules : storedObject(body.generatedRules, 120000),
           body.ruleGeneratedAt === undefined ? existing.rule_generated_at : String(body.ruleGeneratedAt || "").slice(0, 60),

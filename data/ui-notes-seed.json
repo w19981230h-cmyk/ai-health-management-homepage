@@ -1,6 +1,6 @@
 {
   "formatVersion": 2,
-  "exportedAt": "2026-08-24T02:11:37.682Z",
+  "exportedAt": "2026-08-31T03:41:03.131Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -220,13 +220,13 @@
       "pageId": "home",
       "noteNumber": 3,
       "title": "健康画像查看",
-      "content": "1、若患者健康画像存在异常数据，这里和我的页面一样，支持展示\n2、文案“您有x项待关注指标”\n3、点击画像后直接进入健康画像界面",
+      "content": "1、若患者健康画像存在异常数据，这里和我的页面一样，支持展示\n2、文案“您有x项待关注指标”\n3、点击画像后直接进入健康画像界面\n4、 健康画像页面打开失败时，提示“加载失败，请重试”。",
       "x": 0.6653333333333333,
       "y": 0.14586466165413534,
       "createdBy": "在线访客",
       "createdAt": "2026-08-20T09:22:27.850Z",
       "updatedBy": "在线访客",
-      "updatedAt": "2026-08-20T09:22:47.029Z",
+      "updatedAt": "2026-08-27T07:40:30.059Z",
       "status": "active",
       "targetKey": "button.score-portrait-entry.has-anomaly",
       "targetSnapshot": {
@@ -399,8 +399,12 @@
               "disabled": false
             }
           ],
-          "capturedAt": "2026-08-20T09:22:47.025Z"
-        }
+          "capturedAt": "2026-08-27T07:40:30.057Z"
+        },
+        "annotationSurfaceHeight": 1330,
+        "attachments": [],
+        "interactionContent": "",
+        "interactionAttachments": []
       },
       "featureInference": {
         "featureName": "健康画像查看",
