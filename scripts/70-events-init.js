@@ -1,4 +1,9 @@
 ﻿document.addEventListener("click", (event) => {
+  const patientCard = event.target.closest("[data-patient-edit]");
+  if (patientCard) {
+    openPatientEditPage(patientCard);
+    return;
+  }
   const archivePatientButton = event.target.closest("[data-archive-patient-id]");
   if (archivePatientButton) {
     switchArchivePatient(archivePatientButton);
@@ -127,7 +132,7 @@ logoutBtn.addEventListener("click", () => {
 });
 
 savePersonalSettings?.addEventListener("click", () => {
-  const nickname = personalNickname?.value.trim() || "用户6162";
+  const nickname = personalNickname?.value.trim() || "用户4639";
   if (settingsUserName) settingsUserName.textContent = nickname;
   toast.textContent = "个人设置已保存";
   toast.classList.add("show");
@@ -698,6 +703,10 @@ function syncArchivePatientSwitcherLabels() {
   });
 }
 
+function updateWecomServiceGroupEntry() {
+  wecomServiceGroupEntry?.classList.toggle("hidden", currentPatient.id !== "self");
+}
+
 function updateCurrentPatientView() {
   if (profileNameButton) {
     const archiveSwitcher = profileNameButton.closest(".archive-member-switcher");
@@ -721,6 +730,7 @@ function updateCurrentPatientView() {
     const sexLabel = currentPatient.sex === "female" ? "女" : currentPatient.sex === "male" ? "男" : "未知";
     profileGenderAge.textContent = currentPatient.age ? `${sexLabel}｜${currentPatient.age}岁` : `${sexLabel}｜待完善`;
   }
+  updateWecomServiceGroupEntry();
   renderPeriodCard();
   renderPeriodDetail();
   updateCycleReminderVisibility();
@@ -1430,7 +1440,7 @@ document.querySelector(".orders-panel")?.addEventListener("click", (event) => {
     if (!order || order.status !== "pending") return;
     boundServiceState = null;
     openServiceDetail(order.serviceId, "orders", order.id);
-    openServiceUserSheet();
+    openServiceUseSheet();
     return;
   }
   openOrderCard(event.target.closest(".archive-service-card"));
@@ -2052,8 +2062,12 @@ function closeOverlays() {
   shareSheet.classList.remove("active");
   uploadSheet.classList.remove("active");
   purchaseDialog.classList.remove("active");
+  purchaseIntentionSheet?.classList.remove("active");
+  purchaseIntentionMask?.classList.remove("active");
   purchaseAgreementSheet?.classList.remove("active");
   purchaseAgreementMask?.classList.remove("active");
+  serviceUseSheet?.classList.remove("active");
+  serviceUseMask?.classList.remove("active");
   serviceUserSheet?.classList.remove("active");
   serviceUserMask?.classList.remove("active");
   bindingConfirmDialog?.classList.remove("active");
@@ -3008,6 +3022,107 @@ const boundAccountPhone = "13800138000";
 let purchaseVerificationCode = "";
 let purchaseVerificationExpiresAt = 0;
 let purchaseVerificationTimer = null;
+const purchaseIntentionCatalog = {
+  organization: [
+    { value: "春晓健康管理中心", detail: "互联网健康管理与随访服务" },
+    { value: "南宁市第一人民医院", detail: "三级甲等综合医院" },
+    { value: "广西医科大学第一附属医院", detail: "三级甲等综合医院" },
+    { value: "广西壮族自治区人民医院", detail: "三级甲等综合医院" }
+  ],
+  department: [
+    { value: "健康管理科", detail: "健康评估、健康计划与持续随访" },
+    { value: "营养门诊", detail: "营养评估与个性化饮食指导" },
+    { value: "内分泌科", detail: "血糖、代谢及内分泌疾病管理" },
+    { value: "心血管内科", detail: "血压与心脑血管风险管理" },
+    { value: "全科医学科", detail: "多病共管与综合健康服务" },
+    { value: "运动医学科", detail: "运动评估与科学运动指导" }
+  ],
+  manager: [
+    { value: "周敏健康管理师", detail: "健康管理科 · 国家三级健康管理师" },
+    { value: "陈晓营养师", detail: "营养门诊 · 注册营养师" },
+    { value: "李倩健康管理师", detail: "内分泌科 · 慢病管理方向" },
+    { value: "王磊健康管理师", detail: "心血管内科 · 风险管理方向" },
+    { value: "何静健康管理师", detail: "全科医学科 · 家庭健康管理" },
+    { value: "赵欣运动指导师", detail: "运动医学科 · 运动处方方向" }
+  ]
+};
+const purchaseIntentionPickerMeta = {
+  organization: { title: "选择服务机构", placeholder: "搜索服务机构", tip: "默认展示当前方案服务团队所属机构", multiple: false },
+  department: { title: "选择服务科室", placeholder: "搜索服务科室", tip: "可多选，默认展示当前方案团队所属科室", multiple: true },
+  manager: { title: "选择健康管理师", placeholder: "搜索姓名、科室或专业方向", tip: "可根据服务需要选择多位健康管理师", multiple: true }
+};
+let purchaseIntentionState = { organization: "", department: [], manager: [] };
+let purchaseIntentionPickerType = "organization";
+let purchaseIntentionDraft = new Set();
+
+function updatePurchaseIntentionDisplay() {
+  const fields = [
+    [purchaseServiceOrganizationValue, purchaseIntentionState.organization],
+    [purchaseServiceDepartmentValue, purchaseIntentionState.department.join("、")],
+    [purchaseServiceManagerValue, purchaseIntentionState.manager.join("、")]
+  ];
+  fields.forEach(([element, value]) => {
+    if (!element) return;
+    element.textContent = value || "请选择";
+    element.classList.toggle("placeholder", !value);
+  });
+}
+
+function resetPurchaseIntention(service) {
+  const team = service?.serviceTeam || {};
+  purchaseIntentionState = {
+    organization: team.organization || "春晓健康管理中心",
+    department: Array.isArray(team.departments) ? [...team.departments] : ["健康管理科"],
+    manager: []
+  };
+  updatePurchaseIntentionDisplay();
+}
+
+function renderPurchaseIntentionOptions() {
+  if (!purchaseIntentionOptions) return;
+  const keyword = (purchaseIntentionSearch?.value || "").trim().toLowerCase();
+  const items = (purchaseIntentionCatalog[purchaseIntentionPickerType] || []).filter((item) =>
+    `${item.value} ${item.detail}`.toLowerCase().includes(keyword)
+  );
+  if (!items.length) {
+    purchaseIntentionOptions.innerHTML = '<div class="purchase-intention-empty">暂无匹配结果</div>';
+    return;
+  }
+  const multiple = purchaseIntentionPickerMeta[purchaseIntentionPickerType]?.multiple;
+  purchaseIntentionOptions.innerHTML = items.map((item) => {
+    const checked = purchaseIntentionDraft.has(item.value);
+    return `<label class="purchase-intention-option${checked ? " active" : ""}">
+      <span><strong>${item.value}</strong><small>${item.detail}</small></span>
+      <input type="${multiple ? "checkbox" : "radio"}" name="purchaseIntentionOption" value="${item.value}"${checked ? " checked" : ""}>
+      <i aria-hidden="true"></i>
+    </label>`;
+  }).join("");
+}
+
+function closePurchaseIntentionPicker() {
+  purchaseIntentionSheet?.classList.remove("active");
+  purchaseIntentionMask?.classList.remove("active");
+  if (purchaseIntentionSearch) purchaseIntentionSearch.value = "";
+}
+
+function openPurchaseIntentionPicker(type) {
+  const meta = purchaseIntentionPickerMeta[type];
+  if (!meta) return;
+  purchaseIntentionPickerType = type;
+  const current = type === "organization" ? [purchaseIntentionState.organization] : purchaseIntentionState[type];
+  purchaseIntentionDraft = new Set((current || []).filter(Boolean));
+  if (purchaseIntentionPickerTitle) purchaseIntentionPickerTitle.textContent = meta.title;
+  if (purchaseIntentionSearch) {
+    purchaseIntentionSearch.value = "";
+    purchaseIntentionSearch.placeholder = meta.placeholder;
+    purchaseIntentionSearch.setAttribute("aria-label", meta.placeholder);
+  }
+  if (purchaseIntentionTip) purchaseIntentionTip.textContent = meta.tip;
+  if (purchaseIntentionSheet) purchaseIntentionSheet.dataset.pickerMode = meta.multiple ? "multiple" : "single";
+  renderPurchaseIntentionOptions();
+  purchaseIntentionMask?.classList.add("active");
+  purchaseIntentionSheet?.classList.add("active");
+}
 
 function resetPurchaseVerification() {
   if (purchaseVerificationTimer) window.clearInterval(purchaseVerificationTimer);
@@ -3059,6 +3174,35 @@ function preparePurchaseSheet() {
   if (purchaseAgreementError) purchaseAgreementError.textContent = "";
 }
 
+document.querySelectorAll("[data-purchase-intention]").forEach((button) => {
+  button.addEventListener("click", () => openPurchaseIntentionPicker(button.dataset.purchaseIntention));
+});
+
+purchaseIntentionSearch?.addEventListener("input", renderPurchaseIntentionOptions);
+purchaseIntentionOptions?.addEventListener("change", (event) => {
+  const input = event.target.closest("input[name='purchaseIntentionOption']");
+  if (!input) return;
+  const multiple = purchaseIntentionPickerMeta[purchaseIntentionPickerType]?.multiple;
+  if (multiple) {
+    if (input.checked) purchaseIntentionDraft.add(input.value);
+    else purchaseIntentionDraft.delete(input.value);
+  } else {
+    purchaseIntentionDraft = new Set([input.value]);
+  }
+  renderPurchaseIntentionOptions();
+});
+
+purchaseIntentionConfirm?.addEventListener("click", () => {
+  const values = [...purchaseIntentionDraft];
+  if (purchaseIntentionPickerType === "organization") purchaseIntentionState.organization = values[0] || "";
+  else purchaseIntentionState[purchaseIntentionPickerType] = values;
+  updatePurchaseIntentionDisplay();
+  closePurchaseIntentionPicker();
+});
+purchaseIntentionClose?.addEventListener("click", closePurchaseIntentionPicker);
+purchaseIntentionCancel?.addEventListener("click", closePurchaseIntentionPicker);
+purchaseIntentionMask?.addEventListener("click", closePurchaseIntentionPicker);
+
 buyButton.addEventListener("click", () => {
   if (serviceDetailPage?.classList.contains("bound-service")) {
     toast.textContent = "健康管理计划已生成";
@@ -3067,7 +3211,7 @@ buyButton.addEventListener("click", () => {
     return;
   }
   if (serviceDetailSource === "orders" && activeServiceOrder?.status === "pending") {
-    openServiceUserSheet();
+    openServiceUseSheet();
     return;
   }
   closeOverlays();
@@ -3167,6 +3311,10 @@ purchaseConfirmButton?.addEventListener("click", () => {
   }
   resetPurchaseVerification();
   closeOverlays();
+  resetPurchaseIntention(activePurchaseService);
+  pendingServiceUser = null;
+  serviceUseContextKey = activePurchaseService?.id || "purchased-service";
+  updateServiceUseUserDisplay();
   if (purchaseSuccessServiceTitle) purchaseSuccessServiceTitle.textContent = activePurchaseService?.title || "90天减重管理服务包";
   if (purchaseSuccessQuantity) purchaseSuccessQuantity.textContent = String(confirmedQuantity);
   if (purchaseSuccessAmount) purchaseSuccessAmount.textContent = `¥${purchaseUnitPrice() * confirmedQuantity}元`;
@@ -3180,12 +3328,68 @@ purchaseSuccessBack?.addEventListener("click", () => {
   serviceDetailPage?.classList.add("active");
 });
 
+let pendingServiceUser = null;
+let serviceUseContextKey = "";
+
+function updateServiceUseUserDisplay() {
+  if (!serviceUseUserValue) return;
+  serviceUseUserValue.textContent = pendingServiceUser?.name || "请选择服务用户";
+  serviceUseUserValue.classList.toggle("placeholder", !pendingServiceUser);
+  if (serviceUseUserMeta) {
+    const sexLabel = pendingServiceUser?.sex === "female" ? "女" : pendingServiceUser?.sex === "male" ? "男" : "";
+    serviceUseUserMeta.textContent = pendingServiceUser
+      ? [sexLabel, pendingServiceUser.age ? `${pendingServiceUser.age}岁` : ""].filter(Boolean).join(" · ")
+      : "";
+  }
+}
+
+function currentServiceUseKey() {
+  return activeServiceOrder?.id || activePurchaseService?.id || "service";
+}
+
+function openServiceUseSheet() {
+  const nextContextKey = currentServiceUseKey();
+  if (serviceUseContextKey !== nextContextKey) {
+    serviceUseContextKey = nextContextKey;
+    pendingServiceUser = null;
+    resetPurchaseIntention(activePurchaseService);
+  }
+  updateServiceUseUserDisplay();
+  serviceUseMask?.classList.add("active");
+  serviceUseSheet?.classList.add("active");
+}
+
+function closeServiceUseSheet() {
+  serviceUseSheet?.classList.remove("active");
+  serviceUseMask?.classList.remove("active");
+}
+
 function openServiceUserSheet() {
+  if (pendingServiceUser) {
+    serviceUserList?.querySelectorAll('input[name="serviceUser"]').forEach((input) => {
+      input.checked = input.value === pendingServiceUser.name;
+    });
+    syncServiceUserSelection();
+  }
   serviceUserMask?.classList.add("active");
   serviceUserSheet?.classList.add("active");
 }
 
-bindServiceUserButton?.addEventListener("click", openServiceUserSheet);
+bindServiceUserButton?.addEventListener("click", openServiceUseSheet);
+serviceUseClose?.addEventListener("click", closeServiceUseSheet);
+serviceUseMask?.addEventListener("click", closeServiceUseSheet);
+serviceUseUserButton?.addEventListener("click", openServiceUserSheet);
+serviceUseConfirm?.addEventListener("click", () => {
+  if (!pendingServiceUser) {
+    toast.textContent = "请先选择服务用户";
+    toast.classList.add("show");
+    window.setTimeout(() => toast.classList.remove("show"), 1600);
+    openServiceUserSheet();
+    return;
+  }
+  bindingConfirmMask?.classList.add("active");
+  bindingConfirmDialog?.classList.add("active");
+});
 
 refundAfterSalesButton?.addEventListener("click", () => {
   openRefundApplication();
@@ -3298,7 +3502,6 @@ serviceUserList?.addEventListener("change", (event) => {
   if (event.target.matches('input[name="serviceUser"]')) syncServiceUserSelection();
 });
 
-let pendingServiceUser = null;
 serviceUserConfirm?.addEventListener("click", () => {
   const selected = serviceUserList?.querySelector('input[name="serviceUser"]:checked');
   if (!selected) return;
@@ -3309,8 +3512,8 @@ serviceUserConfirm?.addEventListener("click", () => {
     age: selected.dataset.age || "",
     avatar: row?.querySelector(".service-user-avatar")?.textContent.trim() || selected.value.slice(0, 1)
   };
-  bindingConfirmMask?.classList.add("active");
-  bindingConfirmDialog?.classList.add("active");
+  updateServiceUseUserDisplay();
+  closeServiceUserSheet();
 });
 
 function closeBindingConfirmation() {
@@ -3346,6 +3549,7 @@ bindingConfirmSubmit?.addEventListener("click", () => {
   if (purchaseSuccessBindingHint) purchaseSuccessBindingHint.textContent = `服务用户：${pendingServiceUser.name}（已绑定）`;
   closeBindingConfirmation();
   closeServiceUserSheet();
+  closeServiceUseSheet();
   servicePurchaseSuccessPage?.classList.remove("active");
   serviceDetailPage?.classList.add("active");
   const detailScroll = serviceDetailPage?.querySelector(".detail-scroll");
@@ -3354,6 +3558,7 @@ bindingConfirmSubmit?.addEventListener("click", () => {
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1800);
   pendingServiceUser = null;
+  serviceUseContextKey = "";
 });
 
 purchaseSuccessMore?.addEventListener("click", () => {
@@ -3409,6 +3614,81 @@ detailBack.addEventListener("click", () => {
     servicePage.classList.add("active");
   }
   closeOverlays();
+});
+
+let editingPatientCard = null;
+const patientEditRelation = document.querySelector("#patientEditRelation");
+const patientEditName = document.querySelector("#patientEditName");
+const patientEditCertificateType = document.querySelector("#patientEditCertificateType");
+const patientEditCertificateNumber = document.querySelector("#patientEditCertificateNumber");
+const patientEditGender = document.querySelector("#patientEditGender");
+const patientEditBirth = document.querySelector("#patientEditBirth");
+const patientEditError = document.querySelector("#patientEditError");
+const patientEditConfirm = document.querySelector("#patientEditConfirm");
+
+function openPatientEditPage(card) {
+  editingPatientCard = card;
+  patientEditRelation.value = card.dataset.relation || "其他";
+  patientEditName.value = card.dataset.name || "";
+  patientEditCertificateType.value = card.dataset.certificateType || "居民身份证";
+  patientEditCertificateNumber.value = card.dataset.certificateNumber || "";
+  patientEditGender.value = card.dataset.gender || "男";
+  patientEditBirth.value = card.dataset.birth || "";
+  patientEditError.textContent = "";
+  openSubPage("patientEditPage");
+}
+
+function patientAgeLabel(birthValue) {
+  const birth = new Date(`${birthValue}T00:00:00`);
+  if (Number.isNaN(birth.getTime())) return "";
+  const today = new Date();
+  const days = Math.max(0, Math.floor((today - birth) / 86400000));
+  if (days < 60) return `${days}天`;
+  let years = today.getFullYear() - birth.getFullYear();
+  if (today.getMonth() < birth.getMonth() || (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate())) years -= 1;
+  return `${Math.max(0, years)}岁`;
+}
+
+function maskedPatientCertificate(value) {
+  const clean = value.replace(/\s+/g, "");
+  if (clean.length < 7) return clean;
+  return `${clean.slice(0, 3)}**********${clean.slice(-4)}`;
+}
+
+document.addEventListener("keydown", (event) => {
+  const patientCard = event.target.closest?.("[data-patient-edit]");
+  if (!patientCard || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  openPatientEditPage(patientCard);
+});
+
+patientEditConfirm?.addEventListener("click", () => {
+  const name = patientEditName.value.trim();
+  const certificateNumber = patientEditCertificateNumber.value.trim();
+  if (!name || !patientEditRelation.value || !patientEditCertificateType.value || !certificateNumber || !patientEditGender.value || !patientEditBirth.value) {
+    patientEditError.textContent = "请完整填写就诊人的基本信息";
+    return;
+  }
+  if (!editingPatientCard) return;
+  editingPatientCard.dataset.name = name;
+  editingPatientCard.dataset.relation = patientEditRelation.value;
+  editingPatientCard.dataset.certificateType = patientEditCertificateType.value;
+  editingPatientCard.dataset.certificateNumber = certificateNumber;
+  editingPatientCard.dataset.gender = patientEditGender.value;
+  editingPatientCard.dataset.birth = patientEditBirth.value;
+  const head = editingPatientCard.querySelector(".patient-person-head");
+  const meta = editingPatientCard.querySelectorAll(".patient-person-meta > span");
+  head.querySelector(".patient-monogram").textContent = name.slice(0, 1);
+  head.querySelector("strong").textContent = name;
+  head.querySelector("em").textContent = patientEditRelation.value;
+  meta[0].textContent = patientEditGender.value;
+  meta[1].textContent = patientAgeLabel(patientEditBirth.value);
+  meta[2].textContent = maskedPatientCertificate(certificateNumber);
+  patientEditError.textContent = "";
+  toast.textContent = "就诊人信息已更新";
+  toast.classList.add("show");
+  window.setTimeout(() => toast.classList.remove("show"), 1500);
+  goBackPage();
 });
 
 renderMainCard("improving");

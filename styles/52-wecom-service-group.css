@@ -1,0 +1,273 @@
+.mine-page .archive-wecom-entry {
+  flex: none;
+  width: 118px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(54, 113, 255, 0.22);
+  border-radius: 999px;
+  color: #3671ff;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 5px 14px rgba(54, 113, 255, 0.12);
+}
+
+.mine-page .archive-wecom-entry::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+
+.mine-page .archive-wecom-entry:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.mine-page .archive-wecom-entry.hidden {
+  display: none;
+}
+
+.wecom-service-group-page {
+  min-height: 100vh;
+  padding: 0 16px 48px;
+  overflow: hidden auto;
+  background:
+    radial-gradient(circle at 12% 2%, rgba(255, 255, 255, 0.96) 0 68px, transparent 69px),
+    radial-gradient(circle at 93% 15%, rgba(189, 213, 255, 0.55) 0 78px, transparent 79px),
+    linear-gradient(155deg, #eff9ff 0%, #dcebff 48%, #eef8ff 100%);
+}
+
+.wecom-service-group-page.active::before {
+  top: 13px;
+  right: 20px;
+}
+
+.wecom-service-nav {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 88px;
+  align-items: center;
+  min-height: 44px;
+}
+
+.wecom-service-nav .back-page {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+}
+
+.wecom-service-nav .back-page::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #17233b;
+  border-bottom: 2px solid #17233b;
+  transform: rotate(45deg);
+}
+
+.wecom-service-nav h1 {
+  margin: 0;
+  color: #17233b;
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.wecom-service-nav .archive-capsule {
+  position: relative;
+  width: 88px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 16px rgba(33, 76, 154, 0.08);
+}
+
+.wecom-service-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 8px;
+}
+
+.wecom-service-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 90px;
+}
+
+.wecom-service-bot {
+  display: block;
+  width: 72px;
+  height: 72px;
+  background: url("../assets/portrait-assistant-bot.png?v=20260901-wecom-group-v1") center / contain no-repeat;
+  filter: drop-shadow(0 8px 12px rgba(45, 101, 194, 0.18));
+}
+
+.wecom-service-hero p {
+  position: relative;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px 12px 12px 4px;
+  color: #3671ff;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  box-shadow: 0 8px 20px rgba(45, 101, 194, 0.08);
+}
+
+.wecom-qr-card {
+  margin-top: 8px;
+  padding: 24px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 28px rgba(45, 85, 150, 0.08);
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.wecom-card-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.08);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.wecom-qr-card h2 {
+  margin: 12px 0 0;
+  color: #17233b;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.wecom-qr-card > p {
+  margin: 10px 0 0;
+  color: #52627c;
+  font-size: 13px;
+  line-height: 1.75;
+  text-align: left;
+}
+
+.wecom-qr-figure {
+  display: grid;
+  place-items: center;
+  width: 184px;
+  height: 184px;
+  margin: 22px auto 16px;
+  padding: 10px;
+  border: 2px solid #3671ff;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(54, 113, 255, 0.1);
+}
+
+.wecom-qr-figure img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  -webkit-touch-callout: default;
+  user-select: auto;
+}
+
+.wecom-longpress-tip {
+  display: block;
+  color: #52627c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wecom-qr-card > small {
+  display: block;
+  margin-top: 8px;
+  color: #9aa6b8;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.wecom-service-benefits {
+  margin-top: 16px;
+  padding: 20px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 24px rgba(45, 85, 150, 0.06);
+}
+
+.wecom-service-benefits h2 {
+  margin: 0 0 12px;
+  color: #17233b;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.wecom-service-benefits > div {
+  display: grid;
+  gap: 12px;
+}
+
+.wecom-service-benefits article {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.wecom-service-benefits article > i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  color: #3671ff;
+  background: rgba(54, 113, 255, 0.09);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.wecom-service-benefits article strong {
+  color: #26334b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.wecom-service-benefits article p {
+  margin: 4px 0 0;
+  color: #77849a;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.wecom-service-note {
+  margin: 16px 12px 0;
+  color: #8b97aa;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wecom-service-group-page {
+    scroll-behavior: auto;
+  }
+}

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260820-hide-outer-history-v8">
+  <link rel="stylesheet" href="styles.css?v=20260901-wecom-group-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -550,6 +550,7 @@
               <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
             </section>
             <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
+            <button class="archive-wecom-entry" id="wecomServiceGroupEntry" type="button" data-open-page="wecomServiceGroupPage">加入企微服务群</button>
           </section>
           <section class="archive-progress-card" aria-label="健康评分">
             <div class="archive-score-card">
@@ -677,6 +678,45 @@
           <button class="parse-task-entry" id="parseTaskEntry" type="button">解析</button>
           <button class="upload-fab" id="uploadFab" type="button" aria-label="上传资料">上传</button>
         </section>
+      </section>
+
+      <section class="sub-page wecom-service-group-page" id="wecomServiceGroupPage" aria-label="加入企微服务群">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="wecom-service-nav">
+          <button class="back-page" type="button" aria-label="返回健康服务"></button>
+          <h1>加入企微服务群</h1>
+          <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span>
+            <span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <main class="wecom-service-content">
+          <section class="wecom-service-hero" aria-label="企微服务群介绍">
+            <i class="wecom-service-bot" aria-hidden="true"></i>
+            <p>加入专属服务群，让健康管理服务更及时</p>
+          </section>
+          <section class="wecom-qr-card">
+            <span class="wecom-card-kicker">开启专属您的健康管理服务</span>
+            <h2>加入健康管理服务群</h2>
+            <p>入群后可与健康管理师持续沟通，获得健康任务指导、数据分析点评和阶段方案跟进。</p>
+            <figure class="wecom-qr-figure">
+              <img src="assets/wecom-service-group-qr.png?v=20260901-wecom-group-v1" alt="健康管理服务群二维码">
+            </figure>
+            <strong class="wecom-longpress-tip">长按识别二维码，申请加入企微服务群</strong>
+            <small>二维码与本人健康服务账号关联，请勿转发给他人</small>
+          </section>
+          <section class="wecom-service-benefits" aria-labelledby="wecomServiceBenefitsTitle">
+            <h2 id="wecomServiceBenefitsTitle">获得权益</h2>
+            <div>
+              <article><i aria-hidden="true">01</i><span><strong>与健康管理师一对一沟通</strong><p>咨询饮食、运动、用药记录及方案执行中的问题</p></span></article>
+              <article><i aria-hidden="true">02</i><span><strong>打卡任务智能分析点评</strong><p>根据饮食、运动、体重、血压或血糖打卡给出趋势点评</p></span></article>
+              <article><i aria-hidden="true">03</i><span><strong>健康任务与随访提醒</strong><p>提醒按时打卡、填写量表、复诊、复查和完成阶段随访</p></span></article>
+              <article><i aria-hidden="true">04</i><span><strong>异常指标及时提醒</strong><p>发现连续体重反弹、血压偏高或血糖波动时提示重点关注</p></span></article>
+              <article><i aria-hidden="true">05</i><span><strong>阶段效果复盘与调整</strong><p>定期总结指标变化和执行情况，并提供下一阶段健康建议</p></span></article>
+            </div>
+          </section>
+          <p class="wecom-service-note">如二维码失效或无法识别，请联系平台客服重新获取</p>
+        </main>
       </section>
 
       <section class="sub-page refund-order-page refund-failed-page" id="refundFailedPage" aria-label="退款失败详情">
@@ -1674,17 +1714,20 @@
       </section>
 
       <section class="sub-page settings-page account-settings-page" id="settingsPage" aria-label="设置">
+        <header class="mini-status settings-status"><span>9:41</span><span></span></header>
         <header class="settings-top">
-          <button class="back-page settings-back" type="button" aria-label="返回"></button>
+          <button class="back-page settings-page-title" type="button" aria-label="返回我的页面">我的</button>
           <div class="mini-program-capsule settings-capsule" aria-hidden="true">
             <span class="capsule-more"></span>
             <span class="capsule-close"></span>
           </div>
-          <div class="settings-avatar" aria-hidden="true"></div>
-          <strong id="settingsUserName">用户6162</strong>
+          <div class="settings-account">
+            <div class="settings-avatar" aria-hidden="true"></div>
+            <strong id="settingsUserName">用户4639</strong>
+          </div>
         </header>
         <div class="settings-list settings-card single">
-          <button type="button"><span>档案管理</span><em>共1名</em><b></b></button>
+          <button type="button" data-open-page="patientManagementPage"><span>就诊人管理</span><em>共5名</em><b></b></button>
         </div>
         <div class="settings-list settings-card">
           <button type="button"><span>用户协议</span><b></b></button>
@@ -1692,6 +1735,76 @@
           <button type="button" data-open-page="personalSettingsPage"><span>个人设置</span><em class="danger">未绑定手机号</em><b></b></button>
         </div>
         <button class="logout-btn" id="logoutBtn" type="button">退出登录</button>
+      </section>
+
+      <section class="sub-page patient-management-page" id="patientManagementPage" aria-label="就诊人管理">
+        <header class="mini-status patient-management-status"><span>9:41</span><span></span></header>
+        <header class="patient-management-nav">
+          <button class="back-page patient-management-back" type="button" aria-label="返回设置"></button>
+          <h1>就诊人管理</h1>
+          <button class="mini-program-capsule patient-management-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span>
+            <span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <section class="patient-management-summary" aria-label="就诊人数量及操作">
+          <p>共6名就诊人</p>
+          <button type="button" data-open-page="addFamilyPage"><i aria-hidden="true"></i>添加就诊人</button>
+        </section>
+        <main class="patient-management-list">
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="杨欢欢" data-relation="本人" data-gender="男" data-birth="2007-03-18" data-certificate-type="居民身份证" data-certificate-number="522101200703184523">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">杨</i><strong>杨欢欢</strong><em>本人</em></div>
+            <div class="patient-person-meta"><span>男</span><span>19岁</span><span>522**********4523</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="羊羊羊" data-relation="其他" data-gender="男" data-birth="2008-05-09" data-certificate-type="居民身份证" data-certificate-number="522101200805094879">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">羊</i><strong>羊羊羊</strong><em>其他</em></div>
+            <div class="patient-person-meta"><span>男</span><span>18岁</span><span>522**********4879</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="王欢欢" data-relation="其他" data-gender="男" data-birth="2026-08-18" data-certificate-type="居民身份证" data-certificate-number="522101202608185694">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">王</i><strong>王欢欢</strong><em>其他</em></div>
+            <div class="patient-person-meta"><span>男</span><span>14天</span><span>522**********5694</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="蔡文姬" data-relation="其他" data-gender="女" data-birth="2008-01-16" data-certificate-type="居民身份证" data-certificate-number="522101200801160764">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">蔡</i><strong>蔡文姬</strong><em>其他</em></div>
+            <div class="patient-person-meta"><span>女</span><span>18岁</span><span>522**********0764</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="李元芳" data-relation="其他" data-gender="女" data-birth="2009-06-28" data-certificate-type="居民身份证" data-certificate-number="522101200906287542">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">李</i><strong>李元芳</strong><em>其他</em></div>
+            <div class="patient-person-meta"><span>女</span><span>17岁</span><span>522**********7542</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+          <article class="patient-person-card" role="button" tabindex="0" data-patient-edit data-name="张女士" data-relation="其他" data-gender="女" data-birth="1991-08-12" data-certificate-type="居民身份证" data-certificate-number="452101199108121380">
+            <div class="patient-person-head"><i class="patient-monogram" aria-hidden="true">张</i><strong>张女士</strong><em>其他</em></div>
+            <div class="patient-person-meta"><span>女</span><span>35岁</span><span>452**********1380</span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>
+          </article>
+        </main>
+      </section>
+
+      <section class="sub-page patient-edit-page" id="patientEditPage" aria-label="编辑就诊人">
+        <header class="mini-status patient-edit-status"><span>9:41</span><span></span></header>
+        <header class="patient-edit-nav">
+          <button class="back-page patient-edit-back" type="button" aria-label="返回就诊人管理"></button>
+          <h1>编辑就诊人</h1>
+          <button class="mini-program-capsule patient-edit-capsule" type="button" aria-label="小程序菜单">
+            <span class="capsule-more" aria-hidden="true"></span>
+            <span class="capsule-close" aria-hidden="true"></span>
+          </button>
+        </header>
+        <main class="patient-edit-form" aria-label="就诊人基本信息">
+          <section class="patient-edit-group">
+            <label class="patient-edit-row has-arrow"><span>关系 <em>*</em></span><select id="patientEditRelation" required><option>本人</option><option>父母</option><option>配偶</option><option>子女</option><option>其他</option></select></label>
+          </section>
+          <section class="patient-edit-group">
+            <label class="patient-edit-row"><span>姓名 <em>*</em></span><input id="patientEditName" type="text" maxlength="20" required></label>
+            <label class="patient-edit-row has-arrow"><span>证件类型 <em>*</em></span><select id="patientEditCertificateType" required><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option></select></label>
+            <label class="patient-edit-row"><span>证件号 <em>*</em></span><input id="patientEditCertificateNumber" type="text" maxlength="24" required></label>
+          </section>
+          <section class="patient-edit-group">
+            <label class="patient-edit-row has-arrow"><span>性别 <em>*</em></span><select id="patientEditGender" required><option>男</option><option>女</option></select></label>
+            <label class="patient-edit-row has-arrow"><span>出生日期 <em>*</em></span><input id="patientEditBirth" type="date" required></label>
+          </section>
+        </main>
+        <p class="patient-edit-error" id="patientEditError" role="alert"></p>
+        <footer class="patient-edit-footer"><button id="patientEditConfirm" type="button">确定</button></footer>
       </section>
 
       <section class="sub-page personal-settings-page" id="personalSettingsPage" aria-label="个人设置">
@@ -1711,7 +1824,7 @@
         </section>
         <section class="personal-form-card" aria-label="基本信息设置">
           <h2>基本信息设置</h2>
-          <label><span>昵称 <em>*</em></span><input id="personalNickname" maxlength="10" value="用户6162"></label>
+          <label><span>昵称 <em>*</em></span><input id="personalNickname" maxlength="10" value="用户4639"></label>
           <p>请输入10字以内文字，支持中、英文和数字</p>
           <button type="button" data-personal-phone><span>绑定手机</span><b></b></button>
         </section>
@@ -2396,11 +2509,66 @@
         </footer>
       </section>
 
+      <div class="purchase-intention-mask" id="purchaseIntentionMask" aria-hidden="true"></div>
+      <section class="purchase-intention-sheet" id="purchaseIntentionSheet" role="dialog" aria-modal="true" aria-labelledby="purchaseIntentionPickerTitle">
+        <i class="purchase-intention-handle" aria-hidden="true"></i>
+        <header>
+          <h3 id="purchaseIntentionPickerTitle">选择服务机构</h3>
+          <button id="purchaseIntentionClose" type="button" aria-label="关闭服务意向选择"></button>
+        </header>
+        <div class="purchase-intention-search">
+          <i aria-hidden="true"></i>
+          <input id="purchaseIntentionSearch" type="search" autocomplete="off" placeholder="搜索服务机构" aria-label="搜索服务机构">
+        </div>
+        <p id="purchaseIntentionTip">请选择本次服务意向</p>
+        <div class="purchase-intention-options" id="purchaseIntentionOptions"></div>
+        <footer>
+          <button id="purchaseIntentionCancel" type="button">取消</button>
+          <button id="purchaseIntentionConfirm" type="button">确定</button>
+        </footer>
+      </section>
+
       <div class="purchase-agreement-mask" id="purchaseAgreementMask" aria-hidden="true"></div>
       <section class="bottom-sheet purchase-agreement-sheet" id="purchaseAgreementSheet" aria-label="协议内容">
         <i class="purchase-sheet-handle" aria-hidden="true"></i>
         <header><h3 id="purchaseAgreementTitle">用户协议</h3><button id="purchaseAgreementClose" type="button" aria-label="关闭协议"></button></header>
         <div id="purchaseAgreementContent"></div>
+      </section>
+      <div class="service-use-mask" id="serviceUseMask" aria-hidden="true"></div>
+      <section class="service-use-sheet" id="serviceUseSheet" aria-label="立即使用服务">
+        <i class="service-use-handle" aria-hidden="true"></i>
+        <header><h3>立即使用</h3><button id="serviceUseClose" type="button" aria-label="关闭立即使用面板"></button></header>
+        <div class="service-use-scroll">
+          <section class="service-use-section" aria-labelledby="serviceUserSectionTitle">
+            <div class="service-use-section-heading">
+              <strong id="serviceUserSectionTitle">服务用户</strong>
+              <span>绑定后暂不支持自行更换</span>
+            </div>
+            <button class="service-use-user-row" id="serviceUseUserButton" type="button">
+              <span>就诊人</span>
+              <span class="service-use-user-value"><b id="serviceUseUserValue" class="placeholder">请选择服务用户</b><small id="serviceUseUserMeta"></small><i aria-hidden="true"></i></span>
+            </button>
+          </section>
+          <section class="service-use-section purchase-service-intention" aria-labelledby="purchaseServiceIntentionTitle">
+            <div class="purchase-intention-heading">
+              <strong id="purchaseServiceIntentionTitle">服务意向</strong>
+              <span>用于匹配本次服务团队</span>
+            </div>
+            <button class="purchase-intention-row" type="button" data-purchase-intention="organization">
+              <span>服务机构</span>
+              <span class="purchase-intention-value"><b id="purchaseServiceOrganizationValue">春晓健康管理中心</b><i aria-hidden="true"></i></span>
+            </button>
+            <button class="purchase-intention-row" type="button" data-purchase-intention="department">
+              <span>服务科室</span>
+              <span class="purchase-intention-value"><b id="purchaseServiceDepartmentValue">健康管理科、营养门诊</b><i aria-hidden="true"></i></span>
+            </button>
+            <button class="purchase-intention-row" type="button" data-purchase-intention="manager">
+              <span>健康管理师</span>
+              <span class="purchase-intention-value"><b id="purchaseServiceManagerValue" class="placeholder">请选择</b><i aria-hidden="true"></i></span>
+            </button>
+          </section>
+        </div>
+        <footer><button id="serviceUseConfirm" type="button">确认使用</button></footer>
       </section>
       <div class="service-user-mask" id="serviceUserMask" aria-hidden="true"></div>
       <section class="service-user-sheet" id="serviceUserSheet" aria-label="选择服务用户">
@@ -2412,7 +2580,7 @@
           <label data-service-user-row><span class="service-user-avatar male">李</span><span><strong>李先生</strong><em>男 · 42岁 · 家人</em><small>身份证号：5101**********5678</small></span><input type="radio" name="serviceUser" value="李先生" data-sex="male" data-age="42" data-id-card="5101**********5678"><i aria-hidden="true"></i></label>
           <label data-service-user-row><span class="service-user-avatar child">宝</span><span><strong>小宝</strong><em>男 · 8岁 · 儿童</em><small>身份证号：5101**********9012</small></span><input type="radio" name="serviceUser" value="小宝" data-sex="male" data-age="8" data-id-card="5101**********9012"><i aria-hidden="true"></i></label>
         </div>
-        <button class="service-user-confirm" id="serviceUserConfirm" type="button">确认绑定</button>
+        <button class="service-user-confirm" id="serviceUserConfirm" type="button">确定</button>
       </section>
       <div class="binding-confirm-mask" id="bindingConfirmMask" aria-hidden="true"></div>
       <section class="binding-confirm-dialog" id="bindingConfirmDialog" role="dialog" aria-modal="true" aria-label="确认绑定服务用户">
@@ -2541,15 +2709,15 @@
     <img id="uiNoteImageViewerImage" alt="批注截图大图">
   </div>
 
-  <script src="scripts/00-dom-state.js?v=20260820-home-anomaly-markers-v3"></script>
-  <script src="scripts/01-data-store.js?v=20260817-portrait-overall-analysis-v3"></script>
+  <script src="scripts/00-dom-state.js?v=20260901-wecom-group-v1"></script>
+  <script src="scripts/01-data-store.js?v=20260831-service-team-defaults-v1"></script>
   <script src="scripts/10-schedule.js?v=20260820-attention-label-abdomen-v5"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260820-report-navigation-stack-v7"></script>
   <script src="scripts/60-metrics.js?v=20260817-portrait-overall-analysis-v3"></script>
-  <script src="scripts/70-events-init.js?v=20260820-hide-outer-history-v8"></script>
+  <script src="scripts/70-events-init.js?v=20260901-patient-edit-v1"></script>
   <script src="scripts/80-ui-notes.js?v=20260831-direct-summary-v17"></script>
 </body>
 </html>

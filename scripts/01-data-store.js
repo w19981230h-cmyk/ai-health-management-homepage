@@ -90,7 +90,8 @@ const packages = [
     desc: "通过个性化饮食和运动方案，帮助您健康减重，塑造理想体型。",
     price: "¥299",
     sales: "月销量 9,860+",
-    img: "img-weight"
+    img: "img-weight",
+    serviceTeam: { organization: "春晓健康管理中心", departments: ["健康管理科", "营养门诊"] }
   },
   {
     id: "sugar",
@@ -99,7 +100,8 @@ const packages = [
     desc: "科学管理血糖水平，帮助您稳定血糖，降低并发风险。",
     price: "¥299",
     sales: "月销量 7,560+",
-    img: "img-sugar"
+    img: "img-sugar",
+    serviceTeam: { organization: "广西医科大学第一附属医院", departments: ["内分泌科", "营养门诊"] }
   },
   {
     id: "pressure",
@@ -108,7 +110,8 @@ const packages = [
     desc: "个性化血压管理方案，帮助您稳定血压，守护心脑血管健康。",
     price: "¥299",
     sales: "月销量 6,230+",
-    img: "img-pressure"
+    img: "img-pressure",
+    serviceTeam: { organization: "南宁市第一人民医院", departments: ["心血管内科"] }
   },
   {
     id: "nutrition",
@@ -117,7 +120,8 @@ const packages = [
     desc: "专业营养师定制营养方案，改善饮食结构，提升身体健康。",
     price: "¥199",
     sales: "月销量 5,120+",
-    img: "img-nutrition"
+    img: "img-nutrition",
+    serviceTeam: { organization: "春晓健康管理中心", departments: ["营养门诊"] }
   },
   {
     id: "comprehensive",
@@ -126,7 +130,8 @@ const packages = [
     desc: "全方位健康管理，涵盖多项指标，为您提供一站式健康解决方案。",
     price: "¥399",
     sales: "月销量 3,420+",
-    img: "img-comprehensive"
+    img: "img-comprehensive",
+    serviceTeam: { organization: "春晓健康管理中心", departments: ["健康管理科", "全科医学科"] }
   }
 ];
 

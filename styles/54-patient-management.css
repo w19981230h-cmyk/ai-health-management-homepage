@@ -1,0 +1,258 @@
+.patient-management-page {
+  min-height: max(812px, calc(100vh - 48px));
+  margin-bottom: -112px;
+  padding: 0 16px 32px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: #17233f;
+  background: #f5f6f8;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.patient-management-page.active ~ .tabbar {
+  display: none;
+}
+
+.patient-management-status {
+  margin: 0 -4px;
+  padding-bottom: 6px;
+}
+
+.patient-management-nav {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 56px;
+}
+
+.patient-management-nav h1 {
+  margin: 0;
+  color: #17233f;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.patient-management-back {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+}
+
+.patient-management-back::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  width: 13px;
+  height: 13px;
+  border-left: 2px solid #17233f;
+  border-bottom: 2px solid #17233f;
+  transform: rotate(45deg);
+}
+
+.patient-management-capsule {
+  position: absolute;
+  grid-area: auto;
+  right: 0;
+  top: 8px;
+  width: 87px;
+  height: 32px;
+  border: 1px solid rgba(3, 16, 46, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+}
+
+.patient-management-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 4px 0 8px;
+}
+
+.patient-management-summary p {
+  margin: 0;
+  color: #7e8799;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.patient-management-summary button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0;
+  color: #3671ff;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.patient-management-summary button i {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #3671ff;
+  border-radius: 50%;
+}
+
+.patient-management-summary button i::before,
+.patient-management-summary button i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 2px;
+  border-radius: 2px;
+  background: #3671ff;
+  transform: translate(-50%, -50%);
+}
+
+.patient-management-summary button i::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.patient-management-list {
+  display: grid;
+  gap: 16px;
+}
+
+.patient-person-card {
+  min-height: 112px;
+  padding: 14px 12px 10px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(213, 225, 242, 0.22);
+}
+
+.patient-person-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #e6e9ef;
+}
+
+.patient-monogram {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  border-radius: 50%;
+  color: #2f74ff;
+  background: linear-gradient(145deg, #f4f7ff, #e8edff);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.patient-person-head strong {
+  margin-left: 16px;
+  color: #17233f;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+
+.patient-person-head em {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  min-width: 38px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: #fff;
+  background: #3671ff;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: center;
+}
+
+.patient-person-meta {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) 26px;
+  align-items: center;
+  min-height: 36px;
+  color: #5f687b;
+  font-size: 15px;
+}
+
+.patient-person-meta > span {
+  position: relative;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.patient-person-meta > span:first-child {
+  padding-left: 0;
+}
+
+.patient-person-meta > span:not(:last-of-type)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 1px;
+  height: 14px;
+  background: #eceef2;
+  transform: translateY(-50%);
+}
+
+.patient-person-meta > span:nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-id-hidden-icon {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+.patient-id-hidden-icon::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 16px;
+  height: 10px;
+  border: 2px solid #697286;
+  border-radius: 50% / 60%;
+  transform: rotate(-7deg);
+}
+
+.patient-id-hidden-icon::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 12px;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: #697286;
+  transform: rotate(45deg);
+}
+
+.patient-management-page button:focus-visible {
+  outline: 2px solid #3671ff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .patient-management-page * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
