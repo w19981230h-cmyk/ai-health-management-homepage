@@ -33,6 +33,123 @@
   display: none;
 }
 
+.home-wecom-reminder {
+  position: fixed;
+  left: calc(50% - 171.5px);
+  bottom: 72px;
+  z-index: 21;
+  width: 343px;
+  min-height: 72px;
+  padding: 6px 36px 6px 6px;
+  border: 1px solid rgba(54, 113, 255, 0.2);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 10px 28px rgba(18, 46, 132, 0.18);
+  animation: home-wecom-reminder-in 0.28s ease-out both;
+}
+
+.home-wecom-reminder.is-suppressed {
+  display: none !important;
+}
+
+.home-wecom-reminder-action {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 58px;
+  padding: 0;
+  color: #03102e;
+  background: transparent;
+  text-align: left;
+}
+
+.home-wecom-reminder-action > i {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background:
+    url("../assets/portrait-assistant-bot.png?v=20260901-wecom-group-v1") center / 38px 38px no-repeat,
+    linear-gradient(145deg, #eef5ff, #dceaff);
+}
+
+.home-wecom-reminder-action > span {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.home-wecom-reminder-action strong {
+  color: #122e84;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.home-wecom-reminder-action em {
+  color: #5f6f91;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.home-wecom-reminder-action > b {
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #3671ff;
+  border-right: 2px solid #3671ff;
+  transform: rotate(45deg);
+}
+
+.home-wecom-reminder-close {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f1f4fa;
+}
+
+.home-wecom-reminder-close::before,
+.home-wecom-reminder-close::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  width: 12px;
+  height: 1.5px;
+  border-radius: 999px;
+  background: #7c879e;
+  transform: rotate(45deg);
+}
+
+.home-wecom-reminder-close::after {
+  transform: rotate(-45deg);
+}
+
+.home-wecom-reminder-action:focus-visible,
+.home-wecom-reminder-close:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.home-wecom-reminder:not(.is-suppressed) ~ .add-button {
+  bottom: 158px;
+}
+
+@keyframes home-wecom-reminder-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-wecom-reminder {
+    animation: none;
+  }
+}
+
 .wecom-service-group-page {
   min-height: 100vh;
   padding: 0 16px 48px;

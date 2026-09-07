@@ -95,6 +95,67 @@ document.querySelectorAll(".family-list button:not(.add-family-entry)").forEach(
   });
 });
 
+const mainlandIdWeights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+const mainlandIdChecks = "10X98765432";
+
+function parseMainlandId(value) {
+  const idNumber = value.replace(/\s+/g, "").toUpperCase();
+  if (!/^\d{17}[\dX]$/.test(idNumber)) return null;
+  const checksum = mainlandIdWeights.reduce((sum, weight, index) => sum + Number(idNumber[index]) * weight, 0);
+  if (mainlandIdChecks[checksum % 11] !== idNumber[17]) return null;
+  const year = Number(idNumber.slice(6, 10));
+  const month = Number(idNumber.slice(10, 12));
+  const day = Number(idNumber.slice(12, 14));
+  const birthDate = new Date(Date.UTC(year, month - 1, day));
+  const today = new Date();
+  if (
+    birthDate.getUTCFullYear() !== year ||
+    birthDate.getUTCMonth() !== month - 1 ||
+    birthDate.getUTCDate() !== day ||
+    year < 1900 ||
+    birthDate.getTime() > Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+  ) return null;
+  return {
+    birth: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+    gender: Number(idNumber[16]) % 2 === 1 ? "男" : "女"
+  };
+}
+
+function setIdLinkageMessage(element, message = "", isError = false) {
+  if (!element) return;
+  element.textContent = message;
+  element.classList.toggle("show", Boolean(message));
+  element.classList.toggle("error", Boolean(message) && isError);
+}
+
+const familyCertificateNumber = document.querySelector("#familyCertificateNumber");
+const familyBirth = document.querySelector("#familyBirth");
+const familyGenderButtons = [...document.querySelectorAll("#familyGender [data-gender]")];
+const familyIdLinkage = document.querySelector("#familyIdLinkage");
+
+familyGenderButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    familyGenderButtons.forEach((item) => item.classList.toggle("active", item === button));
+  });
+});
+
+familyCertificateNumber?.addEventListener("input", () => {
+  const idNumber = familyCertificateNumber.value.replace(/\s+/g, "").toUpperCase();
+  familyCertificateNumber.value = idNumber;
+  if (idNumber.length < 18) {
+    setIdLinkageMessage(familyIdLinkage);
+    return;
+  }
+  const profile = parseMainlandId(idNumber);
+  if (!profile) {
+    setIdLinkageMessage(familyIdLinkage, "身份证号格式或校验位不正确，请核对后重试", true);
+    return;
+  }
+  familyBirth.value = profile.birth;
+  familyGenderButtons.forEach((button) => button.classList.toggle("active", button.dataset.gender === profile.gender));
+  setIdLinkageMessage(familyIdLinkage, `已自动识别：${profile.gender} · ${profile.birth}`);
+});
+
 document.querySelector("#saveFamily").addEventListener("click", () => {
   document.querySelectorAll(".sub-page").forEach((page) => page.classList.remove("active"));
   document.querySelector("#familySwitchPage").classList.add("active");
@@ -707,6 +768,21 @@ function updateWecomServiceGroupEntry() {
   wecomServiceGroupEntry?.classList.toggle("hidden", currentPatient.id !== "self");
 }
 
+const wecomGroupBoundPatients = new Set();
+let homeWecomReminderDismissed = false;
+
+function updateHomeWecomReminder() {
+  const shouldPrompt = currentPatient.id === "self"
+    && !wecomGroupBoundPatients.has(currentPatient.id)
+    && !homeWecomReminderDismissed;
+  homeWecomReminder?.classList.toggle("is-suppressed", !shouldPrompt);
+}
+
+homeWecomReminderClose?.addEventListener("click", () => {
+  homeWecomReminderDismissed = true;
+  updateHomeWecomReminder();
+});
+
 function updateCurrentPatientView() {
   if (profileNameButton) {
     const archiveSwitcher = profileNameButton.closest(".archive-member-switcher");
@@ -731,6 +807,7 @@ function updateCurrentPatientView() {
     profileGenderAge.textContent = currentPatient.age ? `${sexLabel}｜${currentPatient.age}岁` : `${sexLabel}｜待完善`;
   }
   updateWecomServiceGroupEntry();
+  updateHomeWecomReminder();
   renderPeriodCard();
   renderPeriodDetail();
   updateCycleReminderVisibility();
@@ -1069,7 +1146,7 @@ const orderStatusMeta = {
 };
 
 function isAfterSalesOrder(order) {
-  return ["refunding", "refunded"].includes(order.status) || order.refundRequest?.status === "failed";
+  return ["refunding", "refunded"].includes(order.status);
 }
 
 function sortedServiceOrders(status = "all") {
@@ -1078,8 +1155,8 @@ function sortedServiceOrders(status = "all") {
       || order.status === status
       || (status === "after_sales" && isAfterSalesOrder(order)))
     .sort((a, b) => {
-      const aPriority = a.refundRequest?.status === "failed" ? 3 : orderStatusMeta[a.status].priority;
-      const bPriority = b.refundRequest?.status === "failed" ? 3 : orderStatusMeta[b.status].priority;
+      const aPriority = orderStatusMeta[a.status].priority;
+      const bPriority = orderStatusMeta[b.status].priority;
       const priorityDiff = aPriority - bPriority;
       return priorityDiff || b.orderTime.localeCompare(a.orderTime);
     });
@@ -1104,8 +1181,7 @@ function renderServiceOrders(status = "all") {
   updateOrderStatusCounts();
   orderServiceList.innerHTML = sortedServiceOrders(status).map((order) => {
     const service = packages.find((item) => item.id === order.serviceId) || packages[0];
-    const isFailedAfterSales = status === "after_sales" && order.refundRequest?.status === "failed";
-    const statusMeta = isFailedAfterSales ? { label: "已完成" } : orderStatusMeta[order.status];
+    const statusMeta = orderStatusMeta[order.status];
     const cycleText = order.status === "pending"
       ? '<em class="order-cycle">服务周期：1个月</em>'
       : order.status === "effective"
@@ -1113,16 +1189,21 @@ function renderServiceOrders(status = "all") {
         : order.status === "completed"
           ? `<em class="order-cycle">完成时间：${order.completedAt || "--"}</em>`
           : "";
+    const hasRefundFailure = order.refundRequest?.status === "failed";
+    const refundFailureTip = hasRefundFailure
+      ? '<p class="order-refund-failure-tip">平台审核未通过，退款失败</p>'
+      : "";
     const useButton = order.status === "pending" && status !== "after_sales"
       ? `<button class="order-use-button" type="button" data-order-use aria-label="立即使用${service.title}">立即使用</button>`
       : "";
     const statusBadge = status === "all" || status === "after_sales"
-      ? `<b class="order-status status-${isFailedAfterSales ? "refund-failed" : order.status}">${statusMeta.label}</b>`
+      ? `<b class="order-status status-${order.status}">${statusMeta.label}</b>`
       : "";
-    return `<article class="archive-service-card order-card-${isFailedAfterSales ? "refund-failed" : order.status}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
+    return `<article class="archive-service-card order-card-${order.status}${hasRefundFailure ? " has-refund-failure" : ""}" data-order-id="${order.id}" data-service-id="${order.serviceId}" data-order-status="${order.status}" role="button" tabindex="0" aria-label="查看${service.title}订单详情">
       <i class="owned-img ${service.img}" aria-hidden="true"></i>
       <span><strong>${service.title}</strong><em class="order-time">下单时间：${order.orderTime}</em>${cycleText}<em class="order-amount">金额：<b>${service.price}</b></em></span>
       <div class="archive-service-actions">${statusBadge}${useButton}</div>
+      ${refundFailureTip}
     </article>`;
   }).join("");
 }
@@ -1414,8 +1495,7 @@ function openOrderCard(card) {
   if (!card) return;
   const order = serviceOrders.find((item) => item.id === card.dataset.orderId);
   if (!order) return;
-  const activeOrderTab = orderStatusTabs?.querySelector("[data-order-tab].active")?.dataset.orderTab || "all";
-  if (activeOrderTab === "after_sales" && order.refundRequest?.status === "failed") {
+  if (order.refundRequest?.status === "failed") {
     openRefundFailedDetail(order);
     return;
   }
@@ -3484,6 +3564,14 @@ refundRetryButton?.addEventListener("click", () => {
   openRefundApplication();
 });
 
+refundFailedUseButton?.addEventListener("click", () => {
+  if (!activeServiceOrder || activeServiceOrder.status !== "pending") return;
+  activePurchaseService = packages.find((item) => item.id === activeServiceOrder.serviceId) || packages[0];
+  boundServiceState = null;
+  openServiceDetail(activeServiceOrder.serviceId, "orders", activeServiceOrder.id);
+  openServiceUseSheet();
+});
+
 function closeServiceUserSheet() {
   serviceUserSheet?.classList.remove("active");
   serviceUserMask?.classList.remove("active");
@@ -3623,6 +3711,7 @@ const patientEditCertificateType = document.querySelector("#patientEditCertifica
 const patientEditCertificateNumber = document.querySelector("#patientEditCertificateNumber");
 const patientEditGender = document.querySelector("#patientEditGender");
 const patientEditBirth = document.querySelector("#patientEditBirth");
+const patientEditIdLinkage = document.querySelector("#patientEditIdLinkage");
 const patientEditError = document.querySelector("#patientEditError");
 const patientEditConfirm = document.querySelector("#patientEditConfirm");
 
@@ -3634,9 +3723,34 @@ function openPatientEditPage(card) {
   patientEditCertificateNumber.value = card.dataset.certificateNumber || "";
   patientEditGender.value = card.dataset.gender || "男";
   patientEditBirth.value = card.dataset.birth || "";
+  setIdLinkageMessage(patientEditIdLinkage);
   patientEditError.textContent = "";
   openSubPage("patientEditPage");
 }
+
+function syncPatientEditIdentity() {
+  if (patientEditCertificateType.value !== "居民身份证") {
+    setIdLinkageMessage(patientEditIdLinkage);
+    return;
+  }
+  const idNumber = patientEditCertificateNumber.value.replace(/\s+/g, "").toUpperCase();
+  patientEditCertificateNumber.value = idNumber;
+  if (idNumber.length < 18) {
+    setIdLinkageMessage(patientEditIdLinkage);
+    return;
+  }
+  const profile = parseMainlandId(idNumber);
+  if (!profile) {
+    setIdLinkageMessage(patientEditIdLinkage, "身份证号格式或校验位不正确，请核对后重试", true);
+    return;
+  }
+  patientEditGender.value = profile.gender;
+  patientEditBirth.value = profile.birth;
+  setIdLinkageMessage(patientEditIdLinkage, `已自动识别：${profile.gender} · ${profile.birth}`);
+}
+
+patientEditCertificateNumber?.addEventListener("input", syncPatientEditIdentity);
+patientEditCertificateType?.addEventListener("change", syncPatientEditIdentity);
 
 function patientAgeLabel(birthValue) {
   const birth = new Date(`${birthValue}T00:00:00`);

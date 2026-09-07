@@ -787,6 +787,9 @@
 
 .refund-failed-footer {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   flex: none;
   z-index: 12;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
@@ -805,6 +808,18 @@
   box-shadow: 0 6px 14px rgba(54, 113, 255, 0.2);
   font-size: 15px;
   font-weight: 800;
+}
+
+.refund-failed-footer .refund-failed-retry {
+  border: 1px solid #b9cdfd;
+  color: #3671ff;
+  background: #fff;
+  box-shadow: none;
+}
+
+.refund-failed-footer .refund-failed-use {
+  color: #fff;
+  background: #3671ff;
 }
 
 .refund-withdraw-mask {

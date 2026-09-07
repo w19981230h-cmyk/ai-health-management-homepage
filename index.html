@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260901-wecom-group-v1">
+  <link rel="stylesheet" href="styles.css?v=20260904-refund-failure-footer-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -680,6 +680,15 @@
         </section>
       </section>
 
+      <aside class="home-wecom-reminder home-only" id="homeWecomReminder" aria-label="加入企微服务群提醒">
+        <button class="home-wecom-reminder-action" type="button" data-open-page="wecomServiceGroupPage">
+          <i aria-hidden="true"></i>
+          <span><strong>加入企微服务群</strong><em>与健康管理师及时沟通，获取任务提醒和健康指导</em></span>
+          <b aria-hidden="true"></b>
+        </button>
+        <button class="home-wecom-reminder-close" id="homeWecomReminderClose" type="button" aria-label="关闭入群提醒"></button>
+      </aside>
+
       <section class="sub-page wecom-service-group-page" id="wecomServiceGroupPage" aria-label="加入企微服务群">
         <header class="mini-status"><span>9:41</span><span></span></header>
         <header class="wecom-service-nav">
@@ -740,7 +749,7 @@
               <div><strong id="refundFailedTitle">90天减重管理服务包</strong><p>服务周期：90天</p><em id="refundFailedAmount">¥299</em></div>
             </article>
             <dl class="refund-order-info">
-              <div><dt>退款状态</dt><dd>已完成</dd></div>
+              <div><dt>退款状态</dt><dd>已失败</dd></div>
               <div><dt>处理结果</dt><dd class="refund-failed-text">平台审核未通过</dd></div>
               <div><dt>退款金额</dt><dd id="refundFailedMoney">¥299</dd></div>
               <div><dt>退款原因</dt><dd id="refundFailedRequestReason">暂时不需要该服务</dd></div>
@@ -752,7 +761,10 @@
             </dl>
           </section>
         </main>
-        <footer class="refund-failed-footer"><button id="refundRetryButton" type="button">再次申请退款</button></footer>
+        <footer class="refund-failed-footer">
+          <button class="refund-failed-retry" id="refundRetryButton" type="button">再次申请退款</button>
+          <button class="refund-failed-use" id="refundFailedUseButton" type="button">立即使用</button>
+        </footer>
       </section>
 
       <section class="sub-page hospital-record-page" id="hospitalRecordPage" aria-label="医院同步住院病历">
@@ -905,8 +917,9 @@
         <header class="sub-nav"><button class="back-page" type="button"></button><h1>添加家庭成员</h1></header>
         <form class="family-form">
           <label>关系<input readonly placeholder="请选择关系"></label><label>姓名<input placeholder="请输入姓名"></label>
-          <label>性别<span><button class="radio" type="button">男</button><button class="radio active" type="button">女</button></span></label>
-          <label>出生日期<input readonly placeholder="请选择出生日期"></label><label>手机号<input placeholder="请输入手机号"></label><label>身份证号<input placeholder="请输入身份证号（选填）"></label>
+          <label>性别<span id="familyGender"><button class="radio" type="button" data-gender="男">男</button><button class="radio active" type="button" data-gender="女">女</button></span></label>
+          <label>出生日期<input id="familyBirth" readonly placeholder="请选择出生日期"></label><label>手机号<input placeholder="请输入手机号"></label><label>身份证号<input id="familyCertificateNumber" maxlength="18" autocomplete="off" placeholder="请输入身份证号（选填）"></label>
+          <p class="family-id-linkage" id="familyIdLinkage" aria-live="polite"></p>
         </form><button class="save-family" type="button" id="saveFamily">保存</button>
       </section>
 
@@ -1796,7 +1809,8 @@
           <section class="patient-edit-group">
             <label class="patient-edit-row"><span>姓名 <em>*</em></span><input id="patientEditName" type="text" maxlength="20" required></label>
             <label class="patient-edit-row has-arrow"><span>证件类型 <em>*</em></span><select id="patientEditCertificateType" required><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option></select></label>
-            <label class="patient-edit-row"><span>证件号 <em>*</em></span><input id="patientEditCertificateNumber" type="text" maxlength="24" required></label>
+            <label class="patient-edit-row"><span>证件号 <em>*</em></span><input id="patientEditCertificateNumber" type="text" maxlength="24" autocomplete="off" required></label>
+            <p class="patient-id-linkage" id="patientEditIdLinkage" aria-live="polite"></p>
           </section>
           <section class="patient-edit-group">
             <label class="patient-edit-row has-arrow"><span>性别 <em>*</em></span><select id="patientEditGender" required><option>男</option><option>女</option></select></label>
@@ -2709,7 +2723,7 @@
     <img id="uiNoteImageViewerImage" alt="批注截图大图">
   </div>
 
-  <script src="scripts/00-dom-state.js?v=20260901-wecom-group-v1"></script>
+  <script src="scripts/00-dom-state.js?v=20260902-home-wecom-reminder-v1"></script>
   <script src="scripts/01-data-store.js?v=20260831-service-team-defaults-v1"></script>
   <script src="scripts/10-schedule.js?v=20260820-attention-label-abdomen-v5"></script>
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
@@ -2717,7 +2731,7 @@
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260820-report-navigation-stack-v7"></script>
   <script src="scripts/60-metrics.js?v=20260817-portrait-overall-analysis-v3"></script>
-  <script src="scripts/70-events-init.js?v=20260901-patient-edit-v1"></script>
+  <script src="scripts/70-events-init.js?v=20260904-refund-failure-footer-v1"></script>
   <script src="scripts/80-ui-notes.js?v=20260831-direct-summary-v17"></script>
 </body>
 </html>

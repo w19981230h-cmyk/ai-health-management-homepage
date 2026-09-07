@@ -722,6 +722,18 @@
   font-weight: 750;
 }
 
+.archive-service-card .order-refund-failure-tip {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+  padding: 8px 2px 0;
+  border-top: 1px solid rgba(217, 45, 32, 0.1);
+  color: #d92d20;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
 .archive-service-card .order-amount {
   color: #4b5870;
   font-size: 11px;
@@ -2738,6 +2750,17 @@
 
 .family-form input::placeholder { color: #b4bdca; }
 .family-form label span { display: flex; justify-content: flex-end; gap: 12px; }
+.family-id-linkage {
+  display: none;
+  margin: 0;
+  padding: 8px 14px 10px 100px;
+  color: #3671ff;
+  background: #f7f9ff;
+  font-size: 12px;
+  line-height: 18px;
+}
+.family-id-linkage.show { display: block; }
+.family-id-linkage.error { color: #ff4d4f; }
 .radio { color: #344054; background: transparent; }
 .radio::before { content: ""; display: inline-block; width: 16px; height: 16px; margin-right: 5px; border: 1px solid #d0d5dd; border-radius: 50%; vertical-align: -3px; }
 .radio.active::before { border-color: var(--color-primary); background: radial-gradient(circle, var(--color-primary) 0 5px, transparent 6px); }
