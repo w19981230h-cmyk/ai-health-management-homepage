@@ -604,7 +604,7 @@
               <div class="pill-tabs" id="medicalCategoryTabs">
                 <button class="active" type="button" data-category="全部">全部</button><button type="button" data-category="就诊记录">就诊记录</button><button type="button" data-category="处方记录">处方记录</button><button type="button" data-category="报告单">报告单</button>
               </div>
-              <button class="history-entry" type="button" data-profile-tab="history">健康史</button>
+              <button class="history-entry" type="button" data-open-page="healthHistoryPage">健康史</button>
             </div>
             <div class="report-list" id="medicalReportList"></div>
           </section>
@@ -627,13 +627,6 @@
                 </article>
               </div>
             </section>
-          </section>
-          <section class="history-panel profile-panel" data-profile-panel="history">
-            <article><span>既往史</span><strong>高血压病史 3 年</strong></article>
-            <article><span>手术史</span><strong>暂无手术史</strong></article>
-            <article><span>过敏史</span><strong>青霉素过敏</strong></article>
-            <article><span>家族史</span><strong>父亲有高血压病史</strong></article>
-            <article><span>用药史</span><strong>长期服用降压药</strong></article>
           </section>
           <section class="assessment-panel profile-panel" data-profile-panel="assessment">
             <div class="assessment-group done">
@@ -688,6 +681,35 @@
         </button>
         <button class="home-wecom-reminder-close" id="homeWecomReminderClose" type="button" aria-label="关闭入群提醒"></button>
       </aside>
+
+      <section class="sub-page health-history-page" id="healthHistoryPage" aria-label="健康史">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="archive-nav health-history-nav">
+          <button class="back-page" type="button" aria-label="返回健康档案"></button>
+          <h1>健康史</h1>
+          <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单"><span class="capsule-more" aria-hidden="true"></span><span class="capsule-close" aria-hidden="true"></span></button>
+        </header>
+        <section class="health-history-hero">
+          <span>AI分析</span>
+          <h2>补充健康史</h2>
+          <p>记录过往健康情况，帮助获得更贴合你的健康建议。</p>
+          <img src="assets/assessment-health-robot.png" alt="" aria-hidden="true">
+        </section>
+        <div class="health-history-list" id="healthHistoryList" aria-live="polite"></div>
+      </section>
+
+      <section class="sub-page health-history-editor-page" id="healthHistoryEditorPage" aria-label="编辑健康史">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="archive-nav health-history-nav">
+          <button class="back-page" type="button" aria-label="返回健康史"></button>
+          <h1 id="healthHistoryEditorTitle">既往史</h1>
+          <button class="mini-program-capsule archive-capsule" type="button" aria-label="小程序菜单"><span class="capsule-more" aria-hidden="true"></span><span class="capsule-close" aria-hidden="true"></span></button>
+        </header>
+        <div class="health-history-editor-hint"><img src="assets/assessment-health-robot.png" alt="" aria-hidden="true"><span>补充过往健康情况，让我更好的为您服务～</span></div>
+        <div id="healthHistoryEditorContent"></div>
+        <p class="health-history-editor-error" id="healthHistoryEditorError" role="alert"></p>
+        <footer class="health-history-editor-footer"><button id="healthHistoryEditorSave" type="button">保存</button></footer>
+      </section>
 
       <section class="sub-page wecom-service-group-page" id="wecomServiceGroupPage" aria-label="加入企微服务群">
         <header class="mini-status"><span>9:41</span><span></span></header>
@@ -2649,6 +2671,15 @@
     </section>
   </main>
 
+  <div class="health-history-overlay health-history-confirm" id="healthHistoryConfirm" hidden>
+    <button class="health-history-scrim" type="button" data-history-cancel-delete aria-label="取消删除"></button>
+    <section class="health-history-dialog" role="alertdialog" aria-modal="true" aria-labelledby="healthHistoryConfirmTitle" aria-describedby="healthHistoryConfirmText">
+      <h2 id="healthHistoryConfirmTitle">确认删除？</h2>
+      <p id="healthHistoryConfirmText">确认后将在本次编辑中移除该记录，点击保存后生效。</p>
+      <footer><button type="button" data-history-cancel-delete>取消</button><button type="button" id="healthHistoryDeleteConfirm">确认删除</button></footer>
+    </section>
+  </div>
+
   <aside class="ui-note-toolbar" id="uiNoteToolbar" data-ui-note-ui aria-label="界面批注工具">
     <button id="uiNoteAdd" type="button">添加批注</button>
     <button id="uiNoteToggle" type="button">显示批注</button>
@@ -2730,8 +2761,9 @@
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
   <script src="scripts/50-reports-services.js?v=20260820-report-navigation-stack-v7"></script>
-  <script src="scripts/60-metrics.js?v=20260817-portrait-overall-analysis-v3"></script>
+  <script src="scripts/60-metrics.js?v=20260921-health-history-v1"></script>
   <script src="scripts/70-events-init.js?v=20260904-refund-failure-footer-v1"></script>
+  <script src="scripts/75-health-history.js?v=20260921-v9"></script>
   <script src="scripts/80-ui-notes.js?v=20260831-direct-summary-v17"></script>
 </body>
 </html>

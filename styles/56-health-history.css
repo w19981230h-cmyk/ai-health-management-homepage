@@ -1,0 +1,94 @@
+.health-history-page.sub-page {
+  min-height: calc(100vh - 62px);
+  padding: 0 10px 108px;
+  background: linear-gradient(180deg, #eef5ff 0, #f3f7fa 340px, #f3f7fa 100%);
+}
+
+.health-history-page .mini-status, .health-history-editor-page .mini-status { padding-left: 16px; padding-right: 16px; }
+.health-history-nav { padding: 0 14px; min-height: 56px; }
+.health-history-nav h1 { font-size: 18px; color: var(--color-text); }
+.health-history-nav .archive-capsule { width: 88px; height: 32px; border: 1px solid #e0e3e9; border-radius: 18px; background: #fff; }
+.health-history-page.active::before, .health-history-editor-page.active::before { display: none; }
+
+.health-history-hero {
+  position: relative;
+  min-height: 150px;
+  padding: 19px 14px 16px;
+  overflow: hidden;
+}
+.health-history-hero > span { display: inline-block; padding: 3px 8px; border-radius: 4px; color: #fff; background: #3671ff; font-size: 12px; font-weight: 600; }
+.health-history-hero h2 { margin: 9px 0 5px; color: #122e84; font-size: 24px; line-height: 1.25; font-weight: 700; }
+.health-history-hero p { position: relative; z-index: 1; width: 235px; margin: 0; color: #697589; font-size: 14px; line-height: 1.6; }
+.health-history-hero img { position: absolute; right: -8px; top: 13px; width: 112px; height: 112px; object-fit: contain; }
+
+.health-history-list { display: grid; gap: 16px; }
+.health-history-card { padding: 18px 19px 16px; border-radius: 16px; background: #fff; box-shadow: var(--shadow-panel); }
+.health-history-card > header { display: flex; align-items: center; justify-content: space-between; min-height: 30px; margin-bottom: 11px; }
+.health-history-card h2 { position: relative; margin: 0; padding-left: 12px; color: #122e84; font-size: 17px; font-weight: 600; }
+.health-history-card h2::before { content: ""; position: absolute; left: 0; top: 3px; height: 20px; width: 4px; border-radius: 2px; background: var(--color-primary); }
+.health-history-card > header button { padding: 4px 2px 4px 10px; color: var(--color-primary); background: transparent; font-size: 14px; font-weight: 500; }
+.health-history-records { border-radius: 16px; background: #f4f8ff; padding: 2px 13px; }
+.health-history-record { min-height: 64px; padding: 12px 0; border-bottom: 1px solid #e5edfb; }
+.health-history-record:last-child { border-bottom: 0; }
+.health-history-record-copy { display: flex; flex-direction: column; min-width: 0; gap: 3px; color: #122e84; font-size: 12px; line-height: 1.5; }
+.health-history-record-copy strong { color: #122e84; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.health-history-record-copy span { color: #7787a3; overflow-wrap: anywhere; }
+.health-history-empty { margin: 0; padding: 21px 2px; color: #a8b1c1; font-size: 14px; }
+
+.health-history-overlay[hidden] { display: none !important; }
+.health-history-overlay { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-end; justify-content: center; }
+.health-history-scrim { position: absolute; inset: 0; width: 100%; background: rgba(3, 16, 46, .36); cursor: default; }
+.health-history-dialog h2 { margin: 0; color: var(--color-text); font-size: 18px; font-weight: 600; }
+.health-history-dialog footer { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 13px 20px max(18px, env(safe-area-inset-bottom)); border-top: 1px solid #eef1f7; }
+.health-history-dialog footer button { min-height: 44px; border-radius: 10px; color: var(--color-primary); background: #edf3ff; font-size: 14px; font-weight: 500; }
+.health-history-dialog footer button:last-child { color: #fff; background: var(--color-primary); }
+.health-history-confirm { align-items: center; padding: 20px; }
+.health-history-dialog { position: relative; width: min(100%, 335px); padding-top: 22px; border-radius: 16px; background: #fff; text-align: center; overflow: hidden; }
+.health-history-dialog p { margin: 12px 24px 20px; color: var(--color-text-secondary); font-size: 14px; line-height: 1.6; }
+.health-history-dialog footer { padding-bottom: 18px; }
+.health-history-dialog footer button:last-child { background: var(--color-error); }
+
+/* Category editor follows the supplied patient-facing form reference. */
+.health-history-editor-page.sub-page {
+  min-height: calc(100vh - 62px);
+  padding: 0 8px 120px;
+  background: linear-gradient(180deg, #eef5ff 0, #f4f7fb 280px, #f4f7fb 100%);
+}
+.health-history-editor-hint { display: flex; align-items: center; gap: 9px; min-height: 50px; margin: 14px 0 13px; padding: 4px 10px 4px 5px; border-radius: 6px; color: #3671ff; background: #e5eeff; font-size: 13px; }
+.health-history-editor-hint img { width: 42px; height: 42px; object-fit: contain; border: 2px solid #a7c1fd; border-radius: 50%; background: #e9f3ff; }
+#healthHistoryEditorContent { display: grid; gap: 14px; }
+.health-history-editor-card { padding: 15px 14px 18px; border-radius: 16px; background: #fff; box-shadow: var(--shadow-panel); }
+.health-history-editor-card > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 45px; padding-bottom: 14px; border-bottom: 1px solid #edf0f6; }
+.health-history-editor-card > header h2 { position: relative; margin: 0; padding-left: 12px; color: #122e84; font-size: 17px; font-weight: 600; }
+.health-history-editor-card > header h2::before { content: ""; position: absolute; left: 0; top: 2px; width: 4px; height: 20px; border-radius: 2px; background: var(--color-primary); }
+.health-history-presence { display: flex; gap: 14px; }
+.health-history-presence button { width: 48px; height: 34px; border-radius: 5px; color: #7f8999; background: #f3f6fa; font-size: 15px; }
+.health-history-presence button.active { color: #fff; background: var(--color-primary); }
+.health-history-common { padding: 15px 0 14px; }
+.health-history-common > div:first-child { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.health-history-common > div:first-child span { color: #adb7c8; font-size: 14px; }
+.health-history-common > div:first-child button, .health-history-add-row button { padding: 4px 0 4px 8px; color: var(--color-primary); background: none; font-size: 14px; }
+.health-history-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.health-history-chips button { min-height: 34px; padding: 4px 2px; border-radius: 5px; color: #516da8; background: #f2f5fa; font-size: 13px; white-space: nowrap; }
+.health-history-add-row { display: flex; justify-content: flex-end; min-height: 52px; align-items: center; }
+.health-history-editor-records { display: grid; gap: 12px; }
+.health-history-editor-record { overflow: hidden; border-radius: 10px; background: #f8faff; }
+.health-history-editor-record > header { display: flex; align-items: center; justify-content: space-between; min-height: 51px; padding: 0 11px; }
+.health-history-editor-record > header strong { display: inline-flex; align-items: center; gap: 8px; color: #122e84; font-size: 14px; font-weight: 600; }
+.health-history-editor-record > header strong b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #4e73b6; background: #eef3ff; font-weight: 500; }
+.health-history-editor-record > header button { padding: 7px 1px; color: #5672aa; background: transparent; font-size: 13px; }
+.health-history-editor-field { display: grid; grid-template-columns: 105px minmax(0, 1fr); align-items: center; min-height: 48px; gap: 4px; padding: 0 11px; border-top: 1px solid #edf2fb; }
+.health-history-editor-field > span { color: #828c9e; font-size: 13px; white-space: nowrap; }
+.health-history-editor-field em { color: var(--color-error); font-style: normal; }
+.health-history-editor-field small { margin-left: 3px; color: #b8c2d3; font-size: 10px; }
+.health-history-editor-field input, .health-history-editor-field select { min-width: 0; width: 100%; height: 46px; padding: 0 2px; border: 0; outline: 0; color: #36475f; background: transparent; font: inherit; font-size: 13px; }
+.health-history-editor-field input::placeholder { color: #b8c2d3; }
+.health-history-editor-field:focus-within { background: #eef5ff; }
+.health-history-none-hint { margin: 0; padding: 24px 3px 10px; color: #9da8bb; font-size: 13px; }
+.health-history-editor-error { min-height: 21px; margin: 8px 10px; color: var(--color-error); font-size: 12px; }
+.health-history-editor-footer { position: fixed; z-index: 50; left: 50%; bottom: 0; transform: translateX(-50%); width: min(375px, 100%); padding: 10px 8px max(18px, env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); }
+.health-history-editor-footer button { width: 100%; height: 44px; border-radius: 8px; color: #fff; background: var(--color-primary); font-size: 15px; font-weight: 600; }
+
+@media (max-width: 420px) { .health-history-editor-footer { width: 100%; } }
+
+@media (max-width: 420px) { .health-history-overlay { position: fixed; } }
