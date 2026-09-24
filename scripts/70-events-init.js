@@ -403,14 +403,85 @@ const portraitReportProfiles = {
         ]
       }
     }
+  },
+  weight: {
+    name: "体重管理",
+    active: "overview",
+    overview: {
+      label: "综合总结",
+      title: "体重管理",
+      summary: "当前体重相关状态仍需要持续管理，虽然近期已有一定改善。近3个月体重较前下降，运动频率也较前增加，建议继续保持当前体重管理节奏。",
+      priority: [],
+      routine: [
+        { title: "体重仍需持续管理", text: "当前体重相关状态仍需要持续管理，虽然近期已有一定改善。", metric: "BMI 27.2 kg/m²" }
+      ],
+      positive: [
+        { title: "体重管理有所改善", text: "近3个月体重较前下降。" },
+        { title: "规律运动有所改善", text: "近期每周规律运动次数较前增加。" }
+      ],
+      advice: ["继续做好饮食及体重相关健康管理。", "保持规律运动，并继续保持当前体重管理节奏。"]
+    },
+    tabs: [],
+    sections: {}
+  },
+  sleep: {
+    name: "睡眠健康",
+    active: "overview",
+    overview: {
+      label: "综合总结",
+      title: "睡眠健康",
+      summary: "近期平均睡眠时间偏短，建议继续关注睡眠时长和作息规律。当前平均睡眠为5.9小时/晚，仍需要长期管理。",
+      priority: [],
+      routine: [
+        { title: "睡眠情况需要持续关注", text: "近期平均睡眠时间偏短，建议继续关注睡眠时长和作息规律。", metric: "平均睡眠 5.9小时/晚" }
+      ],
+      positive: [],
+      advice: ["逐步改善睡眠时间和作息习惯。"]
+    },
+    tabs: [],
+    sections: {}
   }
 };
 
 let activePortraitReportProfile = "throat";
 
 function getPortraitReportProfile(organId) {
-  if (organId === "heart") return portraitReportProfiles.heart;
-  return portraitReportProfiles.throat;
+  return portraitReportProfiles[organId] || portraitReportProfiles.throat;
+}
+
+function portraitHistoryStatusClass(status) {
+  if (status === "正常" || status === "稳定" || status === "改善") return "is-normal";
+  if (status === "异常") return "is-abnormal";
+  if (status === "需关注") return "is-attention";
+  return "is-pending";
+}
+
+function renderPortraitDataHistory(card, sectionId, cardIndex) {
+  const records = Array.isArray(card.history) ? card.history : [];
+  if (records.length <= 1) return "";
+  return `
+    <section class="report-metric-history portrait-data-history" data-portrait-data-history>
+      <button class="report-metric-history-toggle" type="button" data-portrait-history-toggle aria-expanded="false">
+        <span><strong>历史数据</strong><em>共 ${records.length} 次</em></span><i aria-hidden="true"></i>
+      </button>
+      <div class="report-metric-history-body" hidden>
+        <div class="report-metric-history-list">
+          ${records.map((record, index) => `
+            <article class="report-metric-history-record${index === 0 ? " is-current" : ""}${index >= 3 ? " is-extra" : ""}">
+              <i class="report-metric-history-node" aria-hidden="true"></i>
+              <div class="report-metric-history-record-head">
+                <time datetime="${String(record.date || "").replaceAll(".", "-")}">${record.date || ""}</time>
+                ${index === 0 ? "<em>当前</em>" : ""}
+                <b class="${portraitHistoryStatusClass(record.status)}">${record.status || "正常"}</b>
+              </div>
+              <strong>${card.name}</strong>
+              <p>${record.value}</p>
+              <button type="button" data-portrait-history-open data-portrait-metric-section="${sectionId}" data-portrait-metric-index="${cardIndex}"><span>来源</span>${record.source || card.source || "健康数据"}<i aria-hidden="true"></i></button>
+            </article>`).join("")}
+        </div>
+        ${records.length > 3 ? `<button class="report-metric-history-more" type="button" data-portrait-history-more>展开更多（${records.length - 3}）</button>` : ""}
+      </div>
+    </section>`;
 }
 
 function renderPortraitReportSection(profile, sectionId) {
@@ -455,13 +526,16 @@ function renderPortraitReportSection(profile, sectionId) {
   }
   if (dataList) {
     dataList.innerHTML = section.cards.map((card, cardIndex) => `
-      <article class="portrait-report-data-card" role="button" tabindex="0" data-portrait-report-card-name="${card.name}" data-portrait-metric-section="${sectionId}" data-portrait-metric-index="${cardIndex}" aria-label="查看${card.name}资料详情">
-        ${card.source || card.date || card.metaAction ? `<div class="portrait-report-meta">${card.source ? `<span>${card.source}</span>` : ""}${card.metaAction ? `<span class="portrait-report-meta-action">${card.metaAction}</span>` : card.date ? `<span>${card.timeLabel || "报告时间"}：${card.date}</span>` : ""}</div>` : ""}
-        <div class="portrait-report-data-main${card.media ? "" : " no-media"}">
-          <div><strong>${card.name}${card.status ? `<em class="${card.status === "正常" || card.status === "稳定" || card.status === "改善" ? "is-normal" : ""}">${card.status}</em>` : ""}</strong><p>${card.value}${card.reference ? ` <span>（${card.reference}）</span>` : ""}</p>${card.detailAction ? `<span class="portrait-report-detail-action">${card.detailAction} ›</span>` : ""}</div>
-          ${card.media ? `<div class="portrait-report-card-actions"><button class="${card.media === "document" ? "portrait-report-doc" : "portrait-report-thumb"}" type="button" aria-label="预览${card.name}原始报告"></button></div>` : ""}
-        </div>
-      </article>`).join("");
+      <section class="portrait-report-data-group${Array.isArray(card.history) && card.history.length > 1 ? " has-history" : ""}">
+        <article class="portrait-report-data-card" role="button" tabindex="0" data-portrait-report-card-name="${card.name}" data-portrait-metric-section="${sectionId}" data-portrait-metric-index="${cardIndex}" aria-label="查看${card.name}资料详情">
+          ${card.source || card.date || card.metaAction ? `<div class="portrait-report-meta">${card.source ? `<span>${card.source}</span>` : ""}${card.metaAction ? `<span class="portrait-report-meta-action">${card.metaAction}</span>` : card.date ? `<span>${card.timeLabel || "报告时间"}：${card.date}</span>` : ""}</div>` : ""}
+          <div class="portrait-report-data-main${card.media ? "" : " no-media"}">
+            <div><strong>${card.name}${card.status ? `<em class="${card.status === "正常" || card.status === "稳定" || card.status === "改善" ? "is-normal" : ""}">${card.status}</em>` : ""}</strong><p>${card.value}${card.reference ? ` <span>（${card.reference}）</span>` : ""}</p>${card.detailAction ? `<span class="portrait-report-detail-action">${card.detailAction} ›</span>` : ""}</div>
+            ${card.media ? `<div class="portrait-report-card-actions"><button class="${card.media === "document" ? "portrait-report-doc" : "portrait-report-thumb"}" type="button" aria-label="预览${card.name}原始报告"></button></div>` : ""}
+          </div>
+        </article>
+        ${renderPortraitDataHistory(card, sectionId, cardIndex)}
+      </section>`).join("");
   }
   if (adviceList) adviceList.innerHTML = section.advice.map((item) => `<article><strong>${item.title}</strong><p>${item.text}</p></article>`).join("");
   document.querySelector("#portraitReportSheet .portrait-report-scroll")?.scrollTo({ top: 0 });
@@ -487,18 +561,18 @@ function renderPortraitCategoryOverview(profile, container) {
       <div class="portrait-overall-section-title"><i>01</i><h3>综合分析</h3></div>
       <p>${overview.summary}</p>
     </section>
-    <section class="portrait-overall-block priority">
+    ${overview.priority.length ? `<section class="portrait-overall-block priority">
       <div class="portrait-overall-section-title"><i>02</i><h3>优先关注</h3><em class="portrait-overall-count">${overview.priority.length}项</em></div>
       ${attentionItems(overview.priority)}
-    </section>
-    <section class="portrait-overall-block routine">
+    </section>` : ""}
+    ${overview.routine.length ? `<section class="portrait-overall-block routine">
       <div class="portrait-overall-section-title"><i>03</i><h3>日常关注</h3><em class="portrait-overall-count">${overview.routine.length}项</em></div>
       ${attentionItems(overview.routine)}
-    </section>
-    <section class="portrait-overall-block positive">
+    </section>` : ""}
+    ${overview.positive.length ? `<section class="portrait-overall-block positive">
       <div class="portrait-overall-section-title"><i>04</i><h3>积极情况</h3></div>
       <ul>${overview.positive.map((item) => `<li><strong>${item.title}</strong><span>${item.text}</span></li>`).join("")}</ul>
-    </section>
+    </section>` : ""}
     <section class="portrait-overall-block recommendation">
       <div class="portrait-overall-section-title"><i>05</i><h3>健康建议</h3></div>
       <ol>${overview.advice.map((item, index) => `<li><b>${String(index + 1).padStart(2, "0")}</b><span>${item}</span></li>`).join("")}</ol>
@@ -508,7 +582,7 @@ function renderPortraitCategoryOverview(profile, container) {
 }
 
 function openPortraitReportSheet(organId = "throat") {
-  activePortraitReportProfile = organId === "heart" ? "heart" : "throat";
+  activePortraitReportProfile = portraitReportProfiles[organId] ? organId : "throat";
   const profile = getPortraitReportProfile(organId);
   const reportSheet = document.querySelector("#portraitReportSheet");
   if (reportSheet) reportSheet.dataset.portraitProfile = activePortraitReportProfile;
@@ -605,6 +679,25 @@ function openPortraitMetricReport(sectionId, cardIndex) {
 }
 
 document.querySelector("#portraitReportDataList")?.addEventListener("click", (event) => {
+  const historyToggle = event.target.closest("[data-portrait-history-toggle]");
+  if (historyToggle) {
+    const historyBody = historyToggle.nextElementSibling;
+    const expanded = historyToggle.getAttribute("aria-expanded") === "true";
+    historyToggle.setAttribute("aria-expanded", String(!expanded));
+    if (historyBody) historyBody.hidden = expanded;
+    return;
+  }
+  const historyMore = event.target.closest("[data-portrait-history-more]");
+  if (historyMore) {
+    historyMore.closest("[data-portrait-data-history]")?.querySelectorAll(".is-extra").forEach((record) => record.classList.remove("is-extra"));
+    historyMore.hidden = true;
+    return;
+  }
+  const historyOpen = event.target.closest("[data-portrait-history-open]");
+  if (historyOpen) {
+    openPortraitMetricReport(historyOpen.dataset.portraitMetricSection, historyOpen.dataset.portraitMetricIndex);
+    return;
+  }
   const metricCard = event.target.closest("[data-portrait-metric-section]");
   if (!metricCard) return;
   if (event.target.closest(".portrait-report-card-actions") && !event.target.closest(".portrait-report-thumb, .portrait-report-doc")) return;
@@ -646,6 +739,11 @@ function openPortraitOverallSheet() {
 
 document.querySelector("#portraitOverallSummaryEntry")?.addEventListener("click", openPortraitOverallSheet);
 document.querySelector("#portraitOverallClose")?.addEventListener("click", closeOverlays);
+document.querySelector("#portraitOverallSheet")?.addEventListener("click", (event) => {
+  const detailLink = event.target.closest("[data-portrait-overall-profile]");
+  if (!detailLink) return;
+  openPortraitReportSheet(detailLink.dataset.portraitOverallProfile);
+});
 
 const cycleRules = {
   none: {
@@ -1087,6 +1185,14 @@ document.querySelector(".cycle-confirm").addEventListener("click", () => {
   }
 });
 
+function renderPackageMarketingTag(item) {
+  if (!item.marketingLabel) return "";
+  const allowedTypes = new Set(["ranking", "popular", "new"]);
+  const tagType = allowedTypes.has(item.marketingType) ? item.marketingType : "popular";
+  const tagIcon = tagType === "ranking" ? '<i aria-hidden="true">🔥</i>' : "";
+  return `<span class="package-marketing-tag is-${tagType}">${tagIcon}${item.marketingLabel}</span>`;
+}
+
 function renderPackages(filter = "all") {
   const visible = filter === "all" ? packages : packages.filter((item) => item.id === filter);
   packageList.innerHTML = visible.map((item) => `
@@ -1095,7 +1201,7 @@ function renderPackages(filter = "all") {
       <div class="package-info">
         <h3>${item.title}</h3>
         <p class="package-tags">${item.tags}</p>
-        <p class="package-sales"><strong>${item.price}</strong><span>${item.sales}</span></p>
+        <p class="package-sales"><strong>${item.price}</strong>${renderPackageMarketingTag(item)}</p>
       </div>
       <i class="package-arrow"></i>
     </article>
@@ -1110,7 +1216,7 @@ function renderHomePackages() {
       <div class="package-info">
         <h3>${item.title}</h3>
         <p class="package-tags">${item.tags}</p>
-        <p class="package-sales"><strong>${item.price}</strong><span>${item.sales}</span></p>
+        <p class="package-sales"><strong>${item.price}</strong>${renderPackageMarketingTag(item)}</p>
       </div>
       <i class="package-arrow" aria-hidden="true"></i>
     </article>

@@ -1870,6 +1870,44 @@
   font-weight: 800;
 }
 
+.package-sales .package-marketing-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 1px 6px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.package-sales .package-marketing-tag i {
+  margin-right: 2px;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.package-sales .package-marketing-tag.is-ranking {
+  border-color: rgba(255, 77, 79, 0.14);
+  background: #fff1ed;
+  color: #d84b33;
+}
+
+.package-sales .package-marketing-tag.is-popular {
+  border-color: rgba(244, 149, 41, 0.16);
+  background: #fff7e8;
+  color: #ad6218;
+}
+
+.package-sales .package-marketing-tag.is-new {
+  border-color: rgba(54, 113, 255, 0.14);
+  background: #edf4ff;
+  color: #2465c7;
+}
+
 .package-arrow {
   align-self: center;
   width: 8px;
@@ -6030,6 +6068,15 @@
   overflow: hidden;
 }
 
+.portrait-report-data-group {
+  display: grid;
+  min-width: 0;
+}
+
+.portrait-report-data-group + .portrait-report-data-group {
+  border-top: 1px solid rgba(54, 113, 255, 0.1);
+}
+
 .portrait-report-data-card {
   padding: 14px 12px 13px;
   border-radius: 0;
@@ -6045,6 +6092,28 @@
 
 .portrait-report-data-card + .portrait-report-data-card {
   border-top: 1px solid rgba(54, 113, 255, 0.1);
+}
+
+.portrait-report-data-group .portrait-data-history {
+  margin: 0 12px 12px;
+  padding: 0;
+  border: 1px solid #e1e9f8;
+  border-radius: 12px;
+  background: #f7f9fd;
+  overflow: hidden;
+}
+
+.portrait-report-data-group .portrait-data-history .report-metric-history-toggle strong {
+  color: #1d2c49;
+  font-size: 13px;
+}
+
+.portrait-report-data-group .portrait-data-history .report-metric-history-body {
+  padding: 18px 14px;
+}
+
+.portrait-report-data-group .portrait-data-history .report-metric-history-record > button {
+  cursor: pointer;
 }
 
 .portrait-report-pressure-card {
@@ -6275,6 +6344,20 @@
   background: transparent;
   box-shadow: none;
   overflow: visible;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-group {
+  gap: 8px;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-group + .portrait-report-data-group {
+  border-top: 0;
+}
+
+.portrait-report-sheet[data-portrait-profile="heart"] .portrait-data-history {
+  margin: 0;
+  border-radius: 13px;
+  box-shadow: 0 4px 12px rgba(60, 82, 128, 0.035);
 }
 
 .portrait-report-sheet[data-portrait-profile="heart"] .portrait-report-data-card {
