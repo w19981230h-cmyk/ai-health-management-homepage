@@ -1021,22 +1021,7 @@ memberSwitcher.addEventListener("click", (event) => {
   }
 
   if (addMemberButton) {
-    addedMemberCount += 1;
-    const newMember = document.createElement("button");
-    newMember.className = "member-chip";
-    newMember.type = "button";
-    newMember.dataset.state = "initial";
-    newMember.dataset.name = `新成员${addedMemberCount}`;
-    newMember.dataset.meta = "待补充 · 家庭成员";
-    newMember.dataset.patientId = `new-${addedMemberCount}`;
-    newMember.dataset.sex = "unknown";
-    newMember.setAttribute("aria-label", `新成员${addedMemberCount} 待评估`);
-    newMember.innerHTML = `
-      <span class="member-avatar avatar-new">新</span>
-      <strong class="patient-chip-name">新成员${addedMemberCount}</strong>
-    `;
-    memberSwitcher.insertBefore(newMember, addMemberButton);
-    selectMember(newMember);
+    openSubPage("addFamilyPage");
   }
 });
 

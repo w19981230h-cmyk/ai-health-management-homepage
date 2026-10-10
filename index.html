@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI健康管理小程序首页</title>
-  <link rel="stylesheet" href="styles.css?v=20260924-service-marketing-tags-v10">
+  <link rel="stylesheet" href="styles.css?v=20261010-patient-add-v1">
 </head>
 <body>
   <main class="app-shell">
@@ -547,7 +547,7 @@
                 <span class="member-avatar avatar-risk">张</span>
                 <strong class="patient-chip-name">张患者</strong>
               </button>
-              <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加家庭成员"><span aria-hidden="true"></span></button>
+              <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加就诊人"><span aria-hidden="true"></span></button>
             </section>
             <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
             <button class="archive-wecom-entry" id="wecomServiceGroupEntry" type="button" data-open-page="wecomServiceGroupPage">加入企微服务群</button>
@@ -935,14 +935,42 @@
         </div>
       </section>
 
-      <section class="sub-page form-page" id="addFamilyPage" aria-label="添加家庭成员">
-        <header class="sub-nav"><button class="back-page" type="button"></button><h1>添加家庭成员</h1></header>
-        <form class="family-form">
-          <label>关系<input readonly placeholder="请选择关系"></label><label>姓名<input placeholder="请输入姓名"></label>
-          <label>性别<span id="familyGender"><button class="radio" type="button" data-gender="男">男</button><button class="radio active" type="button" data-gender="女">女</button></span></label>
-          <label>出生日期<input id="familyBirth" readonly placeholder="请选择出生日期"></label><label>手机号<input placeholder="请输入手机号"></label><label>身份证号<input id="familyCertificateNumber" maxlength="18" autocomplete="off" placeholder="请输入身份证号（选填）"></label>
-          <p class="family-id-linkage" id="familyIdLinkage" aria-live="polite"></p>
-        </form><button class="save-family" type="button" id="saveFamily">保存</button>
+      <section class="sub-page patient-add-page" id="addFamilyPage" aria-label="添加健康档案">
+        <header class="mini-status patient-add-status"><span>9:41</span><span></span></header>
+        <header class="patient-add-nav">
+          <button class="back-page patient-add-back" type="button" aria-label="返回"></button>
+          <h1>添加健康档案</h1>
+          <button class="mini-program-capsule patient-add-capsule" type="button" aria-label="小程序菜单"><span class="capsule-more" aria-hidden="true"></span><span class="capsule-close" aria-hidden="true"></span></button>
+        </header>
+        <form class="patient-add-form" id="patientAddForm" novalidate>
+          <section class="patient-add-group">
+            <label class="patient-add-row has-arrow"><span>关系 <em>*</em></span><select id="familyRelation" required><option value="" selected disabled>请选择</option><option>本人</option><option>父母</option><option>配偶</option><option>子女</option><option>其他</option></select></label>
+          </section>
+          <section class="patient-add-group">
+            <label class="patient-add-row"><span>姓名 <em>*</em></span><input id="familyName" type="text" maxlength="20" placeholder="请选择" autocomplete="name" required></label>
+            <label class="patient-add-row has-arrow"><span>证件类型 <em>*</em></span><select id="familyCertificateType" required><option value="" selected disabled>请选择</option><option>居民身份证</option><option>护照</option><option>港澳居民来往内地通行证</option><option>台湾居民来往大陆通行证</option></select></label>
+            <label class="patient-add-row"><span>证件号 <em>*</em></span><input id="familyCertificateNumber" type="text" maxlength="24" placeholder="请输入" autocomplete="off" required></label>
+          </section>
+          <section class="patient-add-group">
+            <label class="patient-add-row has-arrow"><span>性别 <em>*</em></span><select id="familyGender" required><option value="" selected disabled>请选择</option><option>男</option><option>女</option></select></label>
+            <label class="patient-add-row has-arrow patient-add-date"><span>出生日期 <em>*</em></span><span class="patient-add-date-control"><input id="familyBirth" type="date" required aria-label="出生日期"><span class="patient-add-date-placeholder">请选择</span></span></label>
+          </section>
+          <section class="patient-add-group">
+            <label class="patient-add-row"><span>手机号 <em>*</em></span><input id="familyPhone" type="tel" inputmode="tel" maxlength="11" placeholder="请填写" autocomplete="tel" required></label>
+          </section>
+        </form>
+        <footer class="patient-add-footer"><p class="patient-add-error" id="familyAddError" role="alert"></p><button type="button" id="saveFamily">确定</button></footer>
+        <div class="patient-add-home-indicator" aria-hidden="true"></div>
+        <div class="patient-auth-overlay" id="patientAuthPrompt" hidden>
+          <section class="patient-auth-dialog" role="dialog" aria-modal="true" aria-labelledby="patientAuthTitle" aria-describedby="patientAuthDescription">
+            <h2 id="patientAuthTitle">邀请本人授权？</h2>
+            <p id="patientAuthDescription">就诊人本人授权后，可共享健康档案，共同管理健康信息。</p>
+            <div class="patient-auth-actions">
+              <button id="patientAuthLater" type="button">暂不邀请</button>
+              <button id="patientAuthInvite" type="button">邀请本人授权</button>
+            </div>
+          </section>
+        </div>
       </section>
 
       <section class="sub-page" id="familySwitchPage" aria-label="切换家庭成员">
@@ -952,7 +980,7 @@
           <button type="button" data-patient-id="father" data-name="爸爸" data-sex="male" data-age="57"><i class="avatar-man"></i><span><strong>爸爸</strong><em>男｜57岁</em></span><b></b></button>
           <button type="button" data-patient-id="mother" data-name="妈妈" data-sex="female" data-age="55"><i class="profile-avatar small"></i><span><strong>妈妈</strong><em>女｜55岁</em></span><b></b></button>
           <button type="button" data-patient-id="son" data-name="儿子" data-sex="male" data-age="10"><i class="avatar-boy"></i><span><strong>儿子</strong><em>男｜10岁</em></span><b></b></button>
-        </div><button class="add-family-entry" type="button" data-open-page="addFamilyPage">+ 添加家庭成员</button>
+        </div><button class="add-family-entry" type="button" data-open-page="addFamilyPage">+ 添加就诊人</button>
       </section>
 
       <section class="sub-page health-portrait-page" id="healthPortraitPage" aria-label="健康画像">
@@ -2760,10 +2788,10 @@
   <script src="scripts/20-diet-sport-detail.js?v=20260807-diet-task-empty-sport-v1"></script>
   <script src="scripts/30-medicine.js?v=20260731-medicine-proof-image-v1"></script>
   <script src="scripts/40-checkin-forms.js?v=20260728-health-data-manual-v1"></script>
-  <script src="scripts/50-reports-services.js?v=20260820-report-navigation-stack-v7"></script>
+  <script src="scripts/50-reports-services.js?v=20261010-patient-add-v1"></script>
   <script src="scripts/60-metrics.js?v=20260921-health-history-v1"></script>
-  <script src="scripts/70-events-init.js?v=20260924-service-marketing-tags-v10"></script>
-  <script src="scripts/75-health-history.js?v=20260921-v9"></script>
+  <script src="scripts/70-events-init.js?v=20261010-patient-auth-v3"></script>
+  <script src="scripts/75-health-history.js?v=20260924-single-category-editor-v11"></script>
   <script src="scripts/80-ui-notes.js?v=20260831-direct-summary-v17"></script>
 </body>
 </html>

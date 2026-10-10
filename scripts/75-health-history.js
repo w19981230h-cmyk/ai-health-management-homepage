@@ -21,6 +21,7 @@
   };
   const list = document.querySelector("#healthHistoryList");
   const content = document.querySelector("#healthHistoryEditorContent");
+  const editorTitle = document.querySelector("#healthHistoryEditorTitle");
   const confirm = document.querySelector("#healthHistoryConfirm");
   const error = document.querySelector("#healthHistoryEditorError");
   let draftRecords = {};
@@ -36,6 +37,14 @@
       if (saved && typeof saved === "object") return saved;
     } catch (_) { /* use preview data */ }
     return structuredClone(patientId() === "self" ? sample : Object.fromEntries(categories.map((category) => [category.key, []])));
+  }
+  function categoryPresence(data, category) {
+    if (data._presence?.[category.key] === "none" || legacyNever(data, category.key)) return "none";
+    if (data._presence?.[category.key] === "has") return "has";
+    return Array.isArray(data[category.key]) && data[category.key].length ? "has" : "pending";
+  }
+  function isEntireHistoryPending(data = read()) {
+    return categories.every((category) => categoryPresence(data, category) === "pending");
   }
   function write(data) { localStorage.setItem(storageKey(), JSON.stringify(data)); renderOverview(); }
   function medicationRecord(record) {
@@ -100,32 +109,49 @@
     const records = draftRecords[key];
     const presence = draftPresence[key];
     const tools = key === "diseases" ? `<div class="health-history-common"><div><span>常见疾病</span><button type="button" data-history-add="${key}">⊕ ${category.addLabel}</button></div><div class="health-history-chips">${commonDiseases.map((name) => `<button type="button" data-history-chip="${escape(name)}">${escape(name)}</button>`).join("")}</div></div>` : `<div class="health-history-add-row">${!category.single || records.length === 0 ? `<button type="button" data-history-add="${key}">⊕ ${category.addLabel}</button>` : ""}</div>`;
-    return `<section class="health-history-editor-card" data-history-editor-card="${key}"><header><h2>${category.title}</h2><div class="health-history-presence"><button type="button" data-history-presence="has" class="${presence === "has" ? "active" : ""}" aria-pressed="${presence === "has"}">有</button><button type="button" data-history-presence="none" class="${presence === "none" ? "active" : ""}" aria-pressed="${presence === "none"}">无</button></div></header>${presence === "has" ? `${tools}<div class="health-history-editor-records">${records.map((record, index) => `<article class="health-history-editor-record"><header><strong><b>${index + 1}</b>${category.itemTitle}</strong><button type="button" data-history-remove="${index}">删除</button></header>${category.fields.map((field) => renderField(category, field, record, index)).join("")}</article>`).join("")}</div>` : '<p class="health-history-none-hint">已选择无相关健康史，保存后将在总览中显示“无”。</p>'}</section>`;
+    const body = presence === "has"
+      ? `${tools}<div class="health-history-editor-records">${records.map((record, index) => `<article class="health-history-editor-record"><header><strong><b>${index + 1}</b>${category.itemTitle}</strong><button type="button" data-history-remove="${index}">删除</button></header>${category.fields.map((field) => renderField(category, field, record, index)).join("")}</article>`).join("")}</div>`
+      : presence === "none"
+        ? '<p class="health-history-none-hint">已选择无相关健康史，保存后将在总览中显示“无”。</p>'
+        : '<p class="health-history-none-hint is-pending">待补充</p>';
+    return `<section class="health-history-editor-card" data-history-editor-card="${key}"><header><h2>${category.title}</h2><div class="health-history-presence"><button type="button" data-history-presence="has" class="${presence === "has" ? "active" : ""}" aria-pressed="${presence === "has"}">有</button><button type="button" data-history-presence="none" class="${presence === "none" ? "active" : ""}" aria-pressed="${presence === "none"}">无</button></div></header>${body}</section>`;
   }
-  function renderEditor() { content.innerHTML = categories.map(renderEditorCard).join(""); }
+  function renderEditor(onlyKey = "") {
+    const visibleCategories = onlyKey ? categories.filter((category) => category.key === onlyKey) : categories;
+    content.innerHTML = visibleCategories.map(renderEditorCard).join("");
+  }
   function refreshCard(key) {
     const card = content.querySelector(`[data-history-editor-card="${key}"]`);
     if (card) card.outerHTML = renderEditorCard(categoryFor(key));
   }
-  function openEditor(focusKey) {
+  function openEditor(focusKey, singleCategory = false) {
     const data = read();
     draftRecords = Object.fromEntries(categories.map((category) => {
       const records = !legacyNever(data, category.key) && Array.isArray(data[category.key]) ? data[category.key].slice(0, category.single ? 1 : undefined) : [];
       return [category.key, structuredClone(category.key === "medications" ? records.map(medicationRecord) : records)];
     }));
-    draftPresence = Object.fromEntries(categories.map((category) => [category.key, data._presence?.[category.key] === "none" || legacyNever(data, category.key) ? "none" : "has"]));
+    draftPresence = Object.fromEntries(categories.map((category) => [category.key, categoryPresence(data, category)]));
     error.textContent = "";
-    renderEditor();
+    const focusedCategory = categoryFor(focusKey);
+    if (editorTitle) editorTitle.textContent = singleCategory ? (focusedCategory?.editorTitle || focusedCategory?.title || "编辑健康史") : "既往史";
+    renderEditor(singleCategory ? focusKey : "");
     openSubPage("healthHistoryEditorPage");
     const target = content.querySelector(`[data-history-editor-card="${focusKey}"]`);
-    if (focusKey === "diseases") document.querySelector("#healthHistoryEditorPage").scrollIntoView({ block: "start" });
+    if (singleCategory || focusKey === "diseases") document.querySelector("#healthHistoryEditorPage").scrollIntoView({ block: "start" });
     else target?.scrollIntoView({ block: "center" });
   }
   function closeConfirm() { confirm.hidden = true; deletingRecord = null; }
   list.addEventListener("click", (event) => {
     const button = event.target.closest("[data-history-category]");
-    if (button) openEditor(button.dataset.historyCategory);
+    if (button) openEditor(button.dataset.historyCategory, true);
   });
+  document.addEventListener("click", (event) => {
+    const opener = event.target.closest('[data-open-page="healthHistoryPage"]');
+    if (!opener || !isEntireHistoryPending()) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    openEditor("diseases");
+  }, true);
   content.addEventListener("click", (event) => {
     const presence = event.target.closest("[data-history-presence]");
     const add = event.target.closest("[data-history-add]");

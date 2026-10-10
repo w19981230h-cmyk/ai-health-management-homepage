@@ -1,6 +1,6 @@
 {
   "formatVersion": 2,
-  "exportedAt": "2026-09-23T10:00:59.364Z",
+  "exportedAt": "2026-09-24T10:22:06.031Z",
   "notes": [
     {
       "noteId": "f8b116b0-0c4a-4061-8c6c-7be6cd876c8e",
@@ -930,6 +930,161 @@
       "targetKey": "",
       "targetSnapshot": {},
       "featureInference": {},
+      "generatedRules": {},
+      "ruleGeneratedAt": ""
+    },
+    {
+      "noteId": "faa0d802-d512-442c-ae7c-a4881fe08ba6",
+      "projectId": "ai-health-management",
+      "pageId": "sub:healthHistoryEditorPage",
+      "noteNumber": 1,
+      "title": "健康史",
+      "content": "健康史一共有两种状态\n1、第一种（空状态）：直接进入编辑页面，引导用户去补充健康健康史\n2、 这个是空状态的样式\n3、 每个类型添加不超过99个",
+      "x": 0.388,
+      "y": 0.2153392330383481,
+      "createdBy": "在线访客",
+      "createdAt": "2026-09-24T10:22:06.026Z",
+      "updatedBy": "在线访客",
+      "updatedAt": "2026-09-24T10:22:06.026Z",
+      "status": "active",
+      "targetKey": "section.health-history-editor-card",
+      "targetSnapshot": {
+        "targetKey": "section.health-history-editor-card",
+        "label": "既往疾病有无待补充",
+        "role": "内容区域",
+        "section": "既往疾病",
+        "pageId": "sub:healthHistoryEditorPage",
+        "annotationSurfaceHeight": 1356,
+        "attachments": [],
+        "interactionContent": "1、默认选中无\n2、点击有则需要添加手术名称那些。",
+        "interactionAttachments": [],
+        "interfaceManifest": {
+          "pageId": "sub:healthHistoryEditorPage",
+          "route": "/index.html",
+          "pageLabel": "既往史",
+          "headings": [
+            "既往史",
+            "既往疾病",
+            "手术史",
+            "过敏史",
+            "家族史",
+            "用药情况",
+            "吸烟史",
+            "饮酒史"
+          ],
+          "controls": [
+            {
+              "key": "button.back-page",
+              "label": "返回健康史",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button.mini-program-capsule.archive-capsule",
+              "label": "小程序菜单",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "有",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "button",
+              "label": "无",
+              "role": "按钮",
+              "disabled": false
+            },
+            {
+              "key": "#healthHistoryEditorSave",
+              "label": "保存",
+              "role": "按钮",
+              "disabled": false
+            }
+          ],
+          "capturedAt": "2026-09-24T10:22:05.982Z"
+        }
+      },
+      "featureInference": {
+        "featureName": "健康史",
+        "confidence": "中",
+        "basis": "主要依据：标题“健康史”；界面核对：既往疾病 / 既往疾病有无待补充 / 既往史",
+        "states": "初始、处理中、成功、失败"
+      },
       "generatedRules": {},
       "ruleGeneratedAt": ""
     },

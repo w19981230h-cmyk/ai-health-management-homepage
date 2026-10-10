@@ -130,36 +130,127 @@ function setIdLinkageMessage(element, message = "", isError = false) {
 
 const familyCertificateNumber = document.querySelector("#familyCertificateNumber");
 const familyBirth = document.querySelector("#familyBirth");
-const familyGenderButtons = [...document.querySelectorAll("#familyGender [data-gender]")];
-const familyIdLinkage = document.querySelector("#familyIdLinkage");
-
-familyGenderButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    familyGenderButtons.forEach((item) => item.classList.toggle("active", item === button));
-  });
-});
+const familyGender = document.querySelector("#familyGender");
+const familyCertificateType = document.querySelector("#familyCertificateType");
+const familyAddError = document.querySelector("#familyAddError");
 
 familyCertificateNumber?.addEventListener("input", () => {
   const idNumber = familyCertificateNumber.value.replace(/\s+/g, "").toUpperCase();
   familyCertificateNumber.value = idNumber;
-  if (idNumber.length < 18) {
-    setIdLinkageMessage(familyIdLinkage);
-    return;
-  }
+  familyAddError.textContent = "";
+  if (familyCertificateType.value !== "居民身份证" || idNumber.length < 18) return;
   const profile = parseMainlandId(idNumber);
   if (!profile) {
-    setIdLinkageMessage(familyIdLinkage, "身份证号格式或校验位不正确，请核对后重试", true);
+    familyAddError.textContent = "身份证号格式或校验位不正确，请核对后重试";
     return;
   }
   familyBirth.value = profile.birth;
-  familyGenderButtons.forEach((button) => button.classList.toggle("active", button.dataset.gender === profile.gender));
-  setIdLinkageMessage(familyIdLinkage, `已自动识别：${profile.gender} · ${profile.birth}`);
+  familyGender.value = profile.gender;
 });
 
+const patientAuthPrompt = document.querySelector("#patientAuthPrompt");
+let pendingFamily = null;
+
+function finishAddFamily(inviteAuthorization = false) {
+  if (!pendingFamily) return;
+  const { name, relation, certificateType, certificateNumber, gender, birth, phone } = pendingFamily;
+  patientAuthPrompt.hidden = true;
+  const form = document.querySelector("#patientAddForm");
+  const card = document.createElement("article");
+  card.className = "patient-person-card";
+  card.setAttribute("role", "button");
+  card.tabIndex = 0;
+  card.dataset.patientEdit = "";
+  Object.assign(card.dataset, { name, relation, certificateType, certificateNumber, gender, birth, phone, authorization: inviteAuthorization ? "pending" : "not-requested" });
+  card.innerHTML = '<div class="patient-person-head"><i class="patient-monogram" aria-hidden="true"></i><strong></strong><em></em></div><div class="patient-person-meta"><span></span><span></span><span></span><i class="patient-id-hidden-icon" aria-hidden="true"></i></div>';
+  card.querySelector(".patient-monogram").textContent = name[0];
+  card.querySelector("strong").textContent = name;
+  card.querySelector("em").textContent = relation;
+  if (inviteAuthorization) {
+    const status = document.createElement("small");
+    status.className = "patient-auth-status";
+    status.textContent = "待本人授权";
+    card.querySelector(".patient-person-head").appendChild(status);
+  }
+  const meta = card.querySelectorAll(".patient-person-meta > span");
+  meta[0].textContent = gender;
+  meta[1].textContent = patientAgeLabel(birth);
+  meta[2].textContent = maskedPatientCertificate(certificateNumber);
+  const list = document.querySelector(".patient-management-list");
+  list.appendChild(card);
+  document.querySelector(".patient-management-summary p").textContent = `共${list.children.length}名就诊人`;
+  document.querySelector('#settingsPage [data-open-page="patientManagementPage"] em').textContent = `共${list.children.length}名`;
+  addedMemberCount += 1;
+  const member = document.createElement("button");
+  member.className = "member-chip";
+  member.type = "button";
+  member.setAttribute("role", "radio");
+  member.setAttribute("aria-checked", "false");
+  const patientId = `new-${addedMemberCount}`;
+  const ageLabel = patientAgeLabel(birth);
+  Object.assign(member.dataset, {
+    state: "initial",
+    name,
+    meta: `${ageLabel} · ${relation}`,
+    patientId,
+    archivePatientId: patientId,
+    sex: gender === "男" ? "male" : "female",
+    age: ageLabel.replace(/岁$/, "")
+  });
+  member.setAttribute("aria-label", `${name} 待评估`);
+  member.innerHTML = '<span class="member-avatar avatar-new"></span><strong class="patient-chip-name"></strong>';
+  member.querySelector(".member-avatar").textContent = name[0];
+  member.querySelector("strong").textContent = name;
+  memberSwitcher.insertBefore(member, memberSwitcher.querySelector(".member-add"));
+  familyAddError.textContent = "";
+  pendingFamily = null;
+  form.reset();
+  goBackPage();
+}
+
 document.querySelector("#saveFamily").addEventListener("click", () => {
-  document.querySelectorAll(".sub-page").forEach((page) => page.classList.remove("active"));
-  document.querySelector("#familySwitchPage").classList.add("active");
-  pageStack = ["minePage"];
+  const form = document.querySelector("#patientAddForm");
+  const name = document.querySelector("#familyName").value.trim();
+  const relation = document.querySelector("#familyRelation").value;
+  const certificateType = familyCertificateType.value;
+  const certificateNumber = familyCertificateNumber.value.trim();
+  const gender = familyGender.value;
+  const birth = familyBirth.value;
+  const phone = document.querySelector("#familyPhone").value.trim();
+  if (!name || !relation || !certificateType || !certificateNumber || !gender || !birth || !phone) {
+    familyAddError.textContent = "请完整填写全部必填信息";
+    form.querySelector(":invalid")?.focus();
+    return;
+  }
+  if (certificateType === "居民身份证" && !parseMainlandId(certificateNumber)) {
+    familyAddError.textContent = "身份证号格式或校验位不正确，请核对后重试";
+    familyCertificateNumber.focus();
+    return;
+  }
+  if (!/^1\d{10}$/.test(phone)) {
+    familyAddError.textContent = "请填写正确的手机号";
+    document.querySelector("#familyPhone").focus();
+    return;
+  }
+  familyAddError.textContent = "";
+  pendingFamily = { name, relation, certificateType, certificateNumber, gender, birth, phone };
+  if (relation === "本人") {
+    finishAddFamily();
+    return;
+  }
+  patientAuthPrompt.hidden = false;
+  document.querySelector("#patientAuthInvite").focus();
+});
+
+document.querySelector("#patientAuthLater").addEventListener("click", () => finishAddFamily());
+document.querySelector("#patientAuthInvite").addEventListener("click", () => finishAddFamily(true));
+patientAuthPrompt.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    patientAuthPrompt.hidden = true;
+    pendingFamily = null;
+    document.querySelector("#saveFamily").focus();
+  }
 });
 
 document.querySelector("#downloadReport")?.addEventListener("click", () => {

@@ -1,0 +1,98 @@
+.patient-add-page {
+  position: relative;
+  min-height: max(812px, 100dvh);
+  margin-bottom: -112px;
+  padding: 0 16px 16px;
+  color: #17233f;
+  background: #f5f6f8;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.patient-add-page.active { display: flex; flex-direction: column; }
+.patient-add-page.active ~ .tabbar { display: none; }
+
+.patient-add-status {
+  flex: 0 0 44px;
+  margin: 0 -4px;
+  padding-bottom: 6px;
+}
+
+.patient-add-nav {
+  position: relative;
+  display: grid;
+  flex: 0 0 59px;
+  place-items: center;
+}
+
+.patient-add-nav h1 { margin: 0; font-size: 17px; font-weight: 600; }
+.patient-add-back { position: absolute; left: 0; top: 7px; width: 40px; height: 40px; background: transparent; }
+.patient-add-back::before { content: ""; position: absolute; left: 6px; top: 12px; width: 13px; height: 13px; border-left: 2px solid #17233f; border-bottom: 2px solid #17233f; transform: rotate(45deg); }
+.patient-add-capsule { position: absolute; grid-area: auto; right: 0; top: 7px; width: 87px; height: 32px; background: rgba(255,255,255,.6); box-shadow: none; }
+
+.patient-add-form { display: grid; gap: 18px; }
+.patient-add-group { overflow: hidden; border-radius: 8px; background: #fff; }
+.patient-add-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: center;
+  min-height: 46px;
+  padding: 0 11px;
+  border-bottom: 1px solid #eef0f4;
+}
+.patient-add-row:last-child { border-bottom: 0; }
+.patient-add-row > span:first-child { color: #667085; font-size: 14px; }
+.patient-add-row em { color: #ff4d4f; font-style: normal; }
+.patient-add-row input, .patient-add-row select {
+  width: 100%; min-width: 0; height: 46px; padding: 0 24px 0 0; border: 0; outline: 0;
+  color: #26324c; background: transparent; font: inherit; font-size: 14px; appearance: none;
+}
+.patient-add-row input::placeholder { color: #c5cad4; }
+.patient-add-row select:invalid { color: #c5cad4; }
+.patient-add-row input:focus-visible, .patient-add-row select:focus-visible { box-shadow: inset 0 -2px 0 #3671ff; }
+.patient-add-row.has-arrow::after {
+  content: ""; position: absolute; right: 20px; top: 50%; width: 7px; height: 7px;
+  border-right: 1.5px solid #536079; border-bottom: 1.5px solid #536079;
+  transform: translateY(-60%) rotate(-45deg); pointer-events: none;
+}
+.patient-add-date-control { position: relative; display: block; min-width: 0; }
+.patient-add-date-control input { position: relative; z-index: 1; color: #26324c; cursor: pointer; }
+.patient-add-date-control input:not(:valid) { color: transparent; }
+.patient-add-date-control input::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; }
+.patient-add-date-placeholder { position: absolute; top: 50%; left: 0; color: #c5cad4; font-size: 14px; transform: translateY(-50%); pointer-events: none; }
+.patient-add-date-control input:valid + .patient-add-date-placeholder { display: none; }
+.patient-add-error { min-height: 20px; margin: 0 0 8px; color: #ff4d4f; font-size: 12px; line-height: 20px; text-align: center; }
+.patient-add-footer { margin-top: auto; padding-bottom: 30px; }
+.patient-add-footer button { width: 100%; height: 39px; border-radius: 9px; color: #fff; background: #3671ff; font-size: 15px; font-weight: 600; }
+.patient-add-home-indicator { align-self: center; flex: 0 0 5px; width: 134px; border-radius: 5px; background: #17233f; }
+
+.patient-auth-overlay {
+  position: absolute;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(3, 16, 46, .42);
+}
+.patient-auth-overlay[hidden] { display: none; }
+.patient-auth-dialog {
+  width: 100%;
+  padding: 25px 20px 20px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(3, 16, 46, .16);
+  text-align: center;
+}
+.patient-auth-dialog h2 { margin: 0; color: #17233f; font-size: 17px; font-weight: 600; }
+.patient-auth-dialog p { margin: 13px 0 23px; color: #667085; font-size: 14px; line-height: 21px; }
+.patient-auth-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.patient-auth-actions button { min-height: 40px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+.patient-auth-actions button:first-child { color: #3671ff; background: #edf3ff; }
+.patient-auth-actions button:last-child { color: #fff; background: #3671ff; }
+.patient-auth-actions button:focus-visible { outline: 2px solid #17233f; outline-offset: 2px; }
+.patient-auth-status { margin-left: auto; padding: 3px 7px; border-radius: 4px; color: #f49529; background: #fff6e9; font-size: 11px; font-style: normal; }
+
+@media (max-width: 390px) {
+  .patient-add-page { min-height: 100dvh; }
+}

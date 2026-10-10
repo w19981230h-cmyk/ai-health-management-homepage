@@ -32,3 +32,7 @@ The Node preview service provides full note editing and persistence. A static de
 - The frontend does not store note data in LocalStorage.
 
 For editable online sharing, deploy `serve-mobile-preview.mjs` on a Node.js host with a persistent writable disk. For view-only sharing, deploy the complete project including `data/ui-notes-seed.json` on any static host.
+
+## Patient authorization preview
+
+Adding a patient whose relationship is not “本人” prompts for an authorization invitation. Choosing it marks the patient as “待本人授权” in the current browser session. This static preview does not send an invitation or grant access; a backend authorization flow is required for that.

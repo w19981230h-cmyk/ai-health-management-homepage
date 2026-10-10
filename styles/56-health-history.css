@@ -85,6 +85,7 @@
 .health-history-editor-field input::placeholder { color: #b8c2d3; }
 .health-history-editor-field:focus-within { background: #eef5ff; }
 .health-history-none-hint { margin: 0; padding: 24px 3px 10px; color: #9da8bb; font-size: 13px; }
+.health-history-none-hint.is-pending { color: #9da8bb; }
 .health-history-editor-error { min-height: 21px; margin: 8px 10px; color: var(--color-error); font-size: 12px; }
 .health-history-editor-footer { position: fixed; z-index: 50; left: 50%; bottom: 0; transform: translateX(-50%); width: min(375px, 100%); padding: 10px 8px max(18px, env(safe-area-inset-bottom)); background: rgba(255,255,255,.96); }
 .health-history-editor-footer button { width: 100%; height: 44px; border-radius: 8px; color: #fff; background: var(--color-primary); font-size: 15px; font-weight: 600; }
