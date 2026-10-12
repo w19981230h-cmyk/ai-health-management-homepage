@@ -565,9 +565,9 @@
               <button class="member-add archive-add" type="button" data-open-page="addFamilyPage" aria-label="添加就诊人"><span aria-hidden="true"></span></button>
             </section>
             <span id="profileGenderAge" class="archive-patient-meta">女｜32岁</span>
-            <button class="archive-auth-entry" type="button" data-open-page="familySharingPage" aria-label="邀请家人">
+            <button class="archive-auth-entry" type="button" data-open-page="familySharingPage" aria-label="邀请">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 2.5h9l4 4v12.5a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2Z"/><path d="M14.5 2.5v4h4M7 10h7M7 13h5"/><path d="m12.5 17 1.7 1.7 3.3-3.5"/></svg>
-              <span>邀请家人</span>
+              <span>邀请</span>
             </button>
           </section>
           <p class="archive-member-hint">4位就诊人 · 左滑查看更多</p>
@@ -849,10 +849,71 @@
         <main class="family-share-content"><section class="family-share-card family-confirm-card"><div class="family-applicant"><span>张</span><strong>张女士 申请管理您的健康档案</strong></div><dl><div><dt>申请人</dt><dd>张女士</dd></div><div><dt>授权对象</dt><dd id="familyRequestPatientName">患者</dd></div></dl><p>同意后，对方可查看您的健康档案及报告、协助记录健康数据，并完成健康管理任务。请由本人核对后授权。</p><label class="family-invite-consent family-request-consent"><input id="familyRequestConsent" type="checkbox" checked><span>授权对方查看并管理当前健康档案，完成相关健康任务</span></label><div class="family-confirm-buttons"><button class="family-share-secondary" id="familyRequestReject" type="button">拒绝</button><button class="family-share-primary" id="familyRequestApprove" type="button">同意授权</button></div></section></main>
       </section>
 
+      <section class="sub-page family-share-page family-face-page" id="familyFaceIntroPage" aria-label="身份验证">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回同意授权"></button><h1>身份验证</h1><span>•••</span></header>
+        <main class="family-share-content family-face-content">
+          <div class="family-face-shield" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 5 52 13v15c0 14-8 24-20 31C20 52 12 42 12 28V13Z" fill="#3671ff"/><path d="m22 31 7 7 14-15" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h2>为保障您的数据安全<br>请进行人脸核验</h2>
+          <div class="family-face-reasons"><p><span>▣</span>本次核验用于确认是否为就诊人本人操作</p><p><span>♙</span>核验通过后才会完成授权，对方可查看和管理您的健康档案</p></div>
+          <p class="family-face-privacy">我们会严格保护您的个人信息</p>
+          <button class="family-share-primary" id="familyFaceStart" type="button">开始人脸核验</button>
+          <p class="family-face-demo-note">当前为前端流程演示，不进行真实身份比对或授权。</p>
+        </main>
+      </section>
+
+      <section class="sub-page family-share-page family-face-capture-page" id="familyFaceCapturePage" aria-label="人脸核验">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回身份验证"></button><h1>人脸核验</h1><span>•••</span></header>
+        <main class="family-face-camera-content">
+          <p>请将面部对准框内<br>保持正面，光线充足</p>
+          <div class="family-face-viewfinder"><video id="familyFaceVideo" autoplay muted playsinline aria-label="前置摄像头预览"></video><div class="family-face-placeholder" id="familyFacePlaceholder" aria-hidden="true"><svg viewBox="0 0 180 230"><circle cx="90" cy="85" r="47" fill="#788498"/><path d="M19 230c3-49 23-70 71-70s68 21 71 70" fill="#788498"/><path d="M45 77c0-35 17-57 45-57s45 22 45 57" fill="#546174"/></svg></div><div class="family-face-oval"></div><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i></div>
+          <p id="familyFaceCameraHint" class="family-face-camera-hint" role="status">摄像头预览仅在本机显示；本演示不采集或上传照片</p>
+          <button class="family-share-primary" id="familyFaceVerify" type="button">开始模拟核验</button>
+          <button class="family-face-test-failure" id="familyFaceTestFailure" type="button">体验核验失败与重试</button>
+          <button class="family-face-test-failure" id="familyFaceTestAuthFailure" type="button">体验授权失败</button>
+        </main>
+      </section>
+
+      <section class="sub-page family-share-page family-face-page" id="familyFaceCheckingPage" aria-label="正在核验">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回人脸核验"></button><h1>正在核验</h1><span>•••</span></header>
+        <main class="family-share-content family-face-content family-face-checking" aria-live="polite">
+          <div class="family-face-progress" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#3671ff" stroke-width="2"/><path d="M22 28v-3m20 3v-3M25 39q7 8 14 0" fill="none" stroke="#3671ff" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+          <h2>正在验证您的身份…</h2><p>预计需要 3–5 秒<br>请勿退出页面</p>
+          <ol class="family-face-checklist"><li class="complete">检测面部特征</li><li id="familyFaceCompareStep">比对身份信息</li><li id="familyFaceFinishStep">验证中…</li></ol>
+          <p class="family-face-demo-note">模拟核验中，不进行真实身份比对。</p>
+        </main>
+      </section>
+
+      <section class="sub-page family-share-page family-face-page" id="familyFaceFailedPage" aria-label="身份核验失败">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回同意授权"></button><h1>身份核验失败</h1><span>•••</span></header>
+        <main class="family-share-content family-face-content family-face-result">
+          <div class="family-face-error" aria-hidden="true">×</div><h2>身份核验失败</h2><p>未能通过人脸核验<br>请确认由就诊人本人操作</p>
+          <div class="family-face-failure-reasons"><strong>可能原因：</strong><span>光线不足，请在明亮环境下重试</span><span>未正对摄像头，请保持面部在框内</span><span>信息与就诊人身份不一致</span></div>
+          <div class="family-confirm-buttons"><button class="family-share-secondary" id="familyFaceFailedBack" type="button">返回</button><button class="family-share-primary" id="familyFaceRetry" type="button">重新核验</button></div>
+        </main>
+      </section>
+
       <section class="sub-page family-share-page family-request-page" id="familyRequestSuccessPage" aria-label="授权成功">
         <header class="mini-status"><span>9:41</span><span></span></header>
         <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回健康服务"></button><h1>授权成功</h1><span>•••</span></header>
-        <main class="family-share-content"><section class="family-share-card family-success-card"><div class="family-success-check" aria-hidden="true">✓</div><h2>授权成功</h2><p><strong id="familyRequestSuccessName">家人</strong> 已同意您的申请</p><p>您现在可以查看和管理他的健康档案。</p><button class="family-share-primary" id="familyRequestView" type="button">查看共享家人</button><button class="family-share-secondary" id="familyRequestHome" type="button">返回首页</button></section></main>
+        <main class="family-share-content"><section class="family-share-card family-success-card"><div class="family-success-check" aria-hidden="true">✓</div><h2>授权成功</h2><p>您已将 <strong id="familyRequestSuccessName">家人</strong> 的健康档案授权给张女士</p><p>对方现在可以查看和管理这份健康档案。</p><button class="family-share-primary" id="familyRequestView" type="button">查看共享家人</button><button class="family-share-secondary" id="familyRequestHome" type="button">返回首页</button><small class="family-face-success-note">当前为前端演示，未完成真实身份核验或账号授权。</small></section></main>
+      </section>
+
+      <section class="sub-page family-share-page family-face-page" id="familyRequestFailurePage" aria-label="授权失败">
+        <header class="mini-status"><span>9:41</span><span></span></header>
+        <header class="family-share-nav"><button class="back-page" type="button" aria-label="返回同意授权"></button><h1>授权失败</h1><span>•••</span></header>
+        <main class="family-share-content family-face-content family-face-result">
+          <div class="family-face-error" aria-hidden="true">!</div>
+          <h2>授权失败</h2>
+          <p>本次未建立健康档案共享关系<br>对方暂时无法查看或管理您的档案</p>
+          <div class="family-face-failure-reasons"><strong>演示原因</strong><span>网络连接中断，授权信息未能提交</span><span>您可以检查网络后重新授权</span></div>
+          <button class="family-share-primary" id="familyRequestFailureRetry" type="button">重新授权</button>
+          <button class="family-share-secondary family-face-failure-home" id="familyRequestFailureHome" type="button">返回首页</button>
+          <small class="family-face-success-note">当前为前端演示，未进行真实身份核验或账号授权。</small>
+        </main>
       </section>
 
       <section class="sub-page family-share-page" id="familyAcceptPage" aria-label="健康档案邀请">
@@ -2923,7 +2984,7 @@
   <script src="scripts/60-metrics.js?v=20260921-health-history-v1"></script>
   <script src="scripts/70-events-init.js?v=20261012-family-states-v1"></script>
   <script src="scripts/vendor/qrcode-generator.js?v=2.0.4"></script>
-  <script src="scripts/76-family-sharing.js?v=20261012-family-consent-v2"></script>
+  <script src="scripts/76-family-sharing.js?v=20261012-family-auth-failure-v1"></script>
   <script src="scripts/75-health-history.js?v=20260924-single-category-editor-v11"></script>
   <script src="scripts/80-ui-notes.js?v=20260831-direct-summary-v17"></script>
 </body>

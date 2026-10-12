@@ -184,6 +184,58 @@ body.family-qr-sheet-open { overflow: hidden; }
 .family-confirm-buttons { display: flex; gap: 8px; margin-top: 18px; }
 .family-confirm-buttons > button { flex: 1; }
 .family-request-page .family-confirm-buttons .family-share-primary:disabled { cursor: not-allowed; opacity: .45; }
+.family-face-page.sub-page { background: linear-gradient(180deg, #f7faff, #fff 58%, #f2f7ff); }
+.family-face-content { justify-items: center; gap: 0; padding-top: 48px; text-align: center; }
+.family-face-shield { display: grid; place-items: center; width: 86px; height: 86px; margin-bottom: 23px; border-radius: 50%; background: #e9f2ff; box-shadow: 0 6px 23px rgba(54,113,255,.1); }
+.family-face-shield svg { width: 52px; height: 52px; }
+.family-face-content h2 { margin: 0 0 13px; color: #122e84; font-size: 19px; line-height: 1.5; }
+.family-face-content > p { margin: 0; color: #7185a9; font-size: 13px; line-height: 1.7; }
+.family-face-reasons { display: grid; gap: 10px; width: 100%; margin: 26px 0 20px; padding: 15px 12px; border-radius: 13px; background: #eef6ff; text-align: left; }
+.family-face-reasons p { display: flex; align-items: center; gap: 10px; margin: 0; color: #536a94; font-size: 12px; line-height: 1.6; }
+.family-face-reasons span { display: grid; flex: none; place-items: center; width: 30px; height: 30px; border-radius: 9px; color: #3671ff; background: #fff; font-size: 18px; }
+.family-face-content .family-face-privacy { margin-bottom: 28px; font-size: 11px; }
+.family-face-content > .family-share-primary { min-height: 46px; }
+.family-face-content .family-face-demo-note { margin-top: 14px; color: #94a4bf; font-size: 11px; }
+.family-face-capture-page.sub-page { color: #fff; background: linear-gradient(160deg, #1e2633, #101722 68%, #090d16); }
+.family-face-capture-page .mini-status, .family-face-capture-page .family-share-nav h1, .family-face-capture-page .family-share-nav > span { color: #fff; }
+.family-face-capture-page .mini-status span:last-child { filter: invert(1); }
+.family-face-capture-page .family-share-nav .back-page::before { border-color: #fff; }
+.family-face-camera-content { display: grid; justify-items: center; padding: 24px 0 32px; text-align: center; }
+.family-face-camera-content > p:first-child { margin: 0 0 22px; font-size: 13px; line-height: 1.55; }
+.family-face-viewfinder { position: relative; display: grid; place-items: center; width: 250px; height: 310px; overflow: hidden; }
+.family-face-viewfinder video { display: none; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.family-face-viewfinder video.ready { display: block; }
+.family-face-placeholder { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 45%; background: radial-gradient(ellipse, #47566d, #222d3d 70%); }
+.family-face-placeholder[hidden] { display: none; }
+.family-face-placeholder svg { width: 180px; height: 230px; }
+.family-face-oval { position: absolute; inset: 16px 17px; border: 2px solid rgba(255,255,255,.92); border-radius: 50%; pointer-events: none; }
+.family-face-viewfinder .corner { position: absolute; width: 18px; height: 18px; border: 3px solid #fff; pointer-events: none; }
+.family-face-viewfinder .tl { top: 16px; left: 4px; border-right: 0; border-bottom: 0; border-radius: 5px 0 0; }
+.family-face-viewfinder .tr { top: 16px; right: 4px; border-left: 0; border-bottom: 0; border-radius: 0 5px 0 0; }
+.family-face-viewfinder .bl { bottom: 16px; left: 4px; border-right: 0; border-top: 0; border-radius: 0 0 0 5px; }
+.family-face-viewfinder .br { bottom: 16px; right: 4px; border-left: 0; border-top: 0; border-radius: 0 0 5px; }
+.family-face-camera-content .family-face-camera-hint { max-width: 300px; margin: 22px 0; color: #c6d2e3; font-size: 11px; line-height: 1.5; }
+.family-face-camera-content .family-share-primary { min-height: 46px; }
+.family-face-test-failure { margin-top: 13px; padding: 8px 12px; color: #abbcd3; background: transparent; font-size: 11px; text-decoration: underline; }
+.family-face-test-failure + .family-face-test-failure { margin-top: 1px; }
+.family-face-checking { padding-top: 74px; }
+.family-face-progress { display: grid; place-items: center; width: 118px; height: 118px; margin-bottom: 25px; border: 5px solid #dbe8ff; border-top-color: #3671ff; border-right-color: #3671ff; border-radius: 50%; animation: family-face-spin 1.5s linear infinite; }
+.family-face-progress svg { width: 64px; height: 64px; animation: family-face-spin 1.5s linear infinite reverse; }
+@keyframes family-face-spin { to { transform: rotate(360deg); } }
+.family-face-checklist { display: grid; gap: 17px; width: 100%; margin: 40px 0 12px; padding: 0 12px; list-style: none; text-align: left; }
+.family-face-checklist li { color: #a5b2c8; font-size: 13px; }
+.family-face-checklist li::before { content: "○"; margin-right: 10px; color: #3671ff; font-size: 17px; }
+.family-face-checklist li.complete { color: #617699; }
+.family-face-checklist li.complete::before { content: "✓"; color: #19bd7d; font-weight: 800; }
+.family-face-result { padding-top: 55px; }
+.family-face-error { display: grid; place-items: center; width: 70px; height: 70px; margin-bottom: 24px; border-radius: 50%; color: #fff; background: #ff656b; font-size: 52px; line-height: 1; }
+.family-face-failure-reasons { display: grid; gap: 7px; width: 100%; margin: 29px 0 20px; padding: 14px 16px; border-radius: 12px; background: #fff2f2; color: #6d7d99; text-align: left; font-size: 12px; }
+.family-face-failure-reasons strong { color: #e25761; }
+.family-face-failure-reasons span::before { content: "•"; margin-right: 7px; }
+.family-face-result .family-confirm-buttons { width: 100%; }
+.family-face-result .family-confirm-buttons > button { width: auto; }
+.family-face-result .family-face-failure-home { margin-top: 9px; }
+.family-face-success-note { display: block; margin-top: 16px; color: #9aa9bd; font-size: 10px; line-height: 1.5; }
 .family-success-card { min-height: 440px; padding-top: 47px; }
 .family-success-check { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 18px; border-radius: 50%; color: #fff; background: #20c67d; font-size: 40px; }
 .family-success-card h2 { margin: 0 0 11px; color: #122e84; font-size: 19px; }

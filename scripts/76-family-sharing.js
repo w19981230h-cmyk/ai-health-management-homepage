@@ -60,7 +60,7 @@ function familyAuthorizationState() {
 
 function updateFamilyAuthorizationEntry() {
   const state = familyAuthorizationState();
-  const label = state === "self" ? "邀请家人" : state === "authorized" ? "已授权" : "获取授权";
+  const label = state === "self" ? "邀请" : state === "authorized" ? "已授权" : "获取授权";
   familyAuthorizationEntry.querySelector("span:last-child").textContent = label;
   familyAuthorizationEntry.setAttribute("aria-label", `${currentPatient.name}：${label}`);
   familyAuthorizationEntry.title = `${currentPatient.name}：${label}`;
@@ -308,13 +308,104 @@ familyRequestConsent?.addEventListener("change", () => {
 });
 familyRequestApprove?.addEventListener("click", () => {
   if (!authorizationRequestPatient || !familyRequestConsent.checked) return;
+  openFamilySubPage("familyFaceIntroPage");
+});
+let familyFaceStream = null;
+let familyFaceTimers = [];
+let familyFaceDemoOutcome = "success";
+function stopFamilyFaceCamera() {
+  familyFaceStream?.getTracks().forEach((track) => track.stop());
+  familyFaceStream = null;
+  const video = document.querySelector("#familyFaceVideo");
+  video.srcObject = null;
+  video.classList.remove("ready");
+  document.querySelector("#familyFacePlaceholder").hidden = false;
+}
+function cancelFamilyFaceCheck() {
+  familyFaceTimers.forEach(window.clearTimeout);
+  familyFaceTimers = [];
+}
+async function openFamilyFaceCapture() {
+  cancelFamilyFaceCheck();
+  openFamilySubPage("familyFaceCapturePage");
+  const hint = document.querySelector("#familyFaceCameraHint");
+  hint.textContent = "摄像头预览仅在本机显示；本演示不采集或上传照片";
+  if (!navigator.mediaDevices?.getUserMedia) {
+    hint.textContent = "当前环境无法打开摄像头，可继续体验模拟核验流程";
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+    if (!document.querySelector("#familyFaceCapturePage").classList.contains("active")) {
+      stream.getTracks().forEach((track) => track.stop());
+      return;
+    }
+    familyFaceStream = stream;
+    const video = document.querySelector("#familyFaceVideo");
+    video.srcObject = stream;
+    video.classList.add("ready");
+    document.querySelector("#familyFacePlaceholder").hidden = true;
+  } catch (_) {
+    hint.textContent = "未获得摄像头权限，可继续体验模拟核验流程";
+  }
+}
+function finishFamilyFaceDemo() {
+  if (!authorizationRequestPatient || !document.querySelector("#familyFaceCheckingPage").classList.contains("active")) return;
+  if (familyFaceDemoOutcome === "authorization-failure") {
+    openFamilySubPage("familyRequestFailurePage");
+    pageStack = ["minePage"];
+    cancelFamilyFaceCheck();
+    return;
+  }
   demoAuthorizedPatients.add(authorizationRequestPatient.id);
-  const patientName = authorizationRequestPatient.name;
-  document.querySelector("#familyRequestSuccessName").textContent = patientName;
+  document.querySelector("#familyRequestSuccessName").textContent = authorizationRequestPatient.name;
   authorizationRequestPatient = null;
   updateFamilyAuthorizationEntry();
   openFamilySubPage("familyRequestSuccessPage");
   pageStack = ["minePage"];
+  cancelFamilyFaceCheck();
+}
+document.querySelector("#familyFaceStart")?.addEventListener("click", openFamilyFaceCapture);
+function startFamilyFaceDemo(outcome) {
+  if (!authorizationRequestPatient) return;
+  familyFaceDemoOutcome = outcome;
+  stopFamilyFaceCamera();
+  document.querySelector("#familyFaceCompareStep").classList.remove("complete");
+  document.querySelector("#familyFaceFinishStep").classList.remove("complete");
+  openFamilySubPage("familyFaceCheckingPage");
+  familyFaceTimers = [
+    window.setTimeout(() => document.querySelector("#familyFaceCompareStep").classList.add("complete"), 1000),
+    window.setTimeout(() => document.querySelector("#familyFaceFinishStep").classList.add("complete"), 2200),
+    window.setTimeout(finishFamilyFaceDemo, 3600)
+  ];
+}
+document.querySelector("#familyFaceVerify")?.addEventListener("click", () => startFamilyFaceDemo("success"));
+document.querySelector("#familyFaceTestAuthFailure")?.addEventListener("click", () => startFamilyFaceDemo("authorization-failure"));
+document.querySelector("#familyFaceTestFailure")?.addEventListener("click", () => {
+  stopFamilyFaceCamera();
+  openFamilySubPage("familyFaceFailedPage");
+});
+document.querySelector("#familyFaceRetry")?.addEventListener("click", openFamilyFaceCapture);
+document.querySelector("#familyFaceFailedBack")?.addEventListener("click", () => {
+  cancelFamilyFaceCheck();
+  stopFamilyFaceCamera();
+  openFamilySubPage("familyRequestConsentPage");
+});
+document.querySelector("#familyRequestFailureRetry")?.addEventListener("click", () => {
+  if (!authorizationRequestPatient) return;
+  openFamilySubPage("familyRequestConsentPage");
+  pageStack = ["minePage"];
+});
+document.querySelector("#familyRequestFailureHome")?.addEventListener("click", () => {
+  authorizationRequestPatient = null;
+  familyShareReturnHome();
+});
+document.addEventListener("click", (event) => {
+  const back = event.target.closest(".family-face-page .back-page, .family-face-capture-page .back-page");
+  if (back) {
+    cancelFamilyFaceCheck();
+    stopFamilyFaceCamera();
+  }
 });
 document.querySelector("#familyRequestView")?.addEventListener("click", familyShareReturnHome);
 document.querySelector("#familyRequestHome")?.addEventListener("click", familyShareGoToHome);
