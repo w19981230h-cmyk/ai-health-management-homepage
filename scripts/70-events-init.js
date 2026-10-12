@@ -996,6 +996,7 @@ function updateCurrentPatientView() {
     profileGenderAge.textContent = currentPatient.age ? `${sexLabel}｜${currentPatient.age}岁` : `${sexLabel}｜待完善`;
   }
   updateWecomServiceGroupEntry();
+  if (typeof updateFamilyAuthorizationEntry === "function") updateFamilyAuthorizationEntry();
   updateHomeWecomReminder();
   renderPeriodCard();
   renderPeriodDetail();

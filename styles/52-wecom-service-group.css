@@ -1,8 +1,39 @@
 .mine-page .archive-wecom-entry {
-  flex: none;
-  width: 118px;
+  display: grid;
+  flex: 0 0 30px;
+  place-items: center;
+  width: 30px;
   height: 30px;
-  padding: 0 10px;
+  padding: 2px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 5px 12px rgba(54, 113, 255, 0.08);
+}
+
+.mine-page .archive-wecom-entry svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.mine-page .archive-wecom-entry:focus-visible {
+  outline: 2px solid rgba(54, 113, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.mine-page .archive-wecom-entry.hidden {
+  display: none;
+}
+
+.mine-page .archive-auth-entry {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 91px;
+  height: 30px;
+  padding: 0 9px;
   border: 1px solid rgba(54, 113, 255, 0.22);
   border-radius: 999px;
   color: #3671ff;
@@ -13,24 +44,15 @@
   box-shadow: 0 5px 14px rgba(54, 113, 255, 0.12);
 }
 
-.mine-page .archive-wecom-entry::before {
-  content: "";
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 5px;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  vertical-align: -1px;
-}
-
-.mine-page .archive-wecom-entry:focus-visible {
-  outline: 2px solid rgba(54, 113, 255, 0.45);
-  outline-offset: 2px;
-}
-
-.mine-page .archive-wecom-entry.hidden {
-  display: none;
+.mine-page .archive-auth-entry svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .home-wecom-reminder {
